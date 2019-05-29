@@ -1,0 +1,32 @@
+{
+  "name": "react-native-visual-clone",
+  "version": "0.1.0",
+  "description": "Create visual clones of your views and animate them cheaply ✂️📋💫",
+  "author": "IjzerenHein <hrutjes@gmail.com>",
+  "keywords": [
+    "react-native-visual-clone",
+    "react-native",
+    "visual snapshot",
+    "visual clone",
+    "visual stand-in"
+  ],
+  "repository": "https://github.com/IjzerenHein/react-native-visual-clone",
+  "bugs": "https://github.com/IjzerenHein/react-native-visual-clone/issues",
+  "license": "MIT",
+  "main": "src/index.js",
+  "react-native": "src/index.js",
+  "files": [
+    "src",
+    "ios",
+    "android",
+    "windows",
+    "web"
+  ],
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "peerDependencies": {
+    "react": "*",
+    "react-native": "*"
+  }
+}
