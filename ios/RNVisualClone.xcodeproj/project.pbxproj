@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		21F72D13229F12F900315C0A /* RNVisualCloneData.m in Sources */ = {isa = PBXBuildFile; fileRef = 21F72D0C229F12F900315C0A /* RNVisualCloneData.m */; };
+		21F72D14229F12F900315C0A /* RNVisualCloneManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 21F72D0D229F12F900315C0A /* RNVisualCloneManager.m */; };
+		21F72D15229F12F900315C0A /* RNVisualCloneDataManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 21F72D0F229F12F900315C0A /* RNVisualCloneDataManager.m */; };
+		21F72D16229F12F900315C0A /* RNVisualCloneBlurEffectWithAmount.m in Sources */ = {isa = PBXBuildFile; fileRef = 21F72D11229F12F900315C0A /* RNVisualCloneBlurEffectWithAmount.m */; };
 		B3E7B58A1CC2AC0600A0062D /* RNVisualClone.m in Sources */ = {isa = PBXBuildFile; fileRef = B3E7B5891CC2AC0600A0062D /* RNVisualClone.m */; };
 /* End PBXBuildFile section */
 
@@ -24,6 +28,14 @@
 
 /* Begin PBXFileReference section */
 		134814201AA4EA6300B7C361 /* libRNVisualClone.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libRNVisualClone.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		21F72D0B229F12F900315C0A /* RNVisualCloneDataManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RNVisualCloneDataManager.h; sourceTree = "<group>"; };
+		21F72D0C229F12F900315C0A /* RNVisualCloneData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RNVisualCloneData.m; sourceTree = "<group>"; };
+		21F72D0D229F12F900315C0A /* RNVisualCloneManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RNVisualCloneManager.m; sourceTree = "<group>"; };
+		21F72D0E229F12F900315C0A /* RNVisualCloneData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RNVisualCloneData.h; sourceTree = "<group>"; };
+		21F72D0F229F12F900315C0A /* RNVisualCloneDataManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RNVisualCloneDataManager.m; sourceTree = "<group>"; };
+		21F72D10229F12F900315C0A /* RNVisualCloneBlurEffectWithAmount.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RNVisualCloneBlurEffectWithAmount.h; sourceTree = "<group>"; };
+		21F72D11229F12F900315C0A /* RNVisualCloneBlurEffectWithAmount.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RNVisualCloneBlurEffectWithAmount.m; sourceTree = "<group>"; };
+		21F72D12229F12F900315C0A /* RNVisualCloneManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RNVisualCloneManager.h; sourceTree = "<group>"; };
 		B3E7B5881CC2AC0600A0062D /* RNVisualClone.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RNVisualClone.h; sourceTree = "<group>"; };
 		B3E7B5891CC2AC0600A0062D /* RNVisualClone.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RNVisualClone.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -52,6 +64,14 @@
 			children = (
 				B3E7B5881CC2AC0600A0062D /* RNVisualClone.h */,
 				B3E7B5891CC2AC0600A0062D /* RNVisualClone.m */,
+				21F72D10229F12F900315C0A /* RNVisualCloneBlurEffectWithAmount.h */,
+				21F72D11229F12F900315C0A /* RNVisualCloneBlurEffectWithAmount.m */,
+				21F72D0E229F12F900315C0A /* RNVisualCloneData.h */,
+				21F72D0C229F12F900315C0A /* RNVisualCloneData.m */,
+				21F72D0B229F12F900315C0A /* RNVisualCloneDataManager.h */,
+				21F72D0F229F12F900315C0A /* RNVisualCloneDataManager.m */,
+				21F72D12229F12F900315C0A /* RNVisualCloneManager.h */,
+				21F72D0D229F12F900315C0A /* RNVisualCloneManager.m */,
 				134814211AA4EA7D00B7C361 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -95,6 +115,7 @@
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				English,
 				en,
 			);
 			mainGroup = 58B511D21A9E6C8500147676;
@@ -113,6 +134,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				B3E7B58A1CC2AC0600A0062D /* RNVisualClone.m in Sources */,
+				21F72D13229F12F900315C0A /* RNVisualCloneData.m in Sources */,
+				21F72D16229F12F900315C0A /* RNVisualCloneBlurEffectWithAmount.m in Sources */,
+				21F72D14229F12F900315C0A /* RNVisualCloneManager.m in Sources */,
+				21F72D15229F12F900315C0A /* RNVisualCloneDataManager.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -204,7 +229,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				HEADER_SEARCH_PATHS = (
-				"$(inherited)",
+					"$(inherited)",
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
 					"$(SRCROOT)/../../../React/**",
 					"$(SRCROOT)/../../react-native/React/**",
