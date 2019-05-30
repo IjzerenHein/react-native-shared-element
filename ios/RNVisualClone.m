@@ -2,13 +2,10 @@
 //  RNVisualClone.m
 //  react-native-visual-clone
 //
-//  Created by Hein Rutjes on 16/01/2019.
-//
 
 #import <Foundation/Foundation.h>
 #import <React/UIView+React.h>
 #import "RNVisualClone.h"
-#import "RNVisualCloneDataManager.h"
 #import "RNVisualCloneBlurEffectWithAmount.h"
 
 #ifdef DEBUG
@@ -17,25 +14,24 @@
 #define DebugLog(...) (void)0
 #endif
 
-
 @implementation RNVisualClone
 {
-    RNVisualCloneDataManager* _dataManager;
-    RNVisualCloneData* _data;
+    BOOL _invalidated;
+    RNVisualCloneData* _sourceData;
+    RNVisualCloneContentType _contentType;
+    CGFloat _blurRadius;
     UIView* _snapshot;
-    UIVisualEffectView* _blurEffectView;
+    UIImage* _image;
+    //UIVisualEffectView* _blurEffectView;
 }
 
-@synthesize source = _source;
-@synthesize contentType = _contentType;
-
-- (instancetype)initWithDataManager:(RNVisualCloneDataManager*)dataManager
+- (instancetype)init
 {
     if ((self = [super init])) {
-        _dataManager = dataManager;
-        _data = nil;
-        _contentType = RNVisualCloneContentTypeChildren;
-        _snapshot = nil;
+        _invalidated = NO;
+        _contentType = RNVisualCloneContentTypeSnapshot;
+        _blurRadius = 0.0f;
+        //_snapshot = nil;
         // self.layer.masksToBounds = YES; // overflow = 'hidden'
     }
     
@@ -44,9 +40,9 @@
 
 - (void)dealloc
 {
-    if (_data != nil) {
-        [_dataManager release:_data];
-        _data = nil;
+    if (_sourceData) {
+        [_sourceData removeObserver:self forKeyPath:@"image"];
+        [_sourceData removeObserver:self forKeyPath:@"snapshot"];
     }
 }
 
@@ -54,46 +50,42 @@
 {
     [super displayLayer:layer];
     
-    if (_data == nil) return;
-    
-    if (_contentType == RNVisualCloneContentTypeRawImage) {
-        self.layer.contents =  _data.image ? (id)_data.image.CGImage : nil;
+    if (_contentType == RNVisualCloneContentTypeImage) {
+        self.layer.contents =  _image ? (id)_image.CGImage : nil;
     }
 }
 
-/*
-- (void) reactSetFrame:(CGRect)frame
-{
-    // This ensures that the initial clone is visible before it has
-    // received any styles from the JS side
-    if (frame.size.width * frame.size.height) {
-        [super reactSetFrame:frame];
+- (void)setSourceData:(RNVisualCloneData *)sourceData {
+    if (_sourceData != sourceData) {
+        if (_sourceData) {
+            [_sourceData removeObserver:self forKeyPath:@"image"];
+            [_sourceData removeObserver:self forKeyPath:@"snapshot"];
+        }
+        if (sourceData) {
+            [sourceData addObserver:self forKeyPath:@"image" options:NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld context:nil];
+            [sourceData addObserver:self forKeyPath:@"snapshot" options:NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld context:nil];
+        }
+        _sourceData = sourceData;
+        _invalidated = YES;
     }
-}*/
+}
 
-/*- (void) setInitialData:(RNVisualCloneData*)data contentType:(MMContentType)contentType
-{
-    _data = data;
-    _options = data.options;
-    _contentType = contentType;
-    
-    if (_options & MMOptionScene) {
-        self.layer.masksToBounds = YES; // overflow = 'hidden'
+- (void)setContentType:(RNVisualCloneContentType)contentType {
+    if (_contentType != contentType) {
+        _contentType = contentType;
+        _invalidated = YES;
     }
-    
-    if ((contentType == MMContentTypeSnapshot) && (_options & MMOptionVisible)) {
-        _snapshot = [data.snapshot snapshotViewAfterScreenUpdates:NO];
-        _snapshot.frame = CGRectMake(0, 0, data.layout.size.width, data.layout.size.height);
-        [self addSubview:_snapshot];
-    }
-    
-    [super reactSetFrame:_data.layout];
-    [self.layer setNeedsDisplay];
-}*/
+}
 
 - (void)setBlurRadius:(CGFloat)blurRadius
 {
     blurRadius = (blurRadius <=__FLT_EPSILON__) ? 0 : blurRadius;
+    if (blurRadius != _blurRadius) {
+        _blurRadius = blurRadius;
+        _invalidated = YES;
+    }
+    
+    /*blurRadius = (blurRadius <=__FLT_EPSILON__) ? 0 : blurRadius;
     if (blurRadius != _blurRadius) {
         _blurRadius = blurRadius;
         // DebugLog(@"[RNVisualClone] setBlurRadius: %f", blurRadius);
@@ -116,29 +108,68 @@
             [_blurEffectView removeFromSuperview];
             _blurEffectView = nil;
         }
-    }
+    }*/
     
     // image = RCTBlurredImageWithRadius(image, 4.0f);
 }
 
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
+{
+    if ([keyPath isEqualToString:@"image"] || [keyPath isEqualToString:@"snapshot"]) {
+        _invalidated = YES;
+        [self updateContent];
+    }
+}
+
 - (void)didSetProps:(NSArray<NSString *> *)changedProps
 {
-    /*if ((_data == nil) && (_sourceView != nil)) {
-        _data = [_dataManager acquire:_sourceView];
+    if (!_invalidated) return;
+}
+
+- (void)updateContent {
+    _invalidated = NO;
+    
+    UIImage* image = _image;
+    UIView* snapshot = _snapshot;
+    if (_sourceData != nil) {
+        switch (_contentType) {
+            case RNVisualCloneContentTypeSnapshot:
+                image = nil;
+                snapshot = [_sourceData snapshot];
+                break;
+            case RNVisualCloneContentTypeImage:
+                image = [_sourceData image];
+                snapshot = nil;
+                break;
+        }
+    }
+    else {
+        image = nil;
+        snapshot = nil;
     }
     
-    if ((_contentType == RNVisualCloneContentTypeSnapshot) && (_data != nil) && (_snapshot == nil)) {
-        _snapshot = [_data.snapshot snapshotViewAfterScreenUpdates:NO];
-        //_snapshot.frame = CGRectMake(0, 0, self.frame.size.width, self.frame.size.height);
-        _snapshot.frame = self.bounds;
-        _snapshot.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-        [self addSubview:_snapshot];
-    }
-    else if ((_snapshot != nil) && ((_contentType != RNVisualCloneContentTypeSnapshot))) {
-        [_snapshot removeFromSuperview];
-        _snapshot = nil;
+    // Update image. The image is shown by setting the image to
+    // the layer.content prop in `displayLayer`
+    if (image != _image) {
+        _image = image;
+        [self.layer setNeedsDisplay];
     }
     
+    // Update snapshot
+    if (snapshot != _snapshot) {
+        if (snapshot != nil) {
+            snapshot.frame = self.bounds;
+            snapshot.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+            [self addSubview:snapshot];
+        }
+        if (_snapshot != nil) {
+            [_snapshot removeFromSuperview];
+        }
+        _snapshot = snapshot;
+        DebugLog(@"Number of subviews: %ld", self.subviews.count);
+    }
+    
+    /*
     if (_snapshot) {
         if (_snapshot.autoresizingMask != (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight)) {
             _snapshot.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;

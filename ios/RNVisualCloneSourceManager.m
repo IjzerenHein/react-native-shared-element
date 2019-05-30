@@ -32,6 +32,10 @@ RCT_REMAP_METHOD(measure,
                  rejecter:(RCTPromiseRejectBlock)reject)
 {
     // TODO
+    // Don't remove this method. Because it exists, it allows the
+    // JavaScript code to detect this module through `NativeModules`
+    // and we can therefore dynamically check whether the native-code
+    // is installed.
 }
 
 /*RCT_REMAP_METHOD(init,

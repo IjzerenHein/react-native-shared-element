@@ -8,12 +8,15 @@
 
 #import <React/RCTView.h>
 #import <UIKit/UIKit.h>
+#import "RNVisualCloneData.h"
 
 @interface RNVisualCloneSource : RCTView
 
 @property (nonatomic, assign) BOOL autoHide;
 
 - (instancetype)init;
+
+- (RNVisualCloneData*) getData;
 
 @end
 

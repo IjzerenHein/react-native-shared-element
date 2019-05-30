@@ -4,14 +4,30 @@ import PropTypes from "prop-types";
 
 export class VisualClone extends Component {
   static propTypes = {
-    source: PropTypes.any,
-    //options: PropTypes.number.isRequired,
-    // contentType: PropTypes.number.isRequired,
     style: PropTypes.any,
+    source: PropTypes.any,
+    contentType: PropTypes.oneOf(["snapshot", "image"]),
     blurRadius: PropTypes.number
   };
 
+  static defaultProps = {
+    contentType: "snapshot"
+  };
+
   static isAvailable = NativeModules.RNVisualSource ? true : false;
+
+  static parseContentType(contentType) {
+    switch (contentType) {
+      case "snapshot":
+        return 0;
+      case "image":
+        return 1;
+      default:
+        throw new Error(
+          `Invalid VisualClone content-type specified: ${contentType}`
+        );
+    }
+  }
 
   constructor(props) {
     super(props);
@@ -23,12 +39,12 @@ export class VisualClone extends Component {
   }
 
   render() {
-    const { source, ...otherProps } = this.props;
-    const nodeHandle = source ? source.nodeHandle : undefined;
-    console.log("VisualClone.render, source:", nodeHandle);
+    const { source, contentType, ...otherProps } = this.props;
+    // console.log("VisualClone.render, source:", nodeHandle);
     return (
       <RNVisualClone
         source={source ? source.nodeHandle : undefined}
+        contentType={VisualClone.parseContentType(contentType)}
         {...otherProps}
       />
     );

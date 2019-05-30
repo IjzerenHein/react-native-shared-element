@@ -2,32 +2,26 @@
 //  RNVisualClone.h
 //  react-native-visual-clone
 //
-//  Created by Hein Rutjes on 16/01/2019.
-//
 
 #ifndef RNVisualClone_h
 #define RNVisualClone_h
 
 #import <React/RCTView.h>
 #import <UIKit/UIKit.h>
-#import "RNVisualCloneDataManager.h"
+#import "RNVisualCloneData.h"
 
 typedef NS_ENUM(NSInteger, RNVisualCloneContentType) {
-    RNVisualCloneContentTypeChildren = 0,
-    RNVisualCloneContentTypeSnapshot = 1,
-    RNVisualCloneContentTypeRawImage = 2
+    RNVisualCloneContentTypeSnapshot = 0,
+    RNVisualCloneContentTypeImage = 1
 };
-
 
 @interface RNVisualClone : RCTView
 
-@property (nonatomic, assign) NSNumber* source;
+@property (nonatomic, strong) RNVisualCloneData* sourceData;
 @property (nonatomic, assign) RNVisualCloneContentType contentType;
 @property (nonatomic, assign) CGFloat blurRadius;
 
-- (instancetype)initWithDataManager:(RNVisualCloneDataManager*)dataManager;
-
-// - (void) setInitialData:(RNVisualCloneData*)data contentType:(MMContentType)contentType;
+- (instancetype)init;
 
 @end
 

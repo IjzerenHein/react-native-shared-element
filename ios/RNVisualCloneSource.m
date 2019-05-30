@@ -13,33 +13,38 @@
 #define DebugLog(...) (void)0
 #endif
 
-
 @implementation RNVisualCloneSource
 {
-    //RNVisualCloneData* _data;
-    //UIView* _snapshot;
+    RNVisualCloneData* _data;
 }
 
-@synthesize autoHide = _autoHide;
+@synthesize autoHide = _autoHide; // TODO
 
 - (instancetype)init
 {
     if ((self = [super init])) {
-        //_dataManager = dataManager;
-        //_data = nil;
-        //_contentType = RNVisualCloneContentTypeChildren;
-        //_snapshot = nil;
-        // self.layer.masksToBounds = YES; // overflow = 'hidden'
+        _data = [[RNVisualCloneData alloc]init];
     }
     
     return self;
 }
 
-
-/*
-- (void)didSetProps:(NSArray<NSString *> *)changedProps
+- (void)dealloc
 {
-    //
-}*/
+    _data.view = nil;
+}
+
+- (RNVisualCloneData*) getData
+{
+    return _data;
+}
+
+- (void)layoutSubviews
+{
+    _data.view = self.subviews.count ? self.subviews[0] : nil;
+    _data.size = self.frame.size;
+    
+    [super layoutSubviews];
+}
 
 @end
