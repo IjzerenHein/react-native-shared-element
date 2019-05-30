@@ -26,8 +26,7 @@
     UIVisualEffectView* _blurEffectView;
 }
 
-@synthesize id = _id;
-@synthesize options = _options;
+@synthesize source = _source;
 @synthesize contentType = _contentType;
 
 - (instancetype)initWithDataManager:(RNVisualCloneDataManager*)dataManager
@@ -35,8 +34,7 @@
     if ((self = [super init])) {
         _dataManager = dataManager;
         _data = nil;
-        _options = 0;
-        _contentType = MMContentTypeChildren;
+        _contentType = RNVisualCloneContentTypeChildren;
         _snapshot = nil;
         // self.layer.masksToBounds = YES; // overflow = 'hidden'
     }
@@ -58,13 +56,12 @@
     
     if (_data == nil) return;
     
-    if (_options & MMOptionVisible) {
-        if (_contentType == MMContentTypeRawImage) {
-            self.layer.contents =  _data.rawImage ? (id)_data.rawImage.CGImage : nil;
-        }
+    if (_contentType == RNVisualCloneContentTypeRawImage) {
+        self.layer.contents =  _data.image ? (id)_data.image.CGImage : nil;
     }
 }
 
+/*
 - (void) reactSetFrame:(CGRect)frame
 {
     // This ensures that the initial clone is visible before it has
@@ -72,9 +69,9 @@
     if (frame.size.width * frame.size.height) {
         [super reactSetFrame:frame];
     }
-}
+}*/
 
-- (void) setInitialData:(RNVisualCloneData*)data contentType:(MMContentType)contentType
+/*- (void) setInitialData:(RNVisualCloneData*)data contentType:(MMContentType)contentType
 {
     _data = data;
     _options = data.options;
@@ -92,7 +89,7 @@
     
     [super reactSetFrame:_data.layout];
     [self.layer setNeedsDisplay];
-}
+}*/
 
 - (void)setBlurRadius:(CGFloat)blurRadius
 {
@@ -126,19 +123,18 @@
 
 - (void)didSetProps:(NSArray<NSString *> *)changedProps
 {
-    if ((_data == nil) && (_id != nil)) {
-        NSString* key = [RNVisualCloneData keyForSharedId:_id options:_options];
-        _data = [_dataManager acquire:key];
+    /*if ((_data == nil) && (_sourceView != nil)) {
+        _data = [_dataManager acquire:_sourceView];
     }
     
-    if ((_contentType == MMContentTypeSnapshot) && (_options & MMOptionVisible) && (_data != nil) && (_snapshot == nil)) {
+    if ((_contentType == RNVisualCloneContentTypeSnapshot) && (_data != nil) && (_snapshot == nil)) {
         _snapshot = [_data.snapshot snapshotViewAfterScreenUpdates:NO];
         //_snapshot.frame = CGRectMake(0, 0, self.frame.size.width, self.frame.size.height);
         _snapshot.frame = self.bounds;
         _snapshot.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
         [self addSubview:_snapshot];
     }
-    else if ((_snapshot != nil) && ((_contentType != MMContentTypeSnapshot) || ((_options & MMOptionVisible) == 0))) {
+    else if ((_snapshot != nil) && ((_contentType != RNVisualCloneContentTypeSnapshot))) {
         [_snapshot removeFromSuperview];
         _snapshot = nil;
     }
@@ -149,7 +145,7 @@
         }
     }
     
-    [self.layer setNeedsDisplay];
+    [self.layer setNeedsDisplay];*/
 }
 
 @end

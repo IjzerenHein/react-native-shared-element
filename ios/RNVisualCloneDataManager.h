@@ -14,7 +14,7 @@
 
 - (instancetype)init;
 
-- (RNVisualCloneData*) acquire:(NSString*) key;
+- (RNVisualCloneData*) acquire:(NSNumber*) sourceView;
 - (long) release:(RNVisualCloneData*) cache;
 - (void) put:(RNVisualCloneData*) cache;
 

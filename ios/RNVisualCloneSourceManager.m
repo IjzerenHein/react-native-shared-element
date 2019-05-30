@@ -1,36 +1,22 @@
 //
-//  RNVisualCloneManager.m
+//  RNVisualCloneSourceManager.m
 //  react-native-visual-clone
-//
-//  Created by Hein Rutjes on 16/01/2019.
 //
 
 #import <React/RCTBridge.h>
 #import <React/RCTUIManager.h>
 #import <React/RCTShadowView.h>
 
-#import "RNVisualCloneManager.h"
-#import "RNVisualClone.h"
-#import "RNVisualCloneDataManager.h"
+#import "RNVisualCloneSourceManager.h"
+#import "RNVisualCloneSource.h"
 
-@implementation RNVisualCloneManager
-{
-    RNVisualCloneDataManager* _dataManager;
-}
+@implementation RNVisualCloneSourceManager
 
-RCT_EXPORT_MODULE(RNVisualClone);
-
-- (instancetype) init
-{
-    if ((self = [super init])) {
-        _dataManager = [[RNVisualCloneDataManager alloc]init];
-    }
-    return self;
-}
+RCT_EXPORT_MODULE(RNVisualSource);
 
 - (UIView *)view
 {
-    return [[RNVisualClone alloc] initWithDataManager:_dataManager];
+    return [[RNVisualCloneSource alloc] init];
 }
 
 - (dispatch_queue_t)methodQueue
@@ -38,15 +24,14 @@ RCT_EXPORT_MODULE(RNVisualClone);
     return self.bridge.uiManager.methodQueue;
 }
 
-// RCT_EXPORT_VIEW_PROPERTY(source, NSInteger);
-RCT_EXPORT_VIEW_PROPERTY(options, NSInteger);
-RCT_EXPORT_VIEW_PROPERTY(contentType, NSInteger);
-RCT_EXPORT_VIEW_PROPERTY(blurRadius, CGFloat);
+RCT_EXPORT_VIEW_PROPERTY(autoHide, BOOL);
 
-RCT_CUSTOM_VIEW_PROPERTY(source, NSNumber, RNVisualClone)
+RCT_REMAP_METHOD(measure,
+                 reactTag:(nonnull NSNumber *)reactTag
+                 resolver:(RCTPromiseResolveBlock)resolve
+                 rejecter:(RCTPromiseRejectBlock)reject)
 {
-    NSLog(@"source: %@", json);
-    /*[view setRegion:json ? [RCTConvert MKCoordinateRegion:json] : defaultView.region animated:YES];*/
+    // TODO
 }
 
 /*RCT_REMAP_METHOD(init,

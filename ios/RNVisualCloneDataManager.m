@@ -19,11 +19,11 @@
   return self;
 }
 
-- (RNVisualCloneData*) acquire:(NSString*) key
+- (RNVisualCloneData*) acquire:(NSNumber*) sourceView
 {
   @synchronized(_items)
   {
-    RNVisualCloneData* item = [_items objectForKey:key];
+    RNVisualCloneData* item = [_items objectForKey:sourceView];
     if (item != nil) {
       item.refCount = item.refCount + 1;
     }
@@ -37,7 +37,7 @@
   {
     item.refCount = item.refCount - 1;
     if (item.refCount == 0) {
-      [_items removeObjectForKey:item.key];
+      [_items removeObjectForKey:item.sourceView];
     }
     return item.refCount;
   }
@@ -47,7 +47,7 @@
 {
   @synchronized(_items)
   {
-    [_items setObject:item forKey:item.key];
+    [_items setObject:item forKey:item.sourceView];
   }
 }
 

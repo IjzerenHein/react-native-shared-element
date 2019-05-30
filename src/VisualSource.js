@@ -1,37 +1,49 @@
 import React, { Component } from "react";
-import { Animated, requireNativeComponent, NativeModules } from "react-native";
+import {
+  Animated,
+  requireNativeComponent,
+  NativeModules,
+  findNodeHandle
+} from "react-native";
 import PropTypes from "prop-types";
 
-export class VisualClone extends Component {
+export class VisualSource extends Component {
   static propTypes = {
-    source: PropTypes.any,
-    //options: PropTypes.number.isRequired,
-    // contentType: PropTypes.number.isRequired,
+    children: PropTypes.any,
     style: PropTypes.any,
-    blurRadius: PropTypes.number
+    autoHide: PropTypes.bool
   };
 
   static isAvailable = NativeModules.RNVisualSource ? true : false;
 
   constructor(props) {
     super(props);
-    if (!VisualClone.isAvailable) {
+    if (!VisualSource.isAvailable) {
       throw new Error(
-        "RNVisualClone is not available, did you forget to use `react-native link react-native-visual-clone`?"
+        "RNVisualSource is not available, did you forget to use `react-native link react-native-visual-clone`?"
       );
     }
   }
 
   render() {
-    const { source, ...otherProps } = this.props;
-    const nodeHandle = source ? source.nodeHandle : undefined;
-    console.log("VisualClone.render, source:", nodeHandle);
+    const { children, ...otherProps } = this.props;
+    const child = React.Children.only(children);
+    console.log("VisualSource.render");
     return (
-      <RNVisualClone
-        source={source ? source.nodeHandle : undefined}
-        {...otherProps}
-      />
+      <RNVisualSource ref={this.onSetRef} {...otherProps}>
+        {child}
+      </RNVisualSource>
     );
+  }
+
+  onSetRef = ref => {
+    this._ref = ref;
+    this._nodeHandle = ref ? findNodeHandle(ref) : undefined;
+    console.log("VisualSource.onSetRef: ", ref, this._nodeHandle);
+  };
+
+  get nodeHandle() {
+    return this._nodeHandle;
   }
 
   /*async _init() {
@@ -96,17 +108,17 @@ export class VisualClone extends Component {
   }*/
 }
 
-const RNVisualClone = (function() {
+const RNVisualSource = (function() {
   try {
-    const RNVisualClone = VisualClone.isAvailable
-      ? requireNativeComponent("RNVisualClone", VisualClone)
+    const RNVisualSource = VisualSource.isAvailable
+      ? requireNativeComponent("RNVisualSource", VisualSource)
       : undefined;
-    const AnimatedRNVisualClone = RNVisualClone
-      ? Animated.createAnimatedComponent(RNVisualClone)
+    const AnimatedRNVisualSource = RNVisualSource
+      ? Animated.createAnimatedComponent(RNVisualSource)
       : undefined;
-    return AnimatedRNVisualClone;
+    return AnimatedRNVisualSource;
   } catch (err) {
-    VisualClone.isAvailable = false;
+    VisualSource.isAvailable = false;
     // eslint-disable-next-line
     console.error(
       `${
