@@ -41,10 +41,26 @@
 
 - (void)layoutSubviews
 {
+    [super layoutSubviews];
+    
+    //NSLog(@"layoutSubviews");
+    
     _data.view = self.subviews.count ? self.subviews[0] : nil;
     _data.size = self.frame.size;
+}
+
+- (void)displayLayer:(CALayer *)layer
+{
+    [super displayLayer:layer];
     
-    [super layoutSubviews];
+    //NSLog(@"displayLayer");
+}
+
+- (void) reactSetFrame:(CGRect)frame
+{
+    [super reactSetFrame:frame];
+    
+    //NSLog(@"reactSetFrame");
 }
 
 @end

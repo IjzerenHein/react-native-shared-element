@@ -9,13 +9,15 @@
 #import <React/RCTView.h>
 #import <UIKit/UIKit.h>
 #import "RNVisualCloneData.h"
+#import "RNVisualCloneDelegate.h"
 
 typedef NS_ENUM(NSInteger, RNVisualCloneContentType) {
     RNVisualCloneContentTypeSnapshot = 0,
-    RNVisualCloneContentTypeImage = 1
+    RNVisualCloneContentTypeImage = 1,
+    RNVisualCloneContentTypeRawImage = 2
 };
 
-@interface RNVisualClone : RCTView
+@interface RNVisualClone : RCTView <RNVisualCloneDelegate>
 
 @property (nonatomic, strong) RNVisualCloneData* sourceData;
 @property (nonatomic, assign) RNVisualCloneContentType contentType;

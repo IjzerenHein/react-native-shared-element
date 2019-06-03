@@ -6,7 +6,7 @@ export class VisualClone extends Component {
   static propTypes = {
     style: PropTypes.any,
     source: PropTypes.any,
-    contentType: PropTypes.oneOf(["snapshot", "image"]),
+    contentType: PropTypes.oneOf(["snapshot", "image", "rawImage"]),
     blurRadius: PropTypes.number
   };
 
@@ -22,6 +22,8 @@ export class VisualClone extends Component {
         return 0;
       case "image":
         return 1;
+      case "rawImage":
+        return 2;
       default:
         throw new Error(
           `Invalid VisualClone content-type specified: ${contentType}`

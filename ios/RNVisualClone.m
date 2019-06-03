@@ -40,31 +40,31 @@
 
 - (void)dealloc
 {
-    if (_sourceData) {
+    /*if (_sourceData) {
         [_sourceData removeObserver:self forKeyPath:@"image"];
         [_sourceData removeObserver:self forKeyPath:@"snapshot"];
-    }
+    }*/
 }
 
 - (void)displayLayer:(CALayer *)layer
 {
     [super displayLayer:layer];
     
-    if (_contentType == RNVisualCloneContentTypeImage) {
+    if ((_contentType == RNVisualCloneContentTypeImage) || (_contentType == RNVisualCloneContentTypeRawImage)) {
         self.layer.contents =  _image ? (id)_image.CGImage : nil;
     }
 }
 
 - (void)setSourceData:(RNVisualCloneData *)sourceData {
     if (_sourceData != sourceData) {
-        if (_sourceData) {
+        /*if (_sourceData) {
             [_sourceData removeObserver:self forKeyPath:@"image"];
             [_sourceData removeObserver:self forKeyPath:@"snapshot"];
         }
         if (sourceData) {
             [sourceData addObserver:self forKeyPath:@"image" options:NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld context:nil];
             [sourceData addObserver:self forKeyPath:@"snapshot" options:NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld context:nil];
-        }
+        }*/
         _sourceData = sourceData;
         _invalidated = YES;
     }
@@ -113,50 +113,59 @@
     // image = RCTBlurredImageWithRadius(image, 4.0f);
 }
 
+/*
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
 {
     if ([keyPath isEqualToString:@"image"] || [keyPath isEqualToString:@"snapshot"]) {
         _invalidated = YES;
         [self updateContent];
     }
-}
+}*/
 
 - (void)didSetProps:(NSArray<NSString *> *)changedProps
 {
     if (!_invalidated) return;
+    [self updateContent];
 }
 
 - (void)updateContent {
     _invalidated = NO;
     
-    UIImage* image = _image;
-    UIView* snapshot = _snapshot;
     if (_sourceData != nil) {
         switch (_contentType) {
             case RNVisualCloneContentTypeSnapshot:
-                image = nil;
-                snapshot = [_sourceData snapshot];
+                [_sourceData requestViewSnapshot:self];
                 break;
             case RNVisualCloneContentTypeImage:
-                image = [_sourceData image];
-                snapshot = nil;
+                [_sourceData requestImageSnapshot:self];
+                break;
+            case RNVisualCloneContentTypeRawImage:
+                [_sourceData requestRawImageSnapshot:self];
                 break;
         }
     }
-    else {
-        image = nil;
-        snapshot = nil;
-    }
-    
+}
+
+- (void) imageSnapshotComplete:(UIImage*) image
+{
     // Update image. The image is shown by setting the image to
     // the layer.content prop in `displayLayer`
-    if (image != _image) {
-        _image = image;
-        [self.layer setNeedsDisplay];
-    }
-    
+    _image = image;
+    [self.layer setNeedsDisplay];
+}
+
+- (void) rawImageSnapshotComplete:(UIImage*) image
+{
+    // Update image. The image is shown by setting the image to
+    // the layer.content prop in `displayLayer`
+    _image = image;
+    [self.layer setNeedsDisplay];
+}
+
+- (void) viewSnapshotComplete:(UIView*) view
+{
     // Update snapshot
-    if (snapshot != _snapshot) {
+    /*if (snapshot != _snapshot) {
         if (snapshot != nil) {
             snapshot.frame = self.bounds;
             snapshot.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
@@ -167,16 +176,14 @@
         }
         _snapshot = snapshot;
         DebugLog(@"Number of subviews: %ld", self.subviews.count);
-    }
+    }*/
     
     /*
-    if (_snapshot) {
-        if (_snapshot.autoresizingMask != (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight)) {
-            _snapshot.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-        }
-    }
-    
-    [self.layer setNeedsDisplay];*/
+     if (_snapshot) {
+     if (_snapshot.autoresizingMask != (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight)) {
+     _snapshot.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+     }
+     }*/
 }
 
 @end

@@ -9,7 +9,6 @@
 
 #import "RNVisualCloneManager.h"
 #import "RNVisualClone.h"
-#import "RNVisualCloneDataManager.h"
 #import "RNVisualCloneSource.h"
 
 @implementation RNVisualCloneManager
@@ -31,7 +30,6 @@ RCT_EXPORT_VIEW_PROPERTY(blurRadius, CGFloat);
 
 RCT_CUSTOM_VIEW_PROPERTY(source, NSNumber, RNVisualClone)
 {
-    NSLog(@"source: %@", json);
     if (json) {
         RNVisualCloneSource *sourceView = (RNVisualCloneSource*) [self.bridge.uiManager viewForReactTag:json];
         if (![sourceView isKindOfClass:[RNVisualCloneSource class]]) {
@@ -42,17 +40,6 @@ RCT_CUSTOM_VIEW_PROPERTY(source, NSNumber, RNVisualClone)
     else {
         [view setSourceData:nil];
     }
-    
-    /*if (json) {
-        [self.bridge.uiManager prependUIBlock:^(__unused RCTUIManager *uiManager, NSDictionary<NSNumber *, UIView *> *viewRegistry) {
-            NSLog(@"[RNVisualClone] Prepend UI block complete for view %@", view);
-            RNVisualCloneSource *sourceView = (RNVisualCloneSource*) viewRegistry[reactTag];
-            if (![sourceView isKindOfClass:[RNVisualCloneSource class]]) {
-                return RCTLogError(@"[RNVisualClone] Invalid view returned from registry, expecting RNVisualCloneSource, got: %@", sourceView);
-            }
-            //[view setRegion:json ? [RCTConvert MKCoordinateRegion:json] : defaultView.region animated:YES];
-        }];
-    }*/
 }
 
 /*RCT_REMAP_METHOD(init,
