@@ -42,6 +42,24 @@ RCT_CUSTOM_VIEW_PROPERTY(source, NSNumber, RNVisualClone)
     }
 }
 
+RCT_REMAP_METHOD(refresh,
+                 config:(NSDictionary *)config
+                 reactTag:(nonnull NSNumber *)reactTag
+                 resolver:(RCTPromiseResolveBlock)resolve
+                 rejecter:(RCTPromiseRejectBlock)reject)
+{
+    [self.bridge.uiManager prependUIBlock:^(__unused RCTUIManager *uiManager, NSDictionary<NSNumber *, UIView *> *viewRegistry) {
+        NSLog(@"YEUJ");
+        RNVisualClone *view = (RNVisualClone*) viewRegistry[reactTag];
+        if (![view isKindOfClass:[RNVisualClone class]]) {
+            return RCTLogError(@"[RNVisualClone] Invalid view returned from registry, expecting RNVisualClone, got: %@", view);
+        }
+        [view refresh];
+        resolve(nil);
+    }];
+}
+
+
 /*RCT_REMAP_METHOD(init,
                  config:(NSDictionary *)config
                  reactTag:(nonnull NSNumber *)reactTag

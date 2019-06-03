@@ -1,5 +1,10 @@
 import React, { Component } from "react";
-import { Animated, requireNativeComponent, NativeModules } from "react-native";
+import {
+  Animated,
+  requireNativeComponent,
+  NativeModules,
+  findNodeHandle
+} from "react-native";
 import PropTypes from "prop-types";
 
 export class VisualClone extends Component {
@@ -14,7 +19,7 @@ export class VisualClone extends Component {
     contentType: "snapshot"
   };
 
-  static isAvailable = NativeModules.RNVisualSource ? true : false;
+  static isAvailable = NativeModules.RNVisualClone ? true : false;
 
   static parseContentType(contentType) {
     switch (contentType) {
@@ -31,6 +36,8 @@ export class VisualClone extends Component {
     }
   }
 
+  _ref = undefined;
+
   constructor(props) {
     super(props);
     if (!VisualClone.isAvailable) {
@@ -45,11 +52,20 @@ export class VisualClone extends Component {
     // console.log("VisualClone.render, source:", nodeHandle);
     return (
       <RNVisualClone
+        ref={this._setRef}
         source={source ? source.nodeHandle : undefined}
         contentType={VisualClone.parseContentType(contentType)}
         {...otherProps}
       />
     );
+  }
+
+  _setRef = ref => {
+    this._ref = ref;
+  };
+
+  refresh() {
+    return NativeModules.RNVisualClone.refresh({}, findNodeHandle(this._ref));
   }
 
   /*async _init() {

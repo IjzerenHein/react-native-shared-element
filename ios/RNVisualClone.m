@@ -55,6 +55,12 @@
     }
 }
 
+- (void)refresh
+{
+    _invalidated = YES;
+    [self updateContent];
+}
+
 - (void)setSourceData:(RNVisualCloneData *)sourceData {
     if (_sourceData != sourceData) {
         /*if (_sourceData) {
@@ -124,11 +130,11 @@
 
 - (void)didSetProps:(NSArray<NSString *> *)changedProps
 {
-    if (!_invalidated) return;
     [self updateContent];
 }
 
 - (void)updateContent {
+    if (!_invalidated) return;
     _invalidated = NO;
     
     if (_sourceData != nil) {

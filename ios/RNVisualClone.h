@@ -24,6 +24,7 @@ typedef NS_ENUM(NSInteger, RNVisualCloneContentType) {
 @property (nonatomic, assign) CGFloat blurRadius;
 
 - (instancetype)init;
+- (void)refresh;
 
 @end
 
