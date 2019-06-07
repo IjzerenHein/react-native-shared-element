@@ -3,64 +3,201 @@
 //  react-native-visual-clone
 //
 
-#import <Foundation/Foundation.h>
-#import <React/UIView+React.h>
+#import <UIKit/UIKit.h>
 #import "RNVisualCloneSource.h"
 
-#ifdef DEBUG
-#define DebugLog(...) NSLog(__VA_ARGS__)
-#else
-#define DebugLog(...) (void)0
-#endif
-
 @implementation RNVisualCloneSource
+
+@synthesize reactTag = _reactTag;
+@synthesize view = _view;
+@synthesize size = _size;
+
+long _refCount;
+
+NSMutableArray* _snapshotImageRequests;
+UIImage* _snapshotImageCache;
+
+//NSMutableArray* _rawImageDelegates;
+//BOOL _rawImageSnapshotRequested;
+
+- (instancetype)init:(NSNumber *)reactTag view:(UIView*) view
 {
-    RNVisualCloneData* _data;
+  _reactTag = reactTag;
+  _view = view;
+  _refCount = 1;
+  [self addObservers];
+  return self;
 }
 
-@synthesize autoHide = _autoHide; // TODO
+- (void) setRefCount:(long)refCount {
+    _refCount = refCount;
+    if (_refCount == 0) {
+        [self removeObservers];
+    }
+}
 
-- (instancetype)init
+- (long) refCount {
+    return _refCount;
+}
+
+- (void) addObservers
 {
-    if ((self = [super init])) {
-        _data = [[RNVisualCloneData alloc]init];
+    if (_view != nil) {
+        [_view addObserver:self forKeyPath:@"bounds" options:NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld context:nil];
     }
     
-    return self;
+    if ((_view != nil) && [_view isKindOfClass:[UIImageView class]]) {
+        UIImageView* imageView = (UIImageView*) _view;
+        [imageView addObserver:self forKeyPath:@"image" options:NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld context:nil];
+    }
 }
 
-- (void)dealloc
+- (void) removeObservers
 {
-    _data.view = nil;
-}
-
-- (RNVisualCloneData*) getData
-{
-    return _data;
-}
-
-- (void)layoutSubviews
-{
-    [super layoutSubviews];
+    if (_view != nil) {
+        [_view removeObserver:self forKeyPath:@"bounds"];
+    }
     
-    //NSLog(@"layoutSubviews");
-    
-    _data.view = self.subviews.count ? self.subviews[0] : nil;
-    _data.size = self.frame.size;
+    if ((_view != nil) &&[_view isKindOfClass:[UIImageView class]]) {
+        UIImageView* imageView = (UIImageView*) _view;
+        [imageView removeObserver:self forKeyPath:@"image"];
+    }
 }
 
-- (void)displayLayer:(CALayer *)layer
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
 {
-    [super displayLayer:layer];
-    
-    //NSLog(@"displayLayer");
+    if ([keyPath isEqualToString:@"image"]) {
+        NSLog(@"Invalidated because of Image change");
+        [self invalidate];
+    }
+    if ([keyPath isEqualToString:@"bounds"]) {
+        NSLog(@"Invalidated because of Bounds change");
+        [self invalidate];
+    }
 }
 
-- (void) reactSetFrame:(CGRect)frame
+- (void) invalidate
 {
-    [super reactSetFrame:frame];
-    
-    //NSLog(@"reactSetFrame");
+    [self updateSnapshotImage];
+    //[self updateRawImage];
 }
+
+/*
+- (UIView*) snapshot
+{
+    if (_cachedSnapshot != nil) return _cachedSnapshot;
+    if (_view == nil) return nil;
+    if (!_size.width || !_size.height) return nil;
+    
+    if ([_view isKindOfClass:[UIImageView class]]) {
+        UIImageView* imageView = (UIImageView*) _view;
+        UIImage* image = imageView.image;
+        if (image == nil) return nil;
+    }
+    
+    UIView* snapshot = [_view snapshotViewAfterScreenUpdates:YES];
+    _cachedSnapshot = snapshot;
+    return snapshot;
+}*/
+
+
+
+- (void) requestSnapshotImage:(__weak id <RNVisualCloneDelegate>) delegate useCache:(BOOL)useCache
+{
+    if (useCache && _snapshotImageCache != nil) {
+        [delegate snapshotImageComplete:_snapshotImageCache];
+        return;
+    }
+        
+    if (_snapshotImageRequests == nil) _snapshotImageRequests = [[NSMutableArray alloc]init];
+    [_snapshotImageRequests addObject:delegate];
+
+    [self updateSnapshotImage];
+}
+
+
+- (void) updateSnapshotImage
+{
+    if (_view == nil) return;
+    if (_snapshotImageRequests == nil) return;
+    
+    CGRect bounds = _view.bounds;
+    if (!bounds.size.width || !bounds.size.height) {
+        return;
+    }
+    
+    UIImage* image;
+    if ([_view isKindOfClass:[UIImageView class]]) {
+        UIImageView* imageView = (UIImageView*) _view;
+        image = imageView.image;
+        if (image == nil) return;
+     }
+    
+    NSLog(@"drawViewHierarchyInRect: bounds: %@", NSStringFromCGRect(bounds));
+    UIGraphicsBeginImageContextWithOptions(bounds.size, _view.opaque, 0.0f);
+    BOOL res = [_view drawViewHierarchyInRect:bounds afterScreenUpdates:YES];
+    if (!res) {
+        res = [_view drawViewHierarchyInRect:bounds afterScreenUpdates:NO];
+    }
+    image = res ? UIGraphicsGetImageFromCurrentImageContext() : nil;
+    UIGraphicsEndImageContext();
+    NSLog(@"drawViewHierarchyInRect: RESULT: %ld", res);
+    if (image == nil) return;
+    
+    NSArray* delegates = _snapshotImageRequests;
+    _snapshotImageRequests = nil;
+    for (__weak id <RNVisualCloneDelegate> delegate in delegates) {
+        if (delegate != nil) {
+            [delegate snapshotImageComplete:image];
+        }
+    }
+}
+
+/*
+- (void) updateRawImageSnapshot
+{
+    if (!_rawImageSnapshotRequested) return;
+    if (_view == nil) return;
+    if (!_size.width || !_size.height) return;
+    
+    CGRect bounds = _view.bounds;
+    if (!bounds.size.width || !bounds.size.height) {
+        return;
+    }
+    
+    UIImage* image;
+    if ([_view isKindOfClass:[UIImageView class]]) {
+        UIImageView* imageView = (UIImageView*) _view;
+        image = imageView.image;
+        if (image == nil) return;
+    }
+    
+    _rawImageSnapshotRequested = NO;
+    NSArray* delegates = _rawImageDelegates;
+    _rawImageDelegates = nil;
+    for (__weak id <RNVisualCloneDelegate> delegate in delegates) {
+        if (delegate != nil) {
+            [delegate rawImageSnapshotComplete:image];
+        }
+    }
+}*/
+
+- (void) requestRawImage:(__weak id <RNVisualCloneDelegate>) delegate useCache:(BOOL)useCache
+{
+    /*if (_rawImageDelegates == nil) _rawImageDelegates = [[NSMutableArray alloc]init];
+    [_rawImageDelegates addObject:delegate];
+    
+    if (_rawImageDelegates.count == 1) {
+        _rawImageSnapshotRequested = YES;
+        [self updateRawImageSnapshot];
+    }*/
+}
+
+- (void) requestSnapshotView:(__weak id <RNVisualCloneDelegate>) delegate useCache:(BOOL)useCache
+{
+    
+}
+
+
 
 @end

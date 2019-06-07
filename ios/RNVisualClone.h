@@ -8,7 +8,7 @@
 
 #import <React/RCTView.h>
 #import <UIKit/UIKit.h>
-#import "RNVisualCloneData.h"
+#import "RNVisualCloneSourceManager.h"
 #import "RNVisualCloneDelegate.h"
 
 typedef NS_ENUM(NSInteger, RNVisualCloneContentType) {
@@ -19,11 +19,12 @@ typedef NS_ENUM(NSInteger, RNVisualCloneContentType) {
 
 @interface RNVisualClone : RCTView <RNVisualCloneDelegate>
 
-@property (nonatomic, strong) RNVisualCloneData* sourceData;
+//@property (nonatomic, strong) RNVisualCloneSource cloneSource;
 @property (nonatomic, assign) RNVisualCloneContentType contentType;
 @property (nonatomic, assign) CGFloat blurRadius;
 
-- (instancetype)init;
+- (instancetype)initWithSourceManager:(RNVisualCloneSourceManager*)sourceManager;
+- (void)setCloneSource:(NSNumber*)reactTag view:(UIView*)view;
 - (void)refresh;
 
 @end

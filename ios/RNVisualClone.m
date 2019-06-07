@@ -6,7 +6,6 @@
 #import <Foundation/Foundation.h>
 #import <React/UIView+React.h>
 #import "RNVisualClone.h"
-#import "RNVisualCloneBlurEffectWithAmount.h"
 
 #ifdef DEBUG
 #define DebugLog(...) NSLog(__VA_ARGS__)
@@ -16,20 +15,23 @@
 
 @implementation RNVisualClone
 {
-    BOOL _invalidated;
-    RNVisualCloneData* _sourceData;
+    RNVisualCloneSourceManager* _sourceManager;
+    RNVisualCloneSource* _cloneSource;
     RNVisualCloneContentType _contentType;
+    BOOL _invalidated;
     CGFloat _blurRadius;
     UIView* _snapshot;
     UIImage* _image;
     //UIVisualEffectView* _blurEffectView;
 }
 
-- (instancetype)init
+- (instancetype)initWithSourceManager:(RNVisualCloneSourceManager*)sourceManager
 {
     if ((self = [super init])) {
-        _invalidated = NO;
+        _sourceManager = sourceManager;
+        _cloneSource = nil;
         _contentType = RNVisualCloneContentTypeSnapshot;
+        _invalidated = NO;
         _blurRadius = 0.0f;
         //_snapshot = nil;
         // self.layer.masksToBounds = YES; // overflow = 'hidden'
@@ -40,12 +42,13 @@
 
 - (void)dealloc
 {
-    /*if (_sourceData) {
-        [_sourceData removeObserver:self forKeyPath:@"image"];
-        [_sourceData removeObserver:self forKeyPath:@"snapshot"];
-    }*/
+    if (_cloneSource != nil) {
+        [_sourceManager release:_cloneSource];
+        _cloneSource = nil;
+    }
 }
 
+/*
 - (void)displayLayer:(CALayer *)layer
 {
     [super displayLayer:layer];
@@ -53,25 +56,21 @@
     if ((_contentType == RNVisualCloneContentTypeImage) || (_contentType == RNVisualCloneContentTypeRawImage)) {
         self.layer.contents =  _image ? (id)_image.CGImage : nil;
     }
-}
+}*/
 
 - (void)refresh
 {
     _invalidated = YES;
-    [self updateContent];
+    [self updateContent:NO];
 }
 
-- (void)setSourceData:(RNVisualCloneData *)sourceData {
-    if (_sourceData != sourceData) {
-        /*if (_sourceData) {
-            [_sourceData removeObserver:self forKeyPath:@"image"];
-            [_sourceData removeObserver:self forKeyPath:@"snapshot"];
-        }
-        if (sourceData) {
-            [sourceData addObserver:self forKeyPath:@"image" options:NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld context:nil];
-            [sourceData addObserver:self forKeyPath:@"snapshot" options:NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld context:nil];
-        }*/
-        _sourceData = sourceData;
+- (void)setCloneSource:(NSNumber*)reactTag view:(UIView*)view {
+    RNVisualCloneSource* source = [_sourceManager acquire:reactTag view:view];
+    if (_cloneSource != nil) {
+        [_sourceManager release:_cloneSource];
+    }
+    if (_cloneSource != source) {
+        _cloneSource = source;
         _invalidated = YES;
     }
 }
@@ -85,38 +84,7 @@
 
 - (void)setBlurRadius:(CGFloat)blurRadius
 {
-    blurRadius = (blurRadius <=__FLT_EPSILON__) ? 0 : blurRadius;
-    if (blurRadius != _blurRadius) {
-        _blurRadius = blurRadius;
-        _invalidated = YES;
-    }
-    
-    /*blurRadius = (blurRadius <=__FLT_EPSILON__) ? 0 : blurRadius;
-    if (blurRadius != _blurRadius) {
-        _blurRadius = blurRadius;
-        // DebugLog(@"[RNVisualClone] setBlurRadius: %f", blurRadius);
-        //[self.layer setNeedsDisplay];
-        
-        if (blurRadius) {
-            RNVisualCloneBlurEffectWithAmount* blurEffect = [RNVisualCloneBlurEffectWithAmount effectWithStyle:UIBlurEffectStyleLight andBlurAmount:@(blurRadius)];
-            if (_blurEffectView == nil) {
-                _blurEffectView = [[UIVisualEffectView alloc] init];
-                _blurEffectView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-                _blurEffectView.effect = blurEffect;
-                _blurEffectView.frame = CGRectMake(0, 0, self.frame.size.width, self.frame.size.height);
-                [self addSubview:_blurEffectView];
-            }
-            else {
-                _blurEffectView.effect = blurEffect;
-            }
-        }
-        else if (_blurEffectView) {
-            [_blurEffectView removeFromSuperview];
-            _blurEffectView = nil;
-        }
-    }*/
-    
-    // image = RCTBlurredImageWithRadius(image, 4.0f);
+    // TODO
 }
 
 /*
@@ -130,29 +98,29 @@
 
 - (void)didSetProps:(NSArray<NSString *> *)changedProps
 {
-    [self updateContent];
+    [self updateContent:YES];
 }
 
-- (void)updateContent {
+- (void)updateContent:(BOOL)useCache {
     if (!_invalidated) return;
     _invalidated = NO;
     
-    if (_sourceData != nil) {
+    if (_cloneSource != nil) {
         switch (_contentType) {
             case RNVisualCloneContentTypeSnapshot:
-                [_sourceData requestViewSnapshot:self];
+                [_cloneSource requestSnapshotView:self useCache:useCache];
                 break;
             case RNVisualCloneContentTypeImage:
-                [_sourceData requestImageSnapshot:self];
+                [_cloneSource requestSnapshotImage:self useCache:useCache];
                 break;
             case RNVisualCloneContentTypeRawImage:
-                [_sourceData requestRawImageSnapshot:self];
+                [_cloneSource requestRawImage:self useCache:useCache];
                 break;
         }
     }
 }
 
-- (void) imageSnapshotComplete:(UIImage*) image
+- (void) snapshotImageComplete:(UIImage*) image
 {
     // Update image. The image is shown by setting the image to
     // the layer.content prop in `displayLayer`
@@ -160,7 +128,7 @@
     [self.layer setNeedsDisplay];
 }
 
-- (void) rawImageSnapshotComplete:(UIImage*) image
+- (void) rawImageComplete:(UIImage*) image
 {
     // Update image. The image is shown by setting the image to
     // the layer.content prop in `displayLayer`
@@ -168,7 +136,7 @@
     [self.layer setNeedsDisplay];
 }
 
-- (void) viewSnapshotComplete:(UIView*) view
+- (void) snapshotViewComplete:(UIView*) view
 {
     // Update snapshot
     /*if (snapshot != _snapshot) {

@@ -53,7 +53,7 @@ export class VisualClone extends Component {
     return (
       <RNVisualClone
         ref={this._setRef}
-        source={source ? source.nodeHandle : undefined}
+        source={source}
         contentType={VisualClone.parseContentType(contentType)}
         {...otherProps}
       />
@@ -135,10 +135,11 @@ const RNVisualClone = (function() {
     const RNVisualClone = VisualClone.isAvailable
       ? requireNativeComponent("RNVisualClone", VisualClone)
       : undefined;
-    const AnimatedRNVisualClone = RNVisualClone
+    /*const AnimatedRNVisualClone = RNVisualClone
       ? Animated.createAnimatedComponent(RNVisualClone)
       : undefined;
-    return AnimatedRNVisualClone;
+    return AnimatedRNVisualClone;*/
+    return RNVisualClone;
   } catch (err) {
     VisualClone.isAvailable = false;
     // eslint-disable-next-line
@@ -149,3 +150,7 @@ const RNVisualClone = (function() {
     );
   }
 })();
+
+export const AnimatedVisualClone = Animated.createAnimatedComponent(
+  VisualClone
+);

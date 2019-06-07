@@ -7,9 +7,9 @@
 #define RNVisualCloneDelegate_h
 
 @protocol RNVisualCloneDelegate
-- (void) imageSnapshotComplete:(UIImage*) image;
-- (void) rawImageSnapshotComplete:(UIImage*) image;
-- (void) viewSnapshotComplete:(UIView*) view;
+- (void) snapshotImageComplete:(UIImage*) image;
+- (void) rawImageComplete:(UIImage*) image;
+- (void) snapshotViewComplete:(UIView*) view;
 @end
 
 

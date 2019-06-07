@@ -1,16 +1,21 @@
 //
-//  RNVisualCloneSourceManager.h
+//  RNVisualCloneSourceManager_h.h
 //  react-native-visual-clone
 //
 
 #ifndef RNVisualCloneSourceManager_h
 #define RNVisualCloneSourceManager_h
 
-#import <React/RCTViewManager.h>
-#import <React/RCTBridgeModule.h>
+#import "RNVisualCloneSource.h"
 
-@interface RNVisualCloneSourceManager : RCTViewManager <RCTBridgeModule>
+@interface RNVisualCloneSourceManager : NSObject
+
+- (instancetype)init;
+
+- (RNVisualCloneSource*) acquire:(NSNumber*) reactTag view:(UIView*)view;
+- (long) release:(RNVisualCloneSource*) source;
 
 @end
+
 
 #endif /* RNVisualCloneSourceManager_h */

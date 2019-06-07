@@ -7,9 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		21F72D13229F12F900315C0A /* RNVisualCloneData.m in Sources */ = {isa = PBXBuildFile; fileRef = 21F72D0C229F12F900315C0A /* RNVisualCloneData.m */; };
 		21F72D14229F12F900315C0A /* RNVisualCloneManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 21F72D0D229F12F900315C0A /* RNVisualCloneManager.m */; };
-		21F72D16229F12F900315C0A /* RNVisualCloneBlurEffectWithAmount.m in Sources */ = {isa = PBXBuildFile; fileRef = 21F72D11229F12F900315C0A /* RNVisualCloneBlurEffectWithAmount.m */; };
 		21F72D5B229FD0F900315C0A /* RNVisualCloneSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 21F72D57229FD0F900315C0A /* RNVisualCloneSource.m */; };
 		21F72D5C229FD0F900315C0A /* RNVisualCloneSourceManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 21F72D59229FD0F900315C0A /* RNVisualCloneSourceManager.m */; };
 		B3E7B58A1CC2AC0600A0062D /* RNVisualClone.m in Sources */ = {isa = PBXBuildFile; fileRef = B3E7B5891CC2AC0600A0062D /* RNVisualClone.m */; };
@@ -30,11 +28,7 @@
 /* Begin PBXFileReference section */
 		134814201AA4EA6300B7C361 /* libRNVisualClone.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libRNVisualClone.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		2153FE8022A5AEA200AFFA6D /* RNVisualCloneDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RNVisualCloneDelegate.h; sourceTree = "<group>"; };
-		21F72D0C229F12F900315C0A /* RNVisualCloneData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RNVisualCloneData.m; sourceTree = "<group>"; };
 		21F72D0D229F12F900315C0A /* RNVisualCloneManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RNVisualCloneManager.m; sourceTree = "<group>"; };
-		21F72D0E229F12F900315C0A /* RNVisualCloneData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RNVisualCloneData.h; sourceTree = "<group>"; };
-		21F72D10229F12F900315C0A /* RNVisualCloneBlurEffectWithAmount.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RNVisualCloneBlurEffectWithAmount.h; sourceTree = "<group>"; };
-		21F72D11229F12F900315C0A /* RNVisualCloneBlurEffectWithAmount.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RNVisualCloneBlurEffectWithAmount.m; sourceTree = "<group>"; };
 		21F72D12229F12F900315C0A /* RNVisualCloneManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RNVisualCloneManager.h; sourceTree = "<group>"; };
 		21F72D57229FD0F900315C0A /* RNVisualCloneSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RNVisualCloneSource.m; sourceTree = "<group>"; };
 		21F72D58229FD0F900315C0A /* RNVisualCloneSourceManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RNVisualCloneSourceManager.h; sourceTree = "<group>"; };
@@ -68,17 +62,13 @@
 			children = (
 				B3E7B5881CC2AC0600A0062D /* RNVisualClone.h */,
 				B3E7B5891CC2AC0600A0062D /* RNVisualClone.m */,
+				2153FE8022A5AEA200AFFA6D /* RNVisualCloneDelegate.h */,
 				21F72D12229F12F900315C0A /* RNVisualCloneManager.h */,
 				21F72D0D229F12F900315C0A /* RNVisualCloneManager.m */,
 				21F72D5A229FD0F900315C0A /* RNVisualCloneSource.h */,
 				21F72D57229FD0F900315C0A /* RNVisualCloneSource.m */,
-				2153FE8022A5AEA200AFFA6D /* RNVisualCloneDelegate.h */,
 				21F72D58229FD0F900315C0A /* RNVisualCloneSourceManager.h */,
 				21F72D59229FD0F900315C0A /* RNVisualCloneSourceManager.m */,
-				21F72D10229F12F900315C0A /* RNVisualCloneBlurEffectWithAmount.h */,
-				21F72D11229F12F900315C0A /* RNVisualCloneBlurEffectWithAmount.m */,
-				21F72D0E229F12F900315C0A /* RNVisualCloneData.h */,
-				21F72D0C229F12F900315C0A /* RNVisualCloneData.m */,
 				134814211AA4EA7D00B7C361 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -141,10 +131,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				B3E7B58A1CC2AC0600A0062D /* RNVisualClone.m in Sources */,
-				21F72D13229F12F900315C0A /* RNVisualCloneData.m in Sources */,
 				21F72D5B229FD0F900315C0A /* RNVisualCloneSource.m in Sources */,
 				21F72D5C229FD0F900315C0A /* RNVisualCloneSourceManager.m in Sources */,
-				21F72D16229F12F900315C0A /* RNVisualCloneBlurEffectWithAmount.m in Sources */,
 				21F72D14229F12F900315C0A /* RNVisualCloneManager.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
