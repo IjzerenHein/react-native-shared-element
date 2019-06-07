@@ -8,6 +8,7 @@
 
 #import <React/RCTView.h>
 #import <UIKit/UIKit.h>
+#import <React/RCTResizeMode.h>
 #import "RNVisualCloneSourceManager.h"
 #import "RNVisualCloneDelegate.h"
 
@@ -17,11 +18,13 @@ typedef NS_ENUM(NSInteger, RNVisualCloneContentType) {
     RNVisualCloneContentTypeRawImage = 2
 };
 
-@interface RNVisualClone : RCTView <RNVisualCloneDelegate>
+@interface RNVisualClone : UIImageView <RNVisualCloneDelegate>
 
 //@property (nonatomic, strong) RNVisualCloneSource cloneSource;
 @property (nonatomic, assign) RNVisualCloneContentType contentType;
 @property (nonatomic, assign) CGFloat blurRadius;
+@property (nonatomic, assign) CGFloat blurOpacity;
+@property (nonatomic, assign) RCTResizeMode resizeMode;
 
 - (instancetype)initWithSourceManager:(RNVisualCloneSourceManager*)sourceManager;
 - (void)setCloneSource:(NSNumber*)reactTag view:(UIView*)view;

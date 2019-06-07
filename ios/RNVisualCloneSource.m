@@ -17,8 +17,8 @@ long _refCount;
 NSMutableArray* _snapshotImageRequests;
 UIImage* _snapshotImageCache;
 
-//NSMutableArray* _rawImageDelegates;
-//BOOL _rawImageSnapshotRequested;
+NSMutableArray* _rawImageRequests;
+UIImage* _rawImageCache;
 
 - (instancetype)init:(NSNumber *)reactTag view:(UIView*) view
 {
@@ -79,7 +79,7 @@ UIImage* _snapshotImageCache;
 - (void) invalidate
 {
     [self updateSnapshotImage];
-    //[self updateRawImage];
+    [self updateRawImage];
 }
 
 /*
@@ -153,12 +153,24 @@ UIImage* _snapshotImageCache;
     }
 }
 
-/*
-- (void) updateRawImageSnapshot
+- (void) requestRawImage:(__weak id <RNVisualCloneDelegate>) delegate useCache:(BOOL)useCache
 {
-    if (!_rawImageSnapshotRequested) return;
+    if (useCache && _rawImageCache != nil) {
+        [delegate rawImageComplete:_rawImageCache];
+        return;
+    }
+    
+    if (_rawImageRequests == nil) _rawImageRequests = [[NSMutableArray alloc]init];
+    [_rawImageRequests addObject:delegate];
+    
+    [self updateRawImage];
+}
+
+
+- (void) updateRawImage
+{
+    if (_rawImageRequests == nil) return;
     if (_view == nil) return;
-    if (!_size.width || !_size.height) return;
     
     CGRect bounds = _view.bounds;
     if (!bounds.size.width || !bounds.size.height) {
@@ -172,25 +184,13 @@ UIImage* _snapshotImageCache;
         if (image == nil) return;
     }
     
-    _rawImageSnapshotRequested = NO;
-    NSArray* delegates = _rawImageDelegates;
-    _rawImageDelegates = nil;
+    NSArray* delegates = _rawImageRequests;
+    _rawImageRequests = nil;
     for (__weak id <RNVisualCloneDelegate> delegate in delegates) {
         if (delegate != nil) {
-            [delegate rawImageSnapshotComplete:image];
+            [delegate rawImageComplete:image];
         }
     }
-}*/
-
-- (void) requestRawImage:(__weak id <RNVisualCloneDelegate>) delegate useCache:(BOOL)useCache
-{
-    /*if (_rawImageDelegates == nil) _rawImageDelegates = [[NSMutableArray alloc]init];
-    [_rawImageDelegates addObject:delegate];
-    
-    if (_rawImageDelegates.count == 1) {
-        _rawImageSnapshotRequested = YES;
-        [self updateRawImageSnapshot];
-    }*/
 }
 
 - (void) requestSnapshotView:(__weak id <RNVisualCloneDelegate>) delegate useCache:(BOOL)useCache

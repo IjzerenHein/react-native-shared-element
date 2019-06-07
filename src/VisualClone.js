@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import {
+  StyleSheet,
   Animated,
   requireNativeComponent,
   NativeModules,
@@ -48,11 +49,22 @@ export class VisualClone extends Component {
   }
 
   render() {
-    const { source, contentType, ...otherProps } = this.props;
+    const {
+      style,
+      source,
+      resizeMode,
+      contentType,
+      ...otherProps
+    } = this.props;
     // console.log("VisualClone.render, source:", nodeHandle);
+    const flattenedStyle = style ? StyleSheet.flatten([style]) : {};
+    const resolvedResizeMode =
+      resizeMode || flattenedStyle.resizeMode || "cover";
     return (
       <RNVisualClone
         ref={this._setRef}
+        style={flattenedStyle}
+        resizeMode={resolvedResizeMode}
         source={source}
         contentType={VisualClone.parseContentType(contentType)}
         {...otherProps}
