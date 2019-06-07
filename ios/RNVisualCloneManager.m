@@ -37,9 +37,10 @@ RCT_EXPORT_MODULE(RNVisualClone);
     return self.bridge.uiManager.methodQueue;
 }
 
-RCT_EXPORT_VIEW_PROPERTY(contentType, NSInteger);
+RCT_EXPORT_VIEW_PROPERTY(contentType, RNVisualCloneContentType);
 RCT_EXPORT_VIEW_PROPERTY(blurRadius, CGFloat);
-RCT_EXPORT_VIEW_PROPERTY(blurOpacity, CGFloat);
+RCT_EXPORT_VIEW_PROPERTY(blurAngle, CGFloat);
+RCT_EXPORT_VIEW_PROPERTY(blurFilter, RNVisualCloneBlurFilter);
 RCT_EXPORT_VIEW_PROPERTY(resizeMode, RCTResizeMode)
 
 RCT_CUSTOM_VIEW_PROPERTY(source, NSNumber, RNVisualClone)

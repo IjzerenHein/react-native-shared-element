@@ -13,29 +13,17 @@ export class VisualClone extends Component {
     style: PropTypes.any,
     source: PropTypes.any,
     contentType: PropTypes.oneOf(["snapshot", "image", "rawImage"]),
-    blurRadius: PropTypes.number
+    blurFilter: PropTypes.oneOf(["gaussian", "motion", "zoom"]),
+    blurRadius: PropTypes.number,
+    blurAngle: PropTypes.number
   };
 
   static defaultProps = {
-    contentType: "snapshot"
+    contentType: "snapshot",
+    blurFilter: "gaussian"
   };
 
   static isAvailable = NativeModules.RNVisualClone ? true : false;
-
-  static parseContentType(contentType) {
-    switch (contentType) {
-      case "snapshot":
-        return 0;
-      case "image":
-        return 1;
-      case "rawImage":
-        return 2;
-      default:
-        throw new Error(
-          `Invalid VisualClone content-type specified: ${contentType}`
-        );
-    }
-  }
 
   _ref = undefined;
 
@@ -49,13 +37,7 @@ export class VisualClone extends Component {
   }
 
   render() {
-    const {
-      style,
-      source,
-      resizeMode,
-      contentType,
-      ...otherProps
-    } = this.props;
+    const { style, source, resizeMode, ...otherProps } = this.props;
     // console.log("VisualClone.render, source:", nodeHandle);
     const flattenedStyle = style ? StyleSheet.flatten([style]) : {};
     const resolvedResizeMode =
@@ -66,7 +48,6 @@ export class VisualClone extends Component {
         style={flattenedStyle}
         resizeMode={resolvedResizeMode}
         source={source}
-        contentType={VisualClone.parseContentType(contentType)}
         {...otherProps}
       />
     );

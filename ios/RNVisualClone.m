@@ -6,9 +6,11 @@
 #import <Foundation/Foundation.h>
 #import <Accelerate/Accelerate.h>
 #import <UIKit/UIKit.h>
+#import <CoreImage/CoreImage.h>
 #import <React/RCTDefines.h>
 #import <React/UIView+React.h>
 #import "RNVisualClone.h"
+#import "RNVisualCloneImageBlurUtils.h"
 
 RCT_EXTERN UIImage *RCTBlurredImageWithRadius(UIImage *inputImage, CGFloat radius);
 
@@ -18,6 +20,22 @@ RCT_EXTERN UIImage *RCTBlurredImageWithRadius(UIImage *inputImage, CGFloat radiu
 #define DebugLog(...) (void)0
 #endif
 
+@implementation RCTConvert(RNVisualCloneContentType)
+RCT_ENUM_CONVERTER(RNVisualCloneContentType, (@{
+                                               @"snapshot": @(RNVisualCloneContentTypeSnapshot),
+                                               @"image": @(RNVisualCloneContentTypeImage),
+                                               @"rawImage": @(RNVisualCloneContentTypeRawImage),
+                                               }), -1, integerValue)
+@end
+
+@implementation RCTConvert(RNVisualCloneBlurFilter)
+RCT_ENUM_CONVERTER(RNVisualCloneBlurFilter, (@{
+                                     @"gaussian": @(RNVisualCloneBlurFilterGaussian),
+                                     @"motion": @(RNVisualCloneBlurFilterMotion),
+                                     @"zoom": @(RNVisualCloneBlurFilterZoom),
+                                     }), -1, integerValue)
+@end
+
 @implementation RNVisualClone
 {
     RNVisualCloneSourceManager* _sourceManager;
@@ -26,7 +44,6 @@ RCT_EXTERN UIImage *RCTBlurredImageWithRadius(UIImage *inputImage, CGFloat radiu
     BOOL _needsSourceReload;
     BOOL _needsImageReload;
     UIImage* _sourceImage;
-    
 }
 
 - (instancetype)initWithSourceManager:(RNVisualCloneSourceManager*)sourceManager
@@ -93,18 +110,24 @@ RCT_EXTERN UIImage *RCTBlurredImageWithRadius(UIImage *inputImage, CGFloat radiu
     if (blurRadius != _blurRadius) {
         _blurRadius = blurRadius;
         _needsImageReload = YES;
-        [self reloadImage];
-        
+        // [self reloadImage];
     }
 }
 
-- (void)setBlurOpacity:(CGFloat)blurOpacity
+- (void)setBlurAngle:(CGFloat)blurAngle
 {
-    if (blurOpacity != _blurOpacity) {
-        _blurOpacity = blurOpacity;
-        //_needsImageReload = YES;
-        //[self reloadImage];
-        
+    if (blurAngle != _blurAngle) {
+        _blurAngle = blurAngle;
+        _needsImageReload = YES;
+        // [self reloadImage];
+    }
+}
+
+- (void)setBlurFilter:(RNVisualCloneBlurFilter)blurFilter
+{
+    if (blurFilter != _blurFilter) {
+        _blurFilter = blurFilter;
+        _needsImageReload = YES;
     }
 }
 
@@ -171,8 +194,36 @@ RCT_EXTERN UIImage *RCTBlurredImageWithRadius(UIImage *inputImage, CGFloat radiu
         };
         
         // Blur on a background thread to avoid blocking interaction
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            UIImage *blurredImage = RCTBlurredImageWithRadius(_sourceImage, self->_blurRadius);
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        UIImage* blurredImage;
+        CIFilter* filter;
+        CIContext* context = [CIContext contextWithOptions:@{}];
+        CIImage* image;
+        NSLog(@"Blurring image...");
+        switch (_blurFilter) {
+            case RNVisualCloneBlurFilterGaussian:
+            blurredImage = RCTBlurredImageWithRadius(_sourceImage, _blurRadius);
+                break;
+            case RNVisualCloneBlurFilterMotion:
+                /*filter = [CIFilter filterWithName: @"CIMotionBlur"];
+                [filter setValue:[[CIImage alloc] initWithImage:_sourceImage] forKey:kCIInputImageKey];
+                [filter setValue:@(_blurRadius) forKey:kCIInputRadiusKey];
+                [filter setValue:@(_blurAngle) forKey:kCIInputAngleKey];
+                image = [filter outputImage];
+                blurredImage = [UIImage imageWithCGImage:[context createCGImage:image fromRect:image.extent]];*/
+                //blurredImage = [UIImage imageWithCIImage:[filter outputImage]];
+                blurredImage = HorizontalMotionBlurImage(_sourceImage, _blurRadius, _blurAngle);
+                break;
+            case RNVisualCloneBlurFilterZoom:
+                filter = [CIFilter filterWithName: @"CIZoomBlur"];
+                [filter setValue:[[CIImage alloc] initWithImage:_sourceImage] forKey:kCIInputImageKey];
+                [filter setValue:@(_blurRadius) forKey:kCIInputAmountKey];
+                // [filter setValue:@(_blurAngle) forKey:kCIInputCenterKey];
+                blurredImage = [UIImage imageWithCIImage:[filter outputImage]];
+                break;
+        }
+        NSLog(@"Blurring image... DONE");
+        
             RCTExecuteOnMainQueue(^{
                 setImageBlock(blurredImage);
             });
@@ -181,6 +232,11 @@ RCT_EXTERN UIImage *RCTBlurredImageWithRadius(UIImage *inputImage, CGFloat radiu
     else {
         [self updateWithImage: _sourceImage];
     }
+}
+
+- (void) applyImageFilter
+{
+    
 }
 
 - (void) snapshotImageComplete:(UIImage*) image
