@@ -10,6 +10,7 @@
 - (void) snapshotImageComplete:(UIImage*) image;
 - (void) rawImageComplete:(UIImage*) image;
 - (void) snapshotViewComplete:(UIView*) view;
+- (void) layoutComplete:(CGRect) layout;
 @end
 
 

@@ -37,12 +37,13 @@ typedef NS_ENUM(NSInteger, RNVisualCloneBlurFilter) {
 
 @interface RNVisualClone : UIImageView <RNVisualCloneDelegate>
 
-//@property (nonatomic, strong) RNVisualCloneSource cloneSource;
 @property (nonatomic, assign) RNVisualCloneContentType contentType;
 @property (nonatomic, assign) CGFloat blurRadius;
 @property (nonatomic, assign) CGFloat blurAngle;
 @property (nonatomic, assign) RNVisualCloneBlurFilter blurFilter;
 @property (nonatomic, assign) RCTResizeMode resizeMode;
+@property (nonatomic, assign) BOOL hideSource;
+@property (nonatomic, assign) BOOL useSourceLayout;
 
 - (instancetype)initWithSourceManager:(RNVisualCloneSourceManager*)sourceManager;
 - (void)setCloneSource:(NSNumber*)reactTag view:(UIView*)view;

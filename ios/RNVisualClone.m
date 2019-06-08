@@ -4,7 +4,6 @@
 //
 
 #import <Foundation/Foundation.h>
-#import <Accelerate/Accelerate.h>
 #import <UIKit/UIKit.h>
 #import <CoreImage/CoreImage.h>
 #import <React/RCTDefines.h>
@@ -41,19 +40,25 @@ RCT_ENUM_CONVERTER(RNVisualCloneBlurFilter, (@{
     RNVisualCloneSourceManager* _sourceManager;
     RNVisualCloneSource* _cloneSource;
     RNVisualCloneContentType _contentType;
+    BOOL _needsSourceLayout;
     BOOL _needsSourceReload;
     BOOL _needsImageReload;
     UIImage* _sourceImage;
+    BOOL _contentVisible;
 }
 
 - (instancetype)initWithSourceManager:(RNVisualCloneSourceManager*)sourceManager
 {
-    if ((self = [super init])) {
+    NSLog(@"create Clone");
+    if ((self = [super initWithImage:nil])) {
         _sourceManager = sourceManager;
         _cloneSource = nil;
         _contentType = RNVisualCloneContentTypeSnapshot;
+        _needsSourceLayout = NO;
         _needsSourceReload = NO;
         _needsImageReload = NO;
+        _sourceImage = nil;
+        _contentVisible = NO;
     }
     
     return self;
@@ -62,6 +67,7 @@ RCT_ENUM_CONVERTER(RNVisualCloneBlurFilter, (@{
 - (void)dealloc
 {
     if (_cloneSource != nil) {
+        if (_hideSource && _contentVisible) _cloneSource.hideRefCount--;
         [_sourceManager release:_cloneSource];
         _cloneSource = nil;
     }
@@ -75,11 +81,14 @@ RCT_ENUM_CONVERTER(RNVisualCloneBlurFilter, (@{
 - (void)setCloneSource:(NSNumber*)reactTag view:(UIView*)view {
     RNVisualCloneSource* source = [_sourceManager acquire:reactTag view:view];
     if (_cloneSource != nil) {
+        if (_hideSource && _contentVisible) _cloneSource.hideRefCount--;
         [_sourceManager release:_cloneSource];
     }
     if (_cloneSource != source) {
         _cloneSource = source;
+        _contentVisible = NO;
         _needsSourceReload = YES;
+        _needsSourceLayout = CGRectIsEmpty(self.bounds);
     }
 }
 
@@ -131,8 +140,29 @@ RCT_ENUM_CONVERTER(RNVisualCloneBlurFilter, (@{
     }
 }
 
+- (void)setHideSource:(BOOL)hideSource
+{
+    if (hideSource != _hideSource) {
+        _hideSource = hideSource;
+        if ((_cloneSource != nil) && _contentVisible) {
+            if (hideSource) {
+                _cloneSource.hideRefCount++;
+            }
+            else {
+                _cloneSource.hideRefCount--;
+            }
+        }
+    }
+}
+
 - (void) didSetProps:(NSArray<NSString *> *)changedProps
 {
+    if (_needsSourceLayout) {
+        if (_cloneSource != nil) {
+            _needsSourceLayout = NO;
+            [_cloneSource requestLayout:self useCache:YES];
+        }
+    }
     if (_needsSourceReload) {
         [self loadSourceContent:NO];
     }
@@ -182,7 +212,15 @@ RCT_ENUM_CONVERTER(RNVisualCloneBlurFilter, (@{
     self.layer.minificationFilter = kCAFilterTrilinear;
     self.layer.magnificationFilter = kCAFilterTrilinear;
     
+    NSLog(@"updateWithImage: %@", NSStringFromCGRect(self.frame));
     super.image = image;
+    
+    if (!_contentVisible) {
+        _contentVisible = YES;
+        if (_hideSource) {
+            _cloneSource.hideRefCount++;
+        }
+    }
 }
 
 - (void)reloadImage
@@ -273,6 +311,29 @@ RCT_ENUM_CONVERTER(RNVisualCloneBlurFilter, (@{
      _snapshot.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
      }
      }*/
+}
+
+- (void) reactSetFrame:(CGRect)frame
+{
+    NSLog(@"reactSetFrame: %@", NSStringFromCGRect(frame));
+    // This ensures that the initial clone is visible before it has
+    // received any styles from the JS side
+    if (frame.size.width * frame.size.height) {
+        [super reactSetFrame:frame];
+    }
+    else {
+        NSLog(@"YO");
+    }
+}
+
+- (void)displayLayer:(CALayer *)layer
+{
+    [super displayLayer:layer];
+}
+
+- (void) layoutComplete:(CGRect) layout
+{
+    [self reactSetFrame:layout];
 }
 
 @end

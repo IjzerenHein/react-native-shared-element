@@ -10,9 +10,9 @@
 
 @synthesize reactTag = _reactTag;
 @synthesize view = _view;
-@synthesize size = _size;
 
 long _refCount;
+long _hideRefCount;
 
 NSMutableArray* _snapshotImageRequests;
 UIImage* _snapshotImageCache;
@@ -20,11 +20,21 @@ UIImage* _snapshotImageCache;
 NSMutableArray* _rawImageRequests;
 UIImage* _rawImageCache;
 
+NSMutableArray* _layoutRequests;
+CGRect _layoutCache;
+
 - (instancetype)init:(NSNumber *)reactTag view:(UIView*) view
 {
   _reactTag = reactTag;
   _view = view;
   _refCount = 1;
+    _hideRefCount = 0;
+    _snapshotImageRequests = nil;
+    _snapshotImageCache = nil;
+    _rawImageRequests = nil;
+    _rawImageCache = nil;
+    _layoutRequests = nil;
+    _layoutCache = CGRectMake(0, 0, 0, 0);
   [self addObservers];
   return self;
 }
@@ -38,6 +48,22 @@ UIImage* _rawImageCache;
 
 - (long) refCount {
     return _refCount;
+}
+
+- (void) setHideRefCount:(long)refCount
+{
+    _hideRefCount = refCount;
+    if (_hideRefCount == 1) {
+        _view.hidden = YES;
+    }
+    else if (_hideRefCount == 0) {
+        _view.hidden = NO;
+    }
+}
+
+- (long) hideRefCount
+{
+    return _hideRefCount;
 }
 
 - (void) addObservers
@@ -78,6 +104,7 @@ UIImage* _rawImageCache;
 
 - (void) invalidate
 {
+    [self updateLayout];
     [self updateSnapshotImage];
     [self updateRawImage];
 }
@@ -144,6 +171,8 @@ UIImage* _rawImageCache;
     NSLog(@"drawViewHierarchyInRect: RESULT: %ld", res);
     if (image == nil) return;
     
+    _snapshotImageCache = image;
+    
     NSArray* delegates = _snapshotImageRequests;
     _snapshotImageRequests = nil;
     for (__weak id <RNVisualCloneDelegate> delegate in delegates) {
@@ -184,6 +213,8 @@ UIImage* _rawImageCache;
         if (image == nil) return;
     }
     
+    _rawImageCache = image;
+    
     NSArray* delegates = _rawImageRequests;
     _rawImageRequests = nil;
     for (__weak id <RNVisualCloneDelegate> delegate in delegates) {
@@ -195,9 +226,39 @@ UIImage* _rawImageCache;
 
 - (void) requestSnapshotView:(__weak id <RNVisualCloneDelegate>) delegate useCache:(BOOL)useCache
 {
-    
+   // TODO
 }
 
+- (void) requestLayout:(__weak id <RNVisualCloneDelegate>) delegate useCache:(BOOL)useCache
+{
+    if (useCache && !CGRectIsEmpty(_layoutCache)) {
+        [delegate layoutComplete:_layoutCache];
+        return;
+    }
+    
+    if (_layoutRequests == nil) _layoutRequests = [[NSMutableArray alloc]init];
+    [_layoutRequests addObject:delegate];
+    
+    [self updateLayout];
+}
+
+- (void) updateLayout
+{
+    if (_layoutRequests == nil) return;
+    if (_view == nil) return;
+    
+    CGRect layout = [_view convertRect:_view.bounds toView:nil];
+    
+    _layoutCache = layout;
+    
+    NSArray* delegates = _layoutRequests;
+    _layoutRequests = nil;
+    for (__weak id <RNVisualCloneDelegate> delegate in delegates) {
+        if (delegate != nil) {
+            [delegate layoutComplete:layout];
+        }
+    }
+}
 
 
 @end

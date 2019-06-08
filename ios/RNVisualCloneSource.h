@@ -16,12 +16,14 @@
 @property (nonatomic, readonly) UIImage* image;
 @property (nonatomic, readonly) CGSize size;
 @property (nonatomic) long refCount;
+@property (nonatomic) long hideRefCount;
 
 - (instancetype)init:(NSNumber *)reactTag view:(UIView*) view;
 
 - (void) requestSnapshotImage:(id <RNVisualCloneDelegate>) delegate useCache:(BOOL)useCache;
 - (void) requestRawImage:(id <RNVisualCloneDelegate>) delegate useCache:(BOOL)useCache;
 - (void) requestSnapshotView:(id <RNVisualCloneDelegate>) delegate useCache:(BOOL)useCache;
+- (void) requestLayout:(id <RNVisualCloneDelegate>) delegate useCache:(BOOL)useCache;
 
 // - (void) invalidate();
 

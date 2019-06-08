@@ -42,6 +42,8 @@ RCT_EXPORT_VIEW_PROPERTY(blurRadius, CGFloat);
 RCT_EXPORT_VIEW_PROPERTY(blurAngle, CGFloat);
 RCT_EXPORT_VIEW_PROPERTY(blurFilter, RNVisualCloneBlurFilter);
 RCT_EXPORT_VIEW_PROPERTY(resizeMode, RCTResizeMode)
+RCT_EXPORT_VIEW_PROPERTY(hideSource, BOOL);
+RCT_EXPORT_VIEW_PROPERTY(useSourceLayout, BOOL);
 
 RCT_CUSTOM_VIEW_PROPERTY(source, NSNumber, RNVisualClone)
 {
