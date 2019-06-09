@@ -51,7 +51,7 @@ RCT_ENUM_CONVERTER(RNVisualCloneBlurFilter, (@{
     CGRect _sourceLayout;
     BOOL _sourceHidden;
     BOOL _hasValidContent;
-    BOOL _hasValidFrame;
+    BOOL _reactFrameSet;
 }
 
 - (instancetype)initWithSourceManager:(RNVisualCloneSourceManager*)sourceManager
@@ -67,7 +67,7 @@ RCT_ENUM_CONVERTER(RNVisualCloneBlurFilter, (@{
         _sourceLayout = CGRectZero;
         _sourceHidden = NO;
         _hasValidContent = NO;
-        _hasValidFrame = NO;
+        _reactFrameSet = NO;
     }
     
     return self;
@@ -152,7 +152,7 @@ RCT_ENUM_CONVERTER(RNVisualCloneBlurFilter, (@{
 {
     if (_cloneSource == nil) return;
     
-    BOOL sourceHidden = _hideSource && _hasValidContent && _hasValidFrame;
+    BOOL sourceHidden = _hideSource && _hasValidContent && _reactFrameSet;
     if (_sourceHidden != sourceHidden) {
         _sourceHidden = sourceHidden;
         if (sourceHidden) {
@@ -327,12 +327,12 @@ RCT_ENUM_CONVERTER(RNVisualCloneBlurFilter, (@{
 {
     NSLog(@"reactSetFrame: %@", NSStringFromCGRect(frame));
     
+    _reactFrameSet = YES;
+    
     if (!CGRectIsEmpty(_sourceLayout) && !(frame.size.width * frame.size.height)) {
-        CGRect layout = [self.superview convertRect:_sourceLayout fromView:nil];
-        [super reactSetFrame:layout];
-    } else {
-        [super reactSetFrame:frame];
+        frame = [self.superview convertRect:_sourceLayout fromView:nil];
     }
+    [super reactSetFrame:frame];
     
     if (!CGRectIsEmpty(_sourceLayout)) {
         if (_onSourceLayout) {
@@ -348,10 +348,7 @@ RCT_ENUM_CONVERTER(RNVisualCloneBlurFilter, (@{
         _sourceLayout = CGRectZero;
     }
     
-    if (!_hasValidFrame) {
-        _hasValidFrame = YES;
-        [self updateSourceHidden];
-    }
+    [self updateSourceHidden];
 }
 
 - (void) layoutComplete:(CGRect) layout
@@ -359,6 +356,10 @@ RCT_ENUM_CONVERTER(RNVisualCloneBlurFilter, (@{
     // NSLog(@"layoutComplete: %@", NSStringFromCGRect(layout));
     
     _sourceLayout = layout;
+    
+    if (_reactFrameSet) {
+        [self reactSetFrame:self.frame];
+    }
 }
 
 @end

@@ -7,21 +7,22 @@
 #import "RNVisualCloneSource.h"
 
 @implementation RNVisualCloneSource
+{
+    long _refCount;
+    long _hideRefCount;
+    
+    NSMutableArray* _snapshotImageRequests;
+    UIImage* _snapshotImageCache;
+    
+    NSMutableArray* _rawImageRequests;
+    UIImage* _rawImageCache;
+    
+    NSMutableArray* _layoutRequests;
+    CGRect _layoutCache;
+}
 
 @synthesize reactTag = _reactTag;
 @synthesize view = _view;
-
-long _refCount;
-long _hideRefCount;
-
-NSMutableArray* _snapshotImageRequests;
-UIImage* _snapshotImageCache;
-
-NSMutableArray* _rawImageRequests;
-UIImage* _rawImageCache;
-
-NSMutableArray* _layoutRequests;
-CGRect _layoutCache;
 
 - (instancetype)init:(NSNumber *)reactTag view:(UIView*) view
 {
@@ -249,6 +250,7 @@ CGRect _layoutCache;
     
     // Get absolute layout
     CGRect layout = [_view convertRect:_view.bounds toView:nil];
+    if (CGRectIsEmpty(layout)) return;
     
     _layoutCache = layout;
     
@@ -260,6 +262,5 @@ CGRect _layoutCache;
         }
     }
 }
-
 
 @end
