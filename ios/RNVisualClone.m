@@ -21,18 +21,22 @@ RCT_EXTERN UIImage *RCTBlurredImageWithRadius(UIImage *inputImage, CGFloat radiu
 
 @implementation RCTConvert(RNVisualCloneContentType)
 RCT_ENUM_CONVERTER(RNVisualCloneContentType, (@{
-                                               @"snapshot": @(RNVisualCloneContentTypeSnapshot),
-                                               @"image": @(RNVisualCloneContentTypeImage),
-                                               @"rawImage": @(RNVisualCloneContentTypeRawImage),
-                                               }), -1, integerValue)
+                                                @"snapshot": @(RNVisualCloneContentTypeSnapshot),
+                                                @"image": @(RNVisualCloneContentTypeImage),
+                                                @"rawImage": @(RNVisualCloneContentTypeRawImage),
+                                                }), -1, integerValue)
 @end
 
 @implementation RCTConvert(RNVisualCloneBlurFilter)
 RCT_ENUM_CONVERTER(RNVisualCloneBlurFilter, (@{
-                                     @"gaussian": @(RNVisualCloneBlurFilterGaussian),
-                                     @"motion": @(RNVisualCloneBlurFilterMotion),
-                                     @"zoom": @(RNVisualCloneBlurFilterZoom),
-                                     }), -1, integerValue)
+                                               @"gaussian": @(RNVisualCloneBlurFilterGaussian),
+                                               @"motion": @(RNVisualCloneBlurFilterMotion),
+                                               @"zoom": @(RNVisualCloneBlurFilterZoom),
+                                               }), -1, integerValue)
+@end
+
+@interface RNVisualClone ()
+@property (nonatomic, copy) RCTDirectEventBlock onSourceLayout;
 @end
 
 @implementation RNVisualClone
@@ -44,12 +48,14 @@ RCT_ENUM_CONVERTER(RNVisualCloneBlurFilter, (@{
     BOOL _needsSourceReload;
     BOOL _needsImageReload;
     UIImage* _sourceImage;
-    BOOL _contentVisible;
+    CGRect _sourceLayout;
+    BOOL _sourceHidden;
+    BOOL _hasValidContent;
+    BOOL _hasValidFrame;
 }
 
 - (instancetype)initWithSourceManager:(RNVisualCloneSourceManager*)sourceManager
 {
-    NSLog(@"create Clone");
     if ((self = [super initWithImage:nil])) {
         _sourceManager = sourceManager;
         _cloneSource = nil;
@@ -58,7 +64,10 @@ RCT_ENUM_CONVERTER(RNVisualCloneBlurFilter, (@{
         _needsSourceReload = NO;
         _needsImageReload = NO;
         _sourceImage = nil;
-        _contentVisible = NO;
+        _sourceLayout = CGRectZero;
+        _sourceHidden = NO;
+        _hasValidContent = NO;
+        _hasValidFrame = NO;
     }
     
     return self;
@@ -67,7 +76,7 @@ RCT_ENUM_CONVERTER(RNVisualCloneBlurFilter, (@{
 - (void)dealloc
 {
     if (_cloneSource != nil) {
-        if (_hideSource && _contentVisible) _cloneSource.hideRefCount--;
+        if (_sourceHidden) _cloneSource.hideRefCount--;
         [_sourceManager release:_cloneSource];
         _cloneSource = nil;
     }
@@ -81,14 +90,15 @@ RCT_ENUM_CONVERTER(RNVisualCloneBlurFilter, (@{
 - (void)setCloneSource:(NSNumber*)reactTag view:(UIView*)view {
     RNVisualCloneSource* source = [_sourceManager acquire:reactTag view:view];
     if (_cloneSource != nil) {
-        if (_hideSource && _contentVisible) _cloneSource.hideRefCount--;
+        if (_sourceHidden) _cloneSource.hideRefCount--;
+        _sourceHidden = NO;
         [_sourceManager release:_cloneSource];
     }
     if (_cloneSource != source) {
         _cloneSource = source;
-        _contentVisible = NO;
+        _hasValidContent = NO;
         _needsSourceReload = YES;
-        _needsSourceLayout = CGRectIsEmpty(self.bounds);
+        _needsSourceLayout = YES;
     }
 }
 
@@ -119,7 +129,6 @@ RCT_ENUM_CONVERTER(RNVisualCloneBlurFilter, (@{
     if (blurRadius != _blurRadius) {
         _blurRadius = blurRadius;
         _needsImageReload = YES;
-        // [self reloadImage];
     }
 }
 
@@ -128,7 +137,6 @@ RCT_ENUM_CONVERTER(RNVisualCloneBlurFilter, (@{
     if (blurAngle != _blurAngle) {
         _blurAngle = blurAngle;
         _needsImageReload = YES;
-        // [self reloadImage];
     }
 }
 
@@ -140,18 +148,27 @@ RCT_ENUM_CONVERTER(RNVisualCloneBlurFilter, (@{
     }
 }
 
+- (void)updateSourceHidden
+{
+    if (_cloneSource == nil) return;
+    
+    BOOL sourceHidden = _hideSource && _hasValidContent && _hasValidFrame;
+    if (_sourceHidden != sourceHidden) {
+        _sourceHidden = sourceHidden;
+        if (sourceHidden) {
+            _cloneSource.hideRefCount++;
+        }
+        else {
+            _cloneSource.hideRefCount--;
+        }
+    }
+}
+
 - (void)setHideSource:(BOOL)hideSource
 {
     if (hideSource != _hideSource) {
         _hideSource = hideSource;
-        if ((_cloneSource != nil) && _contentVisible) {
-            if (hideSource) {
-                _cloneSource.hideRefCount++;
-            }
-            else {
-                _cloneSource.hideRefCount--;
-            }
-        }
+        [self updateSourceHidden];
     }
 }
 
@@ -198,15 +215,15 @@ RCT_ENUM_CONVERTER(RNVisualCloneBlurFilter, (@{
     
     // Apply rendering mode
     /*if (_renderingMode != image.renderingMode) {
-        image = [image imageWithRenderingMode:_renderingMode];
-    }
-    
-    if (_resizeMode == RCTResizeModeRepeat) {
-        image = [image resizableImageWithCapInsets:_capInsets resizingMode:UIImageResizingModeTile];
-    } else if (!UIEdgeInsetsEqualToEdgeInsets(UIEdgeInsetsZero, _capInsets)) {
-        // Applying capInsets of 0 will switch the "resizingMode" of the image to "tile" which is undesired
-        image = [image resizableImageWithCapInsets:_capInsets resizingMode:UIImageResizingModeStretch];
-    }*/
+     image = [image imageWithRenderingMode:_renderingMode];
+     }
+     
+     if (_resizeMode == RCTResizeModeRepeat) {
+     image = [image resizableImageWithCapInsets:_capInsets resizingMode:UIImageResizingModeTile];
+     } else if (!UIEdgeInsetsEqualToEdgeInsets(UIEdgeInsetsZero, _capInsets)) {
+     // Applying capInsets of 0 will switch the "resizingMode" of the image to "tile" which is undesired
+     image = [image resizableImageWithCapInsets:_capInsets resizingMode:UIImageResizingModeStretch];
+     }*/
     
     // Apply trilinear filtering to smooth out mis-sized images
     self.layer.minificationFilter = kCAFilterTrilinear;
@@ -215,11 +232,9 @@ RCT_ENUM_CONVERTER(RNVisualCloneBlurFilter, (@{
     NSLog(@"updateWithImage: %@", NSStringFromCGRect(self.frame));
     super.image = image;
     
-    if (!_contentVisible) {
-        _contentVisible = YES;
-        if (_hideSource) {
-            _cloneSource.hideRefCount++;
-        }
+    if (!_hasValidContent) {
+        _hasValidContent = YES;
+        [self updateSourceHidden];
     }
 }
 
@@ -228,40 +243,40 @@ RCT_ENUM_CONVERTER(RNVisualCloneBlurFilter, (@{
     _needsImageReload = NO;
     if (_sourceImage != nil && _blurRadius > __FLT_EPSILON__) {
         void (^setImageBlock)(UIImage *) = ^(UIImage *image) {
-             [self updateWithImage: image];
+            [self updateWithImage: image];
         };
         
         // Blur on a background thread to avoid blocking interaction
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        UIImage* blurredImage;
-        CIFilter* filter;
-        CIContext* context = [CIContext contextWithOptions:@{}];
-        CIImage* image;
-        NSLog(@"Blurring image...");
-        switch (_blurFilter) {
-            case RNVisualCloneBlurFilterGaussian:
-            blurredImage = RCTBlurredImageWithRadius(_sourceImage, _blurRadius);
-                break;
-            case RNVisualCloneBlurFilterMotion:
-                /*filter = [CIFilter filterWithName: @"CIMotionBlur"];
-                [filter setValue:[[CIImage alloc] initWithImage:_sourceImage] forKey:kCIInputImageKey];
-                [filter setValue:@(_blurRadius) forKey:kCIInputRadiusKey];
-                [filter setValue:@(_blurAngle) forKey:kCIInputAngleKey];
-                image = [filter outputImage];
-                blurredImage = [UIImage imageWithCGImage:[context createCGImage:image fromRect:image.extent]];*/
-                //blurredImage = [UIImage imageWithCIImage:[filter outputImage]];
-                blurredImage = HorizontalMotionBlurImage(_sourceImage, _blurRadius, _blurAngle);
-                break;
-            case RNVisualCloneBlurFilterZoom:
-                filter = [CIFilter filterWithName: @"CIZoomBlur"];
-                [filter setValue:[[CIImage alloc] initWithImage:_sourceImage] forKey:kCIInputImageKey];
-                [filter setValue:@(_blurRadius) forKey:kCIInputAmountKey];
-                // [filter setValue:@(_blurAngle) forKey:kCIInputCenterKey];
-                blurredImage = [UIImage imageWithCIImage:[filter outputImage]];
-                break;
-        }
-        NSLog(@"Blurring image... DONE");
-        
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            UIImage* blurredImage;
+            CIFilter* filter;
+            CIContext* context = [CIContext contextWithOptions:@{}];
+            CIImage* image;
+            NSLog(@"Blurring image...");
+            switch (_blurFilter) {
+                case RNVisualCloneBlurFilterGaussian:
+                    blurredImage = RCTBlurredImageWithRadius(_sourceImage, _blurRadius);
+                    break;
+                case RNVisualCloneBlurFilterMotion:
+                    /*filter = [CIFilter filterWithName: @"CIMotionBlur"];
+                     [filter setValue:[[CIImage alloc] initWithImage:_sourceImage] forKey:kCIInputImageKey];
+                     [filter setValue:@(_blurRadius) forKey:kCIInputRadiusKey];
+                     [filter setValue:@(_blurAngle) forKey:kCIInputAngleKey];
+                     image = [filter outputImage];
+                     blurredImage = [UIImage imageWithCGImage:[context createCGImage:image fromRect:image.extent]];*/
+                    //blurredImage = [UIImage imageWithCIImage:[filter outputImage]];
+                    blurredImage = HorizontalMotionBlurImage(_sourceImage, _blurRadius, _blurAngle);
+                    break;
+                case RNVisualCloneBlurFilterZoom:
+                    filter = [CIFilter filterWithName: @"CIZoomBlur"];
+                    [filter setValue:[[CIImage alloc] initWithImage:_sourceImage] forKey:kCIInputImageKey];
+                    [filter setValue:@(_blurRadius) forKey:kCIInputAmountKey];
+                    // [filter setValue:@(_blurAngle) forKey:kCIInputCenterKey];
+                    blurredImage = [UIImage imageWithCIImage:[filter outputImage]];
+                    break;
+            }
+            NSLog(@"Blurring image... DONE");
+            
             RCTExecuteOnMainQueue(^{
                 setImageBlock(blurredImage);
             });
@@ -270,11 +285,6 @@ RCT_ENUM_CONVERTER(RNVisualCloneBlurFilter, (@{
     else {
         [self updateWithImage: _sourceImage];
     }
-}
-
-- (void) applyImageFilter
-{
-    
 }
 
 - (void) snapshotImageComplete:(UIImage*) image
@@ -293,17 +303,17 @@ RCT_ENUM_CONVERTER(RNVisualCloneBlurFilter, (@{
 {
     // Update snapshot
     /*if (snapshot != _snapshot) {
-        if (snapshot != nil) {
-            snapshot.frame = self.bounds;
-            snapshot.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-            [self addSubview:snapshot];
-        }
-        if (_snapshot != nil) {
-            [_snapshot removeFromSuperview];
-        }
-        _snapshot = snapshot;
-        DebugLog(@"Number of subviews: %ld", self.subviews.count);
-    }*/
+     if (snapshot != nil) {
+     snapshot.frame = self.bounds;
+     snapshot.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+     [self addSubview:snapshot];
+     }
+     if (_snapshot != nil) {
+     [_snapshot removeFromSuperview];
+     }
+     _snapshot = snapshot;
+     DebugLog(@"Number of subviews: %ld", self.subviews.count);
+     }*/
     
     /*
      if (_snapshot) {
@@ -316,24 +326,39 @@ RCT_ENUM_CONVERTER(RNVisualCloneBlurFilter, (@{
 - (void) reactSetFrame:(CGRect)frame
 {
     NSLog(@"reactSetFrame: %@", NSStringFromCGRect(frame));
-    // This ensures that the initial clone is visible before it has
-    // received any styles from the JS side
-    if (frame.size.width * frame.size.height) {
+    
+    if (!CGRectIsEmpty(_sourceLayout) && !(frame.size.width * frame.size.height)) {
+        CGRect layout = [self.superview convertRect:_sourceLayout fromView:nil];
+        [super reactSetFrame:layout];
+    } else {
         [super reactSetFrame:frame];
     }
-    else {
-        NSLog(@"YO");
+    
+    if (!CGRectIsEmpty(_sourceLayout)) {
+        if (_onSourceLayout) {
+            CGRect layout = [self.superview convertRect:_sourceLayout fromView:nil];
+            _onSourceLayout(@{
+                              @"layout": @{
+                                      @"x": @(layout.origin.x),
+                                      @"y": @(layout.origin.y),
+                                      @"width": @(layout.size.width),
+                                      @"height": @(layout.size.height)
+                                      }});
+        }
+        _sourceLayout = CGRectZero;
     }
-}
-
-- (void)displayLayer:(CALayer *)layer
-{
-    [super displayLayer:layer];
+    
+    if (!_hasValidFrame) {
+        _hasValidFrame = YES;
+        [self updateSourceHidden];
+    }
 }
 
 - (void) layoutComplete:(CGRect) layout
 {
-    [self reactSetFrame:layout];
+    // NSLog(@"layoutComplete: %@", NSStringFromCGRect(layout));
+    
+    _sourceLayout = layout;
 }
 
 @end

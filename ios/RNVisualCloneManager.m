@@ -44,7 +44,6 @@ RCT_EXPORT_VIEW_PROPERTY(blurFilter, RNVisualCloneBlurFilter);
 RCT_EXPORT_VIEW_PROPERTY(resizeMode, RCTResizeMode)
 RCT_EXPORT_VIEW_PROPERTY(hideSource, BOOL);
 RCT_EXPORT_VIEW_PROPERTY(useSourceLayout, BOOL);
-
 RCT_CUSTOM_VIEW_PROPERTY(source, NSNumber, RNVisualClone)
 {
     if (json) {
@@ -55,6 +54,7 @@ RCT_CUSTOM_VIEW_PROPERTY(source, NSNumber, RNVisualClone)
         [view setCloneSource:nil view:nil];
     }
 }
+RCT_EXPORT_VIEW_PROPERTY(onSourceLayout, RCTDirectEventBlock)
 
 RCT_REMAP_METHOD(refresh,
                  config:(NSDictionary *)config

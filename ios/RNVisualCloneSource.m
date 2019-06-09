@@ -34,7 +34,7 @@ CGRect _layoutCache;
     _rawImageRequests = nil;
     _rawImageCache = nil;
     _layoutRequests = nil;
-    _layoutCache = CGRectMake(0, 0, 0, 0);
+    _layoutCache = CGRectZero;
   [self addObservers];
   return self;
 }
@@ -162,9 +162,9 @@ CGRect _layoutCache;
     
     NSLog(@"drawViewHierarchyInRect: bounds: %@", NSStringFromCGRect(bounds));
     UIGraphicsBeginImageContextWithOptions(bounds.size, _view.opaque, 0.0f);
-    BOOL res = [_view drawViewHierarchyInRect:bounds afterScreenUpdates:YES];
+    BOOL res = [_view drawViewHierarchyInRect:bounds afterScreenUpdates:NO];
     if (!res) {
-        res = [_view drawViewHierarchyInRect:bounds afterScreenUpdates:NO];
+        res = [_view drawViewHierarchyInRect:bounds afterScreenUpdates:YES];
     }
     image = res ? UIGraphicsGetImageFromCurrentImageContext() : nil;
     UIGraphicsEndImageContext();
@@ -247,6 +247,7 @@ CGRect _layoutCache;
     if (_layoutRequests == nil) return;
     if (_view == nil) return;
     
+    // Get absolute layout
     CGRect layout = [_view convertRect:_view.bounds toView:nil];
     
     _layoutCache = layout;
