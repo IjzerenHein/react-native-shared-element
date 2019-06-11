@@ -1,12 +1,12 @@
 //
 //  RCTMagicMoveCloneDataManager.m
-//  react-native-visual-clone
+//  react-native-shared-element-transition
 //
 
 #import <UIKit/UIKit.h>
-#import "RNVisualCloneSourceManager.h"
+#import "RNSharedElementSourceManager.h"
 
-@implementation RNVisualCloneSourceManager
+@implementation RNSharedElementSourceManager
 {
   NSMutableDictionary* _items;
 }
@@ -17,28 +17,28 @@
   return self;
 }
 
-- (RNVisualCloneSource*) acquire:(NSNumber*) reactTag view:(UIView*)view
+- (RNSharedElementSource*) acquire:(NSNumber*) reactTag view:(UIView*)view
 {
   @synchronized(_items)
   {
-    RNVisualCloneSource* source = [_items objectForKey:reactTag];
+    RNSharedElementSource* source = [_items objectForKey:reactTag];
     if ((source != nil) && (source.view == view)) {
       source.refCount = source.refCount + 1;
       return source;
     }
-    source = [[RNVisualCloneSource alloc]init:reactTag view:view];
+    source = [[RNSharedElementSource alloc]init:reactTag view:view];
     [_items setObject:source forKey:reactTag];
     return source;
   }
 }
 
-- (long) release:(RNVisualCloneSource*) source
+- (long) release:(RNSharedElementSource*) source
 {
   @synchronized(_items)
   {
     source.refCount = source.refCount - 1;
     if (source.refCount == 0) {
-      RNVisualCloneSource* dictItem = [_items objectForKey:source.reactTag];
+      RNSharedElementSource* dictItem = [_items objectForKey:source.reactTag];
       if (dictItem == source) {
         [_items removeObjectForKey:source.reactTag];
       }

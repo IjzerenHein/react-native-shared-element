@@ -7,11 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		21771E4422AB08E00012A018 /* RNVisualCloneImageBlurUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 21771E4222AB08E00012A018 /* RNVisualCloneImageBlurUtils.m */; };
-		21F72D14229F12F900315C0A /* RNVisualCloneManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 21F72D0D229F12F900315C0A /* RNVisualCloneManager.m */; };
-		21F72D5B229FD0F900315C0A /* RNVisualCloneSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 21F72D57229FD0F900315C0A /* RNVisualCloneSource.m */; };
-		21F72D5C229FD0F900315C0A /* RNVisualCloneSourceManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 21F72D59229FD0F900315C0A /* RNVisualCloneSourceManager.m */; };
-		B3E7B58A1CC2AC0600A0062D /* RNVisualClone.m in Sources */ = {isa = PBXBuildFile; fileRef = B3E7B5891CC2AC0600A0062D /* RNVisualClone.m */; };
+		214D6B5F22B01BDA00227ED9 /* RNSharedElementSourceManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 214D6B5522B01BD900227ED9 /* RNSharedElementSourceManager.m */; };
+		214D6B6022B01BDA00227ED9 /* RNSharedElementSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 214D6B5622B01BD900227ED9 /* RNSharedElementSource.m */; };
+		214D6B6122B01BDA00227ED9 /* RNSharedElementTransitionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 214D6B5A22B01BD900227ED9 /* RNSharedElementTransitionManager.m */; };
+		214D6B6222B01BDA00227ED9 /* RNSharedElementTransition.m in Sources */ = {isa = PBXBuildFile; fileRef = 214D6B5C22B01BD900227ED9 /* RNSharedElementTransition.m */; };
+		214D6B6422B01C5800227ED9 /* RNSharedElementStyle.m in Sources */ = {isa = PBXBuildFile; fileRef = 214D6B6322B01C5800227ED9 /* RNSharedElementStyle.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -27,18 +27,19 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		134814201AA4EA6300B7C361 /* libRNVisualClone.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libRNVisualClone.a; sourceTree = BUILT_PRODUCTS_DIR; };
-		2153FE8022A5AEA200AFFA6D /* RNVisualCloneDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RNVisualCloneDelegate.h; sourceTree = "<group>"; };
-		21771E4222AB08E00012A018 /* RNVisualCloneImageBlurUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RNVisualCloneImageBlurUtils.m; sourceTree = "<group>"; };
-		21771E4322AB08E00012A018 /* RNVisualCloneImageBlurUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RNVisualCloneImageBlurUtils.h; sourceTree = "<group>"; };
-		21F72D0D229F12F900315C0A /* RNVisualCloneManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RNVisualCloneManager.m; sourceTree = "<group>"; };
-		21F72D12229F12F900315C0A /* RNVisualCloneManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RNVisualCloneManager.h; sourceTree = "<group>"; };
-		21F72D57229FD0F900315C0A /* RNVisualCloneSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RNVisualCloneSource.m; sourceTree = "<group>"; };
-		21F72D58229FD0F900315C0A /* RNVisualCloneSourceManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RNVisualCloneSourceManager.h; sourceTree = "<group>"; };
-		21F72D59229FD0F900315C0A /* RNVisualCloneSourceManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RNVisualCloneSourceManager.m; sourceTree = "<group>"; };
-		21F72D5A229FD0F900315C0A /* RNVisualCloneSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RNVisualCloneSource.h; sourceTree = "<group>"; };
-		B3E7B5881CC2AC0600A0062D /* RNVisualClone.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RNVisualClone.h; sourceTree = "<group>"; };
-		B3E7B5891CC2AC0600A0062D /* RNVisualClone.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RNVisualClone.m; sourceTree = "<group>"; };
+		134814201AA4EA6300B7C361 /* libRNSharedElement.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libRNSharedElement.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		214D6B5422B01BD900227ED9 /* RNSharedElementSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RNSharedElementSource.h; sourceTree = "<group>"; };
+		214D6B5522B01BD900227ED9 /* RNSharedElementSourceManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RNSharedElementSourceManager.m; sourceTree = "<group>"; };
+		214D6B5622B01BD900227ED9 /* RNSharedElementSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RNSharedElementSource.m; sourceTree = "<group>"; };
+		214D6B5722B01BD900227ED9 /* RNSharedElementSourceManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RNSharedElementSourceManager.h; sourceTree = "<group>"; };
+		214D6B5822B01BD900227ED9 /* RNSharedElementStyle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RNSharedElementStyle.h; sourceTree = "<group>"; };
+		214D6B5922B01BD900227ED9 /* RNSharedElementContentType.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RNSharedElementContentType.h; sourceTree = "<group>"; };
+		214D6B5A22B01BD900227ED9 /* RNSharedElementTransitionManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RNSharedElementTransitionManager.m; sourceTree = "<group>"; };
+		214D6B5B22B01BD900227ED9 /* RNSharedElementTransition.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RNSharedElementTransition.h; sourceTree = "<group>"; };
+		214D6B5C22B01BD900227ED9 /* RNSharedElementTransition.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RNSharedElementTransition.m; sourceTree = "<group>"; };
+		214D6B5D22B01BD900227ED9 /* RNSharedElementDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RNSharedElementDelegate.h; sourceTree = "<group>"; };
+		214D6B5E22B01BDA00227ED9 /* RNSharedElementTransitionManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RNSharedElementTransitionManager.h; sourceTree = "<group>"; };
+		214D6B6322B01C5800227ED9 /* RNSharedElementStyle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RNSharedElementStyle.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -55,7 +56,7 @@
 		134814211AA4EA7D00B7C361 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				134814201AA4EA6300B7C361 /* libRNVisualClone.a */,
+				134814201AA4EA6300B7C361 /* libRNSharedElement.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -63,17 +64,18 @@
 		58B511D21A9E6C8500147676 = {
 			isa = PBXGroup;
 			children = (
-				B3E7B5881CC2AC0600A0062D /* RNVisualClone.h */,
-				B3E7B5891CC2AC0600A0062D /* RNVisualClone.m */,
-				2153FE8022A5AEA200AFFA6D /* RNVisualCloneDelegate.h */,
-				21F72D12229F12F900315C0A /* RNVisualCloneManager.h */,
-				21F72D0D229F12F900315C0A /* RNVisualCloneManager.m */,
-				21F72D5A229FD0F900315C0A /* RNVisualCloneSource.h */,
-				21F72D57229FD0F900315C0A /* RNVisualCloneSource.m */,
-				21F72D58229FD0F900315C0A /* RNVisualCloneSourceManager.h */,
-				21F72D59229FD0F900315C0A /* RNVisualCloneSourceManager.m */,
-				21771E4322AB08E00012A018 /* RNVisualCloneImageBlurUtils.h */,
-				21771E4222AB08E00012A018 /* RNVisualCloneImageBlurUtils.m */,
+				214D6B5B22B01BD900227ED9 /* RNSharedElementTransition.h */,
+				214D6B5C22B01BD900227ED9 /* RNSharedElementTransition.m */,
+				214D6B5E22B01BDA00227ED9 /* RNSharedElementTransitionManager.h */,
+				214D6B5A22B01BD900227ED9 /* RNSharedElementTransitionManager.m */,
+				214D6B5422B01BD900227ED9 /* RNSharedElementSource.h */,
+				214D6B5622B01BD900227ED9 /* RNSharedElementSource.m */,
+				214D6B5722B01BD900227ED9 /* RNSharedElementSourceManager.h */,
+				214D6B5522B01BD900227ED9 /* RNSharedElementSourceManager.m */,
+				214D6B5922B01BD900227ED9 /* RNSharedElementContentType.h */,
+				214D6B5D22B01BD900227ED9 /* RNSharedElementDelegate.h */,
+				214D6B5822B01BD900227ED9 /* RNSharedElementStyle.h */,
+				214D6B6322B01C5800227ED9 /* RNSharedElementStyle.m */,
 				134814211AA4EA7D00B7C361 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -81,9 +83,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		58B511DA1A9E6C8500147676 /* RNVisualClone */ = {
+		58B511DA1A9E6C8500147676 /* RNSharedElement */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 58B511EF1A9E6C8500147676 /* Build configuration list for PBXNativeTarget "RNVisualClone" */;
+			buildConfigurationList = 58B511EF1A9E6C8500147676 /* Build configuration list for PBXNativeTarget "RNSharedElement" */;
 			buildPhases = (
 				58B511D71A9E6C8500147676 /* Sources */,
 				58B511D81A9E6C8500147676 /* Frameworks */,
@@ -93,9 +95,9 @@
 			);
 			dependencies = (
 			);
-			name = RNVisualClone;
+			name = RNSharedElement;
 			productName = RCTDataManager;
-			productReference = 134814201AA4EA6300B7C361 /* libRNVisualClone.a */;
+			productReference = 134814201AA4EA6300B7C361 /* libRNSharedElement.a */;
 			productType = "com.apple.product-type.library.static";
 		};
 /* End PBXNativeTarget section */
@@ -112,7 +114,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 58B511D61A9E6C8500147676 /* Build configuration list for PBXProject "RNVisualClone" */;
+			buildConfigurationList = 58B511D61A9E6C8500147676 /* Build configuration list for PBXProject "RNSharedElementTransition" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -125,7 +127,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				58B511DA1A9E6C8500147676 /* RNVisualClone */,
+				58B511DA1A9E6C8500147676 /* RNSharedElement */,
 			);
 		};
 /* End PBXProject section */
@@ -135,11 +137,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B3E7B58A1CC2AC0600A0062D /* RNVisualClone.m in Sources */,
-				21771E4422AB08E00012A018 /* RNVisualCloneImageBlurUtils.m in Sources */,
-				21F72D5B229FD0F900315C0A /* RNVisualCloneSource.m in Sources */,
-				21F72D5C229FD0F900315C0A /* RNVisualCloneSourceManager.m in Sources */,
-				21F72D14229F12F900315C0A /* RNVisualCloneManager.m in Sources */,
+				214D6B6222B01BDA00227ED9 /* RNSharedElementTransition.m in Sources */,
+				214D6B5F22B01BDA00227ED9 /* RNSharedElementSourceManager.m in Sources */,
+				214D6B6122B01BDA00227ED9 /* RNSharedElementTransitionManager.m in Sources */,
+				214D6B6022B01BDA00227ED9 /* RNSharedElementSource.m in Sources */,
+				214D6B6422B01C5800227ED9 /* RNSharedElementStyle.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -238,7 +240,7 @@
 				);
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				OTHER_LDFLAGS = "-ObjC";
-				PRODUCT_NAME = RNVisualClone;
+				PRODUCT_NAME = RNSharedElement;
 				SKIP_INSTALL = YES;
 			};
 			name = Debug;
@@ -254,7 +256,7 @@
 				);
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				OTHER_LDFLAGS = "-ObjC";
-				PRODUCT_NAME = RNVisualClone;
+				PRODUCT_NAME = RNSharedElement;
 				SKIP_INSTALL = YES;
 			};
 			name = Release;
@@ -262,7 +264,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		58B511D61A9E6C8500147676 /* Build configuration list for PBXProject "RNVisualClone" */ = {
+		58B511D61A9E6C8500147676 /* Build configuration list for PBXProject "RNSharedElementTransition" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				58B511ED1A9E6C8500147676 /* Debug */,
@@ -271,7 +273,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		58B511EF1A9E6C8500147676 /* Build configuration list for PBXNativeTarget "RNVisualClone" */ = {
+		58B511EF1A9E6C8500147676 /* Build configuration list for PBXNativeTarget "RNSharedElement" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				58B511F01A9E6C8500147676 /* Debug */,

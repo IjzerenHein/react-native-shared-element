@@ -1,61 +1,22 @@
 //
-//  RNVisualCloneSource.m
-//  react-native-visual-clone
+//  RNSharedElementSource.m
+//  react-native-shared-element-transition
 //
 
 #import <UIKit/UIKit.h>
-#import "RNVisualCloneSource.h"
+#import "RNSharedElementSource.h"
 
-@implementation RNVisualCloneStyle
-{
-    UIColor* _backgroundColor;
-    UIColor* _borderColor;
-    UIColor* _shadowColor;
-}
-
-- (instancetype)init
-{
-    return self;
-}
-
-- (void) setBackgroundColor:(UIColor*)backgroundColor {
-    _backgroundColor = backgroundColor;
-}
-- (UIColor*) backgroundColor
-{
-    return _backgroundColor;
-}
-
-- (void) setBorderColor:(UIColor*)borderColor {
-    _borderColor = borderColor;
-}
-- (UIColor*) borderColor
-{
-    return _borderColor;
-}
-
-- (void) setShadowColor:(UIColor*)shadowColor {
-    _shadowColor = shadowColor;
-}
-- (UIColor*)shadowColor
-{
-    return _shadowColor;
-}
-
-@end
-
-
-@implementation RNVisualCloneSource
+@implementation RNSharedElementSource
 {
     long _refCount;
     long _hideRefCount;
     
     NSMutableArray* _contentRequests;
     NSObject* _contentCache;
-    RNVisualCloneContentType _contentTypeCache;
+    RNSharedElementContentType _contentTypeCache;
     
     NSMutableArray* _styleRequests;
-    RNVisualCloneStyle* _styleCache;
+    RNSharedElementStyle* _styleCache;
     
     CADisplayLink* _displayLink;
 }
@@ -71,7 +32,7 @@
     _hideRefCount = 0;
     _contentRequests = nil;
     _contentCache = nil;
-    _contentTypeCache = RNVisualCloneContentTypeSnapshot;
+    _contentTypeCache = RNSharedElementContentTypeSnapshot;
     _styleRequests = nil;
     _styleCache = nil;
     _displayLink = nil;
@@ -139,7 +100,7 @@
     [self updateContent];
 }
 
-- (void) requestContent:(__weak id <RNVisualCloneDelegate>) delegate useCache:(BOOL)useCache
+- (void) requestContent:(__weak id <RNSharedElementDelegate>) delegate useCache:(BOOL)useCache
 {
     if (useCache && _contentCache != nil) {
         [delegate didLoadContent:_contentCache contentType:_contentTypeCache source:self];
@@ -164,12 +125,12 @@
     
     // Obtain snapshot content
     NSObject* content;
-    RNVisualCloneContentType contentType;
+    RNSharedElementContentType contentType;
     if ([_view isKindOfClass:[UIImageView class]]) {
         UIImageView* imageView = (UIImageView*) _view;
         UIImage* image = imageView.image;
         content = image;
-        contentType = RNVisualCloneContentTypeRawImage;
+        contentType = RNSharedElementContentTypeRawImage;
     }
     else {
         NSLog(@"drawViewHierarchyInRect: bounds: %@", NSStringFromCGRect(bounds));
@@ -179,7 +140,7 @@
         UIGraphicsEndImageContext();
         NSLog(@"drawViewHierarchyInRect: RESULT: %li", res);
         content = image;
-        contentType = RNVisualCloneContentTypeImage;
+        contentType = RNSharedElementContentTypeImage;
     }
     
     // If the content could not be obtained, then try again later
@@ -218,7 +179,7 @@
         [_displayLink removeFromRunLoop:[NSRunLoop mainRunLoop] forMode:NSDefaultRunLoopMode];
         _displayLink = nil;
     }
-    for (__weak id <RNVisualCloneDelegate> delegate in delegates) {
+    for (__weak id <RNSharedElementDelegate> delegate in delegates) {
         if (delegate != nil) {
             [delegate didLoadContent:content contentType:contentType source:self];
         }
@@ -231,7 +192,7 @@
     [self updateContent];
 }
 
-- (void) requestStyle:(__weak id <RNVisualCloneDelegate>) delegate useCache:(BOOL)useCache
+- (void) requestStyle:(__weak id <RNSharedElementDelegate>) delegate useCache:(BOOL)useCache
 {
     if (useCache && _styleCache != nil) {
         [delegate didLoadStyle:_styleCache source:self];
@@ -253,7 +214,7 @@
     CGRect layout = [_view convertRect:_view.bounds toView:nil];
     if (CGRectIsEmpty(layout)) return;
     
-    RNVisualCloneStyle* style = [[RNVisualCloneStyle alloc]init];
+    RNSharedElementStyle* style = [[RNSharedElementStyle alloc]init];
     CALayer* layer = _view.layer;
     style.layout = layout;
     style.opacity = layer.opacity || 0.0f;
@@ -270,7 +231,7 @@
     
     NSArray* delegates = _styleRequests;
     _styleRequests = nil;
-    for (__weak id <RNVisualCloneDelegate> delegate in delegates) {
+    for (__weak id <RNSharedElementDelegate> delegate in delegates) {
         if (delegate != nil) {
             [delegate didLoadStyle:style source:self];
         }

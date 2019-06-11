@@ -1,6 +1,6 @@
-# react-native-visual-clone
+# react-native-shared-element-transition
 
-Create visual clones of your views and animate them cheaply ✂️📋💫
+Shared element transition component that runs entirely natively for fast and perfect transitions without any flickering 💫
 
 
 ## [0.1.0] - 2019-05-29

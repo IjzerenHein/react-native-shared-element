@@ -20,7 +20,7 @@
     http://go.microsoft.com/fwlink/?LinkID=391919
 -->
 <Directives xmlns="http://schemas.microsoft.com/netfx/2013/01/metadata">
-  <Library Name="RNVisualClone">
+  <Library Name="RNSharedElement">
 
   	<!-- add directives for your library here -->
 

@@ -5,14 +5,14 @@ import java.util.Map;
 import android.view.View;
 import android.graphics.RectF;
 
-public class RNVisualCloneData extends Object {
+public class RNSharedElementData extends Object {
     private String mSharedId;
     private View mView;
     private RectF mLayout;
     private int mOptions;
     private int mRefCount;
 
-    public RNVisualCloneData(String sharedId, View view, RectF layout, int options) {
+    public RNSharedElementData(String sharedId, View view, RectF layout, int options) {
         mSharedId = sharedId;
         mLayout = layout;
         mView = view;
@@ -50,10 +50,10 @@ public class RNVisualCloneData extends Object {
 
     public static String keyForSharedId(String sharedId, int options) {
         String type;
-        if ((options & RNVisualCloneOption.SCENE) != 0) {
-            type = ((options & RNVisualCloneOption.TARGET) != 0) ? "TargetScene" : "SourceScene";
+        if ((options & RNSharedElementOption.SCENE) != 0) {
+            type = ((options & RNSharedElementOption.TARGET) != 0) ? "TargetScene" : "SourceScene";
         } else {
-            type = ((options & RNVisualCloneOption.TARGET) != 0) ? "TargetComponent" : "SourceComponent";
+            type = ((options & RNSharedElementOption.TARGET) != 0) ? "TargetComponent" : "SourceComponent";
         }
         return type + ":" + sharedId;
     }

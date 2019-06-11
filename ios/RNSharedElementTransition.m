@@ -1,6 +1,6 @@
 //
-//  RNVisualClone.m
-//  react-native-visual-clone
+//  RNSharedElementTransition.m
+//  react-native-shared-element-transition
 //
 
 #import <Foundation/Foundation.h>
@@ -8,7 +8,7 @@
 #import <CoreImage/CoreImage.h>
 #import <React/RCTDefines.h>
 #import <React/UIView+React.h>
-#import "RNVisualClone.h"
+#import "RNSharedElementTransition.h"
 
 #ifdef DEBUG
 #define DebugLog(...) NSLog(__VA_ARGS__)
@@ -16,49 +16,41 @@
 #define DebugLog(...) (void)0
 #endif
 
-@implementation RCTConvert(RNVisualCloneContentType)
-RCT_ENUM_CONVERTER(RNVisualCloneContentType, (@{
-                                                @"snapshot": @(RNVisualCloneContentTypeSnapshot),
-                                                @"image": @(RNVisualCloneContentTypeImage),
-                                                @"rawImage": @(RNVisualCloneContentTypeRawImage),
-                                                }), -1, integerValue)
-@end
-
-@interface RNVisualCloneItem : NSObject
-@property (nonatomic, readonly) RNVisualCloneSource* source;
+@interface RNSharedElementItem : NSObject
+@property (nonatomic, readonly) RNSharedElementSource* source;
 @property (nonatomic, assign) BOOL needsLayout;
 @property (nonatomic, assign) BOOL needsContent;
 @property (nonatomic, assign) id content;
-@property (nonatomic, assign) RNVisualCloneContentType contentType;
-@property (nonatomic, assign) RNVisualCloneStyle* style;
+@property (nonatomic, assign) RNSharedElementContentType contentType;
+@property (nonatomic, assign) RNSharedElementStyle* style;
 @property (nonatomic, assign) BOOL hidden;
-- (instancetype)initWithSource:(RNVisualCloneSource*)source;
+- (instancetype)initWithSource:(RNSharedElementSource*)source;
 @end
 
-@implementation RNVisualCloneItem
-- (instancetype)initWithSource:(RNVisualCloneSource*)source
+@implementation RNSharedElementItem
+- (instancetype)initWithSource:(RNSharedElementSource*)source
 {
     _source = source;
     _needsContent = YES;
     _needsLayout = YES;
     _content = nil;
-    _contentType = RNVisualCloneContentTypeImage;
+    _contentType = RNSharedElementContentTypeImage;
     _style = nil;
     _hidden = NO;
     return self;
 }
 @end
 
-@implementation RNVisualClone
+@implementation RNSharedElementTransition
 {
-    RNVisualCloneSourceManager* _sourceManager;
+    RNSharedElementSourceManager* _sourceManager;
     NSArray* _items;
     UIImageView* _primaryImageView;
     UIImageView* _secondaryImageView;
     BOOL _reactFrameSet;
 }
 
-- (instancetype)initWithSourceManager:(RNVisualCloneSourceManager*)sourceManager
+- (instancetype)initWithSourceManager:(RNSharedElementSourceManager*)sourceManager
 {
     if ((self = [super init])) {
         _sourceManager = sourceManager;
@@ -80,7 +72,7 @@ RCT_ENUM_CONVERTER(RNVisualCloneContentType, (@{
 
 - (void)dealloc
 {
-    for (RNVisualCloneItem* item in _items) {
+    for (RNSharedElementItem* item in _items) {
         [_sourceManager release:item.source];
         if (item.hidden) {
             item.source.hideRefCount--;
@@ -99,9 +91,9 @@ RCT_ENUM_CONVERTER(RNVisualCloneContentType, (@{
     return imageView;
 }
 
-- (RNVisualCloneItem*) findItemForSource:(RNVisualCloneSource*) source
+- (RNSharedElementItem*) findItemForSource:(RNSharedElementSource*) source
 {
-    for (RNVisualCloneItem* item in _items) {
+    for (RNSharedElementItem* item in _items) {
         if (item.source == source) {
             return item;
         }
@@ -113,14 +105,14 @@ RCT_ENUM_CONVERTER(RNVisualCloneContentType, (@{
 {
     NSMutableArray* newItems = [[NSMutableArray alloc]initWithCapacity:sources.count];
     for (id source in sources) {
-        RNVisualCloneItem* item = [self findItemForSource:source];
+        RNSharedElementItem* item = [self findItemForSource:source];
         if (item == nil) {
-            item = [[RNVisualCloneItem alloc]initWithSource:source];
+            item = [[RNSharedElementItem alloc]initWithSource:source];
         }
         [newItems addObject:item];
     }
     
-    for (RNVisualCloneItem* item in _items) {
+    for (RNSharedElementItem* item in _items) {
         [_sourceManager release:item.source];
         if (![newItems containsObject:item]) {
             if (item.hidden) {
@@ -150,7 +142,7 @@ RCT_ENUM_CONVERTER(RNVisualCloneContentType, (@{
 
 - (void)updateSourceVisibility
 {
-    for (RNVisualCloneItem* item in _items) {
+    for (RNSharedElementItem* item in _items) {
         BOOL hidden = _autoHide && _reactFrameSet && item.style != nil && item.content != nil;
         if (item.hidden != hidden) {
             item.hidden = hidden;
@@ -173,7 +165,7 @@ RCT_ENUM_CONVERTER(RNVisualCloneContentType, (@{
 
 - (void) didSetProps:(NSArray<NSString *> *)changedProps
 {
-    for (RNVisualCloneItem* item in _items) {
+    for (RNSharedElementItem* item in _items) {
         if (item.needsLayout) {
             item.needsLayout = NO;
             [item.source requestStyle:self useCache:YES];
@@ -200,12 +192,12 @@ RCT_ENUM_CONVERTER(RNVisualCloneContentType, (@{
     view.image = image;
 }
 
-- (void) didLoadContent:(id)content contentType:(RNVisualCloneContentType)contentType source:(RNVisualCloneSource*)source
+- (void) didLoadContent:(id)content contentType:(RNSharedElementContentType)contentType source:(RNSharedElementSource*)source
 {
     // NSLog(@"didLoadContent: %@", content);
-    RNVisualCloneItem* item = [self findItemForSource:source];
+    RNSharedElementItem* item = [self findItemForSource:source];
     if (item == nil) return;
-    if ((contentType == RNVisualCloneContentTypeImage) || (contentType == RNVisualCloneContentTypeRawImage)) {
+    if ((contentType == RNSharedElementContentTypeImage) || (contentType == RNSharedElementContentTypeRawImage)) {
         UIImage* image = content;
         item.content = content;
         item.contentType = contentType;
@@ -223,17 +215,17 @@ RCT_ENUM_CONVERTER(RNVisualCloneContentType, (@{
             }
         }
     }
-    else if (contentType == RNVisualCloneContentTypeSnapshot) {
+    else if (contentType == RNSharedElementContentTypeSnapshot) {
         // TODO
     }
     [self updateStyle];
     [self updateSourceVisibility];
 }
 
-- (void) didLoadStyle:(RNVisualCloneStyle *)style source:(RNVisualCloneSource*)source
+- (void) didLoadStyle:(RNSharedElementStyle *)style source:(RNSharedElementSource*)source
 {
     // NSLog(@"didMeasureLayout: %@, styleProps: %@", NSStringFromCGRect(layout), styleProps);
-    RNVisualCloneItem* item = [self findItemForSource:source];
+    RNSharedElementItem* item = [self findItemForSource:source];
     if (item == nil) return;
     item.style = style;
     [self updateStyle];
@@ -251,13 +243,13 @@ RCT_ENUM_CONVERTER(RNVisualCloneContentType, (@{
                            alpha:alpha1 + ((alpha2 - alpha1) * position)];
 }
 
-- (RNVisualCloneStyle*) getInterpolatedStyle:(RNVisualCloneStyle*)style1 style2:(RNVisualCloneStyle*)style2 position:(CGFloat) position
+- (RNSharedElementStyle*) getInterpolatedStyle:(RNSharedElementStyle*)style1 style2:(RNSharedElementStyle*)style2 position:(CGFloat) position
 {
     CGRect layout1 = style1.layout;
     CGRect layout2 = style2.layout;
     CGFloat pos = MAX(MIN(position, _items.count), 0);
     
-    RNVisualCloneStyle* style = [[RNVisualCloneStyle alloc]init];
+    RNSharedElementStyle* style = [[RNSharedElementStyle alloc]init];
     style.layout = CGRectMake(
                               layout1.origin.x + ((layout2.origin.x - layout1.origin.x) * pos),
                               layout1.origin.y + ((layout2.origin.y - layout1.origin.y) * pos),
@@ -280,7 +272,7 @@ RCT_ENUM_CONVERTER(RNVisualCloneContentType, (@{
     return style;
 }
 
-- (void) applyStyle:(RNVisualCloneStyle*)style layer:(CALayer*)layer
+- (void) applyStyle:(RNSharedElementStyle*)style layer:(CALayer*)layer
 {
     layer.opacity = style.opacity;
     layer.backgroundColor = style.backgroundColor.CGColor;
@@ -299,17 +291,17 @@ RCT_ENUM_CONVERTER(RNVisualCloneContentType, (@{
     
     // Get interpolated style
     //long index = MAX(MIN(floor(position), _items.count - 1), 0);
-    RNVisualCloneItem* item1 = _items.count ? _items[0] : nil;
-    RNVisualCloneItem* item2 = (_items.count >= 2) ? _items[1] : nil;
-    RNVisualCloneStyle* style1 = (item1 != nil) ? item1.style : nil;
-    RNVisualCloneStyle* style2 = (item2 != nil) ? item2.style : nil;
+    RNSharedElementItem* item1 = _items.count ? _items[0] : nil;
+    RNSharedElementItem* item2 = (_items.count >= 2) ? _items[1] : nil;
+    RNSharedElementStyle* style1 = (item1 != nil) ? item1.style : nil;
+    RNSharedElementStyle* style2 = (item2 != nil) ? item2.style : nil;
     if ((style1 == nil) && (style2 == nil)) return;
     if (style1 == nil) {
         style1 = style2;
     } else if (style2 == nil) {
         style2 = style1;
     }
-    RNVisualCloneStyle* style = [self getInterpolatedStyle:style1 style2:style2 position:_value];
+    RNSharedElementStyle* style = [self getInterpolatedStyle:style1 style2:style2 position:_value];
     
     // Update frame
     CGRect frame = [self.superview convertRect:style.layout fromView:nil];

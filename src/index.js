@@ -1,1 +1,1 @@
-export * from "./VisualClone";
+export * from "./SharedElementTransition";

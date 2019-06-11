@@ -4,17 +4,17 @@ using System.Collections.Generic;
 using Windows.ApplicationModel.Core;
 using Windows.UI.Core;
 
-namespace Visual.Clone.RNVisualClone
+namespace Visual.Clone.RNSharedElement
 {
     /// <summary>
     /// A module that allows JS to share data.
     /// </summary>
-    class RNVisualCloneModule : NativeModuleBase
+    class RNSharedElementModule : NativeModuleBase
     {
         /// <summary>
-        /// Instantiates the <see cref="RNVisualCloneModule"/>.
+        /// Instantiates the <see cref="RNSharedElementModule"/>.
         /// </summary>
-        internal RNVisualCloneModule()
+        internal RNSharedElementModule()
         {
 
         }
@@ -26,7 +26,7 @@ namespace Visual.Clone.RNVisualClone
         {
             get
             {
-                return "RNVisualClone";
+                return "RNSharedElement";
             }
         }
     }

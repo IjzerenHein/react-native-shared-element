@@ -1,6 +1,6 @@
 package com.ijzerenhein.visualclone;
 
-public class RNVisualCloneOption {
+public class RNSharedElementOption {
     public static final int INITIAL = 1;
     public static final int SCENE = 2;
     public static final int TARGET = 4;

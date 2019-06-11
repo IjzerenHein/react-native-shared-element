@@ -20,13 +20,13 @@ import com.facebook.react.uimanager.PixelUtil;
 import com.facebook.react.uimanager.UIBlock;
 import com.facebook.react.uimanager.UIManagerModule;
 
-public class RNVisualCloneModule extends ReactContextBaseJavaModule {
-    private RNVisualCloneDataManager mCloneDataManager;
+public class RNSharedElementModule extends ReactContextBaseJavaModule {
+    private RNSharedElementDataManager mCloneDataManager;
 
-    static String LOG_TAG = "RNVisualClone";
+    static String LOG_TAG = "RNSharedElement";
 
-    public RNVisualCloneModule(ReactApplicationContext reactContext,
-            RNVisualCloneDataManager cloneDataManager) {
+    public RNSharedElementModule(ReactApplicationContext reactContext,
+            RNSharedElementDataManager cloneDataManager) {
         super(reactContext);
         mCloneDataManager = cloneDataManager;
     }
@@ -48,7 +48,7 @@ public class RNVisualCloneModule extends ReactContextBaseJavaModule {
 
         final ReactApplicationContext context = getReactApplicationContext();
         final UIManagerModule uiManager = context.getNativeModule(UIManagerModule.class);
-        final RNVisualCloneDataManager cloneDataManager = mCloneDataManager;
+        final RNSharedElementDataManager cloneDataManager = mCloneDataManager;
         final Handler handler = new Handler();
 
         // Called whenever the view has been successfully measured
@@ -75,7 +75,7 @@ public class RNVisualCloneModule extends ReactContextBaseJavaModule {
                     public void execute(NativeViewHierarchyManager nativeViewHierarchyManager) {
 
                         // Get views
-                        RNVisualCloneView view = (RNVisualCloneView) nativeViewHierarchyManager
+                        RNSharedElementView view = (RNSharedElementView) nativeViewHierarchyManager
                                 .resolveView(tag);
                         View sourceView = nativeViewHierarchyManager.resolveView(sourceTag);
                         ViewGroup parentView = (ViewGroup) nativeViewHierarchyManager.resolveView(parentTag);
@@ -100,7 +100,7 @@ public class RNVisualCloneModule extends ReactContextBaseJavaModule {
                                 styles.putDouble("height", layout.height());
                                 styles.putInt("backgroundColor", 1); // This is a bit hackish
                                 styles.putString("overflow", "hidden");
-                                uiManager.updateView(tag, "RNVisualClone", styles);
+                                uiManager.updateView(tag, "RNSharedElement", styles);
                             }
                         });
 
@@ -115,7 +115,7 @@ public class RNVisualCloneModule extends ReactContextBaseJavaModule {
                         promise.resolve(result);
 
                         // Create clone data object
-                        RNVisualCloneData data = new RNVisualCloneData(sharedId, sourceView, layout,
+                        RNSharedElementData data = new RNSharedElementData(sharedId, sourceView, layout,
                                 options);
                         cloneDataManager.put(data);
                         view.setInitialData(data, options, contentType);
@@ -139,7 +139,7 @@ public class RNVisualCloneModule extends ReactContextBaseJavaModule {
         // I couldn't figure out how to do a generic delayed retry mechanism
         // without tripping up Java...
         // If you read this code and you know how to (without using external libs),
-        // let me know at: https://github.com/IjzerenHein/react-native-visual-clone
+        // let me know at: https://github.com/IjzerenHein/react-native-shared-element-transition
         uiManager.measureLayout(sourceTag, parentTag, measureErrorCallback, new Callback() {
             @Override
             public void invoke(Object... args) {

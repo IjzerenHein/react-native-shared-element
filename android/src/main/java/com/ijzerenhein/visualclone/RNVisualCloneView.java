@@ -13,19 +13,19 @@ import android.graphics.Canvas;
 import com.facebook.react.uimanager.ThemedReactContext;
 import com.facebook.react.views.view.ReactViewGroup;
 
-public class RNVisualCloneView extends ReactViewGroup {
+public class RNSharedElementView extends ReactViewGroup {
 
-    static String LOG_TAG = "RNVisualClone";
+    static String LOG_TAG = "RNSharedElement";
 
-    private RNVisualCloneDataManager mCloneDataManager;
-    private RNVisualCloneData mData = null;
+    private RNSharedElementDataManager mCloneDataManager;
+    private RNSharedElementData mData = null;
     private String mId = null;
     private int mOptions = 0;
     private int mContentType = 0;
     private float mBlurRadius = 0.0f;
 
-    public RNVisualCloneView(ThemedReactContext themedReactContext,
-            RNVisualCloneDataManager cloneDataManager) {
+    public RNSharedElementView(ThemedReactContext themedReactContext,
+            RNSharedElementDataManager cloneDataManager) {
         super(themedReactContext);
         // Log.d(LOG_TAG, "Clone construct");
         mCloneDataManager = cloneDataManager;
@@ -39,8 +39,8 @@ public class RNVisualCloneView extends ReactViewGroup {
     }
 
     private String getDebugName() {
-        String source = ((mOptions & RNVisualCloneOption.TARGET) != 0) ? "target" : "source";
-        String type = ((mOptions & RNVisualCloneOption.SCENE) != 0) ? "scene" : "component";
+        String source = ((mOptions & RNSharedElementOption.TARGET) != 0) ? "target" : "source";
+        String type = ((mOptions & RNSharedElementOption.SCENE) != 0) ? "scene" : "component";
         return source + " " + type + " " + mId;
     }
 
@@ -48,18 +48,18 @@ public class RNVisualCloneView extends ReactViewGroup {
     protected void onDraw(Canvas canvas) {
         // Log.d(LOG_TAG, "onDraw " + getDebugName() + ", width: " + canvas.getWidth() +
         // ", height: " + canvas.getHeight());
-        if ((mData == null) && (mId != null) && ((mOptions & RNVisualCloneOption.INITIAL) == 0)) {
+        if ((mData == null) && (mId != null) && ((mOptions & RNSharedElementOption.INITIAL) == 0)) {
             // Log.d(LOG_TAG, "mCloneDataManager.acquire " + getDebugName() + ", options: "
             // + mOptions);
-            mData = mCloneDataManager.acquire(RNVisualCloneData.keyForSharedId(mId, mOptions));
+            mData = mCloneDataManager.acquire(RNSharedElementData.keyForSharedId(mId, mOptions));
             // if (mData != null) Log.d(LOG_TAG, "Success!!");
         }
 
         if (mData == null)
             return;
-        if ((mOptions & RNVisualCloneOption.VISIBLE) == 0)
+        if ((mOptions & RNSharedElementOption.VISIBLE) == 0)
             return;
-        if (mContentType == RNVisualCloneContentType.CHILDREN) {
+        if (mContentType == RNSharedElementContentType.CHILDREN) {
             /*
              * Paint paint = new Paint(); int width = this.getWidth(); int height =
              * this.getHeight(); paint.setColor(Color.BLUE);
@@ -72,7 +72,7 @@ public class RNVisualCloneView extends ReactViewGroup {
         mData.getView().draw(canvas);
     }
 
-    public void setInitialData(RNVisualCloneData data, int options, int contentType) {
+    public void setInitialData(RNSharedElementData data, int options, int contentType) {
         // Log.d(LOG_TAG, "setInitialData " + getDebugName() + ", layout: " +
         // data.getLayout());
         mData = data;
@@ -90,8 +90,8 @@ public class RNVisualCloneView extends ReactViewGroup {
 
     public void setOptions(final int options) {
         if (mOptions != options) {
-            // boolean wasVisible = ((mOptions & RNVisualCloneOption.VISIBLE) != 0);
-            // boolean isVisible = ((options & RNVisualCloneOption.VISIBLE) != 0);
+            // boolean wasVisible = ((mOptions & RNSharedElementOption.VISIBLE) != 0);
+            // boolean isVisible = ((options & RNSharedElementOption.VISIBLE) != 0);
             mOptions = options;
             /*
              * if (wasVisible && !isVisible) { // setVisibility(View.INVISIBLE);

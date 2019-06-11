@@ -1,6 +1,5 @@
+import { NativeModules } from "react-native";
 
-import { NativeModules } from 'react-native';
+const { RNSharedElement } = NativeModules;
 
-const { RNVisualClone } = NativeModules;
-
-export default RNVisualClone;
+export default RNSharedElement;

@@ -3,12 +3,12 @@ package com.ijzerenhein.visualclone;
 import java.util.Map;
 import java.util.HashMap;
 
-public class RNVisualCloneDataManager extends Object {
-    private Map<String, RNVisualCloneData> mItems = new HashMap<String, RNVisualCloneData>();
+public class RNSharedElementDataManager extends Object {
+    private Map<String, RNSharedElementData> mItems = new HashMap<String, RNSharedElementData>();
 
-    public RNVisualCloneData acquire(String key) {
+    public RNSharedElementData acquire(String key) {
         synchronized (mItems) {
-            RNVisualCloneData item = mItems.get(key);
+            RNSharedElementData item = mItems.get(key);
             if (item != null) {
                 item.setRefCount(item.getRefCount() + 1);
             }
@@ -16,7 +16,7 @@ public class RNVisualCloneDataManager extends Object {
         }
     }
 
-    public int release(RNVisualCloneData item) {
+    public int release(RNSharedElementData item) {
         synchronized (mItems) {
             item.setRefCount(item.getRefCount() - 1);
             if (item.getRefCount() == 0) {
@@ -26,7 +26,7 @@ public class RNVisualCloneDataManager extends Object {
         }
     }
 
-    public void put(RNVisualCloneData item) {
+    public void put(RNSharedElementData item) {
         synchronized (mItems) {
             mItems.put(item.getKey(), item);
         }

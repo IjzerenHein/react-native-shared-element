@@ -4,7 +4,7 @@ using ReactNative.UIManager;
 using System;
 using System.Collections.Generic;
 
-namespace Visual.Clone.RNVisualClone
+namespace Visual.Clone.RNSharedElement
 {
     /// <summary>
     /// Package defining core framework modules (e.g., <see cref="UIManagerModule"/>).
@@ -12,7 +12,7 @@ namespace Visual.Clone.RNVisualClone
     /// other framework parts (e.g., with the list of packages to load view
     /// managers from).
     /// </summary>
-    public class RNVisualClonePackage : IReactPackage
+    public class RNSharedElementPackage : IReactPackage
     {
         /// <summary>
         /// Creates the list of native modules to register with the react
@@ -24,7 +24,7 @@ namespace Visual.Clone.RNVisualClone
         {
             return new List<INativeModule>
             {
-                new RNVisualCloneModule(),
+                new RNSharedElementModule(),
             };
         }
 

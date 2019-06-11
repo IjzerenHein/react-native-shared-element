@@ -1,33 +1,32 @@
 //
-//  RNVisualCloneManager.m
-//  react-native-visual-clone
+//  RNSharedElementTransitionManager.m
+//  react-native-shared-element-transition
 //
 
 #import <React/RCTBridge.h>
 #import <React/RCTUIManager.h>
+#import "RNSharedElementTransitionManager.h"
+#import "RNSharedElementTransition.h"
+#import "RNSharedElementSourceManager.h"
 
-#import "RNVisualCloneManager.h"
-#import "RNVisualClone.h"
-#import "RNVisualCloneSourceManager.h"
-
-@implementation RNVisualCloneManager
+@implementation RNSharedElementTransitionManager
 {
-    RNVisualCloneSourceManager* _sourceManager;
+    RNSharedElementSourceManager* _sourceManager;
 }
 
-RCT_EXPORT_MODULE(RNVisualClone);
+RCT_EXPORT_MODULE(RNSharedElementTransition);
 
 - (instancetype) init
 {
     if ((self = [super init])) {
-        _sourceManager = [[RNVisualCloneSourceManager alloc]init];
+        _sourceManager = [[RNSharedElementSourceManager alloc]init];
     }
     return self;
 }
 
 - (UIView *)view
 {
-    return [[RNVisualClone alloc] initWithSourceManager:_sourceManager];
+    return [[RNSharedElementTransition alloc] initWithSourceManager:_sourceManager];
 }
 
 - (dispatch_queue_t)methodQueue
@@ -38,14 +37,14 @@ RCT_EXPORT_MODULE(RNVisualClone);
 RCT_EXPORT_VIEW_PROPERTY(autoHide, BOOL);
 RCT_EXPORT_VIEW_PROPERTY(value, CGFloat);
 RCT_EXPORT_VIEW_PROPERTY(animation, NSString);
-RCT_CUSTOM_VIEW_PROPERTY(sources, NSArray, RNVisualClone)
+RCT_CUSTOM_VIEW_PROPERTY(sources, NSArray, RNSharedElementTransition)
 {
     if (json) {
         NSMutableArray* sources = [[NSMutableArray alloc]init];
         for (NSNumber* reactTag in json) {
             if ([reactTag isKindOfClass:[NSNumber class]]) {
                 UIView *sourceView = [self.bridge.uiManager viewForReactTag:reactTag];
-                RNVisualCloneSource* source = [_sourceManager acquire:reactTag view:sourceView];
+                RNSharedElementSource* source = [_sourceManager acquire:reactTag view:sourceView];
                 [sources addObject:source];
             }
         }
@@ -64,7 +63,6 @@ RCT_REMAP_METHOD(configure,
 {
     // DUMMY
 }
-
 
 + (BOOL)requiresMainQueueSetup
 {

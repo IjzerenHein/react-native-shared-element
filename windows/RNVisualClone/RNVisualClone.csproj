@@ -129,9 +129,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RNVisualCloneModule.cs" />
-    <Compile Include="RNVisualClonePackage.cs" />
-    <EmbeddedResource Include="Properties\RNVisualClone.rd.xml" />
+    <Compile Include="RNSharedElementModule.cs" />
+    <Compile Include="RNSharedElementPackage.cs" />
+    <EmbeddedResource Include="Properties\RNSharedElement.rd.xml" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="$(ReactWindowsRoot)\react-native-windows\ReactWindows\ReactNative\ReactNative.csproj">

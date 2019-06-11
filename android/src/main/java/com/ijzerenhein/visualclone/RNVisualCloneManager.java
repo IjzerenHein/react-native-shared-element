@@ -5,13 +5,13 @@ import com.facebook.react.uimanager.ThemedReactContext;
 import com.facebook.react.views.view.ReactViewManager;
 import com.facebook.react.views.view.ReactViewGroup;
 
-public class RNVisualCloneManager extends ReactViewManager {
+public class RNSharedElementManager extends ReactViewManager {
 
-    private RNVisualCloneDataManager mCloneDataManager;
+    private RNSharedElementDataManager mCloneDataManager;
 
-    public static final String REACT_CLASS = "RNVisualClone";
+    public static final String REACT_CLASS = "RNSharedElement";
 
-    RNVisualCloneManager(RNVisualCloneDataManager cloneDataManager) {
+    RNSharedElementManager(RNSharedElementDataManager cloneDataManager) {
         super();
         mCloneDataManager = cloneDataManager;
     }
@@ -23,32 +23,32 @@ public class RNVisualCloneManager extends ReactViewManager {
 
     @Override
     public ReactViewGroup createViewInstance(ThemedReactContext context) {
-        return new RNVisualCloneView(context, mCloneDataManager);
+        return new RNSharedElementView(context, mCloneDataManager);
     }
 
     @Override
     public void onDropViewInstance(ReactViewGroup view) {
         super.onDropViewInstance(view);
-        ((RNVisualCloneView) view).releaseData();
+        ((RNSharedElementView) view).releaseData();
     }
 
     @ReactProp(name = "id")
-    public void setId(final RNVisualCloneView view, final String id) {
+    public void setId(final RNSharedElementView view, final String id) {
         view.setId(id);
     }
 
     @ReactProp(name = "options")
-    public void setOptions(final RNVisualCloneView view, final int options) {
+    public void setOptions(final RNSharedElementView view, final int options) {
         view.setOptions(options);
     }
 
     @ReactProp(name = "contentType")
-    public void setContentType(final RNVisualCloneView view, final int contentType) {
+    public void setContentType(final RNSharedElementView view, final int contentType) {
         view.setContentType(contentType);
     }
 
     @ReactProp(name = "blurRadius", defaultFloat = 0.0f)
-    public void setBlurRadius(final RNVisualCloneView view, final float blurRadius) {
+    public void setBlurRadius(final RNSharedElementView view, final float blurRadius) {
         view.setBlurRadius(blurRadius);
     }
 }
