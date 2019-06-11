@@ -11,16 +11,19 @@ import PropTypes from "prop-types";
 export class VisualClone extends Component {
   static propTypes = {
     style: PropTypes.any,
-    source: PropTypes.any,
+    sources: PropTypes.any.isRequired,
     contentType: PropTypes.oneOf(["snapshot", "image", "rawImage"]),
-    blurFilter: PropTypes.oneOf(["gaussian", "motion", "zoom"]),
+    autoHide: PropTypes.bool,
+    value: PropTypes.any
+    /*blurFilter: PropTypes.oneOf(["gaussian", "motion", "zoom"]),
     blurRadius: PropTypes.number,
-    blurAngle: PropTypes.number
+    blurAngle: PropTypes.number*/
   };
 
   static defaultProps = {
     contentType: "snapshot",
-    blurFilter: "gaussian"
+    blurFilter: "gaussian",
+    autoHide: true
   };
 
   static isAvailable = NativeModules.RNVisualClone ? true : false;
@@ -37,18 +40,17 @@ export class VisualClone extends Component {
   }
 
   render() {
-    const { style, source, resizeMode, ...otherProps } = this.props;
+    /*const { style, resizeMode, ...otherProps } = this.props;
     // console.log("VisualClone.render, source:", nodeHandle);
     const flattenedStyle = style ? StyleSheet.flatten([style]) : {};
     const resolvedResizeMode =
-      resizeMode || flattenedStyle.resizeMode || "cover";
+      resizeMode || flattenedStyle.resizeMode || "cover";*/
     return (
       <RNVisualClone
         ref={this._setRef}
-        style={flattenedStyle}
-        resizeMode={resolvedResizeMode}
-        source={source}
-        {...otherProps}
+        // style={flattenedStyle}
+        // resizeMode={resolvedResizeMode}
+        {...this.props}
       />
     );
   }

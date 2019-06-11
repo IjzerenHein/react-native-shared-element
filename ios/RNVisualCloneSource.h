@@ -20,13 +20,8 @@
 
 - (instancetype)init:(NSNumber *)reactTag view:(UIView*) view;
 
-- (void) requestSnapshotImage:(id <RNVisualCloneDelegate>) delegate useCache:(BOOL)useCache;
-- (void) requestRawImage:(id <RNVisualCloneDelegate>) delegate useCache:(BOOL)useCache;
-- (void) requestSnapshotView:(id <RNVisualCloneDelegate>) delegate useCache:(BOOL)useCache;
-- (void) requestLayout:(id <RNVisualCloneDelegate>) delegate useCache:(BOOL)useCache;
-
-// - (void) invalidate();
-
+- (void) requestContent:(id <RNVisualCloneDelegate>) delegate contentType:(RNVisualCloneContentType)contentType useCache:(BOOL)useCache;
+- (void) requestStyle:(id <RNVisualCloneDelegate>) delegate useCache:(BOOL)useCache;
 
 @end
 

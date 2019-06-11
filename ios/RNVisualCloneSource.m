@@ -6,6 +6,45 @@
 #import <UIKit/UIKit.h>
 #import "RNVisualCloneSource.h"
 
+@implementation RNVisualCloneStyle
+{
+    UIColor* _backgroundColor;
+    UIColor* _borderColor;
+    UIColor* _shadowColor;
+}
+
+- (instancetype)init
+{
+    return self;
+}
+
+- (void) setBackgroundColor:(UIColor*)backgroundColor {
+    _backgroundColor = backgroundColor;
+}
+- (UIColor*) backgroundColor
+{
+    return _backgroundColor;
+}
+
+- (void) setBorderColor:(UIColor*)borderColor {
+    _borderColor = borderColor;
+}
+- (UIColor*) borderColor
+{
+    return _borderColor;
+}
+
+- (void) setShadowColor:(UIColor*)shadowColor {
+    _shadowColor = shadowColor;
+}
+- (UIColor*)shadowColor
+{
+    return _shadowColor;
+}
+
+@end
+
+
 @implementation RNVisualCloneSource
 {
     long _refCount;
@@ -17,8 +56,8 @@
     NSMutableArray* _rawImageRequests;
     UIImage* _rawImageCache;
     
-    NSMutableArray* _layoutRequests;
-    CGRect _layoutCache;
+    NSMutableArray* _styleRequests;
+    RNVisualCloneStyle* _styleCache;
 }
 
 @synthesize reactTag = _reactTag;
@@ -26,18 +65,18 @@
 
 - (instancetype)init:(NSNumber *)reactTag view:(UIView*) view
 {
-  _reactTag = reactTag;
-  _view = view;
-  _refCount = 1;
+    _reactTag = reactTag;
+    _view = view;
+    _refCount = 1;
     _hideRefCount = 0;
     _snapshotImageRequests = nil;
     _snapshotImageCache = nil;
     _rawImageRequests = nil;
     _rawImageCache = nil;
-    _layoutRequests = nil;
-    _layoutCache = CGRectZero;
-  [self addObservers];
-  return self;
+    _styleRequests = nil;
+    _styleCache = nil;
+    [self addObservers];
+    return self;
 }
 
 - (void) setRefCount:(long)refCount {
@@ -94,52 +133,66 @@
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
 {
     if ([keyPath isEqualToString:@"image"]) {
-        NSLog(@"Invalidated because of Image change");
+        // NSLog(@"Invalidated because of Image change");
         [self invalidate];
     }
     if ([keyPath isEqualToString:@"bounds"]) {
-        NSLog(@"Invalidated because of Bounds change");
+        // NSLog(@"Invalidated because of Bounds change");
         [self invalidate];
     }
 }
 
 - (void) invalidate
 {
-    [self updateLayout];
+    [self updateStyle];
     [self updateSnapshotImage];
     [self updateRawImage];
 }
 
 /*
-- (UIView*) snapshot
+ - (UIView*) snapshot
+ {
+ if (_cachedSnapshot != nil) return _cachedSnapshot;
+ if (_view == nil) return nil;
+ if (!_size.width || !_size.height) return nil;
+ 
+ if ([_view isKindOfClass:[UIImageView class]]) {
+ UIImageView* imageView = (UIImageView*) _view;
+ UIImage* image = imageView.image;
+ if (image == nil) return nil;
+ }
+ 
+ UIView* snapshot = [_view snapshotViewAfterScreenUpdates:YES];
+ _cachedSnapshot = snapshot;
+ return snapshot;
+ }*/
+
+
+- (void) requestContent:(id <RNVisualCloneDelegate>) delegate contentType:(RNVisualCloneContentType)contentType useCache:(BOOL)useCache
 {
-    if (_cachedSnapshot != nil) return _cachedSnapshot;
-    if (_view == nil) return nil;
-    if (!_size.width || !_size.height) return nil;
-    
-    if ([_view isKindOfClass:[UIImageView class]]) {
-        UIImageView* imageView = (UIImageView*) _view;
-        UIImage* image = imageView.image;
-        if (image == nil) return nil;
+    switch (contentType) {
+        case RNVisualCloneContentTypeImage:
+            [self requestSnapshotImage:delegate useCache:useCache];
+            break;
+        case RNVisualCloneContentTypeRawImage:
+            [self requestRawImage:delegate useCache:useCache];
+            break;
+        case RNVisualCloneContentTypeSnapshot:
+            [self requestSnapshotView:delegate useCache:useCache];
+            break;
     }
-    
-    UIView* snapshot = [_view snapshotViewAfterScreenUpdates:YES];
-    _cachedSnapshot = snapshot;
-    return snapshot;
-}*/
-
-
+}
 
 - (void) requestSnapshotImage:(__weak id <RNVisualCloneDelegate>) delegate useCache:(BOOL)useCache
 {
     if (useCache && _snapshotImageCache != nil) {
-        [delegate snapshotImageComplete:_snapshotImageCache];
+        [delegate didLoadContent:_snapshotImageCache contentType:RNVisualCloneContentTypeImage source:self];
         return;
     }
-        
+    
     if (_snapshotImageRequests == nil) _snapshotImageRequests = [[NSMutableArray alloc]init];
     [_snapshotImageRequests addObject:delegate];
-
+    
     [self updateSnapshotImage];
 }
 
@@ -159,7 +212,7 @@
         UIImageView* imageView = (UIImageView*) _view;
         image = imageView.image;
         if (image == nil) return;
-     }
+    }
     
     NSLog(@"drawViewHierarchyInRect: bounds: %@", NSStringFromCGRect(bounds));
     UIGraphicsBeginImageContextWithOptions(bounds.size, _view.opaque, 0.0f);
@@ -178,7 +231,7 @@
     _snapshotImageRequests = nil;
     for (__weak id <RNVisualCloneDelegate> delegate in delegates) {
         if (delegate != nil) {
-            [delegate snapshotImageComplete:image];
+            [delegate didLoadContent:image contentType:RNVisualCloneContentTypeImage source:self];
         }
     }
 }
@@ -186,7 +239,7 @@
 - (void) requestRawImage:(__weak id <RNVisualCloneDelegate>) delegate useCache:(BOOL)useCache
 {
     if (useCache && _rawImageCache != nil) {
-        [delegate rawImageComplete:_rawImageCache];
+        [delegate didLoadContent:_rawImageCache contentType:RNVisualCloneContentTypeRawImage source:self];
         return;
     }
     
@@ -220,45 +273,58 @@
     _rawImageRequests = nil;
     for (__weak id <RNVisualCloneDelegate> delegate in delegates) {
         if (delegate != nil) {
-            [delegate rawImageComplete:image];
+            [delegate didLoadContent:image contentType:RNVisualCloneContentTypeRawImage source:self];
         }
     }
 }
 
 - (void) requestSnapshotView:(__weak id <RNVisualCloneDelegate>) delegate useCache:(BOOL)useCache
 {
-   // TODO
+    // TODO
 }
 
-- (void) requestLayout:(__weak id <RNVisualCloneDelegate>) delegate useCache:(BOOL)useCache
+- (void) requestStyle:(__weak id <RNVisualCloneDelegate>) delegate useCache:(BOOL)useCache
 {
-    if (useCache && !CGRectIsEmpty(_layoutCache)) {
-        [delegate layoutComplete:_layoutCache];
+    if (useCache && _styleCache != nil) {
+        [delegate didLoadStyle:_styleCache source:self];
         return;
     }
     
-    if (_layoutRequests == nil) _layoutRequests = [[NSMutableArray alloc]init];
-    [_layoutRequests addObject:delegate];
+    if (_styleRequests == nil) _styleRequests = [[NSMutableArray alloc]init];
+    [_styleRequests addObject:delegate];
     
-    [self updateLayout];
+    [self updateStyle];
 }
 
-- (void) updateLayout
+- (void) updateStyle
 {
-    if (_layoutRequests == nil) return;
+    if (_styleRequests == nil) return;
     if (_view == nil) return;
     
     // Get absolute layout
     CGRect layout = [_view convertRect:_view.bounds toView:nil];
     if (CGRectIsEmpty(layout)) return;
     
-    _layoutCache = layout;
+    RNVisualCloneStyle* style = [[RNVisualCloneStyle alloc]init];
+    CALayer* layer = _view.layer;
+    style.layout = layout;
+    style.opacity = layer.opacity || 0.0f;
+    style.cornerRadius = layer.cornerRadius;
+    style.borderWidth = layer.borderWidth;
+    style.borderColor = layer.borderColor ? [UIColor colorWithCGColor:layer.borderColor] : [UIColor clearColor];
+    style.backgroundColor = layer.backgroundColor ? [UIColor colorWithCGColor:layer.backgroundColor] : [UIColor clearColor];
+    style.shadowColor = layer.shadowColor ? [UIColor colorWithCGColor:layer.shadowColor] : [UIColor clearColor];
+    style.shadowOffset = layer.shadowOffset;
+    style.shadowRadius = layer.shadowRadius;
+    style.shadowOpacity = layer.shadowOpacity;
     
-    NSArray* delegates = _layoutRequests;
-    _layoutRequests = nil;
+    _styleCache = style;
+    
+    NSArray* delegates = _styleRequests;
+    _styleRequests = nil;
     for (__weak id <RNVisualCloneDelegate> delegate in delegates) {
         if (delegate != nil) {
-            [delegate layoutComplete:layout];
+            [delegate didLoadStyle:style source:self];
         }
     }
 }

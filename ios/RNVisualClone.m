@@ -9,9 +9,6 @@
 #import <React/RCTDefines.h>
 #import <React/UIView+React.h>
 #import "RNVisualClone.h"
-#import "RNVisualCloneImageBlurUtils.h"
-
-RCT_EXTERN UIImage *RCTBlurredImageWithRadius(UIImage *inputImage, CGFloat radius);
 
 #ifdef DEBUG
 #define DebugLog(...) NSLog(__VA_ARGS__)
@@ -27,30 +24,40 @@ RCT_ENUM_CONVERTER(RNVisualCloneContentType, (@{
                                                 }), -1, integerValue)
 @end
 
-@implementation RCTConvert(RNVisualCloneBlurFilter)
-RCT_ENUM_CONVERTER(RNVisualCloneBlurFilter, (@{
-                                               @"gaussian": @(RNVisualCloneBlurFilterGaussian),
-                                               @"motion": @(RNVisualCloneBlurFilterMotion),
-                                               @"zoom": @(RNVisualCloneBlurFilterZoom),
-                                               }), -1, integerValue)
-@end
-
 @interface RNVisualClone ()
 @property (nonatomic, copy) RCTDirectEventBlock onSourceLayout;
+@end
+
+@interface RNVisualCloneItem : NSObject
+@property (nonatomic, readonly) RNVisualCloneSource* source;
+@property (nonatomic, assign) BOOL needsLayout;
+@property (nonatomic, assign) BOOL needsContent;
+@property (nonatomic, assign) id content;
+@property (nonatomic, assign) RNVisualCloneContentType contentType;
+@property (nonatomic, assign) RNVisualCloneStyle* style;
+@property (nonatomic, assign) BOOL hidden;
+- (instancetype)initWithSource:(RNVisualCloneSource*)source;
+@end
+
+@implementation RNVisualCloneItem
+- (instancetype)initWithSource:(RNVisualCloneSource*)source
+{
+    _source = source;
+    _needsContent = YES;
+    _needsLayout = YES;
+    _content = nil;
+    _contentType = RNVisualCloneContentTypeImage;
+    _style = nil;
+    _hidden = NO;
+    return self;
+}
 @end
 
 @implementation RNVisualClone
 {
     RNVisualCloneSourceManager* _sourceManager;
-    RNVisualCloneSource* _cloneSource;
     RNVisualCloneContentType _contentType;
-    BOOL _needsSourceLayout;
-    BOOL _needsSourceReload;
-    BOOL _needsImageReload;
-    UIImage* _sourceImage;
-    CGRect _sourceLayout;
-    BOOL _sourceHidden;
-    BOOL _hasValidContent;
+    NSArray* _items;
     BOOL _reactFrameSet;
 }
 
@@ -58,16 +65,13 @@ RCT_ENUM_CONVERTER(RNVisualCloneBlurFilter, (@{
 {
     if ((self = [super initWithImage:nil])) {
         _sourceManager = sourceManager;
-        _cloneSource = nil;
+        _sources = @[];
+        _items = @[];
         _contentType = RNVisualCloneContentTypeSnapshot;
-        _needsSourceLayout = NO;
-        _needsSourceReload = NO;
-        _needsImageReload = NO;
-        _sourceImage = nil;
-        _sourceLayout = CGRectZero;
-        _sourceHidden = NO;
-        _hasValidContent = NO;
+        _value = 0.0f;
         _reactFrameSet = NO;
+        self.contentMode = UIViewContentModeScaleAspectFill;
+        self.userInteractionEnabled = NO;
     }
     
     return self;
@@ -75,39 +79,66 @@ RCT_ENUM_CONVERTER(RNVisualCloneBlurFilter, (@{
 
 - (void)dealloc
 {
-    if (_cloneSource != nil) {
-        if (_sourceHidden) _cloneSource.hideRefCount--;
-        [_sourceManager release:_cloneSource];
-        _cloneSource = nil;
+    for (RNVisualCloneItem* item in _items) {
+        [_sourceManager release:item.source];
+        if (item.hidden) {
+            item.source.hideRefCount--;
+        }
     }
+    _items = @[];
 }
 
 - (void)refresh
 {
-    [self loadSourceContent:YES];
+    // [self loadSourceContent:YES];
 }
 
-- (void)setSource:(RNVisualCloneSource*)source {
-    if (_cloneSource == source) {
-        if (_cloneSource) [_sourceManager release:_cloneSource];
-        return;
+- (RNVisualCloneItem*) findItemForSource:(RNVisualCloneSource*) source
+{
+    for (RNVisualCloneItem* item in _items) {
+        if (item.source == source) {
+            return item;
+        }
+    }
+    return nil;
+}
+
+- (void)setSources:(NSArray*)sources
+{
+    NSMutableArray* newItems = [[NSMutableArray alloc]initWithCapacity:sources.count];
+    for (id source in sources) {
+        RNVisualCloneItem* item = [self findItemForSource:source];
+        if (item == nil) {
+            item = [[RNVisualCloneItem alloc]initWithSource:source];
+        }
+        [newItems addObject:item];
     }
     
-    if (_cloneSource != nil) {
-        if (_sourceHidden) _cloneSource.hideRefCount--;
-        _sourceHidden = NO;
-        [_sourceManager release:_cloneSource];
+    for (RNVisualCloneItem* item in _items) {
+        [_sourceManager release:item.source];
+        if (![newItems containsObject:item]) {
+            if (item.hidden) {
+                item.source.hideRefCount--;
+            }
+        }
     }
-    _cloneSource = source;
-    _hasValidContent = NO;
-    _needsSourceReload = YES;
-    _needsSourceLayout = YES;
+    
+    _items = newItems;
 }
 
 - (void)setContentType:(RNVisualCloneContentType)contentType {
     if (_contentType != contentType) {
         _contentType = contentType;
-        _needsSourceReload = YES;
+        for (RNVisualCloneItem* item in _items) {
+            item.needsContent = YES;
+        }
+    }
+}
+
+- (void)setValue:(CGFloat)value {
+    if (_value != value) {
+        _value = value;
+        [self updateStyle];
     }
 }
 
@@ -126,87 +157,43 @@ RCT_ENUM_CONVERTER(RNVisualCloneBlurFilter, (@{
     }
 }
 
-- (void)setBlurRadius:(CGFloat)blurRadius
+- (void)updateSourceVisibility
 {
-    if (blurRadius != _blurRadius) {
-        _blurRadius = blurRadius;
-        _needsImageReload = YES;
-    }
-}
-
-- (void)setBlurAngle:(CGFloat)blurAngle
-{
-    if (blurAngle != _blurAngle) {
-        _blurAngle = blurAngle;
-        _needsImageReload = YES;
-    }
-}
-
-- (void)setBlurFilter:(RNVisualCloneBlurFilter)blurFilter
-{
-    if (blurFilter != _blurFilter) {
-        _blurFilter = blurFilter;
-        _needsImageReload = YES;
-    }
-}
-
-- (void)updateSourceHidden
-{
-    if (_cloneSource == nil) return;
-    
-    BOOL sourceHidden = _hideSource && _hasValidContent && _reactFrameSet;
-    if (_sourceHidden != sourceHidden) {
-        _sourceHidden = sourceHidden;
-        if (sourceHidden) {
-            _cloneSource.hideRefCount++;
-        }
-        else {
-            _cloneSource.hideRefCount--;
+    for (RNVisualCloneItem* item in _items) {
+        BOOL hidden = _autoHide && _reactFrameSet && item.style != nil && item.content != nil;
+        if (item.hidden != hidden) {
+            item.hidden = hidden;
+            if (hidden) {
+                item.source.hideRefCount++;
+            } else {
+                item.source.hideRefCount--;
+            }
         }
     }
 }
 
-- (void)setHideSource:(BOOL)hideSource
+- (void)setAutoHide:(BOOL)autoHide
 {
-    if (hideSource != _hideSource) {
-        _hideSource = hideSource;
-        [self updateSourceHidden];
+    if (_autoHide != autoHide) {
+        _autoHide = autoHide;
+        [self updateSourceVisibility];
     }
 }
 
 - (void) didSetProps:(NSArray<NSString *> *)changedProps
 {
-    if (_needsSourceLayout) {
-        if (_cloneSource != nil) {
-            _needsSourceLayout = NO;
-            [_cloneSource requestLayout:self useCache:YES];
+    for (RNVisualCloneItem* item in _items) {
+        if (item.needsLayout) {
+            item.needsLayout = NO;
+            [item.source requestStyle:self useCache:YES];
         }
-    }
-    if (_needsSourceReload) {
-        [self loadSourceContent:NO];
-    }
-    else if (_needsImageReload) {
-        [self reloadImage];
+        if (item.needsContent) {
+            item.needsContent = NO;
+            [item.source requestContent:self contentType:_contentType useCache:YES];
+        }
     }
 }
 
-- (void) loadSourceContent:(BOOL)forceRefresh
-{
-    _needsSourceReload = NO;
-    if (_cloneSource != nil) {
-        switch (_contentType) {
-            case RNVisualCloneContentTypeSnapshot:
-                [_cloneSource requestSnapshotView:self useCache:!forceRefresh];
-                break;
-            case RNVisualCloneContentTypeImage:
-                [_cloneSource requestSnapshotImage:self useCache:!forceRefresh];
-                break;
-            case RNVisualCloneContentTypeRawImage:
-                [_cloneSource requestRawImage:self useCache:!forceRefresh];
-                break;
-        }
-    }
-}
 
 - (void)updateWithImage:(UIImage *)image
 {
@@ -231,137 +218,164 @@ RCT_ENUM_CONVERTER(RNVisualCloneBlurFilter, (@{
     self.layer.minificationFilter = kCAFilterTrilinear;
     self.layer.magnificationFilter = kCAFilterTrilinear;
     
-    NSLog(@"updateWithImage: %@", NSStringFromCGRect(self.frame));
+    // NSLog(@"updateWithImage: %@", NSStringFromCGRect(self.frame));
     super.image = image;
-    
-    if (!_hasValidContent) {
-        _hasValidContent = YES;
-        [self updateSourceHidden];
-    }
 }
 
-- (void)reloadImage
+- (void) didLoadContent:(id)content contentType:(RNVisualCloneContentType)contentType source:(RNVisualCloneSource*)source
 {
-    _needsImageReload = NO;
-    if (_sourceImage != nil && _blurRadius > __FLT_EPSILON__) {
-        void (^setImageBlock)(UIImage *) = ^(UIImage *image) {
-            [self updateWithImage: image];
-        };
+    // NSLog(@"didLoadContent: %@", content);
+    RNVisualCloneItem* item = [self findItemForSource:source];
+    if (item == nil) return;
+    if ((contentType == RNVisualCloneContentTypeImage) || (contentType == RNVisualCloneContentTypeRawImage)) {
+        UIImage* image = content;
+        item.content = content;
+        item.contentType = contentType;
+        if (self.image == nil) {
+            [self updateWithImage:image];
+        } else if ((image.size.width * image.size.height) > (self.image.size.width * self.image.size.height)) {
+            [self updateWithImage:image];
+        }
+    }
+    else if (contentType == RNVisualCloneContentTypeSnapshot) {
+        // TDOO
+        // Update snapshot
+        /*if (snapshot != _snapshot) {
+         if (snapshot != nil) {
+         snapshot.frame = self.bounds;
+         snapshot.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+         [self addSubview:snapshot];
+         }
+         if (_snapshot != nil) {
+         [_snapshot removeFromSuperview];
+         }
+         _snapshot = snapshot;
+         DebugLog(@"Number of subviews: %ld", self.subviews.count);
+         }*/
         
-        // Blur on a background thread to avoid blocking interaction
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            UIImage* blurredImage;
-            CIFilter* filter;
-            CIContext* context = [CIContext contextWithOptions:@{}];
-            CIImage* image;
-            NSLog(@"Blurring image...");
-            switch (_blurFilter) {
-                case RNVisualCloneBlurFilterGaussian:
-                    blurredImage = RCTBlurredImageWithRadius(_sourceImage, _blurRadius);
-                    break;
-                case RNVisualCloneBlurFilterMotion:
-                    /*filter = [CIFilter filterWithName: @"CIMotionBlur"];
-                     [filter setValue:[[CIImage alloc] initWithImage:_sourceImage] forKey:kCIInputImageKey];
-                     [filter setValue:@(_blurRadius) forKey:kCIInputRadiusKey];
-                     [filter setValue:@(_blurAngle) forKey:kCIInputAngleKey];
-                     image = [filter outputImage];
-                     blurredImage = [UIImage imageWithCGImage:[context createCGImage:image fromRect:image.extent]];*/
-                    //blurredImage = [UIImage imageWithCIImage:[filter outputImage]];
-                    blurredImage = HorizontalMotionBlurImage(_sourceImage, _blurRadius, _blurAngle);
-                    break;
-                case RNVisualCloneBlurFilterZoom:
-                    filter = [CIFilter filterWithName: @"CIZoomBlur"];
-                    [filter setValue:[[CIImage alloc] initWithImage:_sourceImage] forKey:kCIInputImageKey];
-                    [filter setValue:@(_blurRadius) forKey:kCIInputAmountKey];
-                    // [filter setValue:@(_blurAngle) forKey:kCIInputCenterKey];
-                    blurredImage = [UIImage imageWithCIImage:[filter outputImage]];
-                    break;
-            }
-            NSLog(@"Blurring image... DONE");
-            
-            RCTExecuteOnMainQueue(^{
-                setImageBlock(blurredImage);
-            });
-        });
+        /*
+         if (_snapshot) {
+         if (_snapshot.autoresizingMask != (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight)) {
+         _snapshot.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+         }
+         }*/
     }
-    else {
-        [self updateWithImage: _sourceImage];
+    [self updateSourceVisibility];
+}
+
+- (void) didLoadStyle:(RNVisualCloneStyle *)style source:(RNVisualCloneSource*)source
+{
+    // NSLog(@"didMeasureLayout: %@, styleProps: %@", NSStringFromCGRect(layout), styleProps);
+    RNVisualCloneItem* item = [self findItemForSource:source];
+    if (item == nil) return;
+    item.style = style;
+    [self updateStyle];
+}
+
+- (UIColor*) getInterpolatedColor:(UIColor*)color1 color2:(UIColor*)color2 position:(CGFloat)position
+{
+    CGFloat red1, green1, blue1, alpha1;
+    CGFloat red2, green2, blue2, alpha2;
+    [color1 getRed:&red1 green:&green1 blue:&blue1 alpha:&alpha1];
+    [color2 getRed:&red2 green:&green2 blue:&blue2 alpha:&alpha2];
+    return [UIColor colorWithRed:red1 + ((red2 - red1) * position)
+                           green:green1 + ((green2 - green1) * position)
+                            blue:blue1 + ((blue2 - blue1) * position)
+                           alpha:alpha1 + ((alpha2 - alpha1) * position)];
+}
+
+- (RNVisualCloneStyle*) getInterpolatedStyle:(CGFloat) position
+{
+    //long index = MAX(MIN(floor(position), _items.count - 1), 0);
+    RNVisualCloneItem* item1 = _items.count ? _items[0] : nil;
+    RNVisualCloneItem* item2 = (_items.count >= 2) ? _items[1] : nil;
+    RNVisualCloneStyle* style1 = (item1 != nil) ? item1.style : nil;
+    RNVisualCloneStyle* style2 = (item2 != nil) ? item2.style : nil;
+    if ((style1 == nil) && (style2 == nil)) return nil;
+    if (style1 == nil) {
+        style1 = style2;
+    } else if (style2 == nil) {
+        style2 = style1;
     }
-}
-
-- (void) snapshotImageComplete:(UIImage*) image
-{
-    _sourceImage = image;
-    [self reloadImage];
-}
-
-- (void) rawImageComplete:(UIImage*) image
-{
-    _sourceImage = image;
-    [self reloadImage];
-}
-
-- (void) snapshotViewComplete:(UIView*) view
-{
-    // Update snapshot
-    /*if (snapshot != _snapshot) {
-     if (snapshot != nil) {
-     snapshot.frame = self.bounds;
-     snapshot.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-     [self addSubview:snapshot];
-     }
-     if (_snapshot != nil) {
-     [_snapshot removeFromSuperview];
-     }
-     _snapshot = snapshot;
-     DebugLog(@"Number of subviews: %ld", self.subviews.count);
-     }*/
+    CGRect layout1 = style1.layout;
+    CGRect layout2 = style2.layout;
+    CGFloat pos = MAX(MIN(position, _items.count), 0);
     
-    /*
-     if (_snapshot) {
-     if (_snapshot.autoresizingMask != (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight)) {
-     _snapshot.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-     }
-     }*/
+    RNVisualCloneStyle* style = [[RNVisualCloneStyle alloc]init];
+    style.layout = CGRectMake(
+                              layout1.origin.x + ((layout2.origin.x - layout1.origin.x) * pos),
+                              layout1.origin.y + ((layout2.origin.y - layout1.origin.y) * pos),
+                              layout1.size.width + ((layout2.size.width - layout1.size.width) * pos),
+                              layout1.size.height + ((layout2.size.height - layout1.size.height) * pos)
+                              );
+    style.opacity = style1.opacity + ((style2.opacity - style1.opacity) * pos);
+    style.cornerRadius = style1.cornerRadius + ((style2.cornerRadius - style1.cornerRadius) * pos);
+    style.borderWidth = style1.borderWidth + ((style2.borderWidth - style1.borderWidth) * pos);
+    style.borderColor = [self getInterpolatedColor:style1.borderColor color2:style2.borderColor position:pos];
+    style.backgroundColor = [self getInterpolatedColor:style1.backgroundColor color2:style2.backgroundColor position:pos];
+    
+    style.shadowOpacity = style1.shadowOpacity + ((style2.shadowOpacity - style1.shadowOpacity) * pos);
+    style.shadowRadius = style1.shadowRadius + ((style2.shadowRadius - style1.shadowRadius) * pos);
+    style.shadowOffset = CGSizeMake(
+                                    style1.shadowOffset.width + ((style2.shadowOffset.width - style1.shadowOffset.width) * pos),
+                                    style1.shadowOffset.height + ((style2.shadowOffset.height - style1.shadowOffset.height) * pos)
+                                    );
+    style.shadowColor = [self getInterpolatedColor:style1.shadowColor color2:style2.shadowColor position:pos];
+    
+    return style;
+}
+
+- (void) updateStyle
+{
+    if (!_reactFrameSet) return;
+    
+    // Get interpolated style
+    RNVisualCloneStyle* style = [self getInterpolatedStyle:_value];
+    if (style == nil) return;
+    
+    // Update frame
+    CGRect frame = [self.superview convertRect:style.layout fromView:nil];
+    [super reactSetFrame:frame];
+    
+    // Update styles
+    self.layer.cornerRadius = style.cornerRadius;
+    self.layer.opacity = style.opacity;
+    self.layer.backgroundColor = style.backgroundColor.CGColor;
+    self.layer.borderWidth = style.borderWidth;
+    self.layer.borderColor = style.borderColor.CGColor;
+    self.layer.shadowOpacity = style.shadowOpacity;
+    self.layer.shadowRadius = style.shadowRadius;
+    self.layer.shadowOffset = style.shadowOffset;
+    self.layer.shadowColor = style.shadowColor.CGColor;
+    self.layer.masksToBounds = true;
 }
 
 - (void) reactSetFrame:(CGRect)frame
 {
-    NSLog(@"reactSetFrame: %@", NSStringFromCGRect(frame));
+    // NSLog(@"reactSetFrame: %@", NSStringFromCGRect(frame));
     
     _reactFrameSet = YES;
+    [self updateStyle];
+    [self updateSourceVisibility];
     
-    if (!CGRectIsEmpty(_sourceLayout) && !(frame.size.width * frame.size.height)) {
-        frame = [self.superview convertRect:_sourceLayout fromView:nil];
-    }
-    [super reactSetFrame:frame];
-    
-    if (!CGRectIsEmpty(_sourceLayout)) {
-        if (_onSourceLayout) {
-            CGRect layout = [self.superview convertRect:_sourceLayout fromView:nil];
-            _onSourceLayout(@{
-                              @"layout": @{
-                                      @"x": @(layout.origin.x),
-                                      @"y": @(layout.origin.y),
-                                      @"width": @(layout.size.width),
-                                      @"height": @(layout.size.height)
-                                      }});
-        }
-        _sourceLayout = CGRectZero;
-    }
-    
-    [self updateSourceHidden];
-}
-
-- (void) layoutComplete:(CGRect) layout
-{
-    // NSLog(@"layoutComplete: %@", NSStringFromCGRect(layout));
-    
-    _sourceLayout = layout;
-    
-    if (_reactFrameSet) {
-        [self reactSetFrame:self.frame];
-    }
+    /*if (!CGRectIsEmpty(_sourceLayout) && !(frame.size.width * frame.size.height)) {
+     frame = [self.superview convertRect:_sourceLayout fromView:nil];
+     }
+     [super reactSetFrame:frame];
+     
+     if (!CGRectIsEmpty(_sourceLayout)) {
+     if (_onSourceLayout) {
+     CGRect layout = [self.superview convertRect:_sourceLayout fromView:nil];
+     _onSourceLayout(@{
+     @"layout": @{
+     @"x": @(layout.origin.x),
+     @"y": @(layout.origin.y),
+     @"width": @(layout.size.width),
+     @"height": @(layout.size.height)
+     }});
+     }
+     _sourceLayout = CGRectZero;
+     }*/
 }
 
 @end
