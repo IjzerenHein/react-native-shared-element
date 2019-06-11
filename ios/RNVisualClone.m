@@ -24,11 +24,6 @@ RCT_ENUM_CONVERTER(RNVisualCloneContentType, (@{
                                                 }), -1, integerValue)
 @end
 
-/*
-@interface RNVisualClone ()
-@property (nonatomic, copy) RCTDirectEventBlock onSourceLayout;
-@end*/
-
 @interface RNVisualCloneItem : NSObject
 @property (nonatomic, readonly) RNVisualCloneSource* source;
 @property (nonatomic, assign) BOOL needsLayout;
@@ -197,18 +192,6 @@ RCT_ENUM_CONVERTER(RNVisualCloneContentType, (@{
         return;
     }
     
-    // Apply rendering mode
-    /*if (_renderingMode != image.renderingMode) {
-     image = [image imageWithRenderingMode:_renderingMode];
-     }
-     
-     if (_resizeMode == RCTResizeModeRepeat) {
-     image = [image resizableImageWithCapInsets:_capInsets resizingMode:UIImageResizingModeTile];
-     } else if (!UIEdgeInsetsEqualToEdgeInsets(UIEdgeInsetsZero, _capInsets)) {
-     // Applying capInsets of 0 will switch the "resizingMode" of the image to "tile" which is undesired
-     image = [image resizableImageWithCapInsets:_capInsets resizingMode:UIImageResizingModeStretch];
-     }*/
-    
     // Apply trilinear filtering to smooth out mis-sized images
     self.layer.minificationFilter = kCAFilterTrilinear;
     self.layer.magnificationFilter = kCAFilterTrilinear;
@@ -241,27 +224,7 @@ RCT_ENUM_CONVERTER(RNVisualCloneContentType, (@{
         }
     }
     else if (contentType == RNVisualCloneContentTypeSnapshot) {
-        // TDOO
-        // Update snapshot
-        /*if (snapshot != _snapshot) {
-         if (snapshot != nil) {
-         snapshot.frame = self.bounds;
-         snapshot.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-         [self addSubview:snapshot];
-         }
-         if (_snapshot != nil) {
-         [_snapshot removeFromSuperview];
-         }
-         _snapshot = snapshot;
-         DebugLog(@"Number of subviews: %ld", self.subviews.count);
-         }*/
-        
-        /*
-         if (_snapshot) {
-         if (_snapshot.autoresizingMask != (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight)) {
-         _snapshot.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-         }
-         }*/
+        // TODO
     }
     [self updateStyle];
     [self updateSourceVisibility];
@@ -373,29 +336,9 @@ RCT_ENUM_CONVERTER(RNVisualCloneContentType, (@{
 - (void) reactSetFrame:(CGRect)frame
 {
     // NSLog(@"reactSetFrame: %@", NSStringFromCGRect(frame));
-    
     _reactFrameSet = YES;
     [self updateStyle];
     [self updateSourceVisibility];
-    
-    /*if (!CGRectIsEmpty(_sourceLayout) && !(frame.size.width * frame.size.height)) {
-     frame = [self.superview convertRect:_sourceLayout fromView:nil];
-     }
-     [super reactSetFrame:frame];
-     
-     if (!CGRectIsEmpty(_sourceLayout)) {
-     if (_onSourceLayout) {
-     CGRect layout = [self.superview convertRect:_sourceLayout fromView:nil];
-     _onSourceLayout(@{
-     @"layout": @{
-     @"x": @(layout.origin.x),
-     @"y": @(layout.origin.y),
-     @"width": @(layout.size.width),
-     @"height": @(layout.size.height)
-     }});
-     }
-     _sourceLayout = CGRectZero;
-     }*/
 }
 
 @end

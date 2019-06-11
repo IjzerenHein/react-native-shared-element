@@ -177,7 +177,7 @@
         BOOL res = [_view drawViewHierarchyInRect:bounds afterScreenUpdates:NO]; // NEVER USE YES, IT CREATED VISUAL ARTEFACTS ON THE CREEN
         UIImage* image = res ? UIGraphicsGetImageFromCurrentImageContext() : nil;
         UIGraphicsEndImageContext();
-        NSLog(@"drawViewHierarchyInRect: RESULT: %ld", res);
+        NSLog(@"drawViewHierarchyInRect: RESULT: %li", res);
         content = image;
         contentType = RNVisualCloneContentTypeImage;
     }
