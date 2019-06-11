@@ -44,9 +44,9 @@ typedef NS_ENUM(NSInteger, RNVisualCloneBlurFilter) {
 @property (nonatomic, assign) RCTResizeMode resizeMode;
 @property (nonatomic, assign) BOOL hideSource;
 @property (nonatomic, assign) BOOL useSourceLayout;
+@property (nonatomic, assign) RNVisualCloneSource* source;
 
 - (instancetype)initWithSourceManager:(RNVisualCloneSourceManager*)sourceManager;
-- (void)setCloneSource:(NSNumber*)reactTag view:(UIView*)view;
 - (void)refresh;
 
 @end

@@ -48,10 +48,11 @@ RCT_CUSTOM_VIEW_PROPERTY(source, NSNumber, RNVisualClone)
 {
     if (json) {
         UIView *sourceView = [self.bridge.uiManager viewForReactTag:json];
-        [view setCloneSource:json view:sourceView];
+        RNVisualCloneSource* source = [_sourceManager acquire:json view:sourceView];
+        view.source = source;
     }
     else {
-        [view setCloneSource:nil view:nil];
+        view.source = nil;
     }
 }
 RCT_EXPORT_VIEW_PROPERTY(onSourceLayout, RCTDirectEventBlock)

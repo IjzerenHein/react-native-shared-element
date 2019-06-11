@@ -87,19 +87,21 @@ RCT_ENUM_CONVERTER(RNVisualCloneBlurFilter, (@{
     [self loadSourceContent:YES];
 }
 
-- (void)setCloneSource:(NSNumber*)reactTag view:(UIView*)view {
-    RNVisualCloneSource* source = [_sourceManager acquire:reactTag view:view];
+- (void)setSource:(RNVisualCloneSource*)source {
+    if (_cloneSource == source) {
+        if (_cloneSource) [_sourceManager release:_cloneSource];
+        return;
+    }
+    
     if (_cloneSource != nil) {
         if (_sourceHidden) _cloneSource.hideRefCount--;
         _sourceHidden = NO;
         [_sourceManager release:_cloneSource];
     }
-    if (_cloneSource != source) {
-        _cloneSource = source;
-        _hasValidContent = NO;
-        _needsSourceReload = YES;
-        _needsSourceLayout = YES;
-    }
+    _cloneSource = source;
+    _hasValidContent = NO;
+    _needsSourceReload = YES;
+    _needsSourceLayout = YES;
 }
 
 - (void)setContentType:(RNVisualCloneContentType)contentType {
