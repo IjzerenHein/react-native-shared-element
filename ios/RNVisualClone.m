@@ -24,9 +24,10 @@ RCT_ENUM_CONVERTER(RNVisualCloneContentType, (@{
                                                 }), -1, integerValue)
 @end
 
+/*
 @interface RNVisualClone ()
 @property (nonatomic, copy) RCTDirectEventBlock onSourceLayout;
-@end
+@end*/
 
 @interface RNVisualCloneItem : NSObject
 @property (nonatomic, readonly) RNVisualCloneSource* source;
@@ -56,7 +57,6 @@ RCT_ENUM_CONVERTER(RNVisualCloneContentType, (@{
 @implementation RNVisualClone
 {
     RNVisualCloneSourceManager* _sourceManager;
-    RNVisualCloneContentType _contentType;
     NSArray* _items;
     BOOL _reactFrameSet;
 }
@@ -67,8 +67,8 @@ RCT_ENUM_CONVERTER(RNVisualCloneContentType, (@{
         _sourceManager = sourceManager;
         _sources = @[];
         _items = @[];
-        _contentType = RNVisualCloneContentTypeSnapshot;
         _value = 0.0f;
+        _animation = @"move";
         _reactFrameSet = NO;
         self.contentMode = UIViewContentModeScaleAspectFill;
         self.userInteractionEnabled = NO;
@@ -86,11 +86,6 @@ RCT_ENUM_CONVERTER(RNVisualCloneContentType, (@{
         }
     }
     _items = @[];
-}
-
-- (void)refresh
-{
-    // [self loadSourceContent:YES];
 }
 
 - (RNVisualCloneItem*) findItemForSource:(RNVisualCloneSource*) source
@@ -126,34 +121,19 @@ RCT_ENUM_CONVERTER(RNVisualCloneContentType, (@{
     _items = newItems;
 }
 
-- (void)setContentType:(RNVisualCloneContentType)contentType {
-    if (_contentType != contentType) {
-        _contentType = contentType;
-        for (RNVisualCloneItem* item in _items) {
-            item.needsContent = YES;
-        }
-    }
-}
-
-- (void)setValue:(CGFloat)value {
+- (void)setValue:(CGFloat)value
+{
     if (_value != value) {
         _value = value;
         [self updateStyle];
     }
 }
 
-- (void)setResizeMode:(RCTResizeMode)resizeMode
+- (void) setAnimation:(NSString *)animation
 {
-    if (_resizeMode != resizeMode) {
-        _resizeMode = resizeMode;
-        
-        if (_resizeMode == RCTResizeModeRepeat) {
-            // Repeat resize mode is handled by the UIImage. Use scale to fill
-            // so the repeated image fills the UIImageView.
-            self.contentMode = UIViewContentModeScaleToFill;
-        } else {
-            self.contentMode = (UIViewContentMode)resizeMode;
-        }
+    if (![_animation isEqualToString:animation]) {
+        _animation = animation;
+        [self updateStyle];
     }
 }
 
@@ -189,7 +169,7 @@ RCT_ENUM_CONVERTER(RNVisualCloneContentType, (@{
         }
         if (item.needsContent) {
             item.needsContent = NO;
-            [item.source requestContent:self contentType:_contentType useCache:YES];
+            [item.source requestContent:self useCache:YES];
         }
     }
 }
@@ -313,7 +293,6 @@ RCT_ENUM_CONVERTER(RNVisualCloneContentType, (@{
     style.borderWidth = style1.borderWidth + ((style2.borderWidth - style1.borderWidth) * pos);
     style.borderColor = [self getInterpolatedColor:style1.borderColor color2:style2.borderColor position:pos];
     style.backgroundColor = [self getInterpolatedColor:style1.backgroundColor color2:style2.backgroundColor position:pos];
-    
     style.shadowOpacity = style1.shadowOpacity + ((style2.shadowOpacity - style1.shadowOpacity) * pos);
     style.shadowRadius = style1.shadowRadius + ((style2.shadowRadius - style1.shadowRadius) * pos);
     style.shadowOffset = CGSizeMake(

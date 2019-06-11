@@ -13,20 +13,14 @@
 #import "RNVisualCloneSourceManager.h"
 #import "RNVisualCloneDelegate.h"
 
-@interface RCTConvert(RNVisualCloneContentType)
-+ (RNVisualCloneContentType)RNVisualCloneContentType:(id)json;
-@end
-
 @interface RNVisualClone : UIImageView <RNVisualCloneDelegate>
 
-@property (nonatomic, assign) RNVisualCloneContentType contentType;
-@property (nonatomic, assign) RCTResizeMode resizeMode;
 @property (nonatomic, assign) BOOL autoHide;
 @property (nonatomic, assign) CGFloat value;
+@property (nonatomic, assign) NSString* animation;
 @property (nonatomic, assign) NSArray* sources;
 
 - (instancetype)initWithSourceManager:(RNVisualCloneSourceManager*)sourceManager;
-- (void)refresh;
 
 @end
 
