@@ -58,20 +58,26 @@ RCT_ENUM_CONVERTER(RNVisualCloneContentType, (@{
 {
     RNVisualCloneSourceManager* _sourceManager;
     NSArray* _items;
+    UIImageView* _primaryImageView;
+    UIImageView* _secondaryImageView;
     BOOL _reactFrameSet;
 }
 
 - (instancetype)initWithSourceManager:(RNVisualCloneSourceManager*)sourceManager
 {
-    if ((self = [super initWithImage:nil])) {
+    if ((self = [super init])) {
         _sourceManager = sourceManager;
         _sources = @[];
         _items = @[];
         _value = 0.0f;
         _animation = @"move";
         _reactFrameSet = NO;
-        self.contentMode = UIViewContentModeScaleAspectFill;
+        //self.contentMode = UIViewContentModeScaleAspectFill;
         self.userInteractionEnabled = NO;
+        _primaryImageView = [self createImageView];
+        [self addSubview:_primaryImageView];
+        _secondaryImageView = [self createImageView];
+        [self addSubview:_secondaryImageView];
     }
     
     return self;
@@ -86,6 +92,16 @@ RCT_ENUM_CONVERTER(RNVisualCloneContentType, (@{
         }
     }
     _items = @[];
+}
+
+- (UIImageView*) createImageView
+{
+    UIImageView* imageView = [[UIImageView alloc]init];
+    imageView.contentMode = UIViewContentModeScaleAspectFill;
+    imageView.userInteractionEnabled = NO;
+    imageView.frame = self.bounds;
+    imageView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+    return imageView;
 }
 
 - (RNVisualCloneItem*) findItemForSource:(RNVisualCloneSource*) source
@@ -174,11 +190,10 @@ RCT_ENUM_CONVERTER(RNVisualCloneContentType, (@{
     }
 }
 
-
-- (void)updateWithImage:(UIImage *)image
+- (void)updateViewWithImage:(UIImageView*)view image:(UIImage *)image
 {
     if (!image) {
-        super.image = nil;
+        view.image = nil;
         return;
     }
     
@@ -199,7 +214,7 @@ RCT_ENUM_CONVERTER(RNVisualCloneContentType, (@{
     self.layer.magnificationFilter = kCAFilterTrilinear;
     
     // NSLog(@"updateWithImage: %@", NSStringFromCGRect(self.frame));
-    super.image = image;
+    view.image = image;
 }
 
 - (void) didLoadContent:(id)content contentType:(RNVisualCloneContentType)contentType source:(RNVisualCloneSource*)source
@@ -211,10 +226,18 @@ RCT_ENUM_CONVERTER(RNVisualCloneContentType, (@{
         UIImage* image = content;
         item.content = content;
         item.contentType = contentType;
-        if (self.image == nil) {
-            [self updateWithImage:image];
-        } else if ((image.size.width * image.size.height) > (self.image.size.width * self.image.size.height)) {
-            [self updateWithImage:image];
+        if ([_animation isEqualToString:@"move"]) {
+            if (_primaryImageView.image == nil) {
+                [self updateViewWithImage:_primaryImageView image:image];
+            } else if ((image.size.width * image.size.height) > (_primaryImageView.image.size.width * _primaryImageView.image.size.height)) {
+                [self updateViewWithImage:_primaryImageView image:image];
+            }
+        } else {
+            if (item == _items[0]) {
+                [self updateViewWithImage:_primaryImageView image:image];
+            } else {
+                [self updateViewWithImage:_secondaryImageView image:image];
+            }
         }
     }
     else if (contentType == RNVisualCloneContentTypeSnapshot) {
@@ -240,6 +263,7 @@ RCT_ENUM_CONVERTER(RNVisualCloneContentType, (@{
          }
          }*/
     }
+    [self updateStyle];
     [self updateSourceVisibility];
 }
 
@@ -264,19 +288,8 @@ RCT_ENUM_CONVERTER(RNVisualCloneContentType, (@{
                            alpha:alpha1 + ((alpha2 - alpha1) * position)];
 }
 
-- (RNVisualCloneStyle*) getInterpolatedStyle:(CGFloat) position
+- (RNVisualCloneStyle*) getInterpolatedStyle:(RNVisualCloneStyle*)style1 style2:(RNVisualCloneStyle*)style2 position:(CGFloat) position
 {
-    //long index = MAX(MIN(floor(position), _items.count - 1), 0);
-    RNVisualCloneItem* item1 = _items.count ? _items[0] : nil;
-    RNVisualCloneItem* item2 = (_items.count >= 2) ? _items[1] : nil;
-    RNVisualCloneStyle* style1 = (item1 != nil) ? item1.style : nil;
-    RNVisualCloneStyle* style2 = (item2 != nil) ? item2.style : nil;
-    if ((style1 == nil) && (style2 == nil)) return nil;
-    if (style1 == nil) {
-        style1 = style2;
-    } else if (style2 == nil) {
-        style2 = style1;
-    }
     CGRect layout1 = style1.layout;
     CGRect layout2 = style2.layout;
     CGFloat pos = MAX(MIN(position, _items.count), 0);
@@ -304,29 +317,57 @@ RCT_ENUM_CONVERTER(RNVisualCloneContentType, (@{
     return style;
 }
 
+- (void) applyStyle:(RNVisualCloneStyle*)style layer:(CALayer*)layer
+{
+    layer.opacity = style.opacity;
+    layer.backgroundColor = style.backgroundColor.CGColor;
+    layer.cornerRadius = style.cornerRadius;
+    layer.borderWidth = style.borderWidth;
+    layer.borderColor = style.borderColor.CGColor;
+    layer.shadowOpacity = style.shadowOpacity;
+    layer.shadowRadius = style.shadowRadius;
+    layer.shadowOffset = style.shadowOffset;
+    layer.shadowColor = style.shadowColor.CGColor;
+}
+
 - (void) updateStyle
 {
     if (!_reactFrameSet) return;
     
     // Get interpolated style
-    RNVisualCloneStyle* style = [self getInterpolatedStyle:_value];
-    if (style == nil) return;
+    //long index = MAX(MIN(floor(position), _items.count - 1), 0);
+    RNVisualCloneItem* item1 = _items.count ? _items[0] : nil;
+    RNVisualCloneItem* item2 = (_items.count >= 2) ? _items[1] : nil;
+    RNVisualCloneStyle* style1 = (item1 != nil) ? item1.style : nil;
+    RNVisualCloneStyle* style2 = (item2 != nil) ? item2.style : nil;
+    if ((style1 == nil) && (style2 == nil)) return;
+    if (style1 == nil) {
+        style1 = style2;
+    } else if (style2 == nil) {
+        style2 = style1;
+    }
+    RNVisualCloneStyle* style = [self getInterpolatedStyle:style1 style2:style2 position:_value];
     
     // Update frame
     CGRect frame = [self.superview convertRect:style.layout fromView:nil];
     [super reactSetFrame:frame];
+    _primaryImageView.frame = self.bounds;
+    _secondaryImageView.frame = self.bounds;
     
     // Update styles
     self.layer.cornerRadius = style.cornerRadius;
-    self.layer.opacity = style.opacity;
-    self.layer.backgroundColor = style.backgroundColor.CGColor;
-    self.layer.borderWidth = style.borderWidth;
-    self.layer.borderColor = style.borderColor.CGColor;
-    self.layer.shadowOpacity = style.shadowOpacity;
-    self.layer.shadowRadius = style.shadowRadius;
-    self.layer.shadowOffset = style.shadowOffset;
-    self.layer.shadowColor = style.shadowColor.CGColor;
     self.layer.masksToBounds = true;
+    
+    // Update specified animation styles
+    if ([_animation isEqualToString:@"move"]) {
+        [self applyStyle:style layer:self.layer];
+    } else if ([_animation isEqualToString:@"dissolve"]) {
+        //style.opacity = 1.0f - MIN(MAX(_value, 0.0f), 1.0f);
+        style.opacity = 1.0f;
+        [self applyStyle:style layer:_primaryImageView.layer];
+        style.opacity = MIN(MAX(_value, 0.0f), 1.0f);
+        [self applyStyle:style layer:_secondaryImageView.layer];
+    }
 }
 
 - (void) reactSetFrame:(CGRect)frame

@@ -13,7 +13,7 @@
 #import "RNVisualCloneSourceManager.h"
 #import "RNVisualCloneDelegate.h"
 
-@interface RNVisualClone : UIImageView <RNVisualCloneDelegate>
+@interface RNVisualClone : UIView <RNVisualCloneDelegate>
 
 @property (nonatomic, assign) BOOL autoHide;
 @property (nonatomic, assign) CGFloat value;
