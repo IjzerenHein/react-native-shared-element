@@ -41,11 +41,16 @@ RCT_CUSTOM_VIEW_PROPERTY(sources, NSArray, RNSharedElementTransition)
 {
     if (json) {
         NSMutableArray* sources = [[NSMutableArray alloc]init];
-        for (NSNumber* reactTag in json) {
-            if ([reactTag isKindOfClass:[NSNumber class]]) {
-                UIView *sourceView = [self.bridge.uiManager viewForReactTag:reactTag];
-                RNSharedElementSource* source = [_sourceManager acquire:reactTag view:sourceView];
-                [sources addObject:source];
+        for (NSObject* sourceJson in json) {
+            if ((sourceJson != nil) && (sourceJson != [NSNull null])) {
+                NSDictionary* sourceDict = (NSDictionary*) sourceJson;
+                NSNumber* nodeHandle = [sourceDict valueForKey:@"nodeHandle"];
+                NSNumber* isParent =[sourceDict valueForKey:@"isParent"];
+                if ([nodeHandle isKindOfClass:[NSNumber class]]) {
+                    UIView *sourceView = [self.bridge.uiManager viewForReactTag:nodeHandle];
+                    RNSharedElementSource* source = [_sourceManager acquire:nodeHandle view:sourceView isParent:[isParent boolValue]];
+                    [sources addObject:source];
+                }
             }
         }
         view.sources = sources;

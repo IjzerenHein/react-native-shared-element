@@ -23,11 +23,17 @@
     "web"
   ],
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "flow": "flow"
   },
   "peerDependencies": {
     "react": "*",
     "react-native": "*",
     "prop-types": "*"
+  },
+  "devDependencies": {
+    "flow-bin": "0.92.0",
+    "react": "16.8.3",
+    "react-native": "0.59.9"
   }
 }

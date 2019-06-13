@@ -48,7 +48,7 @@ let source2;
 
 react-native-shared-element-transition is a component that runs shared element transitions
 entirely native without requiring any passes over the JavaScript bridge. It works by taking in two
-"sources" which can be obtained from a ref of a `<SharedElementSource>` wrapper.
+"sources" which can be obtained from a ref or a `<SharedElementSource>` wrapper.
 Whenever a transition between screens occurs (e.g. performed by a router/navigator), a view in
 front of the app should be rendered to host the shared-element-transitions.
 The `value` prop is used to interpolate between the start- and end source, `0` meaning "Show the start

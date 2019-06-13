@@ -11,7 +11,7 @@
 @interface RNSharedElementSourceManager : NSObject
 
 - (instancetype)init;
-- (RNSharedElementSource*) acquire:(NSNumber*) reactTag view:(UIView*)view;
+- (RNSharedElementSource*) acquire:(NSNumber*) reactTag view:(UIView*)view isParent:(BOOL)isParent;
 - (long) release:(RNSharedElementSource*) source;
 
 @end

@@ -24,10 +24,11 @@
 @synthesize reactTag = _reactTag;
 @synthesize view = _view;
 
-- (instancetype)init:(NSNumber *)reactTag view:(UIView*) view
+- (instancetype)init:(NSNumber *)reactTag view:(UIView*) view isParent:(BOOL)isParent
 {
     _reactTag = reactTag;
     _view = view;
+    _isParent = isParent;
     _refCount = 1;
     _hideRefCount = 0;
     _contentRequests = nil;
