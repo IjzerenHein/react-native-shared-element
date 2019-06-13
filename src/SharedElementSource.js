@@ -1,22 +1,23 @@
 // @flow
-import React, { Component } from "react";
+import * as React from "react";
 import { View, findNodeHandle } from "react-native";
 import PropTypes from "prop-types";
 
-export interface ISharedElementSource {
+export interface SharedElementSourceRef {
   ref: any;
   nodeHandle: number;
   isParent: boolean;
 }
 
 export interface SharedElementSourceProps extends View.propTypes.style {
-  onSource: (source: ?ISharedElementSource) => void;
+  children: React.Node;
+  onSource: (source: ?SharedElementSourceRef) => void;
 }
 
 export function sourceFromRef(
   ref: any,
   isParent?: boolean
-): ?ISharedElementSource {
+): ?SharedElementSourceRef {
   const nodeHandle = ref ? findNodeHandle(ref) : undefined;
   return nodeHandle
     ? {
@@ -27,7 +28,7 @@ export function sourceFromRef(
     : undefined;
 }
 
-export class SharedElementSource extends Component<SharedElementSourceProps> {
+export class SharedElementSource extends React.Component<SharedElementSourceProps> {
   static propTypes = {
     onSource: PropTypes.func
   };

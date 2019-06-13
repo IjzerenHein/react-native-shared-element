@@ -1,5 +1,5 @@
 // @flow
-import React, { Component } from "react";
+import * as React from "react";
 import {
   View,
   Animated,
@@ -8,13 +8,12 @@ import {
   findNodeHandle
 } from "react-native";
 import PropTypes from "prop-types";
-import type { ISharedElementSource } from "./SharedElementSource";
+import type { SharedElementSourceRef } from "./SharedElementSource";
 
 export type SharedElementAnimation = "move" | "dissolve";
 
 export interface SharedElementTransitionProps {
-  style?: View.propTypes.style;
-  sources: ISharedElementSource[];
+  sources: SharedElementSourceRef[];
   value: number | Animated.Value | void;
   animation?: SharedElementAnimation;
   autoHide?: boolean;
@@ -32,11 +31,10 @@ const RNAnimatedSharedElementTransition = RNSharedElementTransition
   ? Animated.createAnimatedComponent(RNSharedElementTransition)
   : undefined;
 
-export class SharedElementTransitionBase extends Component<SharedElementTransitionProps> {
+export class SharedElementTransitionBase extends React.Component<SharedElementTransitionProps> {
   static propTypes = {
-    style: PropTypes.any,
     sources: PropTypes.any.isRequired,
-    value: PropTypes.any,
+    value: PropTypes.any.isRequired,
     animation: PropTypes.oneOf(["move", "dissolve"]),
     autoHide: PropTypes.bool
   };
@@ -45,7 +43,7 @@ export class SharedElementTransitionBase extends Component<SharedElementTransiti
     autoHide: true
   };
 
-  static prepareSources(sources: ISharedElementSource[]): any {
+  static prepareSources(sources: SharedElementSourceRef[]): any {
     return sources.map(source =>
       source
         ? {
@@ -76,7 +74,7 @@ export class SharedElementTransitionBase extends Component<SharedElementTransiti
   }
 }
 
-export class SharedElementTransition extends Component<SharedElementTransitionProps> {
+export class SharedElementTransition extends React.Component<SharedElementTransitionProps> {
   static propTypes = SharedElementTransitionBase.propTypes;
   static defaultProps = SharedElementTransitionBase.defaultProps;
 

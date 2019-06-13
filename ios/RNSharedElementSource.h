@@ -11,7 +11,6 @@
 @interface RNSharedElementSource : NSObject
 
 @property (nonatomic, readonly) NSNumber* reactTag;
-@property (nonatomic, weak) UIView* view;
 @property (nonatomic, readonly) BOOL isParent;
 @property (nonatomic) long refCount;
 @property (nonatomic) long hideRefCount;
@@ -20,6 +19,7 @@
 
 - (void) requestContent:(id <RNSharedElementDelegate>) delegate useCache:(BOOL)useCache;
 - (void) requestStyle:(id <RNSharedElementDelegate>) delegate useCache:(BOOL)useCache;
+- (void) cancelRequests:(id <RNSharedElementDelegate>) delegate;
 
 @end
 

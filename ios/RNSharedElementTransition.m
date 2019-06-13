@@ -70,13 +70,20 @@
     return self;
 }
 
+- (void)removeFromSuperview
+{
+    [super removeFromSuperview];
+    
+    for (RNSharedElementItem* item in _items) {
+        [item.source cancelRequests:self];
+    }
+}
+
 - (void)dealloc
 {
     for (RNSharedElementItem* item in _items) {
+        if (item.hidden) item.source.hideRefCount--;
         [_sourceManager release:item.source];
-        if (item.hidden) {
-            item.source.hideRefCount--;
-        }
     }
     _items = @[];
 }
@@ -113,12 +120,10 @@
     }
     
     for (RNSharedElementItem* item in _items) {
-        [_sourceManager release:item.source];
         if (![newItems containsObject:item]) {
-            if (item.hidden) {
-                item.source.hideRefCount--;
-            }
+            if (item.hidden) item.source.hideRefCount--;
         }
+        [_sourceManager release:item.source];
     }
     
     _items = newItems;

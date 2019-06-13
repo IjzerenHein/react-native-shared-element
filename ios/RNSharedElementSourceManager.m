@@ -22,7 +22,7 @@
   @synchronized(_items)
   {
     RNSharedElementSource* source = [_items objectForKey:reactTag];
-    if ((source != nil) && (source.view == view)) {
+    if (source != nil) {
       source.refCount = source.refCount + 1;
       return source;
     }
