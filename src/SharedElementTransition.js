@@ -14,7 +14,7 @@ export type SharedElementAnimation = "move" | "dissolve";
 
 export interface SharedElementTransitionProps {
   sources: SharedElementSourceRef[];
-  value: number | Animated.Value | void;
+  value: number | Animated.Node | void;
   animation?: SharedElementAnimation;
   autoHide?: boolean;
 }
