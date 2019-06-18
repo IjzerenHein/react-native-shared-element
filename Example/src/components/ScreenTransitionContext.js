@@ -1,23 +1,27 @@
 // @flow
 import React, { createContext } from "react";
+import { View } from "react-native";
+import { nodeFromRef } from "react-native-shared-element-transition";
 import type { SharedElementNode } from "react-native-shared-element-transition";
 
-export interface ScreenTransitionContextOnSharedElementsUpdatedEvent {
-  children: any;
-  sharedElementNodes: {
+export type ScreenTransitionContextOnSharedElementsUpdatedEvent = {
+  children: any,
+  nodes: {
     [string]: SharedElementNode
-  };
-}
+  },
+  ancestor: ?SharedElementNode
+};
 
 // $FlowFixMe
 const Context = createContext<ScreenTransitionContext>(undefined);
 
-export interface ScreenTransitionContextProps {
-  children?: any;
+export type ScreenTransitionContextProps = {
+  style: any,
+  children?: any,
   onSharedElementsUpdated: (
     event: ScreenTransitionContextOnSharedElementsUpdatedEvent
-  ) => void;
-}
+  ) => void
+};
 
 type ScreenTransitionContextState = {
   sharedElementNodes: {
@@ -30,13 +34,23 @@ export class ScreenTransitionContext extends React.Component<
   ScreenTransitionContextState
 > {
   _sharedElementNodes = {};
+  _sharedElementAncestor: ?SharedElementNode = undefined;
   state = {
     sharedElementNodes: this._sharedElementNodes
   };
 
   render() {
-    return <Context.Provider value={this} {...this.props} />;
+    const { onSharedElementsUpdated, style, ...otherProps } = this.props;
+    return (
+      <View style={style} collapsable={false} ref={this.onSetRef}>
+        <Context.Provider value={this} {...otherProps} />
+      </View>
+    );
   }
+
+  onSetRef = (ref: any) => {
+    this._sharedElementAncestor = nodeFromRef(ref);
+  };
 
   componentDidUpdate(
     prevProps: ScreenTransitionContextProps,
@@ -48,7 +62,8 @@ export class ScreenTransitionContext extends React.Component<
     if (onSharedElementsUpdated) {
       onSharedElementsUpdated({
         children,
-        sharedElementNodes
+        ancestor: this._sharedElementAncestor,
+        nodes: sharedElementNodes
       });
     }
   }

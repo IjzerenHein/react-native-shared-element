@@ -66,6 +66,16 @@
     _style = nil;
     _hidden = NO;
 }
+- (void) setHidden:(BOOL)hidden
+{
+    if (_hidden == hidden) return;
+    _hidden = hidden;
+    if (hidden) {
+        _node.hideRefCount++;
+    } else {
+        _node.hideRefCount--;
+    }
+}
 @end
 
 @implementation RNSharedElementTransition
@@ -111,10 +121,6 @@
 - (void)dealloc
 {
     for (RNSharedElementItem* item in _items) {
-        if (item.hidden) {
-            item.node.hideRefCount--;
-            item.hidden = NO;
-        }
         item.node = nil;
     }
 }
@@ -178,15 +184,7 @@
 - (void)updateNodeVisibility
 {
     for (RNSharedElementItem* item in _items) {
-        BOOL hidden = _autoHide && _reactFrameSet && item.style != nil && item.content != nil;
-        if (item.hidden != hidden) {
-            item.hidden = hidden;
-            if (hidden) {
-                item.node.hideRefCount++;
-            } else {
-                item.node.hideRefCount--;
-            }
-        }
+        item.hidden = _autoHide && _reactFrameSet && item.style != nil && item.content != nil;
     }
 }
 
@@ -194,7 +192,6 @@
 {
     if (_autoHide != autoHide) {
         _autoHide = autoHide;
-        [self updateNodeVisibility];
     }
 }
 
@@ -210,6 +207,7 @@
             [item.node requestContent:self useCache:YES];
         }
     }
+    [self updateNodeVisibility];
 }
 
 - (void)updateViewWithImage:(UIImageView*)view image:(UIImage *)image
@@ -264,6 +262,7 @@
     if (item == nil) return;
     item.style = style;
     [self updateStyle];
+    [self updateNodeVisibility];
 }
 
 - (UIColor*) getInterpolatedColor:(UIColor*)color1 color2:(UIColor*)color2 position:(CGFloat)position
@@ -278,10 +277,18 @@
                            alpha:alpha1 + ((alpha2 - alpha1) * position)];
 }
 
-- (RNSharedElementStyle*) getInterpolatedStyle:(RNSharedElementStyle*)style1 style2:(RNSharedElementStyle*)style2 position:(CGFloat) position
+- (RNSharedElementStyle*) getInterpolatedStyle:(RNSharedElementStyle*)style1 ancestorStyle1:(RNSharedElementStyle*)ancestorStyle1 style2:(RNSharedElementStyle*)style2 ancestorStyle2:(RNSharedElementStyle*)ancestorStyle2 position:(CGFloat) position
 {
     CGRect layout1 = style1.layout;
+    if (ancestorStyle1 != nil) {
+        layout1.origin.x -= ancestorStyle1.layout.origin.x;
+        layout1.origin.y -= ancestorStyle1.layout.origin.y;
+    }
     CGRect layout2 = style2.layout;
+    if (ancestorStyle2 != nil) {
+        layout2.origin.x -= ancestorStyle2.layout.origin.x;
+        layout2.origin.y -= ancestorStyle2.layout.origin.y;
+    }
     CGFloat pos = MAX(MIN(position, _items.count), 0);
     
     RNSharedElementStyle* style = [[RNSharedElementStyle alloc]init];
@@ -326,7 +333,9 @@
     
     // Get interpolated style
     RNSharedElementItem* item1 = [_items objectAtIndex:ITEM_START];
+    RNSharedElementItem* ancestor1 = [_items objectAtIndex:ITEM_START_ANCESTOR];
     RNSharedElementItem* item2 = [_items objectAtIndex:ITEM_END];
+    RNSharedElementItem* ancestor2 = [_items objectAtIndex:ITEM_END_ANCESTOR];
     RNSharedElementStyle* style1 = (item1 != nil) ? item1.style : nil;
     RNSharedElementStyle* style2 = (item2 != nil) ? item2.style : nil;
     if ((style1 == nil) && (style2 == nil)) return;
@@ -335,7 +344,7 @@
     } else if (style2 == nil) {
         style2 = style1;
     }
-    RNSharedElementStyle* style = [self getInterpolatedStyle:style1 style2:style2 position:_value];
+    RNSharedElementStyle* style = [self getInterpolatedStyle:style1 ancestorStyle1:ancestor1.style style2:style2 ancestorStyle2:ancestor2.style position:_value];
     
     // Update frame
     CGRect frame = [self.superview convertRect:style.layout fromView:nil];

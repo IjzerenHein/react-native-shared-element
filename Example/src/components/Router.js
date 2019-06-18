@@ -42,9 +42,7 @@ interface RouterState {
   prevIndex: number;
   nextIndex: number;
   animValue: Animated.Node;
-  sharedElementNodes: Array<{
-    [string]: SharedElementNode
-  }>;
+  sharedElementScreens: Array<?ScreenTransitionContextOnSharedElementsUpdatedEvent>;
   sharedElementConfig: Array<?RouterSharedElementConfig>;
 }
 
@@ -75,7 +73,7 @@ export class Router extends React.Component<{}, RouterState> {
         this._animValue,
         Animated.divide(this._swipeBackAnimValue, WIDTH)
       ),
-      sharedElementNodes: [],
+      sharedElementScreens: [],
       sharedElementConfig: [undefined]
     };
   }
@@ -85,7 +83,7 @@ export class Router extends React.Component<{}, RouterState> {
       prevIndex,
       nextIndex,
       stack,
-      sharedElementNodes,
+      sharedElementScreens,
       sharedElementConfig,
       animValue
     } = this.state;
@@ -99,15 +97,17 @@ export class Router extends React.Component<{}, RouterState> {
     const config = sharedElementConfig[endIndex];
     if (!config) return;
     const nodes = {};
+    const startScreen = sharedElementScreens[startIndex];
+    const endScreen = sharedElementScreens[endIndex];
     for (let sharedId in config) {
       nodes[sharedId] = {
         start: {
-          node: sharedElementNodes[startIndex][sharedId],
-          ancestor: undefined // TODO
+          node: startScreen ? startScreen.nodes[sharedId] : undefined,
+          ancestor: startScreen ? startScreen.ancestor : undefined
         },
         end: {
-          node: sharedElementNodes[endIndex][sharedId],
-          ancestor: undefined // TODO
+          node: endScreen ? endScreen.nodes[sharedId] : undefined,
+          ancestor: endScreen ? endScreen.ancestor : undefined
         }
       };
     }
@@ -219,6 +219,7 @@ export class Router extends React.Component<{}, RouterState> {
             ]}
           >
             <ScreenTransitionContext
+              style={styles.node}
               onSharedElementsUpdated={this.onSharedElementsUpdated}
             >
               {node}
@@ -234,13 +235,13 @@ export class Router extends React.Component<{}, RouterState> {
   onSharedElementsUpdated = (
     event: ScreenTransitionContextOnSharedElementsUpdatedEvent
   ) => {
-    const { stack, sharedElementNodes } = this.state;
+    const { stack, sharedElementScreens } = this.state;
     const index = stack.indexOf(event.children);
     if (index < 0) return;
-    const newSharedElementNodes = [...sharedElementNodes];
-    newSharedElementNodes[index] = event.sharedElementNodes;
+    const newSharedElementScreens = [...sharedElementScreens];
+    newSharedElementScreens[index] = event;
     this.setState({
-      sharedElementNodes: newSharedElementNodes
+      sharedElementScreens: newSharedElementScreens
     });
   };
 
@@ -248,13 +249,13 @@ export class Router extends React.Component<{}, RouterState> {
     const {
       stack,
       nextIndex,
-      sharedElementNodes,
+      sharedElementScreens,
       sharedElementConfig
     } = this.state;
     this.setState({
       stack: [...stack, node],
       nextIndex: nextIndex + 1,
-      sharedElementNodes: [...sharedElementNodes, {}],
+      sharedElementScreens: [...sharedElementScreens, undefined],
       sharedElementConfig: [
         ...sharedElementConfig,
         config && config.sharedElements
@@ -294,13 +295,13 @@ export class Router extends React.Component<{}, RouterState> {
       stack,
       nextIndex,
       prevIndex,
-      sharedElementNodes,
+      sharedElementScreens,
       sharedElementConfig
     } = this.state;
     if (stack.length > count) {
       this.setState({
         stack: stack.slice(0, count),
-        sharedElementNodes: sharedElementNodes.slice(0, count),
+        sharedElementScreens: sharedElementScreens.slice(0, count),
         sharedElementConfig: sharedElementConfig.slice(0, count),
         prevIndex: nextIndex
       });
