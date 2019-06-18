@@ -1,24 +1,25 @@
 // @flow
-import * as React from 'react';
-import { StyleSheet, View, Image } from 'react-native';
-import { Heading1, NavBar, ScreenTransition } from '../components';
-import type { Contact } from '../types';
+import * as React from "react";
+import { StyleSheet, View, Image } from "react-native";
+import { Heading1, NavBar, ScreenTransition } from "../components";
+import type { Contact } from "../types";
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'white',
+    backgroundColor: "white"
   },
   content: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center"
   },
   image: {
-    width: 300,
-    height: 300,
-    resizeMode: 'cover',
-  },
+    //width: 300,
+    //height: 300,
+    flex: 1,
+    resizeMode: "cover"
+  }
 });
 
 interface ContactScreenProps {
@@ -35,7 +36,7 @@ export class ContactScreen extends React.Component<ContactScreenProps> {
           <ScreenTransition sharedId={`contactPhoto.${id}`}>
             <Image style={styles.image} source={photo} />
           </ScreenTransition>
-          <Heading1>{name}</Heading1>
+          {/*<Heading1>{name}</Heading1>*/}
         </View>
       </View>
     );

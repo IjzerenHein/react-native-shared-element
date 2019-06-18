@@ -261,9 +261,12 @@ export class Router extends React.Component<{}, RouterState> {
         config && config.sharedElements
       ]
     });
-    Animated.timing(this._animValue, {
+    /*Animated.timing(this._animValue, {
       toValue: stack.length,
       duration: 400,
+      useNativeDriver: true*/
+    Animated.spring(this._animValue, {
+      toValue: stack.length,
       useNativeDriver: true
     }).start(({ finished }) => {
       if (finished) {
@@ -279,9 +282,12 @@ export class Router extends React.Component<{}, RouterState> {
       nextIndex: nextIndex - 1
       // TODO UPDATE SHAREDELEMENTCONFIG
     });
-    Animated.timing(this._animValue, {
+    /*Animated.timing(this._animValue, {
       toValue: stack.length - 2,
       duration: 400,
+      useNativeDriver: true*/
+    Animated.spring(this._animValue, {
+      toValue: stack.length - 2,
       useNativeDriver: true
     }).start(({ finished }) => {
       if (finished) {
