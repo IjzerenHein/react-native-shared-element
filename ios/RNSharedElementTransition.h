@@ -8,7 +8,7 @@
 
 #import <React/RCTView.h>
 #import <UIKit/UIKit.h>
-#import "RNSharedElementSourceManager.h"
+#import "RNSharedElementNodeManager.h"
 #import "RNSharedElementDelegate.h"
 
 @interface RNSharedElementTransition : UIView <RNSharedElementDelegate>
@@ -16,9 +16,12 @@
 @property (nonatomic, assign) BOOL autoHide;
 @property (nonatomic, assign) CGFloat value;
 @property (nonatomic, assign) NSString* animation;
-@property (nonatomic, assign) NSArray* sources;
+@property (nonatomic, assign) RNSharedElementNode* startNode;
+@property (nonatomic, assign) RNSharedElementNode* startAncestor;
+@property (nonatomic, assign) RNSharedElementNode* endNode;
+@property (nonatomic, assign) RNSharedElementNode* endAncestor;
 
-- (instancetype)initWithSourceManager:(RNSharedElementSourceManager*)sourceManager;
+- (instancetype)initWithnodeManager:(RNSharedElementNodeManager*)nodeManager;
 
 @end
 

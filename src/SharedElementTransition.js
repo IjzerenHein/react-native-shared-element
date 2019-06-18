@@ -7,13 +7,19 @@ import {
   NativeModules,
   findNodeHandle
 } from "react-native";
-import PropTypes from "prop-types";
-import type { SharedElementSourceRef } from "./SharedElementSource";
+import type { SharedElementNode } from "./SharedElement";
 
 export type SharedElementAnimation = "move" | "dissolve";
 
 export interface SharedElementTransitionProps {
-  sources: SharedElementSourceRef[];
+  start: {
+    node: ?SharedElementNode,
+    ancestor?: ?SharedElementNode
+  };
+  end: {
+    node: ?SharedElementNode,
+    ancestor?: ?SharedElementNode
+  };
   value: number | Animated.Node | void;
   animation?: SharedElementAnimation;
   autoHide?: boolean;
@@ -32,26 +38,19 @@ const RNAnimatedSharedElementTransition = RNSharedElementTransition
   : undefined;
 
 export class SharedElementTransitionBase extends React.Component<SharedElementTransitionProps> {
-  static propTypes = {
-    sources: PropTypes.any.isRequired,
-    value: PropTypes.any.isRequired,
-    animation: PropTypes.oneOf(["move", "dissolve"]),
-    autoHide: PropTypes.bool
-  };
-
   static defaultProps = {
-    autoHide: true
+    autoHide: true,
+    start: {},
+    end: {}
   };
 
-  static prepareSources(sources: SharedElementSourceRef[]): any {
-    return sources.map(source =>
-      source
-        ? {
-            nodeHandle: source.nodeHandle,
-            isParent: source.isParent
-          }
-        : undefined
-    );
+  static prepareNode(node: ?SharedElementNode): any {
+    return node
+      ? {
+          nodeHandle: node.nodeHandle,
+          isParent: node.isParent
+        }
+      : undefined;
   }
 
   constructor(props: SharedElementTransitionProps) {
@@ -64,10 +63,17 @@ export class SharedElementTransitionBase extends React.Component<SharedElementTr
   }
 
   render() {
-    const { sources, ...otherProps } = this.props;
+    const { start, end, ...otherProps } = this.props;
     return RNSharedElementTransition ? (
       <RNSharedElementTransition
-        sources={SharedElementTransitionBase.prepareSources(sources)}
+        startNode={{
+          node: SharedElementTransitionBase.prepareNode(start.node),
+          ancestor: SharedElementTransitionBase.prepareNode(start.ancestor)
+        }}
+        endNode={{
+          node: SharedElementTransitionBase.prepareNode(end.node),
+          ancestor: SharedElementTransitionBase.prepareNode(end.ancestor)
+        }}
         {...otherProps}
       />
     ) : null;
@@ -75,7 +81,6 @@ export class SharedElementTransitionBase extends React.Component<SharedElementTr
 }
 
 export class SharedElementTransition extends React.Component<SharedElementTransitionProps> {
-  static propTypes = SharedElementTransitionBase.propTypes;
   static defaultProps = SharedElementTransitionBase.defaultProps;
 
   constructor(props: SharedElementTransitionProps) {
@@ -88,10 +93,17 @@ export class SharedElementTransition extends React.Component<SharedElementTransi
   }
 
   render() {
-    const { sources, ...otherProps } = this.props;
+    const { start, end, ...otherProps } = this.props;
     return RNAnimatedSharedElementTransition ? (
       <RNAnimatedSharedElementTransition
-        sources={SharedElementTransitionBase.prepareSources(sources)}
+        startNode={{
+          node: SharedElementTransitionBase.prepareNode(start.node),
+          ancestor: SharedElementTransitionBase.prepareNode(start.ancestor)
+        }}
+        endNode={{
+          node: SharedElementTransitionBase.prepareNode(end.node),
+          ancestor: SharedElementTransitionBase.prepareNode(end.ancestor)
+        }}
         {...otherProps}
       />
     ) : null;

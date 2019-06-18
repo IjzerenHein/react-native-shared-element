@@ -10,6 +10,11 @@
 #import <React/UIView+React.h>
 #import "RNSharedElementTransition.h"
 
+#define ITEM_START 0
+#define ITEM_START_ANCESTOR 1
+#define ITEM_END 2
+#define ITEM_END_ANCESTOR 3
+
 #ifdef DEBUG
 #define DebugLog(...) NSLog(__VA_ARGS__)
 #else
@@ -17,45 +22,69 @@
 #endif
 
 @interface RNSharedElementItem : NSObject
-@property (nonatomic, readonly) RNSharedElementSource* source;
+@property (nonatomic, readonly) RNSharedElementNodeManager* nodeManager;
+@property (nonatomic, readonly) BOOL isAncestor;
+@property (nonatomic, assign) RNSharedElementNode* node;
 @property (nonatomic, assign) BOOL needsLayout;
 @property (nonatomic, assign) BOOL needsContent;
 @property (nonatomic, assign) id content;
 @property (nonatomic, assign) RNSharedElementContentType contentType;
 @property (nonatomic, assign) RNSharedElementStyle* style;
 @property (nonatomic, assign) BOOL hidden;
-- (instancetype)initWithSource:(RNSharedElementSource*)source;
+- (instancetype)initWithnodeManager:(RNSharedElementNodeManager*)nodeManager isAncestor:(BOOL)isAncestor;
 @end
 
 @implementation RNSharedElementItem
-- (instancetype)initWithSource:(RNSharedElementSource*)source
+- (instancetype)initWithnodeManager:(RNSharedElementNodeManager*)nodeManager isAncestor:(BOOL)isAncestor
 {
-    _source = source;
-    _needsContent = YES;
-    _needsLayout = YES;
+    _nodeManager = nodeManager;
+    _isAncestor = isAncestor;
+    _node = nil;
+    _needsLayout = NO;
+    _needsContent = NO;
     _content = nil;
     _contentType = RNSharedElementContentTypeImage;
     _style = nil;
     _hidden = NO;
     return self;
 }
+- (void) setNode:(RNSharedElementNode *)node
+{
+    if (_node == node) {
+        if (node != nil) [_nodeManager release:node];
+        return;
+    }
+    if (_node != nil) {
+        if (_hidden) _node.hideRefCount--;
+        [_nodeManager release:_node];
+    }
+    _node = node;
+    _needsLayout = node != nil;
+    _needsContent = !_isAncestor && (node != nil);
+    _content = nil;
+    _contentType = RNSharedElementContentTypeImage;
+    _style = nil;
+    _hidden = NO;
+}
 @end
 
 @implementation RNSharedElementTransition
 {
-    RNSharedElementSourceManager* _sourceManager;
     NSArray* _items;
     UIImageView* _primaryImageView;
     UIImageView* _secondaryImageView;
     BOOL _reactFrameSet;
 }
 
-- (instancetype)initWithSourceManager:(RNSharedElementSourceManager*)sourceManager
+- (instancetype)initWithnodeManager:(RNSharedElementNodeManager*)nodeManager
 {
     if ((self = [super init])) {
-        _sourceManager = sourceManager;
-        _sources = @[];
-        _items = @[];
+        _items = @[
+                   [[RNSharedElementItem alloc]initWithnodeManager:nodeManager isAncestor:NO],
+                   [[RNSharedElementItem alloc]initWithnodeManager:nodeManager isAncestor:YES],
+                   [[RNSharedElementItem alloc]initWithnodeManager:nodeManager isAncestor:NO],
+                   [[RNSharedElementItem alloc]initWithnodeManager:nodeManager isAncestor:YES]
+                   ];
         _value = 0.0f;
         _animation = @"move";
         _reactFrameSet = NO;
@@ -75,17 +104,19 @@
     [super removeFromSuperview];
     
     for (RNSharedElementItem* item in _items) {
-        [item.source cancelRequests:self];
+        if (item.node != nil) [item.node cancelRequests:self];
     }
 }
 
 - (void)dealloc
 {
     for (RNSharedElementItem* item in _items) {
-        if (item.hidden) item.source.hideRefCount--;
-        [_sourceManager release:item.source];
+        if (item.hidden) {
+            item.node.hideRefCount--;
+            item.hidden = NO;
+        }
+        item.node = nil;
     }
-    _items = @[];
 }
 
 - (UIImageView*) createImageView
@@ -98,35 +129,34 @@
     return imageView;
 }
 
-- (RNSharedElementItem*) findItemForSource:(RNSharedElementSource*) source
+- (RNSharedElementItem*) findItemForNode:(RNSharedElementNode*) node
 {
     for (RNSharedElementItem* item in _items) {
-        if (item.source == source) {
+        if (item.node == node) {
             return item;
         }
     }
     return nil;
 }
 
-- (void)setSources:(NSArray*)sources
+- (void)setStartNode:(RNSharedElementNode *)startNode
 {
-    NSMutableArray* newItems = [[NSMutableArray alloc]initWithCapacity:sources.count];
-    for (id source in sources) {
-        RNSharedElementItem* item = [self findItemForSource:source];
-        if (item == nil) {
-            item = [[RNSharedElementItem alloc]initWithSource:source];
-        }
-        [newItems addObject:item];
-    }
-    
-    for (RNSharedElementItem* item in _items) {
-        if (![newItems containsObject:item]) {
-            if (item.hidden) item.source.hideRefCount--;
-        }
-        [_sourceManager release:item.source];
-    }
-    
-    _items = newItems;
+    ((RNSharedElementItem*)[_items objectAtIndex:ITEM_START]).node = startNode;
+}
+
+- (void)setEndNode:(RNSharedElementNode *)endNode
+{
+    ((RNSharedElementItem*)[_items objectAtIndex:ITEM_END]).node = endNode;
+}
+
+- (void)setStartAncestor:(RNSharedElementNode *)startNodeAncestor
+{
+    ((RNSharedElementItem*)[_items objectAtIndex:ITEM_START_ANCESTOR]).node = startNodeAncestor;
+}
+
+- (void)setEndAncestor:(RNSharedElementNode *)endNodeAncestor
+{
+    ((RNSharedElementItem*)[_items objectAtIndex:ITEM_END_ANCESTOR]).node = endNodeAncestor;
 }
 
 - (void)setValue:(CGFloat)value
@@ -145,16 +175,16 @@
     }
 }
 
-- (void)updateSourceVisibility
+- (void)updateNodeVisibility
 {
     for (RNSharedElementItem* item in _items) {
         BOOL hidden = _autoHide && _reactFrameSet && item.style != nil && item.content != nil;
         if (item.hidden != hidden) {
             item.hidden = hidden;
             if (hidden) {
-                item.source.hideRefCount++;
+                item.node.hideRefCount++;
             } else {
-                item.source.hideRefCount--;
+                item.node.hideRefCount--;
             }
         }
     }
@@ -164,20 +194,20 @@
 {
     if (_autoHide != autoHide) {
         _autoHide = autoHide;
-        [self updateSourceVisibility];
+        [self updateNodeVisibility];
     }
 }
 
 - (void) didSetProps:(NSArray<NSString *> *)changedProps
 {
     for (RNSharedElementItem* item in _items) {
-        if (item.needsLayout) {
+        if (_reactFrameSet && item.needsLayout) {
             item.needsLayout = NO;
-            [item.source requestStyle:self useCache:YES];
+            [item.node requestStyle:self useCache:YES];
         }
         if (item.needsContent) {
             item.needsContent = NO;
-            [item.source requestContent:self useCache:YES];
+            [item.node requestContent:self useCache:YES];
         }
     }
 }
@@ -197,10 +227,10 @@
     view.image = image;
 }
 
-- (void) didLoadContent:(id)content contentType:(RNSharedElementContentType)contentType source:(RNSharedElementSource*)source
+- (void) didLoadContent:(id)content contentType:(RNSharedElementContentType)contentType node:(RNSharedElementNode*)node
 {
     // NSLog(@"didLoadContent: %@", content);
-    RNSharedElementItem* item = [self findItemForSource:source];
+    RNSharedElementItem* item = [self findItemForNode:node];
     if (item == nil) return;
     if ((contentType == RNSharedElementContentTypeImage) || (contentType == RNSharedElementContentTypeRawImage)) {
         UIImage* image = content;
@@ -224,13 +254,13 @@
         // TODO
     }
     [self updateStyle];
-    [self updateSourceVisibility];
+    [self updateNodeVisibility];
 }
 
-- (void) didLoadStyle:(RNSharedElementStyle *)style source:(RNSharedElementSource*)source
+- (void) didLoadStyle:(RNSharedElementStyle *)style node:(RNSharedElementNode*)node
 {
-    // NSLog(@"didMeasureLayout: %@, styleProps: %@", NSStringFromCGRect(layout), styleProps);
-    RNSharedElementItem* item = [self findItemForSource:source];
+    // NSLog(@"didLoadStyle: %@", NSStringFromCGRect(style.layout));
+    RNSharedElementItem* item = [self findItemForNode:node];
     if (item == nil) return;
     item.style = style;
     [self updateStyle];
@@ -295,9 +325,8 @@
     if (!_reactFrameSet) return;
     
     // Get interpolated style
-    //long index = MAX(MIN(floor(position), _items.count - 1), 0);
-    RNSharedElementItem* item1 = _items.count ? _items[0] : nil;
-    RNSharedElementItem* item2 = (_items.count >= 2) ? _items[1] : nil;
+    RNSharedElementItem* item1 = [_items objectAtIndex:ITEM_START];
+    RNSharedElementItem* item2 = [_items objectAtIndex:ITEM_END];
     RNSharedElementStyle* style1 = (item1 != nil) ? item1.style : nil;
     RNSharedElementStyle* style2 = (item2 != nil) ? item2.style : nil;
     if ((style1 == nil) && (style2 == nil)) return;
@@ -332,10 +361,26 @@
 
 - (void) reactSetFrame:(CGRect)frame
 {
-    // NSLog(@"reactSetFrame: %@", NSStringFromCGRect(frame));
-    _reactFrameSet = YES;
+    // Only after the frame bounds have been set by the RN layout-system
+    // we schedule a layout-fetch to run after these updates to ensure
+    // that Yoga/UIManager has finished the initial layout pass.
+    if (_reactFrameSet == NO) {
+        //NSLog(@"reactSetFrame: %@", NSStringFromCGRect(frame));
+        _reactFrameSet = YES;
+        dispatch_async(dispatch_get_main_queue(), ^{
+            for (RNSharedElementItem* item in _items) {
+                if (item.needsLayout) {
+                    item.needsLayout = NO;
+                    [item.node requestStyle:self useCache:YES];
+                }
+            }
+        });
+    }
+    
+    // When react attempts to change the frame on this view,
+    // override that and apply our own measured frame and styles
     [self updateStyle];
-    [self updateSourceVisibility];
+    [self updateNodeVisibility];
 }
 
 @end

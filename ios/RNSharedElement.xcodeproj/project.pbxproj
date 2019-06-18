@@ -7,8 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		214D6B5F22B01BDA00227ED9 /* RNSharedElementSourceManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 214D6B5522B01BD900227ED9 /* RNSharedElementSourceManager.m */; };
-		214D6B6022B01BDA00227ED9 /* RNSharedElementSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 214D6B5622B01BD900227ED9 /* RNSharedElementSource.m */; };
+		214D6B5F22B01BDA00227ED9 /* RNSharedElementNodeManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 214D6B5522B01BD900227ED9 /* RNSharedElementNodeManager.m */; };
+		214D6B6022B01BDA00227ED9 /* RNSharedElementNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 214D6B5622B01BD900227ED9 /* RNSharedElementNode.m */; };
 		214D6B6122B01BDA00227ED9 /* RNSharedElementTransitionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 214D6B5A22B01BD900227ED9 /* RNSharedElementTransitionManager.m */; };
 		214D6B6222B01BDA00227ED9 /* RNSharedElementTransition.m in Sources */ = {isa = PBXBuildFile; fileRef = 214D6B5C22B01BD900227ED9 /* RNSharedElementTransition.m */; };
 		214D6B6422B01C5800227ED9 /* RNSharedElementStyle.m in Sources */ = {isa = PBXBuildFile; fileRef = 214D6B6322B01C5800227ED9 /* RNSharedElementStyle.m */; };
@@ -28,10 +28,10 @@
 
 /* Begin PBXFileReference section */
 		134814201AA4EA6300B7C361 /* libRNSharedElement.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libRNSharedElement.a; sourceTree = BUILT_PRODUCTS_DIR; };
-		214D6B5422B01BD900227ED9 /* RNSharedElementSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RNSharedElementSource.h; sourceTree = "<group>"; };
-		214D6B5522B01BD900227ED9 /* RNSharedElementSourceManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RNSharedElementSourceManager.m; sourceTree = "<group>"; };
-		214D6B5622B01BD900227ED9 /* RNSharedElementSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RNSharedElementSource.m; sourceTree = "<group>"; };
-		214D6B5722B01BD900227ED9 /* RNSharedElementSourceManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RNSharedElementSourceManager.h; sourceTree = "<group>"; };
+		214D6B5422B01BD900227ED9 /* RNSharedElementNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RNSharedElementNode.h; sourceTree = "<group>"; };
+		214D6B5522B01BD900227ED9 /* RNSharedElementNodeManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RNSharedElementNodeManager.m; sourceTree = "<group>"; };
+		214D6B5622B01BD900227ED9 /* RNSharedElementNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RNSharedElementNode.m; sourceTree = "<group>"; };
+		214D6B5722B01BD900227ED9 /* RNSharedElementNodeManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RNSharedElementNodeManager.h; sourceTree = "<group>"; };
 		214D6B5822B01BD900227ED9 /* RNSharedElementStyle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RNSharedElementStyle.h; sourceTree = "<group>"; };
 		214D6B5922B01BD900227ED9 /* RNSharedElementContentType.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RNSharedElementContentType.h; sourceTree = "<group>"; };
 		214D6B5A22B01BD900227ED9 /* RNSharedElementTransitionManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RNSharedElementTransitionManager.m; sourceTree = "<group>"; };
@@ -68,10 +68,10 @@
 				214D6B5C22B01BD900227ED9 /* RNSharedElementTransition.m */,
 				214D6B5E22B01BDA00227ED9 /* RNSharedElementTransitionManager.h */,
 				214D6B5A22B01BD900227ED9 /* RNSharedElementTransitionManager.m */,
-				214D6B5422B01BD900227ED9 /* RNSharedElementSource.h */,
-				214D6B5622B01BD900227ED9 /* RNSharedElementSource.m */,
-				214D6B5722B01BD900227ED9 /* RNSharedElementSourceManager.h */,
-				214D6B5522B01BD900227ED9 /* RNSharedElementSourceManager.m */,
+				214D6B5422B01BD900227ED9 /* RNSharedElementNode.h */,
+				214D6B5622B01BD900227ED9 /* RNSharedElementNode.m */,
+				214D6B5722B01BD900227ED9 /* RNSharedElementNodeManager.h */,
+				214D6B5522B01BD900227ED9 /* RNSharedElementNodeManager.m */,
 				214D6B5922B01BD900227ED9 /* RNSharedElementContentType.h */,
 				214D6B5D22B01BD900227ED9 /* RNSharedElementDelegate.h */,
 				214D6B5822B01BD900227ED9 /* RNSharedElementStyle.h */,
@@ -138,9 +138,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				214D6B6222B01BDA00227ED9 /* RNSharedElementTransition.m in Sources */,
-				214D6B5F22B01BDA00227ED9 /* RNSharedElementSourceManager.m in Sources */,
+				214D6B5F22B01BDA00227ED9 /* RNSharedElementNodeManager.m in Sources */,
 				214D6B6122B01BDA00227ED9 /* RNSharedElementTransitionManager.m in Sources */,
-				214D6B6022B01BDA00227ED9 /* RNSharedElementSource.m in Sources */,
+				214D6B6022B01BDA00227ED9 /* RNSharedElementNode.m in Sources */,
 				214D6B6422B01C5800227ED9 /* RNSharedElementStyle.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

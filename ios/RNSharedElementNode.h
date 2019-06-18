@@ -1,14 +1,14 @@
 //
-//  RNSharedElementSource.h
+//  RNSharedElementNode.h
 //  react-native-shared-element-transition
 //
 
-#ifndef RNSharedElementSource_h
-#define RNSharedElementSource_h
+#ifndef RNSharedElementNode_h
+#define RNSharedElementNode_h
 
 #import "RNSharedElementDelegate.h"
 
-@interface RNSharedElementSource : NSObject
+@interface RNSharedElementNode : NSObject
 
 @property (nonatomic, readonly) NSNumber* reactTag;
 @property (nonatomic, readonly) BOOL isParent;

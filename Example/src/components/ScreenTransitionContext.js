@@ -1,37 +1,38 @@
 // @flow
-import React, { createContext } from 'react';
-import type { SharedElementSourceRef } from 'react-native-shared-element-transition';
+import React, { createContext } from "react";
+import type { SharedElementNode } from "react-native-shared-element-transition";
 
 export interface ScreenTransitionContextOnSharedElementsUpdatedEvent {
   children: any;
-  sharedElementSources: {
-    [string]: SharedElementSourceRef,
+  sharedElementNodes: {
+    [string]: SharedElementNode
   };
 }
 
+// $FlowFixMe
 const Context = createContext<ScreenTransitionContext>(undefined);
 
 export interface ScreenTransitionContextProps {
   children?: any;
-  onSharedElementsUpdated: (event: ScreenTransitionContextOnSharedElementsUpdatedEvent) => void;
+  onSharedElementsUpdated: (
+    event: ScreenTransitionContextOnSharedElementsUpdatedEvent
+  ) => void;
 }
 
-interface ScreenTransitionContextState {
-  sharedElementSources: {
-    [string]: SharedElementSourceRef,
-  };
-}
+type ScreenTransitionContextState = {
+  sharedElementNodes: {
+    [string]: SharedElementNode
+  }
+};
 
 export class ScreenTransitionContext extends React.Component<
   ScreenTransitionContextProps,
   ScreenTransitionContextState
 > {
-  _sharedElementSources = {};
-
-  constructor(props: ScreenTransitionContextProps) {
-    super(props);
-    this.state = this._sharedElementSources;
-  }
+  _sharedElementNodes = {};
+  state = {
+    sharedElementNodes: this._sharedElementNodes
+  };
 
   render() {
     return <Context.Provider value={this} {...this.props} />;
@@ -43,32 +44,32 @@ export class ScreenTransitionContext extends React.Component<
   ) {
     if (prevState === this.state) return;
     const { children, onSharedElementsUpdated } = this.props;
-    const { sharedElementSources } = this.state;
+    const { sharedElementNodes } = this.state;
     if (onSharedElementsUpdated) {
       onSharedElementsUpdated({
         children,
-        sharedElementSources,
+        sharedElementNodes
       });
     }
   }
 
-  addSharedElement(sharedId: string, source: SharedElementSourceRef) {
+  addSharedElement(sharedId: string, node: SharedElementNode) {
     // console.log('ScreenTransitionContext.add: ', sharedId);
-    const sharedElementSources = { ...this._sharedElementSources };
-    sharedElementSources[sharedId] = source;
-    this._sharedElementSources = sharedElementSources;
+    const sharedElementNodes = { ...this._sharedElementNodes };
+    sharedElementNodes[sharedId] = node;
+    this._sharedElementNodes = sharedElementNodes;
     this.setState({
-      sharedElementSources,
+      sharedElementNodes
     });
   }
 
-  removeSharedElement(sharedId: string, source: SharedElementSourceRef) {
+  removeSharedElement(sharedId: string, node: SharedElementNode) {
     // console.log('ScreenTransitionContext.remove: ', sharedId);
-    const sharedElementSources = { ...this._sharedElementSources };
-    delete sharedElementSources[sharedId];
-    this._sharedElementSources = sharedElementSources;
+    const sharedElementNodes = { ...this._sharedElementNodes };
+    delete sharedElementNodes[sharedId];
+    this._sharedElementNodes = sharedElementNodes;
     this.setState({
-      sharedElementSources,
+      sharedElementNodes
     });
   }
 }
@@ -77,12 +78,14 @@ export function withScreenTransitionContext(WrappedComponent: any) {
   const comp = (props: any) => {
     return (
       <Context.Consumer>
-        {value => <WrappedComponent {...props} screenTransitionContext={value} />}
+        {value => (
+          <WrappedComponent {...props} screenTransitionContext={value} />
+        )}
       </Context.Consumer>
     );
   };
   comp.propTypes = {
-    ...(WrappedComponent.propTypes || {}),
+    ...(WrappedComponent.propTypes || {})
   };
   delete comp.propTypes.screenTransitionContext;
   comp.defaultProps = WrappedComponent.defaultProps;

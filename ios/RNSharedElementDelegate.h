@@ -10,8 +10,8 @@
 #import "RNSharedElementContentType.h"
 
 @protocol RNSharedElementDelegate
-- (void) didLoadStyle:(RNSharedElementStyle*)style source:(id)source;
-- (void) didLoadContent:(id)content contentType:(RNSharedElementContentType)contentType source:(id)source;
+- (void) didLoadStyle:(RNSharedElementStyle*)style node:(id)node;
+- (void) didLoadContent:(id)content contentType:(RNSharedElementContentType)contentType node:(id)node;
 @end
 
 #endif

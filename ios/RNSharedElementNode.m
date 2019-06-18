@@ -1,12 +1,12 @@
 //
-//  RNSharedElementSource.m
+//  RNSharedElementNode.m
 //  react-native-shared-element-transition
 //
 
 #import <UIKit/UIKit.h>
-#import "RNSharedElementSource.h"
+#import "RNSharedElementNode.h"
 
-@implementation RNSharedElementSource
+@implementation RNSharedElementNode
 {
     long _refCount;
     long _hideRefCount;
@@ -101,8 +101,7 @@
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
 {
-    NSLog(@"observeValueForKeyPath: %@", keyPath);
-    
+    //NSLog(@"observeValueForKeyPath: %@, changed: %@", keyPath, change);
     if (_isParent) {
         self.view = _sourceView.subviews.firstObject;
     }
@@ -147,7 +146,7 @@
 - (void) requestContent:(__weak id <RNSharedElementDelegate>) delegate useCache:(BOOL)useCache
 {
     if (useCache && _contentCache != nil) {
-        [delegate didLoadContent:_contentCache contentType:_contentTypeCache source:self];
+        [delegate didLoadContent:_contentCache contentType:_contentTypeCache node:self];
         return;
     }
     
@@ -216,7 +215,7 @@
     }
     for (__weak id <RNSharedElementDelegate> delegate in delegates) {
         if (delegate != nil) {
-            [delegate didLoadContent:content contentType:contentType source:self];
+            [delegate didLoadContent:content contentType:contentType node:self];
         }
     }
 }
@@ -230,7 +229,7 @@
 - (void) requestStyle:(__weak id <RNSharedElementDelegate>) delegate useCache:(BOOL)useCache
 {
     if (useCache && _styleCache != nil) {
-        [delegate didLoadStyle:_styleCache source:self];
+        [delegate didLoadStyle:_styleCache node:self];
         return;
     }
     
@@ -248,6 +247,7 @@
     
     // Get absolute layout
     CGRect layout = [view convertRect:view.bounds toView:nil];
+    NSLog(@"updateStyle: %@", NSStringFromCGRect(layout));
     if (CGRectIsEmpty(layout)) return;
     
     RNSharedElementStyle* style = [[RNSharedElementStyle alloc]init];
@@ -269,7 +269,7 @@
     _styleRequests = nil;
     for (__weak id <RNSharedElementDelegate> delegate in delegates) {
         if (delegate != nil) {
-            [delegate didLoadStyle:style source:self];
+            [delegate didLoadStyle:style node:self];
         }
     }
 }

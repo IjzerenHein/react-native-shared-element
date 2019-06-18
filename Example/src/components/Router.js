@@ -2,7 +2,7 @@
 import * as React from "react";
 import { StyleSheet, View, Animated, Dimensions } from "react-native";
 import { SharedElementTransition } from "react-native-shared-element-transition";
-import type { SharedElementSourceRef } from "react-native-shared-element-transition";
+import type { SharedElementNode } from "react-native-shared-element-transition";
 import { ScreenTransitionContext } from "./ScreenTransitionContext";
 import type { ScreenTransitionContextOnSharedElementsUpdatedEvent } from "./ScreenTransitionContext";
 import { PanGestureHandler, State } from "react-native-gesture-handler";
@@ -42,8 +42,8 @@ interface RouterState {
   prevIndex: number;
   nextIndex: number;
   animValue: Animated.Node;
-  sharedElementSources: Array<{
-    [string]: SharedElementSourceRef
+  sharedElementNodes: Array<{
+    [string]: SharedElementNode
   }>;
   sharedElementConfig: Array<?RouterSharedElementConfig>;
 }
@@ -75,7 +75,7 @@ export class Router extends React.Component<{}, RouterState> {
         this._animValue,
         Animated.divide(this._swipeBackAnimValue, WIDTH)
       ),
-      sharedElementSources: [],
+      sharedElementNodes: [],
       sharedElementConfig: [undefined]
     };
   }
@@ -85,7 +85,7 @@ export class Router extends React.Component<{}, RouterState> {
       prevIndex,
       nextIndex,
       stack,
-      sharedElementSources,
+      sharedElementNodes,
       sharedElementConfig,
       animValue
     } = this.state;
@@ -95,27 +95,32 @@ export class Router extends React.Component<{}, RouterState> {
       return null;
     }
     const startIndex = Math.min(prevIndex, nextIndex);
-    //const endIndex = stack.length;
-    const endIndex = Math.max(prevIndex, nextIndex) + 1;
-    const config = sharedElementConfig[endIndex - 1];
+    const endIndex = startIndex + 1;
+    const config = sharedElementConfig[endIndex];
     if (!config) return;
-    const sources = {};
+    const nodes = {};
     for (let sharedId in config) {
-      sources[sharedId] = sources[sharedId] || new Array(endIndex - startIndex);
-      for (let index = startIndex; index < endIndex; index++) {
-        sources[sharedId][index - startIndex] =
-          sharedElementSources[index][sharedId];
-      }
+      nodes[sharedId] = {
+        start: {
+          node: sharedElementNodes[startIndex][sharedId],
+          ancestor: undefined // TODO
+        },
+        end: {
+          node: sharedElementNodes[endIndex][sharedId],
+          ancestor: undefined // TODO
+        }
+      };
     }
-
-    // console.log('renderSharedElementTransitions: ', sources);
+    // console.log('renderSharedElementTransitions: ', nodes);
     const value = Animated.subtract(animValue, startIndex);
     return (
       <View style={StyleSheet.absoluteFill} pointerEvents="none">
-        {Object.keys(sources).map(sharedId => (
+        {Object.keys(nodes).map(sharedId => (
+          // $FlowFixMe
           <SharedElementTransition
-            key={`sharedElementTransition.${sharedId}`}
-            sources={sources[sharedId]}
+            key={`SharedElementTransition.${sharedId}`}
+            start={nodes[sharedId].start}
+            end={nodes[sharedId].end}
             value={value}
           />
         ))}
@@ -189,18 +194,21 @@ export class Router extends React.Component<{}, RouterState> {
             style={[
               styles.node,
               {
+                // $FlowFixMe
                 opacity: animValue.interpolate({
                   inputRange: [index - 1, index, index + 1, index + 2],
                   outputRange: [1, 1, 0.5, 0.5]
                 }),
                 transform: [
                   {
+                    // $FlowFixMe
                     translateX: animValue.interpolate({
                       inputRange: [index - 2, index - 1, index, index + 1],
                       outputRange: [WIDTH, WIDTH, 0, 0]
                     })
                   },
                   {
+                    // $FlowFixMe
                     scale: animValue.interpolate({
                       inputRange: [index - 1, index, index + 1, index + 2],
                       outputRange: [1, 1, 0.7, 0.7]
@@ -226,13 +234,13 @@ export class Router extends React.Component<{}, RouterState> {
   onSharedElementsUpdated = (
     event: ScreenTransitionContextOnSharedElementsUpdatedEvent
   ) => {
-    const { stack, sharedElementSources } = this.state;
+    const { stack, sharedElementNodes } = this.state;
     const index = stack.indexOf(event.children);
     if (index < 0) return;
-    const newSharedElementSources = [...sharedElementSources];
-    newSharedElementSources[index] = event.sharedElementSources;
+    const newSharedElementNodes = [...sharedElementNodes];
+    newSharedElementNodes[index] = event.sharedElementNodes;
     this.setState({
-      sharedElementSources: newSharedElementSources
+      sharedElementNodes: newSharedElementNodes
     });
   };
 
@@ -240,13 +248,13 @@ export class Router extends React.Component<{}, RouterState> {
     const {
       stack,
       nextIndex,
-      sharedElementSources,
+      sharedElementNodes,
       sharedElementConfig
     } = this.state;
     this.setState({
       stack: [...stack, node],
       nextIndex: nextIndex + 1,
-      sharedElementSources: [...sharedElementSources, {}],
+      sharedElementNodes: [...sharedElementNodes, {}],
       sharedElementConfig: [
         ...sharedElementConfig,
         config && config.sharedElements
@@ -286,13 +294,13 @@ export class Router extends React.Component<{}, RouterState> {
       stack,
       nextIndex,
       prevIndex,
-      sharedElementSources,
+      sharedElementNodes,
       sharedElementConfig
     } = this.state;
     if (stack.length > count) {
       this.setState({
         stack: stack.slice(0, count),
-        sharedElementSources: sharedElementSources.slice(0, count),
+        sharedElementNodes: sharedElementNodes.slice(0, count),
         sharedElementConfig: sharedElementConfig.slice(0, count),
         prevIndex: nextIndex
       });
