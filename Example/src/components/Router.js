@@ -31,6 +31,12 @@ interface RouterProps {
   initialNode: React.Node;
 }
 
+type RouterSharedElementConfig =
+  //| "auto"
+  {
+    [key: string]: boolean
+  };
+
 interface RouterState {
   stack: React.Node[];
   prevIndex: number;
@@ -39,7 +45,14 @@ interface RouterState {
   sharedElementSources: Array<{
     [string]: SharedElementSourceRef
   }>;
+  sharedElementConfig: Array<?RouterSharedElementConfig>;
 }
+
+type RouterConfig = {
+  sharedElements?: {
+    [sharedId: string]: boolean
+  }
+};
 
 let router;
 
@@ -62,7 +75,8 @@ export class Router extends React.Component<{}, RouterState> {
         this._animValue,
         Animated.divide(this._swipeBackAnimValue, WIDTH)
       ),
-      sharedElementSources: []
+      sharedElementSources: [],
+      sharedElementConfig: [undefined]
     };
   }
 
@@ -72,23 +86,28 @@ export class Router extends React.Component<{}, RouterState> {
       nextIndex,
       stack,
       sharedElementSources,
+      sharedElementConfig,
       animValue
     } = this.state;
+    //if (!sharedElementConfig) return;
     if (prevIndex === nextIndex && nextIndex === stack.length - 1) {
       // console.log('renderSharedElementTransitions: null');
       return null;
     }
     const startIndex = Math.min(prevIndex, nextIndex);
-    const endIndex = stack.length;
+    //const endIndex = stack.length;
+    const endIndex = Math.max(prevIndex, nextIndex) + 1;
+    const config = sharedElementConfig[endIndex - 1];
+    if (!config) return;
     const sources = {};
-    for (let index = startIndex; index < endIndex; index++) {
-      const sceneSources = sharedElementSources[index];
-      for (let sharedId in sceneSources) {
-        sources[sharedId] =
-          sources[sharedId] || new Array(endIndex - startIndex);
-        sources[sharedId][index - startIndex] = sceneSources[sharedId];
+    for (let sharedId in config) {
+      sources[sharedId] = sources[sharedId] || new Array(endIndex - startIndex);
+      for (let index = startIndex; index < endIndex; index++) {
+        sources[sharedId][index - startIndex] =
+          sharedElementSources[index][sharedId];
       }
     }
+
     // console.log('renderSharedElementTransitions: ', sources);
     const value = Animated.subtract(animValue, startIndex);
     return (
@@ -217,12 +236,21 @@ export class Router extends React.Component<{}, RouterState> {
     });
   };
 
-  push(node: React.Node) {
-    const { stack, nextIndex, sharedElementSources } = this.state;
+  push(node: React.Node, config?: RouterConfig) {
+    const {
+      stack,
+      nextIndex,
+      sharedElementSources,
+      sharedElementConfig
+    } = this.state;
     this.setState({
       stack: [...stack, node],
+      nextIndex: nextIndex + 1,
       sharedElementSources: [...sharedElementSources, {}],
-      nextIndex: nextIndex + 1
+      sharedElementConfig: [
+        ...sharedElementConfig,
+        config && config.sharedElements
+      ]
     });
     Animated.timing(this._animValue, {
       toValue: stack.length,
@@ -235,11 +263,12 @@ export class Router extends React.Component<{}, RouterState> {
     });
   }
 
-  pop() {
+  pop(config?: RouterConfig) {
     const { stack, nextIndex } = this.state;
     if (stack.length <= 1) return;
     this.setState({
       nextIndex: nextIndex - 1
+      // TODO UPDATE SHAREDELEMENTCONFIG
     });
     Animated.timing(this._animValue, {
       toValue: stack.length - 2,
@@ -253,11 +282,18 @@ export class Router extends React.Component<{}, RouterState> {
   }
 
   pruneStack(count: number) {
-    const { stack, nextIndex, prevIndex, sharedElementSources } = this.state;
+    const {
+      stack,
+      nextIndex,
+      prevIndex,
+      sharedElementSources,
+      sharedElementConfig
+    } = this.state;
     if (stack.length > count) {
       this.setState({
         stack: stack.slice(0, count),
         sharedElementSources: sharedElementSources.slice(0, count),
+        sharedElementConfig: sharedElementConfig.slice(0, count),
         prevIndex: nextIndex
       });
     } else if (nextIndex !== prevIndex) {
@@ -267,11 +303,11 @@ export class Router extends React.Component<{}, RouterState> {
     }
   }
 
-  static push(node: React.Node) {
-    return router.push(node);
+  static push(node: React.Node, config?: RouterConfig) {
+    return router.push(node, config);
   }
 
-  static pop() {
-    return router.pop();
+  static pop(config?: RouterConfig) {
+    return router.pop(config);
   }
 }

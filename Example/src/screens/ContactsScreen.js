@@ -1,19 +1,19 @@
 // @flow
-import * as React from 'react';
-import { StyleSheet, ScrollView, View } from 'react-native';
-import { ContactListItem, Router, NavBar } from '../components';
-import { Contacts } from '../assets';
-import { ContactScreen } from './ContactScreen';
-import type { Contact } from '../types';
+import * as React from "react";
+import { StyleSheet, ScrollView, View } from "react-native";
+import { ContactListItem, Router, NavBar } from "../components";
+import { Contacts } from "../assets";
+import { ContactScreen } from "./ContactScreen";
+import type { Contact } from "../types";
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'white',
+    backgroundColor: "white"
   },
   content: {
-    flex: 1,
-  },
+    flex: 1
+  }
 });
 
 export class ContactsScreen extends React.Component<{}> {
@@ -35,6 +35,10 @@ export class ContactsScreen extends React.Component<{}> {
   }
 
   onPressContact = (contact: Contact) => {
-    Router.push(<ContactScreen contact={contact} />);
+    Router.push(<ContactScreen contact={contact} />, {
+      sharedElements: {
+        [`contactPhoto.${contact.id}`]: true
+      }
+    });
   };
 }
