@@ -1,4 +1,6 @@
 rootProject.name = 'SharedElementExample'
+include ':react-native-gesture-handler'
+project(':react-native-gesture-handler').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-gesture-handler/android')
 include ':react-native-shared-element-transition'
 project(':react-native-shared-element-transition').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-shared-element-transition/android')
 
