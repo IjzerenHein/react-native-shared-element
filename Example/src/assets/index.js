@@ -1,3 +1,2 @@
 // @flow
-export * from './Images';
-export * from './Contacts';
+export * from "./Contacts";

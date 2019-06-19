@@ -10,14 +10,11 @@ const styles = StyleSheet.create({
     backgroundColor: "white"
   },
   content: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center"
+    flex: 1
   },
   image: {
-    //width: 300,
-    //height: 300,
     flex: 1,
+    width: "100%",
     resizeMode: "cover"
   }
 });
@@ -31,12 +28,14 @@ export class ContactScreen extends React.Component<ContactScreenProps> {
     const { name, photo, id } = this.props.contact;
     return (
       <View style={styles.container}>
-        <NavBar title="Contact" />
+        <NavBar title={name} back="close" />
         <View style={styles.content}>
-          <ScreenTransition sharedId={`contactPhoto.${id}`}>
+          <ScreenTransition
+            sharedId={`contactPhoto.${id}`}
+            style={styles.content}
+          >
             <Image style={styles.image} source={photo} />
           </ScreenTransition>
-          {/*<Heading1>{name}</Heading1>*/}
         </View>
       </View>
     );
