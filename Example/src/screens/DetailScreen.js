@@ -2,7 +2,7 @@
 import * as React from "react";
 import { StyleSheet, View, Image } from "react-native";
 import { Heading1, NavBar, ScreenTransition } from "../components";
-import type { Contact } from "../types";
+import type { Hero } from "../types";
 
 const styles = StyleSheet.create({
   container: {
@@ -19,21 +19,18 @@ const styles = StyleSheet.create({
   }
 });
 
-interface ContactScreenProps {
-  contact: Contact;
+interface DetailScreenProps {
+  hero: Hero;
 }
 
-export class ContactScreen extends React.Component<ContactScreenProps> {
+export class DetailScreen extends React.Component<DetailScreenProps> {
   render() {
-    const { name, photo, id } = this.props.contact;
+    const { name, photo, id } = this.props.hero;
     return (
       <View style={styles.container}>
         <NavBar title={name} back="close" />
         <View style={styles.content}>
-          <ScreenTransition
-            sharedId={`contactPhoto.${id}`}
-            style={styles.content}
-          >
+          <ScreenTransition sharedId={`heroPhoto.${id}`} style={styles.content}>
             <Image style={styles.image} source={photo} />
           </ScreenTransition>
         </View>

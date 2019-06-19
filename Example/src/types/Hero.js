@@ -1,6 +1,6 @@
 // @flow
 
-export interface Contact {
+export interface Hero {
   id: string;
   name: string;
   photo: any;

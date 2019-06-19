@@ -1,8 +1,8 @@
 // @flow
 
-import type { Contact } from "../types";
+import type { Hero } from "../types";
 
-export const Contacts: Contact[] = [
+export const Heroes: Hero[] = [
   { id: "saitama", name: "One punch man", photo: require("./onepunch.jpg") },
   { id: "garou", name: "Garou", photo: require("./garou.png") },
   { id: "genos", name: "Genos", photo: require("./genos.jpg") },

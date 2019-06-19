@@ -7,7 +7,7 @@ import { ScreenTransitionContext } from "./ScreenTransitionContext";
 import type { ScreenTransitionContextOnSharedElementsUpdatedEvent } from "./ScreenTransitionContext";
 import { PanGestureHandler, State } from "react-native-gesture-handler";
 import { NavBar } from "./NavBar";
-import { fromRight, fadeIn } from "react-navigation-transitions";
+import { fromRight } from "react-navigation-transitions";
 import type { TransitionConfig } from "react-navigation";
 
 const WIDTH = Dimensions.get("window").width;
@@ -50,7 +50,7 @@ interface RouterState {
   prevIndex: number;
   nextIndex: number;
   animValue: Animated.Node;
-  transitionConfig: TransitionConfig;
+  transitionConfig: Array<TransitionConfig>;
   sharedElementScreens: Array<?ScreenTransitionContextOnSharedElementsUpdatedEvent>;
   sharedElementConfig: Array<?RouterSharedElementConfig>;
 }
@@ -58,8 +58,11 @@ interface RouterState {
 type RouterConfig = {
   sharedElements?: {
     [sharedId: string]: boolean
-  }
+  },
+  transitionConfig?: TransitionConfig
 };
+
+const defaultTransitionConfig = fromRight();
 
 let router;
 
@@ -88,7 +91,7 @@ export class Router extends React.Component<{}, RouterState> {
       ),
       sharedElementScreens: [],
       sharedElementConfig: [undefined],
-      transitionConfig: () => fadeIn()
+      transitionConfig: [defaultTransitionConfig]
     };
   }
 
@@ -122,7 +125,9 @@ export class Router extends React.Component<{}, RouterState> {
         end: {
           node: endScreen ? endScreen.nodes[sharedId] : undefined,
           ancestor: endScreen ? endScreen.ancestor : undefined
-        }
+        },
+        animation:
+          (config[sharedId] === true ? "move" : config[sharedId]) || "move"
       };
     }
     // console.log('renderSharedElementTransitions: ', nodes);
@@ -135,6 +140,7 @@ export class Router extends React.Component<{}, RouterState> {
             key={`SharedElementTransition.${sharedId}`}
             start={nodes[sharedId].start}
             end={nodes[sharedId].end}
+            animation={nodes[sharedId].animation}
             position={position}
           />
         ))}
@@ -214,7 +220,6 @@ export class Router extends React.Component<{}, RouterState> {
 
   render() {
     const { stack, animValue, transitionConfig } = this.state;
-    const { screenInterpolator } = transitionConfig();
     return (
       <View style={styles.container}>
         {stack.map((node: React.Node, index: number) => (
@@ -222,7 +227,7 @@ export class Router extends React.Component<{}, RouterState> {
             key={`screen${index}`}
             style={[
               styles.node,
-              screenInterpolator({
+              transitionConfig[index].screenInterpolator({
                 layout: {
                   initHeight: HEIGHT,
                   initWidth: WIDTH
@@ -276,9 +281,10 @@ export class Router extends React.Component<{}, RouterState> {
       stack,
       nextIndex,
       sharedElementScreens,
-      sharedElementConfig,
-      transitionConfig
+      sharedElementConfig
     } = this.state;
+    const transitionConfig =
+      (config && config.transitionConfig) || defaultTransitionConfig;
     this.setState({
       stack: [...stack, node],
       nextIndex: nextIndex + 1,
@@ -286,9 +292,10 @@ export class Router extends React.Component<{}, RouterState> {
       sharedElementConfig: [
         ...sharedElementConfig,
         config && config.sharedElements
-      ]
+      ],
+      transitionConfig: [...this.state.transitionConfig, transitionConfig]
     });
-    const { transitionSpec } = transitionConfig();
+    const { transitionSpec } = transitionConfig;
     const { timing, ...spec } = transitionSpec;
     const anim = timing.call(Animated, this._animValue, {
       ...spec,
@@ -302,12 +309,14 @@ export class Router extends React.Component<{}, RouterState> {
   }
 
   pop(config?: RouterConfig) {
-    const { stack, nextIndex, transitionConfig } = this.state;
+    const { stack, nextIndex } = this.state;
     if (stack.length <= 1) return;
+    const transitionConfig =
+      (config && config.transitionConfig) || defaultTransitionConfig;
     this.setState({
       nextIndex: nextIndex - 1
     });
-    const { transitionSpec } = transitionConfig();
+    const { transitionSpec } = transitionConfig;
     const { timing, ...spec } = transitionSpec;
     const anim = timing.call(Animated, this._animValue, {
       ...spec,

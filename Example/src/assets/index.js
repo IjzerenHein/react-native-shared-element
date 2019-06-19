@@ -1,2 +1,2 @@
 // @flow
-export * from "./Contacts";
+export * from "./Heroes";
