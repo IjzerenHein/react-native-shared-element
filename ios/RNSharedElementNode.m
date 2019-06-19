@@ -39,25 +39,10 @@
     _styleRequests = nil;
     _styleCache = nil;
     _displayLink = nil;
-    if (_isParent) {
-        self.view = view.subviews.firstObject;
-        [self addContentObservers:_sourceView];
-    }
-    else {
-        self.view = view;
-    }
+    self.view = [RNSharedElementNode resolveView:_isParent ? _sourceView.subviews.firstObject : _sourceView];
+    if (_isParent) [self addContentObservers:_sourceView];
     return self;
 }
-
-/*- (void) addChildViewObservers
-{
-    [_sourceView addObserver:self forKeyPath:@"subviews" options:NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld context:nil];
-}
-
-- (void) removeChildViewObservers
-{
-    [_sourceView removeObserver:self forKeyPath:@"subviews"];
-}*/
 
 - (UIView*) view
 {
@@ -79,9 +64,30 @@
     }
 }
 
++ (UIView*) resolveView:(UIView*) view
+{
+    if (view == nil) return nil;
+    
+    if ([view isKindOfClass:[UIImageView class]]) {
+        return view;
+    }
+    
+    NSString* className = NSStringFromClass(view.class);
+    if ([className isEqualToString:@"RNPhotoView"]) {
+        for (UIView* subview in view.subviews) {
+            if ([NSStringFromClass(subview.class) isEqualToString:@"MWTapDetectingImageView"]) {
+                return subview;
+            }
+        }
+    }
+    
+    return view;
+}
+
 - (void) addContentObservers:(UIView*)view
 {
     [view addObserver:self forKeyPath:@"bounds" options:NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld context:nil];
+    [view addObserver:self forKeyPath:@"frame" options:NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld context:nil];
     
     if ([view isKindOfClass:[UIImageView class]]) {
         UIImageView* imageView = (UIImageView*) view;
@@ -92,6 +98,7 @@
 - (void) removeContentObservers:(UIView*)view
 {
     [view removeObserver:self forKeyPath:@"bounds"];
+    [view removeObserver:self forKeyPath:@"frame"];
     
     if ([view isKindOfClass:[UIImageView class]]) {
         UIImageView* imageView = (UIImageView*) view;
@@ -102,9 +109,7 @@
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
 {
     //NSLog(@"observeValueForKeyPath: %@, changed: %@", keyPath, change);
-    if (_isParent) {
-        self.view = _sourceView.subviews.firstObject;
-    }
+    self.view = [RNSharedElementNode resolveView:_isParent ? _sourceView.subviews.firstObject : _sourceView];
     [self updateStyle];
     [self updateContent];
 }
@@ -247,9 +252,9 @@
     
     // Get absolute layout
     CGRect layout = [view convertRect:view.bounds toView:nil];
-    // NSLog(@"updateStyle: %@, %@", NSStringFromCGRect(layout), NSStringFromCGRect(view.bounds));
     if (CGRectIsEmpty(layout)) return;
-    
+    //NSLog(@"Style fetched: %@, realSize: %@", NSStringFromCGRect(layout), NSStringFromCGSize(view.bounds.size));
+
     RNSharedElementStyle* style = [[RNSharedElementStyle alloc]init];
     CALayer* layer = view.layer;
     style.layout = layout;
