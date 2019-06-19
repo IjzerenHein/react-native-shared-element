@@ -2,7 +2,7 @@
 import * as React from "react";
 import {
   StyleSheet,
-  ScrollView,
+  FlatList,
   View,
   TouchableOpacity,
   Image
@@ -34,7 +34,7 @@ const styles = StyleSheet.create({
   }
 });
 
-type TilesScreenProps = {
+type PropsType = {
   title: string,
   animation: SharedElementAnimation,
   DetailComponent: any,
@@ -42,34 +42,27 @@ type TilesScreenProps = {
   overlay?: boolean
 };
 
-export class TilesScreen extends React.Component<TilesScreenProps> {
+export class FlatListScreen extends React.Component<PropsType> {
   static defaultProps = {
-    title: "Tiles",
+    title: "FlatList",
     animation: "move",
     DetailComponent: DetailScreen,
     transitionConfig: fadeIn(),
     overlay: false
   };
 
-  renderItem(hero: Hero) {
-    return (
-      <TouchableOpacity
-        key={`Hero${hero.id}`}
-        style={styles.item}
-        activeOpacity={1}
-        onPress={() => this.onPressItem(hero)}
-      >
-        <ScreenTransition sharedId={`heroPhoto.${hero.id}`}>
-          <Image style={styles.image} source={hero.photo} />
-        </ScreenTransition>
-        <ScreenTransition
-          sharedId={`heroPhotoOverlay.${hero.id}`}
-          style={StyleSheet.absoluteFill}
-        >
-          <View style={StyleSheet.absoluteFill} collapsable={false} />
-        </ScreenTransition>
-      </TouchableOpacity>
-    );
+  _data = [];
+
+  constructor(props: PropsType) {
+    super(props);
+    for (let i = 0; i < 100; i++) {
+      for (let j = 0; j < Heroes.length; j++) {
+        this._data.push({
+          ...Heroes[j],
+          id: Heroes[j].id + "." + i
+        });
+      }
+    }
   }
 
   render() {
@@ -77,12 +70,32 @@ export class TilesScreen extends React.Component<TilesScreenProps> {
     return (
       <View style={styles.container}>
         <NavBar title={title} />
-        <ScrollView style={styles.content}>
-          {Heroes.map(item => this.renderItem(item))}
-        </ScrollView>
+        <FlatList
+          style={styles.content}
+          data={this._data}
+          renderItem={this.renderItem}
+          keyExtractor={this.keyExtractor}
+        />
       </View>
     );
   }
+
+  keyExtractor = (item: any, index: number) => item.id;
+
+  renderItem = ({ item }: any) => {
+    const hero = item;
+    return (
+      <TouchableOpacity
+        style={styles.item}
+        activeOpacity={1}
+        onPress={() => this.onPressItem(hero)}
+      >
+        <ScreenTransition sharedId={`heroPhoto.${hero.id}`}>
+          <Image style={styles.image} source={hero.photo} />
+        </ScreenTransition>
+      </TouchableOpacity>
+    );
+  };
 
   onPressItem = (hero: Hero) => {
     const {

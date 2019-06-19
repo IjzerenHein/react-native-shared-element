@@ -138,6 +138,7 @@ android {
 }
 
 dependencies {
+    implementation project(':react-native-vector-icons')
     implementation project(':react-native-fast-image')
     implementation project(':react-native-linear-gradient')
     implementation project(':@react-native-community_blur')

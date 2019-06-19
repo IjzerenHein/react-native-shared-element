@@ -1,14 +1,14 @@
 // @flow
 import * as React from "react";
 import { StyleSheet, View } from "react-native";
-import { Heading1, NavBar, ScreenTransition } from "../components";
+import { Heading1, NavBar, ScreenTransition, Colors } from "../components";
 import type { Hero } from "../types";
 import FastImage from "react-native-fast-image";
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "black"
+    backgroundColor: Colors.back
   },
   navBar: {
     position: "absolute",
@@ -21,8 +21,7 @@ const styles = StyleSheet.create({
   },
   image: {
     flex: 1,
-    width: "100%",
-    resizeMode: "cover"
+    width: "100%"
   }
 });
 
@@ -37,7 +36,7 @@ export class RNFastImageScreen extends React.Component<PropsType> {
       <View style={styles.container}>
         <View style={styles.content}>
           <ScreenTransition sharedId={`heroPhoto.${id}`} style={styles.content}>
-            <FastImage style={styles.image} source={photo} />
+            <FastImage style={styles.image} source={photo} resizeMode="cover" />
           </ScreenTransition>
         </View>
         <NavBar back="close" light style={styles.navBar} />

@@ -1,13 +1,13 @@
 // @flow
 import * as React from "react";
 import { StyleSheet, View, Image } from "react-native";
-import { Heading1, NavBar, ScreenTransition } from "../components";
+import { Heading1, NavBar, ScreenTransition, Colors } from "../components";
 import type { Hero } from "../types";
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "black"
+    backgroundColor: Colors.back
   },
   navBar: {
     position: "absolute",

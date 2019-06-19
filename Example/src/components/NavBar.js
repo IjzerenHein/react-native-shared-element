@@ -3,6 +3,8 @@ import * as React from "react";
 import { StyleSheet, View, TouchableOpacity } from "react-native";
 import { Heading2 } from "./Text";
 import { Router } from "./Router";
+import { Colors } from "./Colors";
+import { Icon } from "./Icon";
 
 const HEIGHT = 86;
 
@@ -12,17 +14,17 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "flex-end",
     height: HEIGHT,
-    backgroundColor: "#EEEEEE",
+    //backgroundColor: Colors.back,
     paddingHorizontal: 32,
-    paddingBottom: 12
+    paddingBottom: 16
   },
   lightContainer: {
     backgroundColor: "transparent"
   },
   backContainer: {
     position: "absolute",
-    left: 24,
-    bottom: 16
+    left: 10,
+    bottom: 10
   }
 });
 
@@ -48,17 +50,19 @@ export class NavBar extends React.Component<NavBarProps> {
   static HEIGHT = HEIGHT;
 
   renderBack() {
-    let label;
-    const { back, light } = this.props;
+    let icon;
+    const { back } = this.props;
     switch (back) {
       case "none":
         return;
       case "default":
-        label = "<";
+        icon = "chevron-left";
         break;
       case "close":
-        label = "X";
+        icon = "cross";
         break;
+      default:
+        return;
     }
     return (
       <TouchableOpacity
@@ -66,9 +70,7 @@ export class NavBar extends React.Component<NavBarProps> {
         onPress={this.onPressBack}
         hitSlop={HIT_SLOP}
       >
-        <View>
-          <Heading2 light={light}>{label || ""}</Heading2>
-        </View>
+        <Icon name={icon} size={28} color={Colors.text} />
       </TouchableOpacity>
     );
   }

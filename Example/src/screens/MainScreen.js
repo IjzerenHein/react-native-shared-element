@@ -1,7 +1,7 @@
 // @flow
 import * as React from "react";
 import { StyleSheet, ScrollView, View } from "react-native";
-import { Router, NavBar, ListItem } from "../components";
+import { Router, NavBar, ListItem, Colors } from "../components";
 import { TilesScreen } from "./TilesScreen";
 import { RNPhotoViewScreen } from "./RNPhotoViewScreen";
 import { RNImagePanZoomScreen } from "./RNImagePanZoomScreen";
@@ -9,11 +9,12 @@ import { RNFastImageScreen } from "./RNFastImageScreen";
 import { BlurScreen } from "./BlurScreen";
 import { GradientScreen } from "./GradientScreen";
 import { blurFadeIn } from "../transitions";
+import { FlatListScreen } from "./FlatListScreen";
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "white"
+    backgroundColor: Colors.back
   },
   content: {
     flex: 1
@@ -70,7 +71,7 @@ export class MainScreen extends React.Component<{}> {
             onPress={() =>
               Router.push(
                 <TilesScreen
-                  title="react-native-ast-image"
+                  title="react-native-Fast-image"
                   DetailComponent={RNFastImageScreen}
                 />
               )
@@ -97,6 +98,10 @@ export class MainScreen extends React.Component<{}> {
                 />
               )
             }
+          />
+          <ListItem
+            label="FlatList"
+            onPress={() => Router.push(<FlatListScreen title="FlatList" />)}
           />
         </ScrollView>
       </View>

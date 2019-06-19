@@ -1,17 +1,18 @@
 // @flow
 import * as React from "react";
 import { StyleSheet, Text } from "react-native";
+import { Colors } from "./Colors";
 
 const styles = StyleSheet.create({
   heading1: {
     fontSize: 30,
     fontWeight: "bold",
-    color: "black"
+    color: Colors.text
   },
   heading2: {
-    fontSize: 19,
-    fontWeight: "bold",
-    color: "black"
+    fontSize: 18,
+    fontWeight: "700",
+    color: Colors.text
   },
   light: {
     color: "white"

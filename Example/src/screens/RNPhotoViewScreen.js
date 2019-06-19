@@ -1,14 +1,14 @@
 // @flow
 import * as React from "react";
 import { StyleSheet, View } from "react-native";
-import { Heading1, NavBar, ScreenTransition } from "../components";
+import { Heading1, NavBar, ScreenTransition, Colors } from "../components";
 import type { Hero } from "../types";
 import PhotoView from "react-native-photo-view";
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "white"
+    backgroundColor: Colors.back
   },
   content: {
     flex: 1

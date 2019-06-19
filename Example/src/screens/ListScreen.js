@@ -1,7 +1,7 @@
 // @flow
 import * as React from "react";
 import { StyleSheet, ScrollView, View } from "react-native";
-import { Router, NavBar, ListItem } from "../components";
+import { Router, NavBar, ListItem, Colors } from "../components";
 import { Heroes } from "../assets";
 import { DetailScreen } from "./DetailScreen";
 import type { Hero } from "../types";
@@ -9,7 +9,7 @@ import type { Hero } from "../types";
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "white"
+    backgroundColor: Colors.back
   },
   content: {
     flex: 1
