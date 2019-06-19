@@ -6,6 +6,7 @@ import type { SharedElementNode } from "react-native-shared-element-transition";
 import { ScreenTransitionContext } from "./ScreenTransitionContext";
 import type { ScreenTransitionContextOnSharedElementsUpdatedEvent } from "./ScreenTransitionContext";
 import { PanGestureHandler, State } from "react-native-gesture-handler";
+import { NavBar } from "./NavBar";
 
 const WIDTH = Dimensions.get("window").width;
 
@@ -19,11 +20,11 @@ const styles = StyleSheet.create({
   swipeBackOverlay: {
     position: "absolute",
     left: 0,
-    top: 0,
+    top: NavBar.HEIGHT,
     bottom: 0,
-    width: 20
-    //backgroundColor: "green",
-    //opacity: 0.2
+    width: 30
+    // backgroundColor: "green",
+    // opacity: 0.2
   }
 });
 
@@ -134,8 +135,8 @@ export class Router extends React.Component<{}, RouterState> {
   }
 
   renderBackSwiper() {
-    const { nextIndex, prevIndex } = this.state;
-    if (!nextIndex && !prevIndex) return;
+    const { nextIndex, prevIndex, stack } = this.state;
+    if (!nextIndex && !prevIndex && stack.length <= 1) return;
     return (
       <PanGestureHandler
         minDist={5}
@@ -151,17 +152,24 @@ export class Router extends React.Component<{}, RouterState> {
     const { nativeEvent } = event;
     switch (nativeEvent.state) {
       case State.ACTIVE:
+        // console.log("SWIPE ACTIVE: ", nativeEvent);
         this.setState({
-          nextIndex: this.state.nextIndex - 1
+          nextIndex: Math.max(this.state.nextIndex - 1, 0)
         });
         break;
       case State.CANCELLED:
+        // console.log("SWIPE CANCEL: ", nativeEvent);
         this.setState({
           nextIndex: this.state.prevIndex
         });
         break;
       case State.END:
-        if (nativeEvent.translationX >= WIDTH / 2) {
+        // console.log("SWIPE END: ", nativeEvent);
+        if (
+          nativeEvent.velocityX >= 1000 ||
+          (nativeEvent.velocityX > -1000 &&
+            nativeEvent.translationX >= WIDTH / 2)
+        ) {
           Animated.timing(this._swipeBackAnimValue, {
             toValue: WIDTH,
             duration: 100,
@@ -186,6 +194,12 @@ export class Router extends React.Component<{}, RouterState> {
             }
           });
         }
+        break;
+      case State.BEGAN:
+        // console.log("SWIPE BEGAN: ", nativeEvent);
+        break;
+      default:
+        // console.log("SWIPE UNKNOWN STATE: ", nativeEvent);
         break;
     }
   };

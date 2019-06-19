@@ -4,12 +4,14 @@ import { StyleSheet, View, TouchableOpacity } from "react-native";
 import { Heading2 } from "./Text";
 import { Router } from "./Router";
 
+const HEIGHT = 86;
+
 const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "flex-end",
-    height: 86,
+    height: HEIGHT,
     backgroundColor: "#EEEEEE",
     paddingHorizontal: 32,
     paddingBottom: 12
@@ -37,6 +39,8 @@ export class NavBar extends React.Component<NavBarProps> {
   static defaultProps = {
     back: "default"
   };
+
+  static HEIGHT = HEIGHT;
 
   renderBack() {
     let label;
