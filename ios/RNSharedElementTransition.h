@@ -14,7 +14,7 @@
 @interface RNSharedElementTransition : UIView <RNSharedElementDelegate>
 
 @property (nonatomic, assign) BOOL autoHide;
-@property (nonatomic, assign) CGFloat value;
+@property (nonatomic, assign) CGFloat nodePosition;
 @property (nonatomic, assign) NSString* animation;
 @property (nonatomic, assign) RNSharedElementNode* startNode;
 @property (nonatomic, assign) RNSharedElementNode* startAncestor;

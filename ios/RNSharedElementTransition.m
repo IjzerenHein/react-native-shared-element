@@ -95,7 +95,7 @@
                    [[RNSharedElementItem alloc]initWithnodeManager:nodeManager isAncestor:NO],
                    [[RNSharedElementItem alloc]initWithnodeManager:nodeManager isAncestor:YES]
                    ];
-        _value = 0.0f;
+        _nodePosition = 0.0f;
         _animation = @"move";
         _reactFrameSet = NO;
         //self.contentMode = UIViewContentModeScaleAspectFill;
@@ -165,10 +165,10 @@
     ((RNSharedElementItem*)[_items objectAtIndex:ITEM_END_ANCESTOR]).node = endNodeAncestor;
 }
 
-- (void)setValue:(CGFloat)value
+- (void)setNodePosition:(CGFloat)nodePosition
 {
-    if (_value != value) {
-        _value = value;
+    if (_nodePosition != nodePosition) {
+        _nodePosition = nodePosition;
         [self updateStyle];
     }
 }
@@ -358,7 +358,7 @@
     } else if (style2 == nil) {
         style2 = style1;
     }
-    RNSharedElementStyle* style = [self getInterpolatedStyle:style1 ancestorStyle1:ancestor1.style style2:style2 ancestorStyle2:ancestor2.style position:_value];
+    RNSharedElementStyle* style = [self getInterpolatedStyle:style1 ancestorStyle1:ancestor1.style style2:style2 ancestorStyle2:ancestor2.style position:_nodePosition];
     
     // Update frame
     CGRect frame = [self.superview convertRect:style.layout fromView:nil];
@@ -377,7 +377,7 @@
         //style.opacity = 1.0f - MIN(MAX(_value, 0.0f), 1.0f);
         style.opacity = 1.0f;
         [self applyStyle:style layer:_primaryImageView.layer];
-        style.opacity = MIN(MAX(_value, 0.0f), 1.0f);
+        style.opacity = MIN(MAX(_nodePosition, 0.0f), 1.0f);
         [self applyStyle:style layer:_secondaryImageView.layer];
     }
 }

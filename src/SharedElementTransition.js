@@ -20,7 +20,7 @@ export interface SharedElementTransitionProps {
     node: ?SharedElementNode,
     ancestor?: ?SharedElementNode
   };
-  value: number | Animated.Node | void;
+  position: number | Animated.Node | void;
   animation?: SharedElementAnimation;
   autoHide?: boolean;
 }
@@ -63,7 +63,7 @@ export class SharedElementTransitionBase extends React.Component<SharedElementTr
   }
 
   render() {
-    const { start, end, ...otherProps } = this.props;
+    const { start, end, position, ...otherProps } = this.props;
     return RNSharedElementTransition ? (
       <RNSharedElementTransition
         startNode={{
@@ -74,6 +74,7 @@ export class SharedElementTransitionBase extends React.Component<SharedElementTr
           node: SharedElementTransitionBase.prepareNode(end.node),
           ancestor: SharedElementTransitionBase.prepareNode(end.ancestor)
         }}
+        nodePosition={position}
         {...otherProps}
       />
     ) : null;
@@ -93,7 +94,7 @@ export class SharedElementTransition extends React.Component<SharedElementTransi
   }
 
   render() {
-    const { start, end, ...otherProps } = this.props;
+    const { start, end, position, ...otherProps } = this.props;
     return RNAnimatedSharedElementTransition ? (
       <RNAnimatedSharedElementTransition
         startNode={{
@@ -104,6 +105,7 @@ export class SharedElementTransition extends React.Component<SharedElementTransi
           node: SharedElementTransitionBase.prepareNode(end.node),
           ancestor: SharedElementTransitionBase.prepareNode(end.ancestor)
         }}
+        nodePosition={position}
         {...otherProps}
       />
     ) : null;

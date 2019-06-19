@@ -247,7 +247,7 @@
     
     // Get absolute layout
     CGRect layout = [view convertRect:view.bounds toView:nil];
-    NSLog(@"updateStyle: %@, %@", NSStringFromCGRect(layout), NSStringFromCGRect(view.bounds));
+    // NSLog(@"updateStyle: %@, %@", NSStringFromCGRect(layout), NSStringFromCGRect(view.bounds));
     if (CGRectIsEmpty(layout)) return;
     
     RNSharedElementStyle* style = [[RNSharedElementStyle alloc]init];

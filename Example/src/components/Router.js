@@ -126,7 +126,7 @@ export class Router extends React.Component<{}, RouterState> {
       };
     }
     // console.log('renderSharedElementTransitions: ', nodes);
-    const value = Animated.subtract(animValue, startIndex);
+    const position = Animated.subtract(animValue, startIndex);
     return (
       <View style={styles.sharedElements} pointerEvents="none">
         {Object.keys(nodes).map(sharedId => (
@@ -135,7 +135,7 @@ export class Router extends React.Component<{}, RouterState> {
             key={`SharedElementTransition.${sharedId}`}
             start={nodes[sharedId].start}
             end={nodes[sharedId].end}
-            value={value}
+            position={position}
           />
         ))}
       </View>
