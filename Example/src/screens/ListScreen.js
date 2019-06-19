@@ -16,7 +16,7 @@ import {
 } from "../components";
 import type { SharedElementAnimation } from "react-native-shared-element-transition";
 import { Heroes } from "../assets";
-import { DetailScreen } from "./DetailScreen";
+import { GradientScreen } from "./GradientScreen";
 import type { Hero } from "../types";
 import { fadeIn } from "react-navigation-transitions";
 import type { TransitionConfig } from "react-navigation";
@@ -39,8 +39,13 @@ const styles = StyleSheet.create({
     width: 80,
     height: 80,
     borderRadius: 40,
-    marginRight: 20,
-    resizeMode: "cover"
+    overflow: "hidden"
+  },
+  overlay: {
+    borderRadius: 40
+  },
+  name: {
+    marginLeft: 20
   }
 });
 
@@ -48,17 +53,15 @@ type PropsType = {
   title: string,
   animation: SharedElementAnimation,
   DetailComponent: any,
-  transitionConfig: TransitionConfig,
-  overlay?: boolean
+  transitionConfig: TransitionConfig
 };
 
 export class ListScreen extends React.Component<PropsType> {
   static defaultProps = {
     title: "Bullets",
     animation: "move",
-    DetailComponent: DetailScreen,
-    transitionConfig: fadeIn(),
-    overlay: false
+    DetailComponent: GradientScreen,
+    transitionConfig: fadeIn()
   };
 
   renderItem(hero: Hero) {
@@ -70,18 +73,25 @@ export class ListScreen extends React.Component<PropsType> {
         activeOpacity={1}
         onPress={() => this.onPressItem(hero)}
       >
-        <ScreenTransition sharedId={`heroPhoto.${id}`}>
-          <Image style={styles.image} source={photo} />
-        </ScreenTransition>
-        <ScreenTransition sharedId={`heroName.${id}`}>
-          <Heading2>{name}</Heading2>
-        </ScreenTransition>
-        <ScreenTransition
-          sharedId={`heroPhotoOverlay.${id}`}
-          style={StyleSheet.absoluteFill}
-        >
-          <View style={StyleSheet.absoluteFill} collapsable={false} />
-        </ScreenTransition>
+        <View style={styles.image}>
+          <ScreenTransition sharedId={`heroPhoto.${id}`}>
+            <Image style={styles.image} source={photo} resizeMode="cover" />
+          </ScreenTransition>
+          <ScreenTransition
+            sharedId={`heroPhotoOverlay.${id}`}
+            style={StyleSheet.absoluteFill}
+          >
+            <View
+              style={[StyleSheet.absoluteFill, styles.overlay]}
+              collapsable={false}
+            />
+          </ScreenTransition>
+        </View>
+        <View style={styles.name}>
+          <ScreenTransition sharedId={`heroName.${id}`}>
+            <Heading2>{name}</Heading2>
+          </ScreenTransition>
+        </View>
       </TouchableOpacity>
     );
   }
@@ -99,28 +109,15 @@ export class ListScreen extends React.Component<PropsType> {
   }
 
   onPressItem = (hero: Hero) => {
-    const {
-      animation,
-      DetailComponent,
-      transitionConfig,
-      overlay
-    } = this.props;
-    const alternateHero = animation === "dissolve" ? Heroes[0] : hero;
+    const { animation, DetailComponent, transitionConfig } = this.props;
     const sharedElements = {
-      [`heroPhoto.${hero.id}`]: animation
+      [`heroPhoto.${hero.id}`]: animation,
+      [`heroPhotoOverlay.${hero.id}`]: "dissolve",
+      [`heroName.${hero.id}`]: animation
     };
-    if (overlay) sharedElements[`heroPhotoOverlay.${hero.id}`] = "dissolve";
-    Router.push(
-      <DetailComponent
-        hero={{
-          ...alternateHero,
-          id: hero.id
-        }}
-      />,
-      {
-        sharedElements,
-        transitionConfig
-      }
-    );
+    Router.push(<DetailComponent hero={hero} />, {
+      sharedElements,
+      transitionConfig
+    });
   };
 }

@@ -23,6 +23,14 @@ const styles = StyleSheet.create({
     flex: 1,
     width: "100%",
     resizeMode: "cover"
+  },
+  title: {
+    position: "absolute",
+    left: 10,
+    right: 10,
+    bottom: 24,
+    flexDirection: "row",
+    justifyContent: "center"
   }
 });
 
@@ -50,8 +58,13 @@ export class GradientScreen extends React.Component<PropsType> {
               end={{ x: 0, y: 1 }}
             />
           </ScreenTransition>
+          <View style={styles.title}>
+            <ScreenTransition sharedId={`heroName.${id}`}>
+              <Heading1>{name}</Heading1>
+            </ScreenTransition>
+          </View>
         </View>
-        <NavBar back="close" title={name} style={styles.navBar} />
+        <NavBar back="close" style={styles.navBar} />
       </View>
     );
   }
