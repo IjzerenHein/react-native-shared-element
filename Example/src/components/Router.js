@@ -109,11 +109,11 @@ export class Router extends React.Component<{}, RouterState> {
       nodes[sharedId] = {
         start: {
           node: startScreen ? startScreen.nodes[sharedId] : undefined,
-          ancestor: startScreen && !isPush ? startScreen.ancestor : undefined
+          ancestor: startScreen ? startScreen.ancestor : undefined
         },
         end: {
           node: endScreen ? endScreen.nodes[sharedId] : undefined,
-          ancestor: endScreen && isPush ? endScreen.ancestor : undefined
+          ancestor: endScreen ? endScreen.ancestor : undefined
         }
       };
     }
