@@ -14,28 +14,19 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     color: Colors.text
   },
-  light: {
-    color: "white"
+  caption: {
+    fontSize: 14,
+    fontWeight: "600",
+    color: Colors.gray
   }
 });
 
 export const Heading1 = (props: any) => (
-  <Text
-    {...props}
-    style={[
-      styles.heading1,
-      props.light ? styles.light : undefined,
-      props.style
-    ]}
-  />
+  <Text {...props} style={[styles.heading1, props.style]} />
 );
 export const Heading2 = (props: any) => (
-  <Text
-    {...props}
-    style={[
-      styles.heading2,
-      props.light ? styles.light : undefined,
-      props.style
-    ]}
-  />
+  <Text {...props} style={[styles.heading2, props.style]} />
+);
+export const Caption = (props: any) => (
+  <Text {...props} style={[styles.caption, props.style]} />
 );

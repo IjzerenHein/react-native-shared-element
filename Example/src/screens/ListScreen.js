@@ -12,7 +12,8 @@ import {
   NavBar,
   ScreenTransition,
   Colors,
-  Heading2
+  Heading2,
+  Caption
 } from "../components";
 import type { SharedElementAnimation } from "react-native-shared-element-transition";
 import { Heroes } from "../assets";
@@ -26,7 +27,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: Colors.back
   },
-  content: {
+  flex: {
     flex: 1
   },
   item: {
@@ -44,8 +45,15 @@ const styles = StyleSheet.create({
   overlay: {
     borderRadius: 40
   },
+  content: {
+    flex: 1,
+    marginLeft: 20,
+    flexDirection: "column",
+    justifyContent: "center"
+  },
   name: {
-    marginLeft: 20
+    marginBottom: 4,
+    flexDirection: "row"
   }
 });
 
@@ -65,7 +73,7 @@ export class ListScreen extends React.Component<PropsType> {
   };
 
   renderItem(hero: Hero) {
-    const { id, name, photo } = hero;
+    const { id, name, photo, quote } = hero;
     return (
       <TouchableOpacity
         key={`Hero${id}`}
@@ -87,10 +95,13 @@ export class ListScreen extends React.Component<PropsType> {
             />
           </ScreenTransition>
         </View>
-        <View style={styles.name}>
-          <ScreenTransition sharedId={`heroName.${id}`}>
-            <Heading2>{name}</Heading2>
-          </ScreenTransition>
+        <View style={styles.content}>
+          <View style={styles.name}>
+            <ScreenTransition sharedId={`heroName.${id}`}>
+              <Heading2>{name}</Heading2>
+            </ScreenTransition>
+          </View>
+          <Caption>{quote || ""}</Caption>
         </View>
       </TouchableOpacity>
     );
@@ -101,7 +112,7 @@ export class ListScreen extends React.Component<PropsType> {
     return (
       <View style={styles.container}>
         <NavBar title={title} />
-        <ScrollView style={styles.content}>
+        <ScrollView style={styles.flex}>
           {Heroes.map(item => this.renderItem(item))}
         </ScrollView>
       </View>
