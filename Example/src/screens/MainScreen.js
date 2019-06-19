@@ -10,6 +10,7 @@ import { BlurScreen } from "./BlurScreen";
 import { GradientScreen } from "./GradientScreen";
 import { blurFadeIn } from "../transitions";
 import { FlatListScreen } from "./FlatListScreen";
+import { ListScreen } from "./ListScreen";
 
 const styles = StyleSheet.create({
   container: {
@@ -39,6 +40,12 @@ export class MainScreen extends React.Component<{}> {
               Router.push(
                 <TilesScreen title="Image Dissolve" animation="dissolve" />
               )
+            }
+          />
+          <ListItem
+            label="Image Borderradius"
+            onPress={() =>
+              Router.push(<ListScreen title="Image Borderradius" />)
             }
           />
           <ListItem
