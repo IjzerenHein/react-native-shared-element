@@ -58,7 +58,7 @@ export class Router extends React.Component<{}, RouterState> {
   _animValue = new Animated.Value(0);
   _swipeBackAnimValue = new Animated.Value(0);
   _onSwipeBackGestureEvent = Animated.event(
-    [{ nativeEvent: { x: this._swipeBackAnimValue } }],
+    [{ nativeEvent: { translationX: this._swipeBackAnimValue } }],
     { useNativeDriver: true }
   );
 
@@ -71,7 +71,11 @@ export class Router extends React.Component<{}, RouterState> {
       nextIndex: 0,
       animValue: Animated.subtract(
         this._animValue,
-        Animated.divide(this._swipeBackAnimValue, WIDTH)
+        this._swipeBackAnimValue.interpolate({
+          inputRange: [0, WIDTH],
+          outputRange: [0, 1],
+          extrapolate: "clamp"
+        })
       ),
       sharedElementScreens: [],
       sharedElementConfig: [undefined]
@@ -94,6 +98,7 @@ export class Router extends React.Component<{}, RouterState> {
     }
     const startIndex = Math.min(prevIndex, nextIndex);
     const endIndex = startIndex + 1;
+    const isPush = nextIndex > prevIndex;
     const config = sharedElementConfig[endIndex];
     if (!config) return;
     const nodes = {};
@@ -103,11 +108,11 @@ export class Router extends React.Component<{}, RouterState> {
       nodes[sharedId] = {
         start: {
           node: startScreen ? startScreen.nodes[sharedId] : undefined,
-          ancestor: startScreen ? startScreen.ancestor : undefined
+          ancestor: startScreen && !isPush ? startScreen.ancestor : undefined
         },
         end: {
           node: endScreen ? endScreen.nodes[sharedId] : undefined,
-          ancestor: endScreen ? endScreen.ancestor : undefined
+          ancestor: endScreen && isPush ? endScreen.ancestor : undefined
         }
       };
     }
@@ -133,6 +138,7 @@ export class Router extends React.Component<{}, RouterState> {
     if (!nextIndex && !prevIndex) return;
     return (
       <PanGestureHandler
+        minDist={5}
         onGestureEvent={this._onSwipeBackGestureEvent}
         onHandlerStateChange={this._onSwipeBackStateChange}
       >
@@ -282,13 +288,13 @@ export class Router extends React.Component<{}, RouterState> {
       nextIndex: nextIndex - 1
       // TODO UPDATE SHAREDELEMENTCONFIG
     });
-    /*Animated.timing(this._animValue, {
+    Animated.timing(this._animValue, {
       toValue: stack.length - 2,
-      duration: 400,
-      useNativeDriver: true*/
-    Animated.spring(this._animValue, {
-      toValue: stack.length - 2,
+      duration: 300,
       useNativeDriver: true
+      /*Animated.spring(this._animValue, {
+      toValue: stack.length - 2,
+      useNativeDriver: true*/
     }).start(({ finished }) => {
       if (finished) {
         this.pruneStack(stack.length - 1);
