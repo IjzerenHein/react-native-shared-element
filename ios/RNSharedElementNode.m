@@ -183,7 +183,7 @@
     }
     else {
         NSLog(@"drawViewHierarchyInRect: bounds: %@", NSStringFromCGRect(bounds));
-        UIGraphicsBeginImageContextWithOptions(bounds.size, view.opaque, 0.0f);
+        UIGraphicsBeginImageContextWithOptions(bounds.size, NO, 0.0f);
         BOOL res = [view drawViewHierarchyInRect:bounds afterScreenUpdates:NO]; // NEVER USE YES, IT CREATED VISUAL ARTEFACTS ON THE CREEN
         UIImage* image = res ? UIGraphicsGetImageFromCurrentImageContext() : nil;
         UIGraphicsEndImageContext();
@@ -208,6 +208,8 @@
      _cachedSnapshot = snapshot;
      return snapshot;
      }*/
+    
+    NSLog(@"Content fetched: %@, contentType: %d, size: %@", content, contentType, NSStringFromCGSize(bounds.size));
     
     _contentCache = content;
     _contentTypeCache = contentType;
@@ -253,7 +255,7 @@
     // Get absolute layout
     CGRect layout = [view convertRect:view.bounds toView:nil];
     if (CGRectIsEmpty(layout)) return;
-    //NSLog(@"Style fetched: %@, realSize: %@", NSStringFromCGRect(layout), NSStringFromCGSize(view.bounds.size));
+    NSLog(@"Style fetched: %@, realSize: %@", NSStringFromCGRect(layout), NSStringFromCGSize(view.bounds.size));
 
     RNSharedElementStyle* style = [[RNSharedElementStyle alloc]init];
     CALayer* layer = view.layer;
