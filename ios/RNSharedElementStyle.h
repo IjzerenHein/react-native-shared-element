@@ -10,6 +10,7 @@
 
 @interface RNSharedElementStyle : NSObject
 @property (nonatomic, assign) CGRect layout;
+@property (nonatomic, assign) CGSize size;
 @property (nonatomic, assign) CGFloat opacity;
 @property (nonatomic, assign) UIColor* backgroundColor;
 @property (nonatomic, assign) CGFloat cornerRadius;

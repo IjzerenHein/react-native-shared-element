@@ -247,12 +247,13 @@
     
     // Get absolute layout
     CGRect layout = [view convertRect:view.bounds toView:nil];
-    NSLog(@"updateStyle: %@", NSStringFromCGRect(layout));
+    NSLog(@"updateStyle: %@, %@", NSStringFromCGRect(layout), NSStringFromCGRect(view.bounds));
     if (CGRectIsEmpty(layout)) return;
     
     RNSharedElementStyle* style = [[RNSharedElementStyle alloc]init];
     CALayer* layer = view.layer;
     style.layout = layout;
+    style.size = view.bounds.size;
     style.opacity = layer.opacity || 0.0f;
     style.cornerRadius = layer.cornerRadius;
     style.borderWidth = layer.borderWidth;

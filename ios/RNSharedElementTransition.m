@@ -277,19 +277,33 @@
                            alpha:alpha1 + ((alpha2 - alpha1) * position)];
 }
 
+- (CGRect)normalizeLayout:(CGRect)layout ancestorStyle:(RNSharedElementStyle*)ancestorStyle
+{
+    if (ancestorStyle == nil) return layout;
+    
+    // Determine origin relative to the left-top of the ancestor
+    layout.origin.x -= ancestorStyle.layout.origin.x;
+    layout.origin.y -= ancestorStyle.layout.origin.y;
+    
+    // Undo any scaling in case the screen is scaled
+    if (!CGSizeEqualToSize(ancestorStyle.layout.size, ancestorStyle.size)) {
+        CGFloat scaleX = ancestorStyle.size.width / ancestorStyle.layout.size.width;
+        CGFloat scaleY = ancestorStyle.size.height / ancestorStyle.layout.size.height;
+        layout.origin.x *= scaleX;
+        layout.origin.y *= scaleY;
+        layout.size.width *= scaleX;
+        layout.size.height *= scaleY;
+    }
+    
+    return layout;
+}
+
 - (RNSharedElementStyle*) getInterpolatedStyle:(RNSharedElementStyle*)style1 ancestorStyle1:(RNSharedElementStyle*)ancestorStyle1 style2:(RNSharedElementStyle*)style2 ancestorStyle2:(RNSharedElementStyle*)ancestorStyle2 position:(CGFloat) position
 {
-    CGRect layout1 = style1.layout;
-    if (ancestorStyle1 != nil) {
-        layout1.origin.x -= ancestorStyle1.layout.origin.x;
-        layout1.origin.y -= ancestorStyle1.layout.origin.y;
-    }
-    CGRect layout2 = style2.layout;
-    if (ancestorStyle2 != nil) {
-        layout2.origin.x -= ancestorStyle2.layout.origin.x;
-        layout2.origin.y -= ancestorStyle2.layout.origin.y;
-    }
-    CGFloat pos = MAX(MIN(position, _items.count), 0);
+    CGRect layout1 = [self normalizeLayout:style1.layout ancestorStyle:ancestorStyle1];
+    CGRect layout2 = [self normalizeLayout:style2.layout ancestorStyle:ancestorStyle2];
+    // CGFloat pos = MAX(MIN(position, 1), 0);
+    CGFloat pos = position;
     
     RNSharedElementStyle* style = [[RNSharedElementStyle alloc]init];
     style.layout = CGRectMake(
