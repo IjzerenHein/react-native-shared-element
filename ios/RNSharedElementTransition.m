@@ -300,8 +300,8 @@
 
 - (RNSharedElementStyle*) getInterpolatedStyle:(RNSharedElementStyle*)style1 ancestorStyle1:(RNSharedElementStyle*)ancestorStyle1 style2:(RNSharedElementStyle*)style2 ancestorStyle2:(RNSharedElementStyle*)ancestorStyle2 position:(CGFloat) position
 {
-    CGRect layout1 = [self normalizeLayout:style1.layout ancestorStyle:ancestorStyle1];
-    CGRect layout2 = [self normalizeLayout:style2.layout ancestorStyle:ancestorStyle2];
+    CGRect layout1 = [self normalizeLayout:style1.visibleLayout ancestorStyle:ancestorStyle1];
+    CGRect layout2 = [self normalizeLayout:style2.visibleLayout ancestorStyle:ancestorStyle2];
     // CGFloat pos = MAX(MIN(position, 1), 0);
     CGFloat pos = position;
     

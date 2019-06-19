@@ -266,11 +266,21 @@ NSArray* _imageResolvers;
     // Get absolute layout
     CGRect layout = [view convertRect:view.bounds toView:nil];
     if (CGRectIsEmpty(layout)) return;
-    NSLog(@"Style fetched: %@, realSize: %@", NSStringFromCGRect(layout), NSStringFromCGSize(view.bounds.size));
-
+    
+    // Get visible area (some parts may be clipped in a scrollview or something)
+    CGRect visibleLayout = layout;
+    UIView* superview = view.superview;
+    while (superview != nil) {
+        CGRect superLayout = [superview convertRect:superview.bounds toView:nil];
+        visibleLayout = CGRectIntersection(visibleLayout, superLayout);
+        superview = superview.superview;
+    }
+    
+    // Create style
     RNSharedElementStyle* style = [[RNSharedElementStyle alloc]init];
     CALayer* layer = view.layer;
     style.layout = layout;
+    style.visibleLayout = visibleLayout;
     style.size = view.bounds.size;
     style.opacity = layer.opacity || 0.0f;
     style.cornerRadius = layer.cornerRadius;
@@ -281,6 +291,8 @@ NSArray* _imageResolvers;
     style.shadowOffset = layer.shadowOffset;
     style.shadowRadius = layer.shadowRadius;
     style.shadowOpacity = layer.shadowOpacity;
+    
+    NSLog(@"Style fetched: %@, realSize: %@, visible: %@", NSStringFromCGRect(layout), NSStringFromCGSize(view.bounds.size), NSStringFromCGRect(visibleLayout));
     
     _styleCache = style;
     
