@@ -86,7 +86,7 @@
     BOOL _reactFrameSet;
 }
 
-- (instancetype)initWithnodeManager:(RNSharedElementNodeManager*)nodeManager
+- (instancetype)initWithNodeManager:(RNSharedElementNodeManager*)nodeManager
 {
     if ((self = [super init])) {
         _items = @[

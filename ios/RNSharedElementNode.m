@@ -26,6 +26,13 @@
 
 @synthesize reactTag = _reactTag;
 
+NSArray* _imageResolvers;
+
++ (void) setImageResolvers:(NSArray*) imageResolvers
+{
+    _imageResolvers = imageResolvers;
+}
+
 - (instancetype)init:(NSNumber *)reactTag view:(UIView*) view isParent:(BOOL)isParent
 {
     _reactTag = reactTag;
@@ -66,21 +73,25 @@
 
 + (UIView*) resolveView:(UIView*) view
 {
-    if (view == nil) return nil;
-    
-    if ([view isKindOfClass:[UIImageView class]]) {
-        return view;
-    }
-    
-    NSString* className = NSStringFromClass(view.class);
-    if ([className isEqualToString:@"RNPhotoView"]) {
-        for (UIView* subview in view.subviews) {
-            if ([NSStringFromClass(subview.class) isEqualToString:@"MWTapDetectingImageView"]) {
-                return subview;
+    if (view == nil || _imageResolvers == nil) return view;
+ 
+    // Resolve the underlying ImageViews of well known
+    // react-native libs (e.g. react-native-fast-image)
+    for (NSArray* imageResolver in _imageResolvers) {
+        NSArray* subviews = @[view];
+        UIView* foundImageView = nil;
+        for (NSString* name in imageResolver) {
+            foundImageView = nil;
+            for (UIView* subview in subviews) {
+                if ([name isEqualToString:NSStringFromClass(subview.class)]) {
+                    foundImageView = subview;
+                    subviews = subview.subviews;
+                    break;
+                }
             }
         }
+        if (foundImageView != nil) return foundImageView;
     }
-    
     return view;
 }
 

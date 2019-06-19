@@ -21,7 +21,7 @@
 @property (nonatomic, assign) RNSharedElementNode* endNode;
 @property (nonatomic, assign) RNSharedElementNode* endAncestor;
 
-- (instancetype)initWithnodeManager:(RNSharedElementNodeManager*)nodeManager;
+- (instancetype)initWithNodeManager:(RNSharedElementNodeManager*)nodeManager;
 
 @end
 

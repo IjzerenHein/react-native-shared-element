@@ -21,6 +21,8 @@
 - (void) requestStyle:(id <RNSharedElementDelegate>) delegate useCache:(BOOL)useCache;
 - (void) cancelRequests:(id <RNSharedElementDelegate>) delegate;
 
++ (void) setImageResolvers:(NSArray*) imageResolvers;
+
 @end
 
 #endif

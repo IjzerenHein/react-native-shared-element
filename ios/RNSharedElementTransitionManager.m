@@ -26,7 +26,7 @@ RCT_EXPORT_MODULE(RNSharedElementTransition);
 
 - (UIView *)view
 {
-    return [[RNSharedElementTransition alloc] initWithnodeManager:_nodeManager];
+    return [[RNSharedElementTransition alloc] initWithNodeManager:_nodeManager];
 }
 
 - (dispatch_queue_t)methodQueue
@@ -61,11 +61,14 @@ RCT_CUSTOM_VIEW_PROPERTY(endNode, NSObject, RNSharedElementTransition)
 }
 RCT_REMAP_METHOD(configure,
                  config:(NSDictionary *)config
-                 reactTag:(nonnull NSNumber *)reactTag
                  resolver:(RCTPromiseResolveBlock)resolve
                  rejecter:(RCTPromiseRejectBlock)reject)
 {
-    // DUMMY
+    NSArray* imageResolvers = [config valueForKey:@"imageResolvers"];
+    if (imageResolvers != nil) {
+        [RNSharedElementNode setImageResolvers:imageResolvers];
+    }
+    resolve(@(YES));
 }
 
 + (BOOL)requiresMainQueueSetup
