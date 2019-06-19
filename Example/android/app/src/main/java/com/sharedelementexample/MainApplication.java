@@ -3,6 +3,9 @@ package com.sharedelementexample;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.dylanvann.fastimage.FastImageViewPackage;
+import com.BV.LinearGradient.LinearGradientPackage;
+import com.cmcewen.blurview.BlurViewPackage;
 import com.reactnative.photoview.PhotoViewPackage;
 import com.swmansion.gesturehandler.react.RNGestureHandlerPackage;
 import com.ijzerenhein.visualclone.RNSharedElementPackage;
@@ -26,6 +29,9 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new FastImageViewPackage(),
+            new LinearGradientPackage(),
+            new BlurViewPackage(),
             new PhotoViewPackage(),
             new RNGestureHandlerPackage(),
             new RNSharedElementPackage()

@@ -1,8 +1,9 @@
 // @flow
 import * as React from "react";
-import { StyleSheet, View, Image } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { Heading1, NavBar, ScreenTransition } from "../components";
 import type { Hero } from "../types";
+import FastImage from "react-native-fast-image";
 
 const styles = StyleSheet.create({
   container: {
@@ -25,18 +26,18 @@ const styles = StyleSheet.create({
   }
 });
 
-interface DetailScreenProps {
-  hero: Hero;
-}
+type PropsType = {
+  hero: Hero
+};
 
-export class DetailScreen extends React.Component<DetailScreenProps> {
+export class RNFastImageScreen extends React.Component<PropsType> {
   render() {
     const { name, photo, id } = this.props.hero;
     return (
       <View style={styles.container}>
         <View style={styles.content}>
           <ScreenTransition sharedId={`heroPhoto.${id}`} style={styles.content}>
-            <Image style={styles.image} source={photo} />
+            <FastImage style={styles.image} source={photo} />
           </ScreenTransition>
         </View>
         <NavBar back="close" light style={styles.navBar} />

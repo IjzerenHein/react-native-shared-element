@@ -5,18 +5,20 @@ import { Heading1, NavBar, ScreenTransition } from "../components";
 import type { Hero } from "../types";
 import ImageZoom from "react-native-image-pan-zoom";
 
+const WIDTH = Dimensions.get("window").width;
+const HEIGHT = Dimensions.get("window").height - NavBar.HEIGHT;
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "white"
+    backgroundColor: "black"
   },
   content: {
     flex: 1
   },
   image: {
-    flex: 1,
-    width: "100%",
-    resizeMode: "cover"
+    width: WIDTH,
+    height: HEIGHT
   }
 });
 
@@ -31,16 +33,16 @@ export class RNImagePanZoomScreen extends React.Component<RNImagePanZoomScreenPr
       <View style={styles.container}>
         <NavBar title="RNImagePanZoom" back="close" />
         <View style={styles.content}>
-          <ScreenTransition sharedId={`heroPhoto.${id}`} style={styles.content}>
-            <ImageZoom
-              cropWidth={Dimensions.get("window").width}
-              cropHeight={Dimensions.get("window").height}
-              imageWidth={200}
-              imageHeight={200}
-            >
-              <Image style={{ width: 200, height: 200 }} source={photo} />
-            </ImageZoom>
-          </ScreenTransition>
+          <ImageZoom
+            cropWidth={Dimensions.get("window").width}
+            cropHeight={Dimensions.get("window").height - NavBar.HEIGHT}
+            imageWidth={WIDTH}
+            imageHeight={HEIGHT}
+          >
+            <ScreenTransition sharedId={`heroPhoto.${id}`}>
+              <Image style={styles.image} source={photo} resizeMode="cover" />
+            </ScreenTransition>
+          </ImageZoom>
         </View>
       </View>
     );

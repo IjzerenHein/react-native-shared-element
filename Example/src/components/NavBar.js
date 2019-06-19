@@ -16,6 +16,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 32,
     paddingBottom: 12
   },
+  lightContainer: {
+    backgroundColor: "transparent"
+  },
   backContainer: {
     position: "absolute",
     left: 24,
@@ -24,8 +27,10 @@ const styles = StyleSheet.create({
 });
 
 export interface NavBarProps {
-  title: string;
+  style?: any;
+  title?: string;
   back: "default" | "none" | "close";
+  light?: boolean;
 }
 
 const HIT_SLOP = {
@@ -44,7 +49,8 @@ export class NavBar extends React.Component<NavBarProps> {
 
   renderBack() {
     let label;
-    switch (this.props.back) {
+    const { back, light } = this.props;
+    switch (back) {
       case "none":
         return;
       case "default":
@@ -61,17 +67,23 @@ export class NavBar extends React.Component<NavBarProps> {
         hitSlop={HIT_SLOP}
       >
         <View>
-          <Heading2>{label}</Heading2>
+          <Heading2 light={light}>{label || ""}</Heading2>
         </View>
       </TouchableOpacity>
     );
   }
 
   render() {
-    const { title } = this.props;
+    const { style, title, light } = this.props;
     return (
-      <View style={styles.container}>
-        <Heading2>{title}</Heading2>
+      <View
+        style={[
+          styles.container,
+          light ? styles.lightContainer : undefined,
+          style
+        ]}
+      >
+        <Heading2 light={light}>{title}</Heading2>
         {this.renderBack()}
       </View>
     );

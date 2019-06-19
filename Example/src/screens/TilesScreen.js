@@ -10,10 +10,10 @@ import {
 import { Router, NavBar, ScreenTransition } from "../components";
 import type { SharedElementAnimation } from "react-native-shared-element-transition";
 import { Heroes } from "../assets";
-import { RNPhotoViewScreen } from "./RNPhotoViewScreen";
 import { DetailScreen } from "./DetailScreen";
 import type { Hero } from "../types";
 import { fadeIn } from "react-navigation-transitions";
+import type { TransitionConfig } from "react-navigation";
 
 const styles = StyleSheet.create({
   container: {
@@ -37,14 +37,18 @@ const styles = StyleSheet.create({
 type TilesScreenProps = {
   title: string,
   animation: SharedElementAnimation,
-  DetailComponent: any
+  DetailComponent: any,
+  transitionConfig: TransitionConfig,
+  overlay?: boolean
 };
 
 export class TilesScreen extends React.Component<TilesScreenProps> {
   static defaultProps = {
     title: "Tiles",
     animation: "move",
-    DetailComponent: DetailScreen
+    DetailComponent: DetailScreen,
+    transitionConfig: fadeIn(),
+    overlay: false
   };
 
   renderItem(hero: Hero) {
@@ -57,6 +61,12 @@ export class TilesScreen extends React.Component<TilesScreenProps> {
       >
         <ScreenTransition sharedId={`heroPhoto.${hero.id}`}>
           <Image style={styles.image} source={hero.photo} />
+        </ScreenTransition>
+        <ScreenTransition
+          sharedId={`heroPhotoOverlay.${hero.id}`}
+          style={StyleSheet.absoluteFill}
+        >
+          <View style={StyleSheet.absoluteFill} collapsable={false} />
         </ScreenTransition>
       </TouchableOpacity>
     );
@@ -75,8 +85,17 @@ export class TilesScreen extends React.Component<TilesScreenProps> {
   }
 
   onPressItem = (hero: Hero) => {
-    const { animation, DetailComponent } = this.props;
+    const {
+      animation,
+      DetailComponent,
+      transitionConfig,
+      overlay
+    } = this.props;
     const alternateHero = animation === "dissolve" ? Heroes[0] : hero;
+    const sharedElements = {
+      [`heroPhoto.${hero.id}`]: animation
+    };
+    if (overlay) sharedElements[`heroPhotoOverlay.${hero.id}`] = "dissolve";
     Router.push(
       <DetailComponent
         hero={{
@@ -85,10 +104,8 @@ export class TilesScreen extends React.Component<TilesScreenProps> {
         }}
       />,
       {
-        sharedElements: {
-          [`heroPhoto.${hero.id}`]: animation
-        },
-        transitionConfig: fadeIn()
+        sharedElements,
+        transitionConfig
       }
     );
   };

@@ -5,6 +5,10 @@ import { Router, NavBar, ListItem } from "../components";
 import { TilesScreen } from "./TilesScreen";
 import { RNPhotoViewScreen } from "./RNPhotoViewScreen";
 import { RNImagePanZoomScreen } from "./RNImagePanZoomScreen";
+import { RNFastImageScreen } from "./RNFastImageScreen";
+import { BlurScreen } from "./BlurScreen";
+import { GradientScreen } from "./GradientScreen";
+import { blurFadeIn } from "../transitions";
 
 const styles = StyleSheet.create({
   container: {
@@ -36,7 +40,42 @@ export class MainScreen extends React.Component<{}> {
               )
             }
           />
-          <ListItem label="react-native-fast-image (TODO)" />
+          <ListItem
+            label="Image & Blur background"
+            onPress={() =>
+              Router.push(
+                <TilesScreen
+                  title="Image & Blur"
+                  animation="move"
+                  DetailComponent={BlurScreen}
+                  transitionConfig={blurFadeIn()}
+                />
+              )
+            }
+          />
+          <ListItem
+            label="Gradient overlay"
+            onPress={() =>
+              Router.push(
+                <TilesScreen
+                  title="Gradient overlay"
+                  DetailComponent={GradientScreen}
+                  overlay
+                />
+              )
+            }
+          />
+          <ListItem
+            label="react-native-fast-image"
+            onPress={() =>
+              Router.push(
+                <TilesScreen
+                  title="react-native-ast-image"
+                  DetailComponent={RNFastImageScreen}
+                />
+              )
+            }
+          />
           <ListItem
             label="react-native-photo-view"
             onPress={() =>
