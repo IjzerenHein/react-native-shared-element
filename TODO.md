@@ -1,7 +1,7 @@
 Essential:
 [ ] Image resizeMode other than 'cover'
 [ ] Android support
-[ ] ImageBackground support
+[X] ImageBackground support
 [ ] Scrollview clipping
 
 Would be nice:

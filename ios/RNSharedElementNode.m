@@ -75,6 +75,18 @@ NSArray* _imageResolvers;
 {
     if (view == nil || _imageResolvers == nil) return view;
  
+    // In case the view contains a single UIImageView child
+    // which is also the same size as the parent, then
+    // use child image-view. This fixes <ImageBackground>.
+    if (view.subviews.count == 1) {
+        UIView* subview = view.subviews.firstObject;
+        if ([subview isKindOfClass:[UIImageView class]]) {
+            if (CGRectEqualToRect(subview.frame, view.bounds)) {
+                return subview;
+            }
+        }
+    }
+    
     // Resolve the underlying ImageViews of well known
     // react-native libs (e.g. react-native-fast-image)
     for (NSArray* imageResolver in _imageResolvers) {

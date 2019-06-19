@@ -10,6 +10,7 @@ import { BlurScreen } from "./BlurScreen";
 import { GradientScreen } from "./GradientScreen";
 import { blurFadeIn } from "../transitions";
 import { FlatListScreen } from "./FlatListScreen";
+import { ImageBackgroundScreen } from "./ImageBackgroundScreen";
 import { ListScreen } from "./ListScreen";
 
 const styles = StyleSheet.create({
@@ -43,10 +44,8 @@ export class MainScreen extends React.Component<{}> {
             }
           />
           <ListItem
-            label="Image Borderradius"
-            onPress={() =>
-              Router.push(<ListScreen title="Image Borderradius" />)
-            }
+            label="Image & Text"
+            onPress={() => Router.push(<ListScreen title="Image & Text" />)}
           />
           <ListItem
             label="Image & Blur background"
@@ -57,6 +56,17 @@ export class MainScreen extends React.Component<{}> {
                   animation="move"
                   DetailComponent={BlurScreen}
                   transitionConfig={blurFadeIn()}
+                />
+              )
+            }
+          />
+          <ListItem
+            label="ImageBackground"
+            onPress={() =>
+              Router.push(
+                <TilesScreen
+                  title="ImageBackground"
+                  DetailComponent={ImageBackgroundScreen}
                 />
               )
             }
