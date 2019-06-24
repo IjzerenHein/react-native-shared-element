@@ -12,6 +12,7 @@
 @property (nonatomic, assign) CGRect layout;
 @property (nonatomic, assign) CGSize size;
 @property (nonatomic, assign) CGRect visibleLayout;
+@property (nonatomic, assign) UIViewContentMode contentMode;
 @property (nonatomic, assign) CGFloat opacity;
 @property (nonatomic, assign) UIColor* backgroundColor;
 @property (nonatomic, assign) CGFloat cornerRadius;

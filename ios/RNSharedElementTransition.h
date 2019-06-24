@@ -18,6 +18,7 @@
 @property (nonatomic, assign) NSString* animation;
 @property (nonatomic, assign) RNSharedElementNode* startNode;
 @property (nonatomic, assign) RNSharedElementNode* startAncestor;
+@property (nonatomic, copy) RCTDirectEventBlock onMeasureNode;
 @property (nonatomic, assign) RNSharedElementNode* endNode;
 @property (nonatomic, assign) RNSharedElementNode* endAncestor;
 

@@ -27,10 +27,8 @@ const styles = StyleSheet.create({
     height: 100
   },
   image: {
-    // flex: 1,
     height: 100,
-    width: "100%",
-    resizeMode: "cover"
+    width: "100%"
   }
 });
 
@@ -39,7 +37,8 @@ type TilesScreenProps = {
   animation: SharedElementAnimation,
   DetailComponent: any,
   transitionConfig: TransitionConfig,
-  overlay?: boolean
+  overlay?: boolean,
+  resizeMode?: "cover" | "contain" | "stretch" | "center" | "repeat"
 };
 
 export class TilesScreen extends React.Component<TilesScreenProps> {
@@ -48,10 +47,12 @@ export class TilesScreen extends React.Component<TilesScreenProps> {
     animation: "move",
     DetailComponent: DetailScreen,
     transitionConfig: fadeIn(),
-    overlay: false
+    overlay: false,
+    resizeMode: "cover"
   };
 
   renderItem(hero: Hero) {
+    const { resizeMode } = this.props;
     return (
       <TouchableOpacity
         key={`Hero${hero.id}`}
@@ -60,7 +61,11 @@ export class TilesScreen extends React.Component<TilesScreenProps> {
         onPress={() => this.onPressItem(hero)}
       >
         <ScreenTransition sharedId={`heroPhoto.${hero.id}`}>
-          <Image style={styles.image} source={hero.photo} />
+          <Image
+            style={styles.image}
+            source={hero.photo}
+            resizeMode={resizeMode}
+          />
         </ScreenTransition>
         <ScreenTransition
           sharedId={`heroPhotoOverlay.${hero.id}`}

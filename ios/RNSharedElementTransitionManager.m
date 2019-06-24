@@ -59,6 +59,8 @@ RCT_CUSTOM_VIEW_PROPERTY(endNode, NSObject, RNSharedElementTransition)
     view.endNode = [self nodeFromJson:[json valueForKey:@"node"]];
     view.endAncestor = [self nodeFromJson:[json valueForKey:@"ancestor"]];
 }
+RCT_EXPORT_VIEW_PROPERTY(onMeasureNode, RCTDirectEventBlock);
+
 RCT_REMAP_METHOD(configure,
                  config:(NSDictionary *)config
                  resolver:(RCTPromiseResolveBlock)resolve

@@ -294,6 +294,7 @@ NSArray* _imageResolvers;
     style.layout = layout;
     style.visibleLayout = visibleLayout;
     style.size = view.bounds.size;
+    style.contentMode = view.contentMode;
     style.opacity = layer.opacity || 0.0f;
     style.cornerRadius = layer.cornerRadius;
     style.borderWidth = layer.borderWidth;

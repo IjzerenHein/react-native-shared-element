@@ -27,9 +27,11 @@
 @property (nonatomic, assign) RNSharedElementNode* node;
 @property (nonatomic, assign) BOOL needsLayout;
 @property (nonatomic, assign) BOOL needsContent;
+@property (nonatomic, assign) BOOL hasCalledOnMeasure;
 @property (nonatomic, assign) id content;
 @property (nonatomic, assign) RNSharedElementContentType contentType;
 @property (nonatomic, assign) RNSharedElementStyle* style;
+@property (nonatomic, readonly) CGRect contentLayout;
 @property (nonatomic, assign) BOOL hidden;
 - (instancetype)initWithnodeManager:(RNSharedElementNodeManager*)nodeManager isAncestor:(BOOL)isAncestor;
 @end
@@ -46,6 +48,7 @@
     _contentType = RNSharedElementContentTypeImage;
     _style = nil;
     _hidden = NO;
+    _hasCalledOnMeasure = NO;
     return self;
 }
 - (void) setNode:(RNSharedElementNode *)node
@@ -65,6 +68,7 @@
     _contentType = RNSharedElementContentTypeImage;
     _style = nil;
     _hidden = NO;
+    _hasCalledOnMeasure = NO;
 }
 - (void) setHidden:(BOOL)hidden
 {
@@ -75,6 +79,42 @@
     } else {
         _node.hideRefCount--;
     }
+}
+- (CGRect) contentLayout
+{
+    if (!_content || !_style) return CGRectZero;
+    if (_contentType != RNSharedElementContentTypeRawImage) return _style.layout;
+    CGSize size = _style.layout.size;
+    CGSize contentSize = [_content isKindOfClass:[UIImage class]] ? ((UIImage*)_content).size : size;
+    CGFloat contentAspectRatio = (contentSize.width / contentSize.height);
+    switch (_style.contentMode) {
+        case UIViewContentModeScaleToFill: // stretch
+            break;
+        case UIViewContentModeScaleAspectFit: // contain
+            if ((size.width / size.height) < contentAspectRatio) {
+                size.height = size.width / contentAspectRatio;
+            } else {
+                size.width = size.height * contentAspectRatio;
+            }
+            break;
+        case UIViewContentModeScaleAspectFill: // cover
+            if ((size.width / size.height) > contentAspectRatio) {
+                size.width = size.height * contentAspectRatio;
+            } else {
+                size.height = size.width / contentAspectRatio;
+            }
+            break;
+        case UIViewContentModeCenter: // center
+            size = contentSize;
+            break;
+        default:
+            break;
+    }
+    CGRect layout = _style.layout;
+    layout.origin.x += (layout.size.width - size.width) / 2;
+    layout.origin.y += (layout.size.height - size.height) / 2;
+    layout.size = size;
+    return layout;
 }
 @end
 
@@ -131,7 +171,7 @@
     imageView.contentMode = UIViewContentModeScaleAspectFill;
     imageView.userInteractionEnabled = NO;
     imageView.frame = self.bounds;
-    imageView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+    // imageView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     return imageView;
 }
 
@@ -192,6 +232,7 @@
 {
     if (_autoHide != autoHide) {
         _autoHide = autoHide;
+        [self updateNodeVisibility];
     }
 }
 
@@ -265,6 +306,28 @@
     [self updateNodeVisibility];
 }
 
+- (CGRect)normalizeLayout:(CGRect)layout ancestor:(RNSharedElementItem*)ancestor
+{
+    RNSharedElementStyle* style = ancestor.style;
+    if (style == nil) return [self.superview convertRect:layout fromView:nil];
+    
+    // Determine origin relative to the left-top of the ancestor
+    layout.origin.x -= style.layout.origin.x;
+    layout.origin.y -= style.layout.origin.y;
+    
+    // Undo any scaling in case the screen is scaled
+    if (!CGSizeEqualToSize(style.layout.size, style.size)) {
+        CGFloat scaleX = style.size.width / style.layout.size.width;
+        CGFloat scaleY = style.size.height / style.layout.size.height;
+        layout.origin.x *= scaleX;
+        layout.origin.y *= scaleY;
+        layout.size.width *= scaleX;
+        layout.size.height *= scaleY;
+    }
+    
+    return [self.superview convertRect:layout fromView:nil];
+}
+
 - (UIColor*) getInterpolatedColor:(UIColor*)color1 color2:(UIColor*)color2 position:(CGFloat)position
 {
     CGFloat red1, green1, blue1, alpha1;
@@ -277,54 +340,31 @@
                            alpha:alpha1 + ((alpha2 - alpha1) * position)];
 }
 
-- (CGRect)normalizeLayout:(CGRect)layout ancestorStyle:(RNSharedElementStyle*)ancestorStyle
+- (CGRect) getInterpolatedLayout:(CGRect)layout1 layout2:(CGRect)layout2 position:(CGFloat) position
 {
-    if (ancestorStyle == nil) return layout;
-    
-    // Determine origin relative to the left-top of the ancestor
-    layout.origin.x -= ancestorStyle.layout.origin.x;
-    layout.origin.y -= ancestorStyle.layout.origin.y;
-    
-    // Undo any scaling in case the screen is scaled
-    if (!CGSizeEqualToSize(ancestorStyle.layout.size, ancestorStyle.size)) {
-        CGFloat scaleX = ancestorStyle.size.width / ancestorStyle.layout.size.width;
-        CGFloat scaleY = ancestorStyle.size.height / ancestorStyle.layout.size.height;
-        layout.origin.x *= scaleX;
-        layout.origin.y *= scaleY;
-        layout.size.width *= scaleX;
-        layout.size.height *= scaleY;
-    }
-    
-    return layout;
+    return CGRectMake(
+                      layout1.origin.x + ((layout2.origin.x - layout1.origin.x) * position),
+                      layout1.origin.y + ((layout2.origin.y - layout1.origin.y) * position),
+                      layout1.size.width + ((layout2.size.width - layout1.size.width) * position),
+                      layout1.size.height + ((layout2.size.height - layout1.size.height) * position)
+                      );
 }
 
-- (RNSharedElementStyle*) getInterpolatedStyle:(RNSharedElementStyle*)style1 ancestorStyle1:(RNSharedElementStyle*)ancestorStyle1 style2:(RNSharedElementStyle*)style2 ancestorStyle2:(RNSharedElementStyle*)ancestorStyle2 position:(CGFloat) position
+- (RNSharedElementStyle*) getInterpolatedStyle:(RNSharedElementStyle*)style1 style2:(RNSharedElementStyle*)style2 position:(CGFloat) position
 {
-    CGRect layout1 = [self normalizeLayout:style1.visibleLayout ancestorStyle:ancestorStyle1];
-    CGRect layout2 = [self normalizeLayout:style2.visibleLayout ancestorStyle:ancestorStyle2];
-    // CGFloat pos = MAX(MIN(position, 1), 0);
-    CGFloat pos = position;
-    
     RNSharedElementStyle* style = [[RNSharedElementStyle alloc]init];
-    style.layout = CGRectMake(
-                              layout1.origin.x + ((layout2.origin.x - layout1.origin.x) * pos),
-                              layout1.origin.y + ((layout2.origin.y - layout1.origin.y) * pos),
-                              layout1.size.width + ((layout2.size.width - layout1.size.width) * pos),
-                              layout1.size.height + ((layout2.size.height - layout1.size.height) * pos)
-                              );
-    style.opacity = style1.opacity + ((style2.opacity - style1.opacity) * pos);
-    style.cornerRadius = style1.cornerRadius + ((style2.cornerRadius - style1.cornerRadius) * pos);
-    style.borderWidth = style1.borderWidth + ((style2.borderWidth - style1.borderWidth) * pos);
-    style.borderColor = [self getInterpolatedColor:style1.borderColor color2:style2.borderColor position:pos];
-    style.backgroundColor = [self getInterpolatedColor:style1.backgroundColor color2:style2.backgroundColor position:pos];
-    style.shadowOpacity = style1.shadowOpacity + ((style2.shadowOpacity - style1.shadowOpacity) * pos);
-    style.shadowRadius = style1.shadowRadius + ((style2.shadowRadius - style1.shadowRadius) * pos);
+    style.opacity = style1.opacity + ((style2.opacity - style1.opacity) * position);
+    style.cornerRadius = style1.cornerRadius + ((style2.cornerRadius - style1.cornerRadius) * position);
+    style.borderWidth = style1.borderWidth + ((style2.borderWidth - style1.borderWidth) * position);
+    style.borderColor = [self getInterpolatedColor:style1.borderColor color2:style2.borderColor position:position];
+    style.backgroundColor = [self getInterpolatedColor:style1.backgroundColor color2:style2.backgroundColor position:position];
+    style.shadowOpacity = style1.shadowOpacity + ((style2.shadowOpacity - style1.shadowOpacity) * position);
+    style.shadowRadius = style1.shadowRadius + ((style2.shadowRadius - style1.shadowRadius) * position);
     style.shadowOffset = CGSizeMake(
-                                    style1.shadowOffset.width + ((style2.shadowOffset.width - style1.shadowOffset.width) * pos),
-                                    style1.shadowOffset.height + ((style2.shadowOffset.height - style1.shadowOffset.height) * pos)
+                                    style1.shadowOffset.width + ((style2.shadowOffset.width - style1.shadowOffset.width) * position),
+                                    style1.shadowOffset.height + ((style2.shadowOffset.height - style1.shadowOffset.height) * position)
                                     );
-    style.shadowColor = [self getInterpolatedColor:style1.shadowColor color2:style2.shadowColor position:pos];
-    
+    style.shadowColor = [self getInterpolatedColor:style1.shadowColor color2:style2.shadowColor position:position];
     return style;
 }
 
@@ -341,44 +381,120 @@
     layer.shadowColor = style.shadowColor.CGColor;
 }
 
+- (void) fireMeasureEventFor:(NSInteger) index layout:(CGRect)layout visibleLayout:(CGRect)visibleLayout contentLayout:(CGRect)contentLayout
+{
+    /*NSDictionary* eventData = @{
+                                @"node": @(index),
+                                @"layout": @{
+                                        @"x": @(layout.origin.x),
+                                        @"y": @(layout.origin.y),
+                                        @"width": @(layout.size.width),
+                                        @"height": @(layout.size.height),
+                                        },
+                                @"visible": @{
+                                        @"x": @(visibleLayout.origin.x),
+                                        @"y": @(visibleLayout.origin.y),
+                                        @"width": @(visibleLayout.size.width),
+                                        @"height": @(visibleLayout.size.height),
+                                        },
+                                @"content": @{
+                                        @"x": @(contentLayout.origin.x),
+                                        @"y": @(contentLayout.origin.y),
+                                        @"width": @(contentLayout.size.width),
+                                        @"height": @(contentLayout.size.height),
+                                        }
+                                };
+    self.onMeasureNode(eventData);*/
+}
+
+/**
+ 
+ - 1. Correct layout & visibleLayout for ancestor
+ - 2. Calculate content-layout for content
+ - 3.
+ 
+ 
+ */
+
 - (void) updateStyle
 {
     if (!_reactFrameSet) return;
     
-    // Get interpolated style
-    RNSharedElementItem* item1 = [_items objectAtIndex:ITEM_START];
-    RNSharedElementItem* ancestor1 = [_items objectAtIndex:ITEM_START_ANCESTOR];
-    RNSharedElementItem* item2 = [_items objectAtIndex:ITEM_END];
-    RNSharedElementItem* ancestor2 = [_items objectAtIndex:ITEM_END_ANCESTOR];
-    RNSharedElementStyle* style1 = (item1 != nil) ? item1.style : nil;
-    RNSharedElementStyle* style2 = (item2 != nil) ? item2.style : nil;
-    if ((style1 == nil) && (style2 == nil)) return;
-    if (style1 == nil) {
-        style1 = style2;
-    } else if (style2 == nil) {
-        style2 = style1;
+    // Get start layout
+    RNSharedElementItem* startItem = [_items objectAtIndex:ITEM_START];
+    RNSharedElementItem* startAncestor = [_items objectAtIndex:ITEM_START_ANCESTOR];
+    RNSharedElementStyle* startStyle = startItem.style;
+    CGRect startLayout = startStyle ? [self normalizeLayout:startStyle.layout ancestor:startAncestor] : CGRectZero;
+    CGRect startVisibleLayout = startStyle ? [self normalizeLayout:startStyle.visibleLayout ancestor:startAncestor] : CGRectZero;
+    CGRect startContentLayout = startStyle ? [self normalizeLayout:startItem.contentLayout ancestor:startAncestor] : CGRectZero;
+    
+    // Get end layout
+    RNSharedElementItem* endItem = [_items objectAtIndex:ITEM_END];
+    RNSharedElementItem* endAncestor = [_items objectAtIndex:ITEM_END_ANCESTOR];
+    RNSharedElementStyle* endStyle = endItem.style;
+    CGRect endLayout = endStyle ? [self normalizeLayout:endStyle.layout ancestor:endAncestor] : CGRectZero;
+    CGRect endVisibleLayout = endStyle ? [self normalizeLayout:endStyle.visibleLayout ancestor:endAncestor] : CGRectZero;
+    CGRect endContentLayout = endStyle ? [self normalizeLayout:endItem.contentLayout ancestor:endAncestor] : CGRectZero;
+    
+    // Get interpolated style & layout
+    RNSharedElementStyle* interpolatedStyle;
+    CGRect interpolatedVisibleLayout;
+    CGRect interpolatedContentLayout;
+    if (!startStyle && !endStyle) return;
+    if (startStyle && endStyle) {
+        interpolatedStyle = [self getInterpolatedStyle:startStyle style2:endStyle position:_nodePosition];
+        interpolatedVisibleLayout = [self getInterpolatedLayout:startVisibleLayout layout2:endVisibleLayout position:_nodePosition];
+        interpolatedContentLayout = [self getInterpolatedLayout:startContentLayout layout2:endContentLayout position:_nodePosition];
+    } else if (startStyle) {
+        interpolatedStyle = startStyle;
+        interpolatedVisibleLayout = startVisibleLayout;
+        interpolatedContentLayout = startContentLayout;
+    } else {
+        interpolatedStyle = endStyle;
+        interpolatedVisibleLayout = endVisibleLayout;
+        interpolatedContentLayout = endContentLayout;
     }
-    RNSharedElementStyle* style = [self getInterpolatedStyle:style1 ancestorStyle1:ancestor1.style style2:style2 ancestorStyle2:ancestor2.style position:_nodePosition];
     
     // Update frame
-    CGRect frame = [self.superview convertRect:style.layout fromView:nil];
-    [super reactSetFrame:frame];
-    _primaryImageView.frame = self.bounds;
-    _secondaryImageView.frame = self.bounds;
-    
-    // Update styles
-    self.layer.cornerRadius = style.cornerRadius;
+    [super reactSetFrame:interpolatedVisibleLayout];
     self.layer.masksToBounds = true;
+    
+    // Update content
+    CGRect contentFrame = interpolatedContentLayout;
+    contentFrame.origin.x -= interpolatedVisibleLayout.origin.x;
+    contentFrame.origin.y -= interpolatedVisibleLayout.origin.y;
+    _primaryImageView.frame = contentFrame;
+    _secondaryImageView.frame = contentFrame;
     
     // Update specified animation styles
     if ([_animation isEqualToString:@"move"]) {
-        [self applyStyle:style layer:self.layer];
+        [self applyStyle:interpolatedStyle layer:self.layer];
     } else if ([_animation isEqualToString:@"dissolve"]) {
         //style.opacity = 1.0f - MIN(MAX(_value, 0.0f), 1.0f);
-        style.opacity = 1.0f;
-        [self applyStyle:style layer:_primaryImageView.layer];
-        style.opacity = MIN(MAX(_nodePosition, 0.0f), 1.0f);
-        [self applyStyle:style layer:_secondaryImageView.layer];
+        interpolatedStyle.opacity = 1.0f;
+        [self applyStyle:interpolatedStyle layer:_primaryImageView.layer];
+        interpolatedStyle.opacity = MIN(MAX(_nodePosition, 0.0f), 1.0f);
+        [self applyStyle:interpolatedStyle layer:_secondaryImageView.layer];
+    }
+    
+    // Fire events
+    if ((startAncestor.style != nil) && !startAncestor.hasCalledOnMeasure) {
+        startAncestor.hasCalledOnMeasure = YES;
+        startItem.hasCalledOnMeasure = NO;
+        [self fireMeasureEventFor:ITEM_START_ANCESTOR layout:startAncestor.style.layout visibleLayout:startAncestor.style.visibleLayout contentLayout:startAncestor.style.layout];
+    }
+    if ((startItem.style != nil) && !startItem.hasCalledOnMeasure) {
+        startItem.hasCalledOnMeasure = NO;
+        [self fireMeasureEventFor:ITEM_START layout:startLayout visibleLayout:startVisibleLayout contentLayout:startContentLayout];
+    }
+    if ((endAncestor.style != nil) && !endAncestor.hasCalledOnMeasure) {
+        endAncestor.hasCalledOnMeasure = YES;
+        endItem.hasCalledOnMeasure = NO;
+        [self fireMeasureEventFor:ITEM_END_ANCESTOR layout:endAncestor.style.layout visibleLayout:endAncestor.style.visibleLayout contentLayout:endAncestor.style.layout];
+    }
+    if ((endItem.style != nil) && !endItem.hasCalledOnMeasure) {
+        endItem.hasCalledOnMeasure = NO;
+        [self fireMeasureEventFor:ITEM_END layout:endLayout visibleLayout:endVisibleLayout contentLayout:endContentLayout];
     }
 }
 

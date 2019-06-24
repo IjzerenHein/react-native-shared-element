@@ -36,6 +36,42 @@ export class MainScreen extends React.Component<{}> {
             }
           />
           <ListItem
+            label="Image ResizeMode Contain"
+            onPress={() =>
+              Router.push(
+                <TilesScreen
+                  title="Image Move"
+                  animation="move"
+                  resizeMode="contain"
+                />
+              )
+            }
+          />
+          <ListItem
+            label="Image ResizeMode Stretch"
+            onPress={() =>
+              Router.push(
+                <TilesScreen
+                  title="Image Move"
+                  animation="move"
+                  resizeMode="stretch"
+                />
+              )
+            }
+          />
+          <ListItem
+            label="Image ResizeMode Center"
+            onPress={() =>
+              Router.push(
+                <TilesScreen
+                  title="Image Move"
+                  animation="move"
+                  resizeMode="center"
+                />
+              )
+            }
+          />
+          <ListItem
             label="Image Dissolve"
             onPress={() =>
               Router.push(
@@ -120,6 +156,8 @@ export class MainScreen extends React.Component<{}> {
             label="FlatList"
             onPress={() => Router.push(<FlatListScreen title="FlatList" />)}
           />
+          <ListItem label="Partially visible Images" />
+          <ListItem label="Partially visible Views" />
         </ScrollView>
       </View>
     );

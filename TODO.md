@@ -1,8 +1,10 @@
 Essential:
-[ ] Image resizeMode other than 'cover'
-[ ] Android support
+[X] Image resizeMode other than 'cover'
 [X] ImageBackground support
-[ ] Scrollview clipping
+[X] Scrollview clipping
+[ ] Android support
+[ ] Show / hide animations
+[ ] Show / hide animations on Shared Element renderer
 
 Would be nice:
 [ ] Web support
