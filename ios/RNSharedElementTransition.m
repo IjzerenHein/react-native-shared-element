@@ -10,10 +10,10 @@
 #import <React/UIView+React.h>
 #import "RNSharedElementTransition.h"
 
-#define ITEM_START 0
-#define ITEM_START_ANCESTOR 1
-#define ITEM_END 2
-#define ITEM_END_ANCESTOR 3
+#define ITEM_START_ANCESTOR 0
+#define ITEM_END_ANCESTOR 1
+#define ITEM_START 2
+#define ITEM_END 3
 
 #ifdef DEBUG
 #define DebugLog(...) NSLog(__VA_ARGS__)
@@ -98,7 +98,7 @@
             }
             break;
         case UIViewContentModeScaleAspectFill: // cover
-            if ((size.width / size.height) > contentAspectRatio) {
+            if ((size.width / size.height) < contentAspectRatio) {
                 size.width = size.height * contentAspectRatio;
             } else {
                 size.height = size.width / contentAspectRatio;
@@ -130,15 +130,14 @@
 {
     if ((self = [super init])) {
         _items = @[
-                   [[RNSharedElementItem alloc]initWithnodeManager:nodeManager isAncestor:NO],
+                   [[RNSharedElementItem alloc]initWithnodeManager:nodeManager isAncestor:YES],
                    [[RNSharedElementItem alloc]initWithnodeManager:nodeManager isAncestor:YES],
                    [[RNSharedElementItem alloc]initWithnodeManager:nodeManager isAncestor:NO],
-                   [[RNSharedElementItem alloc]initWithnodeManager:nodeManager isAncestor:YES]
+                   [[RNSharedElementItem alloc]initWithnodeManager:nodeManager isAncestor:NO]
                    ];
         _nodePosition = 0.0f;
         _animation = @"move";
         _reactFrameSet = NO;
-        //self.contentMode = UIViewContentModeScaleAspectFill;
         self.userInteractionEnabled = NO;
         _primaryImageView = [self createImageView];
         [self addSubview:_primaryImageView];
@@ -168,10 +167,9 @@
 - (UIImageView*) createImageView
 {
     UIImageView* imageView = [[UIImageView alloc]init];
-    imageView.contentMode = UIViewContentModeScaleAspectFill;
+    imageView.contentMode = UIViewContentModeScaleToFill;
     imageView.userInteractionEnabled = NO;
     imageView.frame = self.bounds;
-    // imageView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     return imageView;
 }
 
@@ -381,9 +379,10 @@
     layer.shadowColor = style.shadowColor.CGColor;
 }
 
-- (void) fireMeasureEventFor:(NSInteger) index layout:(CGRect)layout visibleLayout:(CGRect)visibleLayout contentLayout:(CGRect)contentLayout
+- (void) fireMeasureEvent:(NSInteger) index layout:(CGRect)layout visibleLayout:(CGRect)visibleLayout contentLayout:(CGRect)contentLayout
 {
-    /*NSDictionary* eventData = @{
+    if (!self.onMeasureNode) return;
+    NSDictionary* eventData = @{
                                 @"node": @(index),
                                 @"layout": @{
                                         @"x": @(layout.origin.x),
@@ -404,7 +403,7 @@
                                         @"height": @(contentLayout.size.height),
                                         }
                                 };
-    self.onMeasureNode(eventData);*/
+    self.onMeasureNode(eventData);
 }
 
 /**
@@ -481,20 +480,20 @@
     if ((startAncestor.style != nil) && !startAncestor.hasCalledOnMeasure) {
         startAncestor.hasCalledOnMeasure = YES;
         startItem.hasCalledOnMeasure = NO;
-        [self fireMeasureEventFor:ITEM_START_ANCESTOR layout:startAncestor.style.layout visibleLayout:startAncestor.style.visibleLayout contentLayout:startAncestor.style.layout];
+        [self fireMeasureEvent:ITEM_START_ANCESTOR layout:[self.superview convertRect:startAncestor.style.layout fromView:nil] visibleLayout:[self.superview convertRect:startAncestor.style.visibleLayout fromView:nil] contentLayout:[self.superview convertRect:startAncestor.style.layout fromView:nil]];
     }
     if ((startItem.style != nil) && !startItem.hasCalledOnMeasure) {
-        startItem.hasCalledOnMeasure = NO;
-        [self fireMeasureEventFor:ITEM_START layout:startLayout visibleLayout:startVisibleLayout contentLayout:startContentLayout];
+        startItem.hasCalledOnMeasure = YES;
+        [self fireMeasureEvent:ITEM_START layout:startLayout visibleLayout:startVisibleLayout contentLayout:startContentLayout];
     }
     if ((endAncestor.style != nil) && !endAncestor.hasCalledOnMeasure) {
         endAncestor.hasCalledOnMeasure = YES;
         endItem.hasCalledOnMeasure = NO;
-        [self fireMeasureEventFor:ITEM_END_ANCESTOR layout:endAncestor.style.layout visibleLayout:endAncestor.style.visibleLayout contentLayout:endAncestor.style.layout];
+        [self fireMeasureEvent:ITEM_END_ANCESTOR layout:[self.superview convertRect:endAncestor.style.layout fromView:nil] visibleLayout:[self.superview convertRect:endAncestor.style.visibleLayout fromView:nil] contentLayout:[self.superview convertRect:endAncestor.style.layout fromView:nil]];
     }
     if ((endItem.style != nil) && !endItem.hasCalledOnMeasure) {
-        endItem.hasCalledOnMeasure = NO;
-        [self fireMeasureEventFor:ITEM_END layout:endLayout visibleLayout:endVisibleLayout contentLayout:endContentLayout];
+        endItem.hasCalledOnMeasure = YES;
+        [self fireMeasureEvent:ITEM_END layout:endLayout visibleLayout:endVisibleLayout contentLayout:endContentLayout];
     }
 }
 
