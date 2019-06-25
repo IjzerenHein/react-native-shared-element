@@ -536,13 +536,7 @@
     // Update frame
     [super reactSetFrame:interpolatedLayout];
     
-    // Update clipping mask
-    /*CAShapeLayer *shapeLayer = [CAShapeLayer layer];
-    CGPathRef path = RCTPathCreateWithRoundedRect(self.bounds, RCTGetCornerInsets(cornerRadii, UIEdgeInsetsZero), NULL);
-    shapeLayer.path = path;
-    CGPathRelease(path);
-    mask = shapeLayer;*/
-    
+    // Update clipping mask (handles scrollview/parent clipping)
     CALayer *maskLayer = [[CALayer alloc] init];
     maskLayer.frame = CGRectMake(
                                  interpolatedClipInsets.left,
@@ -551,7 +545,6 @@
                                  interpolatedLayout.size.height - interpolatedClipInsets.top - interpolatedClipInsets.bottom);
     maskLayer.backgroundColor = [UIColor whiteColor].CGColor;
     maskLayer.cornerRadius = interpolatedStyle.cornerRadius;
-    
     self.layer.mask = maskLayer;
     
     // Update content
