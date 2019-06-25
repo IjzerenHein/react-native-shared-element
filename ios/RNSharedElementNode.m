@@ -285,6 +285,9 @@ NSArray* _imageResolvers;
     while (superview != nil) {
         CGRect superLayout = [superview convertRect:superview.bounds toView:nil];
         visibleLayout = CGRectIntersection(visibleLayout, superLayout);
+        if (isinf(visibleLayout.origin.x)) {
+            NSLog(@"BUG, NEED TO FIX, TODO");
+        }
         superview = superview.superview;
     }
     

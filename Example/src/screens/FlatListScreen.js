@@ -39,7 +39,8 @@ type PropsType = {
   animation: SharedElementAnimation,
   DetailComponent: any,
   transitionConfig: TransitionConfig,
-  overlay?: boolean
+  overlay?: boolean,
+  inverted?: boolean
 };
 
 export class FlatListScreen extends React.Component<PropsType> {
@@ -75,6 +76,7 @@ export class FlatListScreen extends React.Component<PropsType> {
           data={this._data}
           renderItem={this.renderItem}
           keyExtractor={this.keyExtractor}
+          inverted
         />
       </View>
     );

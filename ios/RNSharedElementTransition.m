@@ -305,7 +305,7 @@
                 [self updateViewWithImage:_primaryImageView image:image];
             }
         } else {
-            if (item == _items[0]) {
+            if (item == _items[ITEM_START]) {
                 [self updateViewWithImage:_primaryImageView image:image];
             } else {
                 [self updateViewWithImage:_secondaryImageView image:image];
@@ -371,6 +371,59 @@
                       layout1.size.width + ((layout2.size.width - layout1.size.width) * position),
                       layout1.size.height + ((layout2.size.height - layout1.size.height) * position)
                       );
+}
+
+- (UIEdgeInsets) getClipInsets:(CGRect)layout visibleLayout:(CGRect)visibleLayout
+{
+    return UIEdgeInsetsMake(
+                            visibleLayout.origin.y - layout.origin.y,
+                            visibleLayout.origin.x - layout.origin.x,
+                            (layout.origin.y + layout.size.height) - (visibleLayout.origin.y + visibleLayout.size.height),
+                            (layout.origin.x + layout.size.width) - (visibleLayout.origin.x + visibleLayout.size.width)
+                            );
+}
+
+- (UIEdgeInsets) getInterpolatedClipInsets:(CGRect)interpolatedLayout startClipInsets:(UIEdgeInsets)startClipInsets startVisibleLayout:(CGRect)startVisibleLayout endClipInsets:(UIEdgeInsets)endClipInsets endVisibleLayout:(CGRect)endVisibleLayout
+{
+    UIEdgeInsets clipInsets = UIEdgeInsetsZero;
+    
+    // Top
+    if (!endClipInsets.top && startClipInsets.top && startVisibleLayout.origin.y <= endVisibleLayout.origin.y) {
+        clipInsets.top = MAX(0.0f, startVisibleLayout.origin.y - interpolatedLayout.origin.y);
+    } else if (!startClipInsets.top && endClipInsets.top && endVisibleLayout.origin.y <= startVisibleLayout.origin.y) {
+        clipInsets.top = MAX(0.0f, endVisibleLayout.origin.y - interpolatedLayout.origin.y);
+    } else {
+        clipInsets.top = startClipInsets.top + ((endClipInsets.top - startClipInsets.top) * _nodePosition);
+    }
+    
+    // Bottom
+    if (!endClipInsets.bottom && startClipInsets.bottom && (startVisibleLayout.origin.y + startVisibleLayout.size.height) >= (endVisibleLayout.origin.y + endVisibleLayout.size.height)) {
+        clipInsets.bottom = MAX(0.0f, (interpolatedLayout.origin.y + interpolatedLayout.size.height) - (startVisibleLayout.origin.y + startVisibleLayout.size.height));
+    } else if (!startClipInsets.bottom && endClipInsets.bottom && (endVisibleLayout.origin.y + endVisibleLayout.size.height) >= (startVisibleLayout.origin.y + startVisibleLayout.size.height)) {
+        clipInsets.bottom = MAX(0.0f, (interpolatedLayout.origin.y + interpolatedLayout.size.height) - (endVisibleLayout.origin.y + endVisibleLayout.size.height));
+    } else {
+        clipInsets.bottom = startClipInsets.bottom + ((endClipInsets.bottom - startClipInsets.bottom) * _nodePosition);
+    }
+    
+    // Left
+    if (!endClipInsets.left && startClipInsets.left && startVisibleLayout.origin.x <= endVisibleLayout.origin.x) {
+        clipInsets.left = MAX(0.0f, startVisibleLayout.origin.x - interpolatedLayout.origin.x);
+    } else if (!startClipInsets.left && endClipInsets.left && endVisibleLayout.origin.x <= startVisibleLayout.origin.x) {
+        clipInsets.left = MAX(0.0f, endVisibleLayout.origin.x - interpolatedLayout.origin.x);
+    } else {
+        clipInsets.left = startClipInsets.left + ((endClipInsets.left - startClipInsets.left) * _nodePosition);
+    }
+    
+    // Right
+    if (!endClipInsets.right && startClipInsets.right && (startVisibleLayout.origin.x + startVisibleLayout.size.width) >= (endVisibleLayout.origin.x + endVisibleLayout.size.width)) {
+        clipInsets.right = MAX(0.0f, (interpolatedLayout.origin.x + interpolatedLayout.size.width) - (startVisibleLayout.origin.x + startVisibleLayout.size.width));
+    } else if (!startClipInsets.right && endClipInsets.right && (endVisibleLayout.origin.x + endVisibleLayout.size.width) >= (startVisibleLayout.origin.x + startVisibleLayout.size.width)) {
+        clipInsets.right = MAX(0.0f, (interpolatedLayout.origin.x + interpolatedLayout.size.width) - (endVisibleLayout.origin.x + endVisibleLayout.size.width));
+    } else {
+        clipInsets.right = startClipInsets.right + ((endClipInsets.right - startClipInsets.right) * _nodePosition);
+    }
+    
+    return clipInsets;
 }
 
 - (RNSharedElementStyle*) getInterpolatedStyle:(RNSharedElementStyle*)style1 style2:(RNSharedElementStyle*)style2 position:(CGFloat) position
@@ -446,6 +499,7 @@
     CGRect startLayout = startStyle ? [self normalizeLayout:startStyle.layout ancestor:startAncestor] : CGRectZero;
     CGRect startVisibleLayout = startStyle ? [self normalizeLayout:startStyle.visibleLayout ancestor:startAncestor] : CGRectZero;
     CGRect startContentLayout = startStyle ? [self normalizeLayout:startItem.contentLayout ancestor:startAncestor] : CGRectZero;
+    UIEdgeInsets startClipInsets = [self getClipInsets:startLayout visibleLayout:startVisibleLayout];
     
     // Get end layout
     RNSharedElementItem* endItem = [_items objectAtIndex:ITEM_END];
@@ -454,46 +508,64 @@
     CGRect endLayout = endStyle ? [self normalizeLayout:endStyle.layout ancestor:endAncestor] : CGRectZero;
     CGRect endVisibleLayout = endStyle ? [self normalizeLayout:endStyle.visibleLayout ancestor:endAncestor] : CGRectZero;
     CGRect endContentLayout = endStyle ? [self normalizeLayout:endItem.contentLayout ancestor:endAncestor] : CGRectZero;
+    UIEdgeInsets endClipInsets = [self getClipInsets:endLayout visibleLayout:endVisibleLayout];
     
     // Get interpolated style & layout
     RNSharedElementStyle* interpolatedStyle;
-    CGRect interpolatedVisibleLayout;
+    CGRect interpolatedLayout;
     CGRect interpolatedContentLayout;
+    UIEdgeInsets interpolatedClipInsets;
     if (!startStyle && !endStyle) return;
     if (startStyle && endStyle) {
         interpolatedStyle = [self getInterpolatedStyle:startStyle style2:endStyle position:_nodePosition];
-        interpolatedVisibleLayout = [self getInterpolatedLayout:startVisibleLayout layout2:endVisibleLayout position:_nodePosition];
+        interpolatedLayout = [self getInterpolatedLayout:startLayout layout2:endLayout position:_nodePosition];
         interpolatedContentLayout = [self getInterpolatedLayout:startContentLayout layout2:endContentLayout position:_nodePosition];
+        interpolatedClipInsets = [self getInterpolatedClipInsets:interpolatedLayout startClipInsets:startClipInsets startVisibleLayout:startVisibleLayout endClipInsets:endClipInsets endVisibleLayout:endVisibleLayout];
     } else if (startStyle) {
         interpolatedStyle = startStyle;
-        interpolatedVisibleLayout = startVisibleLayout;
+        interpolatedLayout = startLayout;
         interpolatedContentLayout = startContentLayout;
+        interpolatedClipInsets = startClipInsets;
     } else {
         interpolatedStyle = endStyle;
-        interpolatedVisibleLayout = endVisibleLayout;
+        interpolatedLayout = endLayout;
         interpolatedContentLayout = endContentLayout;
+        interpolatedClipInsets = endClipInsets;
     }
     
     // Update frame
-    [super reactSetFrame:interpolatedVisibleLayout];
-    self.layer.masksToBounds = true;
+    [super reactSetFrame:interpolatedLayout];
+    
+    // Update clipping mask
+    /*CAShapeLayer *shapeLayer = [CAShapeLayer layer];
+    CGPathRef path = RCTPathCreateWithRoundedRect(self.bounds, RCTGetCornerInsets(cornerRadii, UIEdgeInsetsZero), NULL);
+    shapeLayer.path = path;
+    CGPathRelease(path);
+    mask = shapeLayer;*/
+    
+    CALayer *maskLayer = [[CALayer alloc] init];
+    maskLayer.frame = CGRectMake(
+                                 interpolatedClipInsets.left,
+                                 interpolatedClipInsets.top,
+                                 interpolatedLayout.size.width - interpolatedClipInsets.left - interpolatedClipInsets.right,
+                                 interpolatedLayout.size.height - interpolatedClipInsets.top - interpolatedClipInsets.bottom);
+    maskLayer.backgroundColor = [UIColor whiteColor].CGColor;
+    maskLayer.cornerRadius = interpolatedStyle.cornerRadius;
+    
+    self.layer.mask = maskLayer;
     
     // Update content
     CGRect contentFrame = interpolatedContentLayout;
-    contentFrame.origin.x -= interpolatedVisibleLayout.origin.x;
-    contentFrame.origin.y -= interpolatedVisibleLayout.origin.y;
+    contentFrame.origin.x -= interpolatedLayout.origin.x;
+    contentFrame.origin.y -= interpolatedLayout.origin.y;
     _primaryImageView.frame = contentFrame;
     _secondaryImageView.frame = contentFrame;
     
     // Update specified animation styles
-    if ([_animation isEqualToString:@"move"]) {
-        [self applyStyle:interpolatedStyle layer:self.layer];
-    } else if ([_animation isEqualToString:@"dissolve"]) {
-        //style.opacity = 1.0f - MIN(MAX(_value, 0.0f), 1.0f);
-        interpolatedStyle.opacity = 1.0f;
-        [self applyStyle:interpolatedStyle layer:_primaryImageView.layer];
-        interpolatedStyle.opacity = MIN(MAX(_nodePosition, 0.0f), 1.0f);
-        [self applyStyle:interpolatedStyle layer:_secondaryImageView.layer];
+    [self applyStyle:interpolatedStyle layer:self.layer];
+    if ([_animation isEqualToString:@"dissolve"]) {
+        _primaryImageView.layer.opacity = 1.0f;
+        _secondaryImageView.layer.opacity = MIN(MAX(_nodePosition, 0.0f), 1.0f);
     }
     
     // Fire events

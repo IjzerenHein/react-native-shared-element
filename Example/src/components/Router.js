@@ -37,6 +37,7 @@ const styles = StyleSheet.create({
 
 interface RouterProps {
   initialNode: React.Node;
+  debug?: boolean;
 }
 
 type RouterSharedElementConfig =
@@ -66,7 +67,7 @@ const defaultTransitionConfig = fromRight();
 
 let router;
 
-export class Router extends React.Component<{}, RouterState> {
+export class Router extends React.Component<RouterProps, RouterState> {
   _animValue = new Animated.Value(0);
   _swipeBackAnimValue = new Animated.Value(0);
   _onSwipeBackGestureEvent = Animated.event(
@@ -96,6 +97,7 @@ export class Router extends React.Component<{}, RouterState> {
   }
 
   renderSharedElementTransitions() {
+    const { debug } = this.props;
     const {
       prevIndex,
       nextIndex,
@@ -142,6 +144,7 @@ export class Router extends React.Component<{}, RouterState> {
             end={nodes[sharedId].end}
             animation={nodes[sharedId].animation}
             position={position}
+            debug={debug}
           />
         ))}
       </View>
@@ -283,6 +286,7 @@ export class Router extends React.Component<{}, RouterState> {
       sharedElementScreens,
       sharedElementConfig
     } = this.state;
+    const { debug } = this.props;
     const transitionConfig =
       (config && config.transitionConfig) || defaultTransitionConfig;
     this.setState({
@@ -299,7 +303,8 @@ export class Router extends React.Component<{}, RouterState> {
     const { timing, ...spec } = transitionSpec;
     const anim = timing.call(Animated, this._animValue, {
       ...spec,
-      toValue: stack.length
+      toValue: stack.length,
+      duration: debug && config && config.sharedElements ? 8000 : spec.duration
     });
     anim.start(({ finished }) => {
       if (finished) {
@@ -310,6 +315,7 @@ export class Router extends React.Component<{}, RouterState> {
 
   pop(config?: RouterConfig) {
     const { stack, nextIndex } = this.state;
+    const { debug } = this.props;
     if (stack.length <= 1) return;
     const transitionConfig =
       (config && config.transitionConfig) || defaultTransitionConfig;
@@ -320,7 +326,8 @@ export class Router extends React.Component<{}, RouterState> {
     const { timing, ...spec } = transitionSpec;
     const anim = timing.call(Animated, this._animValue, {
       ...spec,
-      toValue: stack.length - 2
+      toValue: stack.length - 2,
+      duration: debug ? 8000 : spec.duration
     });
     anim.start(({ finished }) => {
       if (finished) {

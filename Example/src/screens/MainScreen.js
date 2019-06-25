@@ -12,6 +12,8 @@ import { blurFadeIn } from "../transitions";
 import { FlatListScreen } from "./FlatListScreen";
 import { ImageBackgroundScreen } from "./ImageBackgroundScreen";
 import { ListScreen } from "./ListScreen";
+import { ResizeModeScreen } from "./ResizeModeScreen";
+import { ClippingScreen } from "./ClippingScreen";
 
 const styles = StyleSheet.create({
   container: {
@@ -36,41 +38,14 @@ export class MainScreen extends React.Component<{}> {
             }
           />
           <ListItem
-            label="Image ResizeMode Contain"
-            onPress={() =>
-              Router.push(
-                <TilesScreen
-                  title="Image Move"
-                  animation="move"
-                  resizeMode="contain"
-                />
-              )
-            }
+            label="Image Resize-modes"
+            onPress={() => Router.push(<ResizeModeScreen />)}
           />
           <ListItem
-            label="Image ResizeMode Stretch"
-            onPress={() =>
-              Router.push(
-                <TilesScreen
-                  title="Image Move"
-                  animation="move"
-                  resizeMode="stretch"
-                />
-              )
-            }
+            label="Clipping"
+            onPress={() => Router.push(<ClippingScreen />)}
           />
-          <ListItem
-            label="Image ResizeMode Center"
-            onPress={() =>
-              Router.push(
-                <TilesScreen
-                  title="Image Move"
-                  animation="move"
-                  resizeMode="center"
-                />
-              )
-            }
-          />
+
           <ListItem
             label="Image Dissolve"
             onPress={() =>
@@ -155,6 +130,12 @@ export class MainScreen extends React.Component<{}> {
           <ListItem
             label="FlatList"
             onPress={() => Router.push(<FlatListScreen title="FlatList" />)}
+          />
+          <ListItem
+            label="Inverted FlatList"
+            onPress={() =>
+              Router.push(<FlatListScreen title="Inverted FlatList" inverted />)
+            }
           />
           <ListItem label="Partially visible Images" />
           <ListItem label="Partially visible Views" />
