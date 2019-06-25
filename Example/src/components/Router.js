@@ -35,9 +35,13 @@ const styles = StyleSheet.create({
   }
 });
 
+type RouterTransitionConfig = {
+  ...TransitionConfig,
+  debug?: boolean
+};
+
 interface RouterProps {
   initialNode: React.Node;
-  debug?: boolean;
 }
 
 type RouterSharedElementConfig =
@@ -51,7 +55,7 @@ interface RouterState {
   prevIndex: number;
   nextIndex: number;
   animValue: Animated.Node;
-  transitionConfig: Array<TransitionConfig>;
+  transitionConfig: Array<RouterTransitionConfig>;
   sharedElementScreens: Array<?ScreenTransitionContextOnSharedElementsUpdatedEvent>;
   sharedElementConfig: Array<?RouterSharedElementConfig>;
 }
@@ -60,7 +64,7 @@ type RouterConfig = {
   sharedElements?: {
     [sharedId: string]: boolean
   },
-  transitionConfig?: TransitionConfig
+  transitionConfig?: RouterTransitionConfig
 };
 
 const defaultTransitionConfig = fromRight();
@@ -97,13 +101,13 @@ export class Router extends React.Component<RouterProps, RouterState> {
   }
 
   renderSharedElementTransitions() {
-    const { debug } = this.props;
     const {
       prevIndex,
       nextIndex,
       stack,
       sharedElementScreens,
       sharedElementConfig,
+      transitionConfig,
       animValue
     } = this.state;
     //if (!sharedElementConfig) return;
@@ -114,6 +118,8 @@ export class Router extends React.Component<RouterProps, RouterState> {
     const startIndex = Math.min(prevIndex, nextIndex);
     const endIndex = startIndex + 1;
     const config = sharedElementConfig[endIndex];
+    const { debug } = transitionConfig[endIndex];
+    console.log("YOLO: ", transitionConfig[endIndex]);
     if (!config) return;
     const nodes = {};
     const startScreen = sharedElementScreens[startIndex];
@@ -286,7 +292,6 @@ export class Router extends React.Component<RouterProps, RouterState> {
       sharedElementScreens,
       sharedElementConfig
     } = this.state;
-    const { debug } = this.props;
     const transitionConfig =
       (config && config.transitionConfig) || defaultTransitionConfig;
     this.setState({
@@ -303,8 +308,7 @@ export class Router extends React.Component<RouterProps, RouterState> {
     const { timing, ...spec } = transitionSpec;
     const anim = timing.call(Animated, this._animValue, {
       ...spec,
-      toValue: stack.length,
-      duration: debug && config && config.sharedElements ? 8000 : spec.duration
+      toValue: stack.length
     });
     anim.start(({ finished }) => {
       if (finished) {
@@ -315,19 +319,19 @@ export class Router extends React.Component<RouterProps, RouterState> {
 
   pop(config?: RouterConfig) {
     const { stack, nextIndex } = this.state;
-    const { debug } = this.props;
     if (stack.length <= 1) return;
-    const transitionConfig =
-      (config && config.transitionConfig) || defaultTransitionConfig;
+    const transitionConfig = [...this.state.transitionConfig];
+    transitionConfig[nextIndex] =
+      (config && config.transitionConfig) || transitionConfig[nextIndex];
     this.setState({
-      nextIndex: nextIndex - 1
+      nextIndex: nextIndex - 1,
+      transitionConfig
     });
-    const { transitionSpec } = transitionConfig;
+    const { transitionSpec } = transitionConfig[nextIndex];
     const { timing, ...spec } = transitionSpec;
     const anim = timing.call(Animated, this._animValue, {
       ...spec,
-      toValue: stack.length - 2,
-      duration: debug ? 8000 : spec.duration
+      toValue: stack.length - 2
     });
     anim.start(({ finished }) => {
       if (finished) {
@@ -342,13 +346,15 @@ export class Router extends React.Component<RouterProps, RouterState> {
       nextIndex,
       prevIndex,
       sharedElementScreens,
-      sharedElementConfig
+      sharedElementConfig,
+      transitionConfig
     } = this.state;
     if (stack.length > count) {
       this.setState({
         stack: stack.slice(0, count),
         sharedElementScreens: sharedElementScreens.slice(0, count),
         sharedElementConfig: sharedElementConfig.slice(0, count),
+        transitionConfig: transitionConfig.slice(0, count),
         prevIndex: nextIndex
       });
     } else if (nextIndex !== prevIndex) {

@@ -3,7 +3,7 @@ import * as React from "react";
 import { StyleSheet, View, TouchableOpacity } from "react-native";
 import { Heading2 } from "./Text";
 import { Router } from "./Router";
-import { Colors } from "./Colors";
+import { Colors, Shadows } from "./Colors";
 import { Icon } from "./Icon";
 
 const HEIGHT = 86;
@@ -14,9 +14,10 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "flex-end",
     height: HEIGHT,
-    //backgroundColor: Colors.back,
+    backgroundColor: Colors.navBar,
     paddingHorizontal: 32,
-    paddingBottom: 16
+    paddingBottom: 16,
+    ...Shadows.elevation1
   },
   lightContainer: {
     backgroundColor: "transparent"

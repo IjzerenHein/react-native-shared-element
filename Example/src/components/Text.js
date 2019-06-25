@@ -18,6 +18,11 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: "600",
     color: Colors.gray
+  },
+  body: {
+    fontSize: 17,
+    fontWeight: "500",
+    color: Colors.gray
   }
 });
 
@@ -29,4 +34,7 @@ export const Heading2 = (props: any) => (
 );
 export const Caption = (props: any) => (
   <Text {...props} style={[styles.caption, props.style]} />
+);
+export const Body = (props: any) => (
+  <Text {...props} style={[styles.body, props.style]} />
 );

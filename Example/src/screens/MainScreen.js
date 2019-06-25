@@ -14,6 +14,8 @@ import { ImageBackgroundScreen } from "./ImageBackgroundScreen";
 import { ListScreen } from "./ListScreen";
 import { ResizeModeScreen } from "./ResizeModeScreen";
 import { ClippingScreen } from "./ClippingScreen";
+import { TestsScreen } from "./TestsScreen";
+import { Tests } from "../tests";
 
 const styles = StyleSheet.create({
   container: {
@@ -31,6 +33,10 @@ export class MainScreen extends React.Component<{}> {
       <View style={styles.container}>
         <NavBar title="Shared Element Demo" back="none" />
         <ScrollView style={styles.content}>
+          <ListItem
+            label="Tests"
+            onPress={() => Router.push(<TestsScreen tests={Tests} />)}
+          />
           <ListItem
             label="Image Move"
             onPress={() =>
