@@ -7,9 +7,10 @@
 #define RNSharedElementContentType_h
 
 typedef NS_ENUM(NSInteger, RNSharedElementContentType) {
-    RNSharedElementContentTypeSnapshot = 0,
-    RNSharedElementContentTypeImage = 1,
-    RNSharedElementContentTypeRawImage = 2
+    RNSharedElementContentTypeNone = 0,
+    RNSharedElementContentTypeSnapshotView = 1,
+    RNSharedElementContentTypeSnapshotImage = 2,
+    RNSharedElementContentTypeRawImage = 3
 };
 
 #endif

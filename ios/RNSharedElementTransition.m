@@ -24,33 +24,37 @@
 @interface RNSharedElementItem : NSObject
 @property (nonatomic, readonly) RNSharedElementNodeManager* nodeManager;
 @property (nonatomic, readonly) BOOL isAncestor;
+@property (nonatomic, readonly) NSString* name;
 @property (nonatomic, assign) RNSharedElementNode* node;
 @property (nonatomic, assign) BOOL needsLayout;
 @property (nonatomic, assign) BOOL needsContent;
 @property (nonatomic, assign) BOOL hasCalledOnMeasure;
 @property (nonatomic, assign) id content;
 @property (nonatomic, assign) RNSharedElementContentType contentType;
+@property (nonatomic, readonly) NSString* contentTypeName;
 @property (nonatomic, assign) RNSharedElementStyle* style;
 @property (nonatomic, readonly) CGRect contentLayout;
 @property (nonatomic, assign) BOOL hidden;
-- (instancetype)initWithnodeManager:(RNSharedElementNodeManager*)nodeManager isAncestor:(BOOL)isAncestor;
+- (instancetype)initWithnodeManager:(RNSharedElementNodeManager*)nodeManager name:(NSString*)name isAncestor:(BOOL)isAncestor;
 @end
 
 @implementation RNSharedElementItem
-- (instancetype)initWithnodeManager:(RNSharedElementNodeManager*)nodeManager isAncestor:(BOOL)isAncestor
+- (instancetype)initWithnodeManager:(RNSharedElementNodeManager*)nodeManager name:(NSString*)name isAncestor:(BOOL)isAncestor
 {
     _nodeManager = nodeManager;
+    _name = name;
     _isAncestor = isAncestor;
     _node = nil;
     _needsLayout = NO;
     _needsContent = NO;
     _content = nil;
-    _contentType = RNSharedElementContentTypeImage;
+    _contentType = RNSharedElementContentTypeNone;
     _style = nil;
     _hidden = NO;
     _hasCalledOnMeasure = NO;
     return self;
 }
+
 - (void) setNode:(RNSharedElementNode *)node
 {
     if (_node == node) {
@@ -65,11 +69,12 @@
     _needsLayout = node != nil;
     _needsContent = !_isAncestor && (node != nil);
     _content = nil;
-    _contentType = RNSharedElementContentTypeImage;
+    _contentType = RNSharedElementContentTypeNone;
     _style = nil;
     _hidden = NO;
     _hasCalledOnMeasure = NO;
 }
+
 - (void) setHidden:(BOOL)hidden
 {
     if (_hidden == hidden) return;
@@ -80,12 +85,32 @@
         _node.hideRefCount--;
     }
 }
+
+- (NSString*) contentTypeName
+{
+    switch(_contentType) {
+        case RNSharedElementContentTypeNone: return @"none";
+        case RNSharedElementContentTypeRawImage: return @"image";
+        case RNSharedElementContentTypeSnapshotView: return @"snapshotView";
+        case RNSharedElementContentTypeSnapshotImage: return @"snapshotImage";
+        default: return @"unknown";
+    }
+}
+
+- (CGSize) contentSize
+{
+    if (!_content || !_style) return CGSizeZero;
+    if (_contentType != RNSharedElementContentTypeRawImage) return _style.layout.size;
+    CGSize size = _style.layout.size;
+    return [_content isKindOfClass:[UIImage class]] ? ((UIImage*)_content).size : size;
+}
+
 - (CGRect) contentLayout
 {
     if (!_content || !_style) return CGRectZero;
     if (_contentType != RNSharedElementContentTypeRawImage) return _style.layout;
     CGSize size = _style.layout.size;
-    CGSize contentSize = [_content isKindOfClass:[UIImage class]] ? ((UIImage*)_content).size : size;
+    CGSize contentSize = self.contentSize;
     CGFloat contentAspectRatio = (contentSize.width / contentSize.height);
     switch (_style.contentMode) {
         case UIViewContentModeScaleToFill: // stretch
@@ -130,10 +155,10 @@
 {
     if ((self = [super init])) {
         _items = @[
-                   [[RNSharedElementItem alloc]initWithnodeManager:nodeManager isAncestor:YES],
-                   [[RNSharedElementItem alloc]initWithnodeManager:nodeManager isAncestor:YES],
-                   [[RNSharedElementItem alloc]initWithnodeManager:nodeManager isAncestor:NO],
-                   [[RNSharedElementItem alloc]initWithnodeManager:nodeManager isAncestor:NO]
+                   [[RNSharedElementItem alloc]initWithnodeManager:nodeManager name:@"startAncestor" isAncestor:YES],
+                   [[RNSharedElementItem alloc]initWithnodeManager:nodeManager name:@"endAncestor" isAncestor:YES],
+                   [[RNSharedElementItem alloc]initWithnodeManager:nodeManager name:@"startNode" isAncestor:NO],
+                   [[RNSharedElementItem alloc]initWithnodeManager:nodeManager name:@"endNode" isAncestor:NO]
                    ];
         _nodePosition = 0.0f;
         _animation = @"move";
@@ -269,7 +294,7 @@
     // NSLog(@"didLoadContent: %@", content);
     RNSharedElementItem* item = [self findItemForNode:node];
     if (item == nil) return;
-    if ((contentType == RNSharedElementContentTypeImage) || (contentType == RNSharedElementContentTypeRawImage)) {
+    if ((contentType == RNSharedElementContentTypeSnapshotImage) || (contentType == RNSharedElementContentTypeRawImage)) {
         UIImage* image = content;
         item.content = content;
         item.contentType = contentType;
@@ -287,7 +312,7 @@
             }
         }
     }
-    else if (contentType == RNSharedElementContentTypeSnapshot) {
+    else if (contentType == RNSharedElementContentTypeSnapshotView) {
         // TODO
     }
     [self updateStyle];
@@ -379,41 +404,36 @@
     layer.shadowColor = style.shadowColor.CGColor;
 }
 
-- (void) fireMeasureEvent:(NSInteger) index layout:(CGRect)layout visibleLayout:(CGRect)visibleLayout contentLayout:(CGRect)contentLayout
+- (void) fireMeasureEvent:(RNSharedElementItem*) item layout:(CGRect)layout visibleLayout:(CGRect)visibleLayout contentLayout:(CGRect)contentLayout
 {
     if (!self.onMeasureNode) return;
     NSDictionary* eventData = @{
-                                @"node": @(index),
+                                @"node": item.name,
                                 @"layout": @{
                                         @"x": @(layout.origin.x),
                                         @"y": @(layout.origin.y),
                                         @"width": @(layout.size.width),
                                         @"height": @(layout.size.height),
-                                        },
-                                @"visible": @{
-                                        @"x": @(visibleLayout.origin.x),
-                                        @"y": @(visibleLayout.origin.y),
-                                        @"width": @(visibleLayout.size.width),
-                                        @"height": @(visibleLayout.size.height),
+                                        @"visibleX": @(visibleLayout.origin.x),
+                                        @"visibleY": @(visibleLayout.origin.y),
+                                        @"visibleWidth": @(visibleLayout.size.width),
+                                        @"visibleHeight": @(visibleLayout.size.height),
+                                        @"contentX": @(contentLayout.origin.x),
+                                        @"contentY": @(contentLayout.origin.y),
+                                        @"contentWidth": @(contentLayout.size.width),
+                                        @"contentHeight": @(contentLayout.size.height),
                                         },
                                 @"content": @{
-                                        @"x": @(contentLayout.origin.x),
-                                        @"y": @(contentLayout.origin.y),
-                                        @"width": @(contentLayout.size.width),
-                                        @"height": @(contentLayout.size.height),
+                                        @"type": item.contentTypeName,
+                                        @"width": @(item.contentSize.width),
+                                        @"height": @(item.contentSize.height),
+                                        },
+                                @"style": @{
+                                        @"borderRadius": @(item.style.cornerRadius)
                                         }
                                 };
     self.onMeasureNode(eventData);
 }
-
-/**
- 
- - 1. Correct layout & visibleLayout for ancestor
- - 2. Calculate content-layout for content
- - 3.
- 
- 
- */
 
 - (void) updateStyle
 {
@@ -480,20 +500,20 @@
     if ((startAncestor.style != nil) && !startAncestor.hasCalledOnMeasure) {
         startAncestor.hasCalledOnMeasure = YES;
         startItem.hasCalledOnMeasure = NO;
-        [self fireMeasureEvent:ITEM_START_ANCESTOR layout:[self.superview convertRect:startAncestor.style.layout fromView:nil] visibleLayout:[self.superview convertRect:startAncestor.style.visibleLayout fromView:nil] contentLayout:[self.superview convertRect:startAncestor.style.layout fromView:nil]];
+        [self fireMeasureEvent:startAncestor layout:[self.superview convertRect:startAncestor.style.layout fromView:nil] visibleLayout:[self.superview convertRect:startAncestor.style.visibleLayout fromView:nil] contentLayout:[self.superview convertRect:startAncestor.style.layout fromView:nil]];
     }
     if ((startItem.style != nil) && !startItem.hasCalledOnMeasure) {
         startItem.hasCalledOnMeasure = YES;
-        [self fireMeasureEvent:ITEM_START layout:startLayout visibleLayout:startVisibleLayout contentLayout:startContentLayout];
+        [self fireMeasureEvent:startItem layout:startLayout visibleLayout:startVisibleLayout contentLayout:startContentLayout];
     }
     if ((endAncestor.style != nil) && !endAncestor.hasCalledOnMeasure) {
         endAncestor.hasCalledOnMeasure = YES;
         endItem.hasCalledOnMeasure = NO;
-        [self fireMeasureEvent:ITEM_END_ANCESTOR layout:[self.superview convertRect:endAncestor.style.layout fromView:nil] visibleLayout:[self.superview convertRect:endAncestor.style.visibleLayout fromView:nil] contentLayout:[self.superview convertRect:endAncestor.style.layout fromView:nil]];
+        [self fireMeasureEvent:endAncestor layout:[self.superview convertRect:endAncestor.style.layout fromView:nil] visibleLayout:[self.superview convertRect:endAncestor.style.visibleLayout fromView:nil] contentLayout:[self.superview convertRect:endAncestor.style.layout fromView:nil]];
     }
     if ((endItem.style != nil) && !endItem.hasCalledOnMeasure) {
         endItem.hasCalledOnMeasure = YES;
-        [self fireMeasureEvent:ITEM_END layout:endLayout visibleLayout:endVisibleLayout contentLayout:endContentLayout];
+        [self fireMeasureEvent:endItem layout:endLayout visibleLayout:endVisibleLayout contentLayout:endContentLayout];
     }
 }
 

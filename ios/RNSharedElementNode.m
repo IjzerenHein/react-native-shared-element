@@ -42,7 +42,7 @@ NSArray* _imageResolvers;
     _hideRefCount = 0;
     _contentRequests = nil;
     _contentCache = nil;
-    _contentTypeCache = RNSharedElementContentTypeSnapshot;
+    _contentTypeCache = RNSharedElementContentTypeNone;
     _styleRequests = nil;
     _styleCache = nil;
     _displayLink = nil;
@@ -212,7 +212,7 @@ NSArray* _imageResolvers;
         UIGraphicsEndImageContext();
         NSLog(@"drawViewHierarchyInRect: RESULT: %li", res);
         content = image;
-        contentType = RNSharedElementContentTypeImage;
+        contentType = RNSharedElementContentTypeSnapshotImage;
     }
     
     // If the content could not be obtained, then try again later

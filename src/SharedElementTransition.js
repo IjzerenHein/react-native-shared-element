@@ -2,7 +2,10 @@
 import * as React from "react";
 import {
   View,
+  Text,
   Animated,
+  Dimensions,
+  StyleSheet,
   requireNativeComponent,
   NativeModules,
   findNodeHandle
@@ -11,20 +14,56 @@ import type { SharedElementNode } from "./SharedElement";
 
 export type SharedElementAnimation = "move" | "dissolve";
 
-export interface SharedElementTransitionProps {
+export type SharedElementNodeType =
+  | "startNode"
+  | "endNode"
+  | "startAncestor"
+  | "endAncestor";
+
+export type SharedElementMeasureData = {
+  node: SharedElementNodeType,
+  layout: {
+    x: number,
+    y: number,
+    width: number,
+    height: number,
+    visibleX: number,
+    visibleY: number,
+    visibleWidth: number,
+    visibleHeight: number,
+    contentX: number,
+    contentY: number,
+    contentWidth: number,
+    contentHeight: number
+  },
+  content: {
+    type: "none" | "snapshotView" | "snapshotImage" | "image",
+    width: number,
+    height: number
+  }
+};
+
+export type SharedElementOnMeasureEvent = {
+  nativeEvent: SharedElementMeasureData
+};
+
+export type SharedElementTransitionProps = {
   start: {
     node: ?SharedElementNode,
     ancestor?: ?SharedElementNode
-  };
+  },
   end: {
     node: ?SharedElementNode,
     ancestor?: ?SharedElementNode
-  };
-  position: number | Animated.Node | void;
-  animation?: SharedElementAnimation;
-  autoHide?: boolean;
-  onMeasure?: any => void;
-}
+  },
+  position: number | Animated.Node | void,
+  animation?: SharedElementAnimation,
+  autoHide?: boolean,
+  debug?: boolean,
+  style?: any,
+  onMeasure?: (event: SharedElementOnMeasureEvent) => void,
+  SharedElementComponent: any
+};
 
 export const isAvailable = NativeModules.RNSharedElementTransition
   ? true
@@ -39,20 +78,58 @@ if (isAvailable) {
   });
 }
 
-const RNSharedElementTransition = isAvailable
+const debugColors = {
+  startNode: "#82B2E8",
+  endNode: "#5EFF9B",
+  pink: "#DC9CFF",
+  startAncestor: "#E88F82",
+  endAncestor: "#FFDC8F"
+};
+
+const debugStyles = StyleSheet.create({
+  overlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: "black",
+    opacity: 0.3
+  },
+  text: {
+    marginLeft: 3,
+    marginTop: 3,
+    fontSize: 10
+  },
+  box: {
+    borderWidth: 1,
+    borderStyle: "dashed"
+  }
+});
+
+type StateType = {
+  startNode?: SharedElementMeasureData,
+  endNode?: SharedElementMeasureData,
+  startAncestor?: SharedElementMeasureData,
+  endAncestor?: SharedElementMeasureData
+};
+
+export const RNSharedElementTransition = isAvailable
   ? requireNativeComponent("RNSharedElementTransition")
   : undefined;
 
-const RNAnimatedSharedElementTransition = RNSharedElementTransition
+export const RNAnimatedSharedElementTransition = RNSharedElementTransition
   ? Animated.createAnimatedComponent(RNSharedElementTransition)
   : undefined;
 
-export class SharedElementTransitionBase extends React.Component<SharedElementTransitionProps> {
+export class SharedElementTransition extends React.Component<
+  SharedElementTransitionProps,
+  StateType
+> {
   static defaultProps = {
     autoHide: true,
     start: {},
-    end: {}
+    end: {},
+    SharedElementComponent: RNAnimatedSharedElementTransition
   };
+
+  state = {};
 
   static prepareNode(node: ?SharedElementNode): any {
     return node
@@ -65,61 +142,154 @@ export class SharedElementTransitionBase extends React.Component<SharedElementTr
 
   constructor(props: SharedElementTransitionProps) {
     super(props);
-    if (!RNSharedElementTransition) {
+    if (!props.SharedElementComponent) {
       throw new Error(
         "RNSharedElementTransition is not available, did you forget to use `react-native link react-native-shared-element-transition`?"
       );
     }
   }
 
+  renderDebugOverlay() {
+    if (!this.props.debug) return;
+    return <View style={debugStyles.overlay} />;
+  }
+
+  renderDebugLayer(name: SharedElementNodeType) {
+    const event = this.state[name];
+    if (!event || !this.props.debug) return undefined;
+    const { layout, style } = event;
+    /*const isVisibleDifferent =
+      layout.x !== layout.visibleX ||
+      layout.y !== layout.visibleY ||
+      layout.width !== layout.visibleWidth ||
+      layout.height !== layout.visibleHeight;*/
+    const isContentDifferent =
+      layout.x !== layout.contentX ||
+      layout.y !== layout.contentY ||
+      layout.width !== layout.contentWidth ||
+      layout.height !== layout.contentHeight;
+    const isFullScreen =
+      layout.visibleX === 0 &&
+      layout.visibleY === 0 &&
+      layout.visibleWidth === Dimensions.get("window").width &&
+      layout.visibleHeight === Dimensions.get("window").height;
+
+    const color = debugColors[name];
+    return (
+      <View style={StyleSheet.absoluteFill}>
+        {isContentDifferent ? (
+          <View
+            style={[
+              debugStyles.box,
+              {
+                position: "absolute",
+                left: layout.contentX,
+                top: layout.contentY,
+                width: layout.contentWidth,
+                height: layout.contentHeight,
+                borderColor: color,
+                opacity: 0.5
+              }
+            ]}
+          >
+            <Text style={[debugStyles.text, { color }]}>Content</Text>
+          </View>
+        ) : (
+          undefined
+        )}
+        <View
+          style={[
+            debugStyles.box,
+            {
+              position: "absolute",
+              left: layout.x,
+              top: layout.y,
+              width: layout.width,
+              height: layout.height,
+              borderColor: color,
+              borderRadius: style.borderRadius || 0
+            }
+          ]}
+        >
+          <Text
+            style={[
+              debugStyles.text,
+              { color, marginTop: Math.max(style.borderRadius - 7, 3) }
+            ]}
+          >
+            {name}
+          </Text>
+        </View>
+        <View
+          style={{
+            position: "absolute",
+            left: layout.visibleX,
+            top: layout.visibleY,
+            width: layout.visibleWidth,
+            height: layout.visibleHeight,
+            overflow: "hidden"
+          }}
+        >
+          <View
+            style={[
+              {
+                position: "absolute",
+                left: layout.x - layout.visibleX,
+                top: layout.y - layout.visibleY,
+                width: layout.width,
+                height: layout.height,
+                borderRadius: style.borderRadius || 0,
+                backgroundColor: isFullScreen ? "transparent" : color + "80"
+              }
+            ]}
+          />
+        </View>
+      </View>
+    );
+  }
+
   render() {
-    const { start, end, position, onMeasure, ...otherProps } = this.props;
-    return RNSharedElementTransition ? (
-      <RNSharedElementTransition
-        startNode={{
-          node: SharedElementTransitionBase.prepareNode(start.node),
-          ancestor: SharedElementTransitionBase.prepareNode(start.ancestor)
-        }}
-        endNode={{
-          node: SharedElementTransitionBase.prepareNode(end.node),
-          ancestor: SharedElementTransitionBase.prepareNode(end.ancestor)
-        }}
-        nodePosition={position}
-        onMeasureNode={onMeasure}
-        {...otherProps}
-      />
-    ) : null;
+    const {
+      SharedElementComponent,
+      start,
+      end,
+      position,
+      onMeasure,
+      debug,
+      // style,
+      ...otherProps
+    } = this.props;
+    if (!SharedElementComponent) return null;
+    return (
+      <View style={StyleSheet.absoluteFill}>
+        <SharedElementComponent
+          startNode={{
+            node: SharedElementTransition.prepareNode(start.node),
+            ancestor: SharedElementTransition.prepareNode(start.ancestor)
+          }}
+          endNode={{
+            node: SharedElementTransition.prepareNode(end.node),
+            ancestor: SharedElementTransition.prepareNode(end.ancestor)
+          }}
+          nodePosition={position}
+          onMeasureNode={debug ? this.onMeasureNode : onMeasure}
+          // style={debug && style ? [debugStyles.content, style] : style}
+          {...otherProps}
+        />
+        {/*this.renderDebugOverlay()*/}
+        {this.renderDebugLayer("startNode")}
+        {this.renderDebugLayer("endNode")}
+      </View>
+    );
   }
-}
 
-export class SharedElementTransition extends React.Component<SharedElementTransitionProps> {
-  static defaultProps = SharedElementTransitionBase.defaultProps;
-
-  constructor(props: SharedElementTransitionProps) {
-    super(props);
-    if (!RNAnimatedSharedElementTransition) {
-      throw new Error(
-        "RNSharedElementTransition is not available, did you forget to use `react-native link react-native-shared-element-transition`?"
-      );
-    }
-  }
-
-  render() {
-    const { start, end, position, onMeasure, ...otherProps } = this.props;
-    return RNAnimatedSharedElementTransition ? (
-      <RNAnimatedSharedElementTransition
-        startNode={{
-          node: SharedElementTransitionBase.prepareNode(start.node),
-          ancestor: SharedElementTransitionBase.prepareNode(start.ancestor)
-        }}
-        endNode={{
-          node: SharedElementTransitionBase.prepareNode(end.node),
-          ancestor: SharedElementTransitionBase.prepareNode(end.ancestor)
-        }}
-        nodePosition={position}
-        onMeasureNode={onMeasure}
-        {...otherProps}
-      />
-    ) : null;
-  }
+  onMeasureNode = (event: SharedElementOnMeasureEvent) => {
+    const { nativeEvent } = event;
+    const { onMeasure } = this.props;
+    this.setState({
+      [`${nativeEvent.node}`]: nativeEvent
+    });
+    // console.log("onMeasure: ", nativeEvent);
+    if (onMeasure) onMeasure(event);
+  };
 }
