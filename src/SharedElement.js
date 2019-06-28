@@ -28,7 +28,10 @@ export class SharedElement extends React.Component<SharedElementProps> {
   _node = undefined;
 
   render() {
-    const { onNode, ...otherProps } = this.props;
+    const {
+      onNode, //eslint-disable-line
+       ...otherProps
+    } = this.props;
     return <View ref={this.onSetRef} collapsable={false} {...otherProps} />;
   }
 

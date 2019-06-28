@@ -2,7 +2,6 @@
 import * as React from "react";
 import { StyleSheet, View, Animated, Dimensions } from "react-native";
 import { SharedElementTransition } from "react-native-shared-element-transition";
-import type { SharedElementNode } from "react-native-shared-element-transition";
 import { ScreenTransitionContext } from "./ScreenTransitionContext";
 import type { ScreenTransitionContextOnSharedElementsUpdatedEvent } from "./ScreenTransitionContext";
 import { PanGestureHandler, State } from "react-native-gesture-handler";

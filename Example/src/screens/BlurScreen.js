@@ -1,7 +1,7 @@
 // @flow
 import * as React from "react";
 import { StyleSheet, View, Image } from "react-native";
-import { Heading1, NavBar, ScreenTransition } from "../components";
+import { NavBar, ScreenTransition } from "../components";
 import type { Hero } from "../types";
 import { BlurView } from "@react-native-community/blur";
 

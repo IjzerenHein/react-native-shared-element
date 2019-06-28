@@ -3,7 +3,7 @@ import * as React from "react";
 import { StyleSheet, View, TouchableOpacity } from "react-native";
 import { Heading2 } from "./Text";
 import { Router } from "./Router";
-import { Colors, Shadows } from "./Colors";
+import { Colors } from "./Colors";
 import { Icon } from "./Icon";
 
 const HEIGHT = 86;

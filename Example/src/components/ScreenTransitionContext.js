@@ -40,7 +40,11 @@ export class ScreenTransitionContext extends React.Component<
   };
 
   render() {
-    const { onSharedElementsUpdated, style, ...otherProps } = this.props;
+    const {
+      onSharedElementsUpdated, // eslint-disable-line
+      style,
+      ...otherProps
+    } = this.props;
     return (
       <View style={style} collapsable={false} ref={this.onSetRef}>
         <Context.Provider value={this} {...otherProps} />
@@ -78,7 +82,10 @@ export class ScreenTransitionContext extends React.Component<
     });
   }
 
-  removeSharedElement(sharedId: string, node: SharedElementNode) {
+  removeSharedElement(
+    sharedId: string,
+    node: SharedElementNode // eslint-disable-line
+  ) {
     // console.log('ScreenTransitionContext.remove: ', sharedId);
     const sharedElementNodes = { ...this._sharedElementNodes };
     delete sharedElementNodes[sharedId];

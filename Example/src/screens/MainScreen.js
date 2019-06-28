@@ -3,17 +3,12 @@ import * as React from "react";
 import { StyleSheet, ScrollView, View } from "react-native";
 import { Router, NavBar, ListItem, Colors } from "../components";
 import { TilesScreen } from "./TilesScreen";
-import { RNPhotoViewScreen } from "./RNPhotoViewScreen";
 import { RNImagePanZoomScreen } from "./RNImagePanZoomScreen";
-import { RNFastImageScreen } from "./RNFastImageScreen";
 import { BlurScreen } from "./BlurScreen";
 import { GradientScreen } from "./GradientScreen";
 import { blurFadeIn } from "../transitions";
 import { FlatListScreen } from "./FlatListScreen";
-import { ImageBackgroundScreen } from "./ImageBackgroundScreen";
 import { ListScreen } from "./ListScreen";
-import { ResizeModeScreen } from "./ResizeModeScreen";
-import { ClippingScreen } from "./ClippingScreen";
 import { TestsScreen } from "./TestsScreen";
 import { Tests } from "../tests";
 
@@ -44,23 +39,6 @@ export class MainScreen extends React.Component<{}> {
             }
           />
           <ListItem
-            label="Image Resize-modes"
-            onPress={() => Router.push(<ResizeModeScreen />)}
-          />
-          <ListItem
-            label="Clipping"
-            onPress={() => Router.push(<ClippingScreen />)}
-          />
-
-          <ListItem
-            label="Image Dissolve"
-            onPress={() =>
-              Router.push(
-                <TilesScreen title="Image Dissolve" animation="dissolve" />
-              )
-            }
-          />
-          <ListItem
             label="Image & Text"
             onPress={() => Router.push(<ListScreen title="Image & Text" />)}
           />
@@ -78,17 +56,6 @@ export class MainScreen extends React.Component<{}> {
             }
           />
           <ListItem
-            label="ImageBackground"
-            onPress={() =>
-              Router.push(
-                <TilesScreen
-                  title="ImageBackground"
-                  DetailComponent={ImageBackgroundScreen}
-                />
-              )
-            }
-          />
-          <ListItem
             label="Gradient overlay"
             onPress={() =>
               Router.push(
@@ -96,28 +63,6 @@ export class MainScreen extends React.Component<{}> {
                   title="Gradient overlay"
                   DetailComponent={GradientScreen}
                   overlay
-                />
-              )
-            }
-          />
-          <ListItem
-            label="react-native-fast-image"
-            onPress={() =>
-              Router.push(
-                <TilesScreen
-                  title="react-native-Fast-image"
-                  DetailComponent={RNFastImageScreen}
-                />
-              )
-            }
-          />
-          <ListItem
-            label="react-native-photo-view"
-            onPress={() =>
-              Router.push(
-                <TilesScreen
-                  title="react-native-photo-view"
-                  DetailComponent={RNPhotoViewScreen}
                 />
               )
             }
@@ -143,8 +88,6 @@ export class MainScreen extends React.Component<{}> {
               Router.push(<FlatListScreen title="Inverted FlatList" inverted />)
             }
           />
-          <ListItem label="Partially visible Images" />
-          <ListItem label="Partially visible Views" />
         </ScrollView>
       </View>
     );

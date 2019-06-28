@@ -3,7 +3,6 @@ import * as React from "react";
 import {
   StyleSheet,
   View,
-  TouchableOpacity,
   Image,
   Dimensions
 } from "react-native";

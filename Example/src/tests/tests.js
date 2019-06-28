@@ -6,7 +6,7 @@ import type { Test, TestGroup } from "../types";
 import { TestImage } from "./TestImage";
 import { TestScrollView } from "./TestScrollView";
 import FastImage from "react-native-fast-image";
-import ImageZoom from "react-native-image-pan-zoom";
+// import ImageZoom from "react-native-image-pan-zoom";
 import PhotoView from "react-native-photo-view";
 
 export const Tests: (Test | TestGroup)[] = [

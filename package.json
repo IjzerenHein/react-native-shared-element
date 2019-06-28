@@ -24,15 +24,21 @@
   ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "flow": "flow"
+    "flow": "flow",
+    "lint": "./node_modules/.bin/eslint ./src"
   },
   "peerDependencies": {
+    "prop-types": "*",
     "react": "*",
-    "react-native": "*",
-    "prop-types": "*"
+    "react-native": "*"
   },
   "devDependencies": {
+    "babel-eslint": "^10.0.2",
+    "eslint": "^6.0.1",
+    "eslint-plugin-react": "^7.14.2",
+    "eslint-plugin-react-native": "^3.7.0",
     "flow-bin": "0.92.0",
+    "prettier": "^1.15.3",
     "react": "16.8.3",
     "react-native": "0.59.9"
   }

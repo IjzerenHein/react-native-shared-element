@@ -8,7 +8,6 @@ import {
   StyleSheet,
   requireNativeComponent,
   NativeModules,
-  findNodeHandle
 } from "react-native";
 import type { SharedElementNode } from "./SharedElement";
 

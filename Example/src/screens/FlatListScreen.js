@@ -82,7 +82,7 @@ export class FlatListScreen extends React.Component<PropsType> {
     );
   }
 
-  keyExtractor = (item: any, index: number) => item.id;
+  keyExtractor = (item: any) => item.id;
 
   renderItem = ({ item }: any) => {
     const hero = item;

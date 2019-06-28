@@ -1,7 +1,7 @@
 // @flow
 import * as React from "react";
 import { StyleSheet, View, Image, Dimensions } from "react-native";
-import { Heading1, NavBar, ScreenTransition, Colors } from "../components";
+import { NavBar, ScreenTransition, Colors } from "../components";
 import type { Hero } from "../types";
 import ImageZoom from "react-native-image-pan-zoom";
 
@@ -28,7 +28,7 @@ interface RNImagePanZoomScreenProps {
 
 export class RNImagePanZoomScreen extends React.Component<RNImagePanZoomScreenProps> {
   render() {
-    const { name, photo, id } = this.props.hero;
+    const { photo, id } = this.props.hero;
     return (
       <View style={styles.container}>
         <NavBar title="RNImagePanZoom" back="close" />

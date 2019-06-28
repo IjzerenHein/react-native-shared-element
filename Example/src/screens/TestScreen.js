@@ -1,10 +1,8 @@
 // @flow
 import * as React from "react";
-import { StyleSheet, View, Image } from "react-native";
+import { StyleSheet, View } from "react-native";
 import {
-  Heading1,
   NavBar,
-  ScreenTransition,
   Colors,
   Button,
   Body,

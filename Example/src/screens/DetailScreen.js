@@ -1,7 +1,7 @@
 // @flow
 import * as React from "react";
 import { StyleSheet, View, Image } from "react-native";
-import { Heading1, NavBar, ScreenTransition, Colors } from "../components";
+import { NavBar, ScreenTransition, Colors } from "../components";
 import type { Hero } from "../types";
 
 const styles = StyleSheet.create({
@@ -31,7 +31,7 @@ interface DetailScreenProps {
 
 export class DetailScreen extends React.Component<DetailScreenProps> {
   render() {
-    const { name, photo, id } = this.props.hero;
+    const { photo, id } = this.props.hero;
     return (
       <View style={styles.container}>
         <View style={styles.content}>
