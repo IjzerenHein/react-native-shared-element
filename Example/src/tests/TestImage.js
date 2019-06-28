@@ -110,7 +110,12 @@ export class TestImage extends React.Component<PropsType> {
     const resolvedPosition =
       position === "default" ? (end ? "right" : "left") : position;
     return (
-      <View style={[styles.container, styles[resolvedPosition]]}>
+      <View
+        style={[
+          styles.container,
+          resolvedSize !== "max" ? styles[resolvedPosition] : undefined
+        ]}
+      >
         <ScreenTransition
           sharedId="testContent"
           style={resolvedSize === "max" ? { flex: 1 } : undefined}
