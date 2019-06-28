@@ -386,7 +386,7 @@
     RNSharedElementStyle* endStyle = endItem.style;
     CGRect endLayout = endStyle ? [self normalizeLayout:endStyle.layout ancestor:endAncestor] : CGRectZero;
     CGRect endVisibleLayout = endStyle ? [self normalizeLayout:[endItem visibleLayoutForAncestor:endAncestor] ancestor:endAncestor] : CGRectZero;
-    CGRect endContentLayout = endStyle ?  [self normalizeLayout:[endItem contentLayoutForContent:(endItem.content ? endItem.content : startItem.content) contentType:(endItem.content ? endItem.contentType : startItem.contentType)] ancestor:startAncestor] : CGRectZero;
+    CGRect endContentLayout = endStyle ?  [self normalizeLayout:[endItem contentLayoutForContent:(endItem.content ? endItem.content : startItem.content) contentType:(endItem.content ? endItem.contentType : startItem.contentType)] ancestor:endAncestor] : CGRectZero;
     UIEdgeInsets endClipInsets = [self getClipInsets:endLayout visibleLayout:endVisibleLayout];
     
     // Get interpolated style & layout
