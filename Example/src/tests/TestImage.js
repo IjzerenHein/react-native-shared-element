@@ -1,39 +1,44 @@
 // @flow
 import * as React from "react";
-import { StyleSheet, View, TouchableOpacity, Image } from "react-native";
+import {
+  StyleSheet,
+  View,
+  TouchableOpacity,
+  Image,
+  Dimensions
+} from "react-native";
 import { Colors, ScreenTransition } from "../components";
 import type { Hero, Size, Position, ResizeMode } from "../types";
 import { Heroes } from "../assets";
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    height: Dimensions.get("window").width,
     backgroundColor: Colors.back
-    // padding: 20
   },
   left: {
     flexDirection: "row",
     justifyContent: "flex-start",
     alignItems: "center",
-    marginLeft: 20
+    paddingLeft: 20
   },
   top: {
     flexDirection: "column",
     justifyContent: "flex-start",
     alignItems: "center",
-    marginTop: 20
+    paddingTop: 20
   },
   right: {
     flexDirection: "row",
     justifyContent: "flex-end",
     alignItems: "center",
-    marginRight: 20
+    paddingRight: 20
   },
   bottom: {
     flexDirection: "column",
     justifyContent: "flex-end",
     alignItems: "center",
-    marginBottom: 20
+    paddingBottom: 20
   },
   center: {
     flexDirection: "column",
@@ -44,16 +49,16 @@ const styles = StyleSheet.create({
     // TODO
   },
   small: {
-    width: 80,
-    height: 80
+    width: 120,
+    height: 120
   },
   regular: {
-    width: 160,
-    height: 160
+    width: 200,
+    height: 200
   },
   large: {
-    width: 240,
-    height: 240
+    width: 280,
+    height: 280
   },
   max: {
     flex: 1,

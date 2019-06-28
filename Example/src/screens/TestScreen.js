@@ -29,12 +29,11 @@ const styles = StyleSheet.create({
     flexDirection: "row"
   },
   button: {
-    flex: 2,
-    marginRight: 10
+    flex: 1,
+    marginRight: 20
   },
   debugButton: {
-    flex: 1,
-    marginLeft: 10
+    flex: 1
   },
   body: {
     marginTop: 20
@@ -44,11 +43,12 @@ const styles = StyleSheet.create({
 interface PropsType {
   test: Test;
   end?: boolean;
+  description?: string;
 }
 
 export class TestScreen extends React.Component<PropsType> {
   render() {
-    const { test, end } = this.props;
+    const { test, end, description } = this.props;
     return (
       <View style={styles.container}>
         <NavBar title={test.name} />
@@ -61,31 +61,45 @@ export class TestScreen extends React.Component<PropsType> {
               onPress={this.onPressButton}
             />
             <Button
-              style={styles.debugButton}
+              style={styles.button}
               label={"Slow"}
+              onPress={this.onPressSlowButton}
+            />
+            <Button
+              style={styles.debugButton}
+              label={"Debug"}
               onPress={this.onPressDebugButton}
             />
           </View>
-          <Body style={styles.body}>{test.description}</Body>
+          <Body style={styles.body}>{test.description || description}</Body>
         </View>
       </View>
     );
   }
 
   onPressButton = () => {
-    this.transition(false);
+    this.transition();
+  };
+
+  onPressSlowButton = () => {
+    this.transition({
+      duration: 4000
+    });
   };
 
   onPressDebugButton = () => {
-    this.transition(true);
+    this.transition({
+      duration: 8000,
+      debug: true
+    });
   };
 
-  transition(debug: boolean) {
-    const { test, end } = this.props;
+  transition(cfg: any) {
+    const { test, end, description } = this.props;
     const transitionConfig = fadeIn();
-    if (debug) {
-      transitionConfig.debug = true;
-      transitionConfig.transitionSpec.duration = 8000;
+    if (cfg) {
+      transitionConfig.debug = cfg.debug || false;
+      transitionConfig.transitionSpec.duration = cfg.duration;
     }
     const config = {
       transitionConfig,
@@ -97,7 +111,10 @@ export class TestScreen extends React.Component<PropsType> {
       // $FlowFixMe
       Router.pop(config);
     } else {
-      Router.push(<TestScreen test={test} end />, config);
+      Router.push(
+        <TestScreen test={test} end description={description || ""} />,
+        config
+      );
     }
   }
 }

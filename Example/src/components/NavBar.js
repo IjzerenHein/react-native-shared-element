@@ -16,8 +16,8 @@ const styles = StyleSheet.create({
     height: HEIGHT,
     backgroundColor: Colors.navBar,
     paddingHorizontal: 32,
-    paddingBottom: 16,
-    ...Shadows.elevation1
+    paddingBottom: 16
+    //...Shadows.elevation1
   },
   lightContainer: {
     backgroundColor: "transparent"

@@ -14,7 +14,7 @@ export type ResizeMode = "cover" | "contain" | "stretch" | "center";
 
 export type Test = {
   name: string,
-  description: string,
+  description?: string,
   start: React.Node,
   end: React.Node,
   animation?: SharedElementAnimation
@@ -22,5 +22,6 @@ export type Test = {
 
 export type TestGroup = {
   name: string,
-  tests: Test[]
+  tests: Test[],
+  description?: string
 };

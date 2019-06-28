@@ -4,6 +4,7 @@ import { ImageBackground } from "react-native";
 import { Heroes } from "../assets";
 import type { Test, TestGroup } from "../types";
 import { TestImage } from "./TestImage";
+import { TestScrollView } from "./TestScrollView";
 import FastImage from "react-native-fast-image";
 import ImageZoom from "react-native-image-pan-zoom";
 import PhotoView from "react-native-photo-view";
@@ -152,6 +153,53 @@ export const Tests: (Test | TestGroup)[] = [
           "TODO - This one works but test has not been implemented yet",
         start: <TestImage size="regular" resizeMode="cover" />,
         end: <TestImage end size="large" resizeMode="contain" />
+      }
+    ]
+  },
+  {
+    name: "ScrollViews & Clipping",
+    description:
+      "When a part of the content is initially clipped, the transition should not show the whole content instantly, but reveal it gradually to make for a smooth transition",
+    tests: [
+      {
+        name: "Clip top  ➔  Slide down",
+        start: <TestScrollView inverted />,
+        end: <TestImage end position="bottom" />
+      },
+      {
+        name: "Clip bottom  ➔  Slide up",
+        start: <TestScrollView />,
+        end: <TestImage end position="top" />
+      },
+      {
+        name: "Clip left  ➔  Slide right",
+        start: <TestScrollView horizontal inverted />,
+        end: <TestImage end position="right" />
+      },
+      {
+        name: "Clip right  ➔  Slide left",
+        start: <TestScrollView horizontal />,
+        end: <TestImage end position="left" />
+      },
+      {
+        name: "Clip top  ➔  Full reveal",
+        start: <TestScrollView inverted />,
+        end: <TestImage end size="max" />
+      },
+      {
+        name: "Clip bottom  ➔  Full reveal",
+        start: <TestScrollView />,
+        end: <TestImage end size="max" />
+      },
+      {
+        name: "Clip left  ➔  Full reveal",
+        start: <TestScrollView horizontal inverted />,
+        end: <TestImage end size="max" />
+      },
+      {
+        name: "Clip right  ➔  Full reveal",
+        start: <TestScrollView horizontal />,
+        end: <TestImage end size="max" />
       }
     ]
   }

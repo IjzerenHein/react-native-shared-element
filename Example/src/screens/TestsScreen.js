@@ -17,12 +17,13 @@ const styles = StyleSheet.create({
 
 type PropsType = {
   tests: (Test | TestGroup)[],
-  title?: string
+  title?: string,
+  description?: string
 };
 
 export class TestsScreen extends React.Component<PropsType> {
   render() {
-    const { tests, title } = this.props;
+    const { tests, title, description } = this.props;
     return (
       <View style={styles.container}>
         <NavBar title={title || "Tests"} zIndex={100} />
@@ -35,9 +36,13 @@ export class TestsScreen extends React.Component<PropsType> {
                 Router.push(
                   test.tests ? (
                     // $FlowFixMe
-                    <TestsScreen tests={test.tests} title={test.name} />
+                    <TestsScreen
+                      tests={test.tests}
+                      title={test.name}
+                      description={test.description}
+                    />
                   ) : (
-                    <TestScreen test={test} />
+                    <TestScreen test={test} description={description || ""} />
                   )
                 )
               }
