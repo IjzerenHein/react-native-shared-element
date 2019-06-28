@@ -286,7 +286,7 @@ NSArray* _imageResolvers;
     style.layout = layout;
     style.size = view.bounds.size;
     style.contentMode = view.contentMode;
-    style.opacity = layer.opacity || 0.0f;
+    style.opacity = layer.opacity;
     style.cornerRadius = layer.cornerRadius;
     style.borderWidth = layer.borderWidth;
     style.borderColor = layer.borderColor ? [UIColor colorWithCGColor:layer.borderColor] : [UIColor clearColor];
@@ -296,7 +296,7 @@ NSArray* _imageResolvers;
     style.shadowRadius = layer.shadowRadius;
     style.shadowOpacity = layer.shadowOpacity;
     
-    NSLog(@"Style fetched: %@, realSize: %@", NSStringFromCGRect(layout), NSStringFromCGSize(view.bounds.size));
+    NSLog(@"Style fetched: %@, realSize: %@, opacity: %lf", NSStringFromCGRect(layout), NSStringFromCGSize(view.bounds.size), style.opacity);
     
     _styleCache = style;
     
