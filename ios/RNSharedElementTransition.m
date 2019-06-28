@@ -28,6 +28,7 @@
     UIImageView* _primaryImageView;
     UIImageView* _secondaryImageView;
     BOOL _reactFrameSet;
+    BOOL _initialLayoutPassCompleted;
 }
 
 - (instancetype)initWithNodeManager:(RNSharedElementNodeManager*)nodeManager
@@ -42,6 +43,7 @@
         _nodePosition = 0.0f;
         _animation = @"move";
         _reactFrameSet = NO;
+        _initialLayoutPassCompleted = NO;
         self.userInteractionEnabled = NO;
         _primaryImageView = [self createImageView];
         [self addSubview:_primaryImageView];
@@ -126,7 +128,7 @@
 - (void)updateNodeVisibility
 {
     for (RNSharedElementTransitionItem* item in _items) {
-        item.hidden = _autoHide && _reactFrameSet && item.style != nil && item.content != nil;
+        item.hidden = _autoHide && _initialLayoutPassCompleted && item.style != nil && item.content != nil;
     }
 }
 
@@ -141,7 +143,7 @@
 - (void) didSetProps:(NSArray<NSString *> *)changedProps
 {
     for (RNSharedElementTransitionItem* item in _items) {
-        if (_reactFrameSet && item.needsLayout) {
+        if (_initialLayoutPassCompleted && item.needsLayout) {
             item.needsLayout = NO;
             [item.node requestStyle:self useCache:YES];
         }
@@ -355,11 +357,7 @@
                                         @"contentWidth": @(contentLayout.size.width),
                                         @"contentHeight": @(contentLayout.size.height),
                                         },
-                                @"content": @{
-                                        @"type": item.contentTypeName,
-                                        @"width": @(item.contentSize.width),
-                                        @"height": @(item.contentSize.height),
-                                        },
+                                @"contentType": item.contentTypeName,
                                 @"style": @{
                                         @"borderRadius": @(item.style.cornerRadius)
                                         }
@@ -369,24 +367,26 @@
 
 - (void) updateStyle
 {
-    if (!_reactFrameSet) return;
+    if (!_initialLayoutPassCompleted) return;
     
-    // Get start layout
+    // Local data
     RNSharedElementTransitionItem* startItem = [_items objectAtIndex:ITEM_START];
     RNSharedElementTransitionItem* startAncestor = [_items objectAtIndex:ITEM_START_ANCESTOR];
+    RNSharedElementTransitionItem* endItem = [_items objectAtIndex:ITEM_END];
+    RNSharedElementTransitionItem* endAncestor = [_items objectAtIndex:ITEM_END_ANCESTOR];
+    
+    // Get start layout
     RNSharedElementStyle* startStyle = startItem.style;
     CGRect startLayout = startStyle ? [self normalizeLayout:startStyle.layout ancestor:startAncestor] : CGRectZero;
     CGRect startVisibleLayout = startStyle ? [self normalizeLayout:[startItem visibleLayoutForAncestor:startAncestor] ancestor:startAncestor] : CGRectZero;
-    CGRect startContentLayout = startStyle ? [self normalizeLayout:startItem.contentLayout ancestor:startAncestor] : CGRectZero;
+    CGRect startContentLayout = startStyle ? [self normalizeLayout:[startItem contentLayoutForContent:startItem.content contentType:startItem.contentType] ancestor:startAncestor] : CGRectZero;
     UIEdgeInsets startClipInsets = [self getClipInsets:startLayout visibleLayout:startVisibleLayout];
     
     // Get end layout
-    RNSharedElementTransitionItem* endItem = [_items objectAtIndex:ITEM_END];
-    RNSharedElementTransitionItem* endAncestor = [_items objectAtIndex:ITEM_END_ANCESTOR];
     RNSharedElementStyle* endStyle = endItem.style;
     CGRect endLayout = endStyle ? [self normalizeLayout:endStyle.layout ancestor:endAncestor] : CGRectZero;
     CGRect endVisibleLayout = endStyle ? [self normalizeLayout:[endItem visibleLayoutForAncestor:endAncestor] ancestor:endAncestor] : CGRectZero;
-    CGRect endContentLayout = endStyle ? [self normalizeLayout:endItem.contentLayout ancestor:endAncestor] : CGRectZero;
+    CGRect endContentLayout = endStyle ?  [self normalizeLayout:[endItem contentLayoutForContent:(endItem.content ? endItem.content : startItem.content) contentType:(endItem.content ? endItem.contentType : startItem.contentType)] ancestor:startAncestor] : CGRectZero;
     UIEdgeInsets endClipInsets = [self getClipInsets:endLayout visibleLayout:endVisibleLayout];
     
     // Get interpolated style & layout
@@ -478,6 +478,9 @@
                     [item.node requestStyle:self useCache:YES];
                 }
             }
+            _initialLayoutPassCompleted = YES;
+            [self updateStyle];
+            [self updateNodeVisibility];
         });
     }
     

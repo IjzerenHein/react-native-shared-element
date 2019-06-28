@@ -76,20 +76,20 @@
     }
 }
 
-- (CGSize) contentSize
+- (CGSize) contentSizeForContent:(id)content contentType:(RNSharedElementContentType)contentType
 {
-    if (!_content || !_style) return CGSizeZero;
-    if (_contentType != RNSharedElementContentTypeRawImage) return _style.layout.size;
+    if (!content || !_style) return CGSizeZero;
+    if (contentType != RNSharedElementContentTypeRawImage) return _style.layout.size;
     CGSize size = _style.layout.size;
-    return [_content isKindOfClass:[UIImage class]] ? ((UIImage*)_content).size : size;
+    return [content isKindOfClass:[UIImage class]] ? ((UIImage*)content).size : size;
 }
 
-- (CGRect) contentLayout
+- (CGRect) contentLayoutForContent:(id)content contentType:(RNSharedElementContentType)contentType
 {
-    if (!_content || !_style) return CGRectZero;
-    if (_contentType != RNSharedElementContentTypeRawImage) return _style.layout;
+    if (!content || !_style) return CGRectZero;
+    if (contentType != RNSharedElementContentTypeRawImage) return _style.layout;
     CGSize size = _style.layout.size;
-    CGSize contentSize = self.contentSize;
+    CGSize contentSize = [self contentSizeForContent:content contentType:contentType];
     CGFloat contentAspectRatio = (contentSize.width / contentSize.height);
     switch (_style.contentMode) {
         case UIViewContentModeScaleToFill: // stretch

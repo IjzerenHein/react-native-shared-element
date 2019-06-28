@@ -22,11 +22,11 @@
 @property (nonatomic, assign) id content;
 @property (nonatomic, assign) RNSharedElementContentType contentType;
 @property (nonatomic, readonly) NSString* contentTypeName;
-@property (nonatomic, readonly) CGRect contentLayout;
-@property (nonatomic, readonly) CGSize contentSize;
 
 - (instancetype)initWithNodeManager:(RNSharedElementNodeManager*)nodeManager name:(NSString*)name isAncestor:(BOOL)isAncestor;
 
+- (CGRect) contentLayoutForContent:(id)content contentType:(RNSharedElementContentType)contentType;
+- (CGSize) contentSizeForContent:(id)content contentType:(RNSharedElementContentType)contentType;
 - (CGRect) visibleLayoutForAncestor:(RNSharedElementTransitionItem*) ancestor;
 
 @end
