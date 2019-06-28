@@ -6,7 +6,9 @@ export const Colors = {
   gray: "#888888",
   navBar: "#DDDDDD",
   back: "#F0F0F0",
-  text: "#222222"
+  text: "#222222",
+  blue: "royalblue",
+  yellow: 'yellow'
 };
 
 export const Shadows = {
@@ -18,5 +20,14 @@ export const Shadows = {
     },
     shadowRadius: 2,
     shadowOpacity: 0.1
+  },
+  elevation2: {
+    shadowColor: "#000000",
+    shadowOffset: {
+      width: 0,
+      height: 4
+    },
+    shadowRadius: 8,
+    shadowOpacity: 1
   }
 };

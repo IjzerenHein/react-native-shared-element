@@ -329,7 +329,7 @@ export class Router extends React.Component<RouterProps, RouterState> {
     const { stack, nextIndex } = this.state;
     if (stack.length <= 1) return;
     const transitionConfig = [...this.state.transitionConfig];
-    transitionConfig[nextIndex - 1] =
+    transitionConfig[nextIndex] =
       (config && config.transitionConfig) || transitionConfig[nextIndex];
     this.setState({
       nextIndex: nextIndex - 1,

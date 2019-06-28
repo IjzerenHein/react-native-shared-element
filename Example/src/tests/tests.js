@@ -8,6 +8,7 @@ import { TestScrollView } from "./TestScrollView";
 import FastImage from "react-native-fast-image";
 // import ImageZoom from "react-native-image-pan-zoom";
 import PhotoView from "react-native-photo-view";
+import { Colors, Shadows } from "../components";
 
 export const Tests: (Test | TestGroup)[] = [
   {
@@ -44,8 +45,14 @@ export const Tests: (Test | TestGroup)[] = [
     animation: "dissolve"
   },
   {
-    name: "Styles",
+    name: "Image Styles",
     tests: [
+      {
+        name: "Image Opacity",
+        description: `The transition should use the start- and ending opacity of the image and create a smooth transition.`,
+        start: <TestImage size="regular" round style={{opacity: 0.5}} />,
+        end: <TestImage end size="regular" round />
+      },
       {
         name: "Image Border-radius",
         description: `It's a common case that the border-radius of the start- and end image are not the same. The border-radius should correctly animate for the transition.`,
@@ -53,10 +60,22 @@ export const Tests: (Test | TestGroup)[] = [
         end: <TestImage end size="regular" resizeMode="contain" />
       },
       {
-        name: "Image Opacity",
+        name: "Image Border  ➔  No-border",
         description: `The transition should use the start- and ending opacity of the image and create a smooth transition.`,
-        start: <TestImage size="regular" round style={{opacity: 0.5}} />,
-        end: <TestImage end size="regular" resizeMode="contain" />
+        start: <TestImage size="regular" round style={{borderWidth: 5, borderColor: Colors.blue}} />,
+        end: <TestImage end size="regular" round />
+      },
+      {
+        name: "Image Border  ➔  Other border",
+        description: `The transition should use the start- and ending opacity of the image and create a smooth transition.`,
+        start: <TestImage size="regular" round style={{borderWidth: 5, borderColor: Colors.blue}} />,
+        end: <TestImage end size="regular" round style={{borderWidth: 2, borderColor: Colors.yellow}} />
+      },
+      {
+        name: "Image Shadow   ➔  No shadow",
+        description: `The transition should use the start- and ending opacity of the image and create a smooth transition.`,
+        start: <TestImage size="regular" round style={{...Shadows.elevation2, backgroundColor: 'green'}} />,
+        end: <TestImage end size="regular" round />
       },
     ]
   },

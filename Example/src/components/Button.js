@@ -2,11 +2,11 @@
 import * as React from "react";
 import { StyleSheet, View, TouchableOpacity } from "react-native";
 import { Heading2 } from "./Text";
-import { Shadows } from "./Colors";
+import { Shadows, Colors } from "./Colors";
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "royalblue",
+    backgroundColor: Colors.blue,
     borderRadius: 8,
     padding: 12,
     justifyContent: "center",
