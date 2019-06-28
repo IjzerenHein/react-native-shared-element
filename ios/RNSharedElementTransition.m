@@ -9,6 +9,7 @@
 #import <React/RCTDefines.h>
 #import <React/UIView+React.h>
 #import "RNSharedElementTransition.h"
+#import "RNSharedElementTransitionItem.h"
 
 #define ITEM_START_ANCESTOR 0
 #define ITEM_END_ANCESTOR 1
@@ -20,128 +21,6 @@
 #else
 #define DebugLog(...) (void)0
 #endif
-
-@interface RNSharedElementItem : NSObject
-@property (nonatomic, readonly) RNSharedElementNodeManager* nodeManager;
-@property (nonatomic, readonly) BOOL isAncestor;
-@property (nonatomic, readonly) NSString* name;
-@property (nonatomic, assign) RNSharedElementNode* node;
-@property (nonatomic, assign) BOOL needsLayout;
-@property (nonatomic, assign) BOOL needsContent;
-@property (nonatomic, assign) BOOL hasCalledOnMeasure;
-@property (nonatomic, assign) id content;
-@property (nonatomic, assign) RNSharedElementContentType contentType;
-@property (nonatomic, readonly) NSString* contentTypeName;
-@property (nonatomic, assign) RNSharedElementStyle* style;
-@property (nonatomic, readonly) CGRect contentLayout;
-@property (nonatomic, assign) BOOL hidden;
-- (instancetype)initWithnodeManager:(RNSharedElementNodeManager*)nodeManager name:(NSString*)name isAncestor:(BOOL)isAncestor;
-@end
-
-@implementation RNSharedElementItem
-- (instancetype)initWithnodeManager:(RNSharedElementNodeManager*)nodeManager name:(NSString*)name isAncestor:(BOOL)isAncestor
-{
-    _nodeManager = nodeManager;
-    _name = name;
-    _isAncestor = isAncestor;
-    _node = nil;
-    _needsLayout = NO;
-    _needsContent = NO;
-    _content = nil;
-    _contentType = RNSharedElementContentTypeNone;
-    _style = nil;
-    _hidden = NO;
-    _hasCalledOnMeasure = NO;
-    return self;
-}
-
-- (void) setNode:(RNSharedElementNode *)node
-{
-    if (_node == node) {
-        if (node != nil) [_nodeManager release:node];
-        return;
-    }
-    if (_node != nil) {
-        if (_hidden) _node.hideRefCount--;
-        [_nodeManager release:_node];
-    }
-    _node = node;
-    _needsLayout = node != nil;
-    _needsContent = !_isAncestor && (node != nil);
-    _content = nil;
-    _contentType = RNSharedElementContentTypeNone;
-    _style = nil;
-    _hidden = NO;
-    _hasCalledOnMeasure = NO;
-}
-
-- (void) setHidden:(BOOL)hidden
-{
-    if (_hidden == hidden) return;
-    _hidden = hidden;
-    if (hidden) {
-        _node.hideRefCount++;
-    } else {
-        _node.hideRefCount--;
-    }
-}
-
-- (NSString*) contentTypeName
-{
-    switch(_contentType) {
-        case RNSharedElementContentTypeNone: return @"none";
-        case RNSharedElementContentTypeRawImage: return @"image";
-        case RNSharedElementContentTypeSnapshotView: return @"snapshotView";
-        case RNSharedElementContentTypeSnapshotImage: return @"snapshotImage";
-        default: return @"unknown";
-    }
-}
-
-- (CGSize) contentSize
-{
-    if (!_content || !_style) return CGSizeZero;
-    if (_contentType != RNSharedElementContentTypeRawImage) return _style.layout.size;
-    CGSize size = _style.layout.size;
-    return [_content isKindOfClass:[UIImage class]] ? ((UIImage*)_content).size : size;
-}
-
-- (CGRect) contentLayout
-{
-    if (!_content || !_style) return CGRectZero;
-    if (_contentType != RNSharedElementContentTypeRawImage) return _style.layout;
-    CGSize size = _style.layout.size;
-    CGSize contentSize = self.contentSize;
-    CGFloat contentAspectRatio = (contentSize.width / contentSize.height);
-    switch (_style.contentMode) {
-        case UIViewContentModeScaleToFill: // stretch
-            break;
-        case UIViewContentModeScaleAspectFit: // contain
-            if ((size.width / size.height) < contentAspectRatio) {
-                size.height = size.width / contentAspectRatio;
-            } else {
-                size.width = size.height * contentAspectRatio;
-            }
-            break;
-        case UIViewContentModeScaleAspectFill: // cover
-            if ((size.width / size.height) < contentAspectRatio) {
-                size.width = size.height * contentAspectRatio;
-            } else {
-                size.height = size.width / contentAspectRatio;
-            }
-            break;
-        case UIViewContentModeCenter: // center
-            size = contentSize;
-            break;
-        default:
-            break;
-    }
-    CGRect layout = _style.layout;
-    layout.origin.x += (layout.size.width - size.width) / 2;
-    layout.origin.y += (layout.size.height - size.height) / 2;
-    layout.size = size;
-    return layout;
-}
-@end
 
 @implementation RNSharedElementTransition
 {
@@ -155,10 +34,10 @@
 {
     if ((self = [super init])) {
         _items = @[
-                   [[RNSharedElementItem alloc]initWithnodeManager:nodeManager name:@"startAncestor" isAncestor:YES],
-                   [[RNSharedElementItem alloc]initWithnodeManager:nodeManager name:@"endAncestor" isAncestor:YES],
-                   [[RNSharedElementItem alloc]initWithnodeManager:nodeManager name:@"startNode" isAncestor:NO],
-                   [[RNSharedElementItem alloc]initWithnodeManager:nodeManager name:@"endNode" isAncestor:NO]
+                   [[RNSharedElementTransitionItem alloc]initWithNodeManager:nodeManager name:@"startAncestor" isAncestor:YES],
+                   [[RNSharedElementTransitionItem alloc]initWithNodeManager:nodeManager name:@"endAncestor" isAncestor:YES],
+                   [[RNSharedElementTransitionItem alloc]initWithNodeManager:nodeManager name:@"startNode" isAncestor:NO],
+                   [[RNSharedElementTransitionItem alloc]initWithNodeManager:nodeManager name:@"endNode" isAncestor:NO]
                    ];
         _nodePosition = 0.0f;
         _animation = @"move";
@@ -177,14 +56,14 @@
 {
     [super removeFromSuperview];
     
-    for (RNSharedElementItem* item in _items) {
+    for (RNSharedElementTransitionItem* item in _items) {
         if (item.node != nil) [item.node cancelRequests:self];
     }
 }
 
 - (void)dealloc
 {
-    for (RNSharedElementItem* item in _items) {
+    for (RNSharedElementTransitionItem* item in _items) {
         item.node = nil;
     }
 }
@@ -198,9 +77,9 @@
     return imageView;
 }
 
-- (RNSharedElementItem*) findItemForNode:(RNSharedElementNode*) node
+- (RNSharedElementTransitionItem*) findItemForNode:(RNSharedElementNode*) node
 {
-    for (RNSharedElementItem* item in _items) {
+    for (RNSharedElementTransitionItem* item in _items) {
         if (item.node == node) {
             return item;
         }
@@ -210,22 +89,22 @@
 
 - (void)setStartNode:(RNSharedElementNode *)startNode
 {
-    ((RNSharedElementItem*)[_items objectAtIndex:ITEM_START]).node = startNode;
+    ((RNSharedElementTransitionItem*)[_items objectAtIndex:ITEM_START]).node = startNode;
 }
 
 - (void)setEndNode:(RNSharedElementNode *)endNode
 {
-    ((RNSharedElementItem*)[_items objectAtIndex:ITEM_END]).node = endNode;
+    ((RNSharedElementTransitionItem*)[_items objectAtIndex:ITEM_END]).node = endNode;
 }
 
 - (void)setStartAncestor:(RNSharedElementNode *)startNodeAncestor
 {
-    ((RNSharedElementItem*)[_items objectAtIndex:ITEM_START_ANCESTOR]).node = startNodeAncestor;
+    ((RNSharedElementTransitionItem*)[_items objectAtIndex:ITEM_START_ANCESTOR]).node = startNodeAncestor;
 }
 
 - (void)setEndAncestor:(RNSharedElementNode *)endNodeAncestor
 {
-    ((RNSharedElementItem*)[_items objectAtIndex:ITEM_END_ANCESTOR]).node = endNodeAncestor;
+    ((RNSharedElementTransitionItem*)[_items objectAtIndex:ITEM_END_ANCESTOR]).node = endNodeAncestor;
 }
 
 - (void)setNodePosition:(CGFloat)nodePosition
@@ -246,7 +125,7 @@
 
 - (void)updateNodeVisibility
 {
-    for (RNSharedElementItem* item in _items) {
+    for (RNSharedElementTransitionItem* item in _items) {
         item.hidden = _autoHide && _reactFrameSet && item.style != nil && item.content != nil;
     }
 }
@@ -261,7 +140,7 @@
 
 - (void) didSetProps:(NSArray<NSString *> *)changedProps
 {
-    for (RNSharedElementItem* item in _items) {
+    for (RNSharedElementTransitionItem* item in _items) {
         if (_reactFrameSet && item.needsLayout) {
             item.needsLayout = NO;
             [item.node requestStyle:self useCache:YES];
@@ -292,7 +171,7 @@
 - (void) didLoadContent:(id)content contentType:(RNSharedElementContentType)contentType node:(RNSharedElementNode*)node
 {
     // NSLog(@"didLoadContent: %@", content);
-    RNSharedElementItem* item = [self findItemForNode:node];
+    RNSharedElementTransitionItem* item = [self findItemForNode:node];
     if (item == nil) return;
     if ((contentType == RNSharedElementContentTypeSnapshotImage) || (contentType == RNSharedElementContentTypeRawImage)) {
         UIImage* image = content;
@@ -322,14 +201,14 @@
 - (void) didLoadStyle:(RNSharedElementStyle *)style node:(RNSharedElementNode*)node
 {
     // NSLog(@"didLoadStyle: %@", NSStringFromCGRect(style.layout));
-    RNSharedElementItem* item = [self findItemForNode:node];
+    RNSharedElementTransitionItem* item = [self findItemForNode:node];
     if (item == nil) return;
     item.style = style;
     [self updateStyle];
     [self updateNodeVisibility];
 }
 
-- (CGRect)normalizeLayout:(CGRect)layout ancestor:(RNSharedElementItem*)ancestor
+- (CGRect)normalizeLayout:(CGRect)layout ancestor:(RNSharedElementTransitionItem*)ancestor
 {
     RNSharedElementStyle* style = ancestor.style;
     if (style == nil) return [self.superview convertRect:layout fromView:nil];
@@ -457,7 +336,7 @@
     layer.shadowColor = style.shadowColor.CGColor;
 }
 
-- (void) fireMeasureEvent:(RNSharedElementItem*) item layout:(CGRect)layout visibleLayout:(CGRect)visibleLayout contentLayout:(CGRect)contentLayout
+- (void) fireMeasureEvent:(RNSharedElementTransitionItem*) item layout:(CGRect)layout visibleLayout:(CGRect)visibleLayout contentLayout:(CGRect)contentLayout
 {
     if (!self.onMeasureNode) return;
     NSDictionary* eventData = @{
@@ -493,20 +372,20 @@
     if (!_reactFrameSet) return;
     
     // Get start layout
-    RNSharedElementItem* startItem = [_items objectAtIndex:ITEM_START];
-    RNSharedElementItem* startAncestor = [_items objectAtIndex:ITEM_START_ANCESTOR];
+    RNSharedElementTransitionItem* startItem = [_items objectAtIndex:ITEM_START];
+    RNSharedElementTransitionItem* startAncestor = [_items objectAtIndex:ITEM_START_ANCESTOR];
     RNSharedElementStyle* startStyle = startItem.style;
     CGRect startLayout = startStyle ? [self normalizeLayout:startStyle.layout ancestor:startAncestor] : CGRectZero;
-    CGRect startVisibleLayout = startStyle ? [self normalizeLayout:startStyle.visibleLayout ancestor:startAncestor] : CGRectZero;
+    CGRect startVisibleLayout = startStyle ? [self normalizeLayout:[startItem visibleLayoutForAncestor:startAncestor] ancestor:startAncestor] : CGRectZero;
     CGRect startContentLayout = startStyle ? [self normalizeLayout:startItem.contentLayout ancestor:startAncestor] : CGRectZero;
     UIEdgeInsets startClipInsets = [self getClipInsets:startLayout visibleLayout:startVisibleLayout];
     
     // Get end layout
-    RNSharedElementItem* endItem = [_items objectAtIndex:ITEM_END];
-    RNSharedElementItem* endAncestor = [_items objectAtIndex:ITEM_END_ANCESTOR];
+    RNSharedElementTransitionItem* endItem = [_items objectAtIndex:ITEM_END];
+    RNSharedElementTransitionItem* endAncestor = [_items objectAtIndex:ITEM_END_ANCESTOR];
     RNSharedElementStyle* endStyle = endItem.style;
     CGRect endLayout = endStyle ? [self normalizeLayout:endStyle.layout ancestor:endAncestor] : CGRectZero;
-    CGRect endVisibleLayout = endStyle ? [self normalizeLayout:endStyle.visibleLayout ancestor:endAncestor] : CGRectZero;
+    CGRect endVisibleLayout = endStyle ? [self normalizeLayout:[endItem visibleLayoutForAncestor:endAncestor] ancestor:endAncestor] : CGRectZero;
     CGRect endContentLayout = endStyle ? [self normalizeLayout:endItem.contentLayout ancestor:endAncestor] : CGRectZero;
     UIEdgeInsets endClipInsets = [self getClipInsets:endLayout visibleLayout:endVisibleLayout];
     
@@ -565,7 +444,8 @@
     if ((startAncestor.style != nil) && !startAncestor.hasCalledOnMeasure) {
         startAncestor.hasCalledOnMeasure = YES;
         startItem.hasCalledOnMeasure = NO;
-        [self fireMeasureEvent:startAncestor layout:[self.superview convertRect:startAncestor.style.layout fromView:nil] visibleLayout:[self.superview convertRect:startAncestor.style.visibleLayout fromView:nil] contentLayout:[self.superview convertRect:startAncestor.style.layout fromView:nil]];
+        CGRect ancestorLayout = [self.superview convertRect:startAncestor.style.layout fromView:nil];
+        [self fireMeasureEvent:startAncestor layout:ancestorLayout visibleLayout:ancestorLayout contentLayout:ancestorLayout];
     }
     if ((startItem.style != nil) && !startItem.hasCalledOnMeasure) {
         startItem.hasCalledOnMeasure = YES;
@@ -574,7 +454,8 @@
     if ((endAncestor.style != nil) && !endAncestor.hasCalledOnMeasure) {
         endAncestor.hasCalledOnMeasure = YES;
         endItem.hasCalledOnMeasure = NO;
-        [self fireMeasureEvent:endAncestor layout:[self.superview convertRect:endAncestor.style.layout fromView:nil] visibleLayout:[self.superview convertRect:endAncestor.style.visibleLayout fromView:nil] contentLayout:[self.superview convertRect:endAncestor.style.layout fromView:nil]];
+        CGRect ancestorLayout = [self.superview convertRect:endAncestor.style.layout fromView:nil];
+        [self fireMeasureEvent:endAncestor layout:ancestorLayout visibleLayout:ancestorLayout contentLayout:ancestorLayout];
     }
     if ((endItem.style != nil) && !endItem.hasCalledOnMeasure) {
         endItem.hasCalledOnMeasure = YES;
@@ -591,7 +472,7 @@
         //NSLog(@"reactSetFrame: %@", NSStringFromCGRect(frame));
         _reactFrameSet = YES;
         dispatch_async(dispatch_get_main_queue(), ^{
-            for (RNSharedElementItem* item in _items) {
+            for (RNSharedElementTransitionItem* item in _items) {
                 if (item.needsLayout) {
                     item.needsLayout = NO;
                     [item.node requestStyle:self useCache:YES];

@@ -12,6 +12,7 @@
 		214D6B6122B01BDA00227ED9 /* RNSharedElementTransitionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 214D6B5A22B01BD900227ED9 /* RNSharedElementTransitionManager.m */; };
 		214D6B6222B01BDA00227ED9 /* RNSharedElementTransition.m in Sources */ = {isa = PBXBuildFile; fileRef = 214D6B5C22B01BD900227ED9 /* RNSharedElementTransition.m */; };
 		214D6B6422B01C5800227ED9 /* RNSharedElementStyle.m in Sources */ = {isa = PBXBuildFile; fileRef = 214D6B6322B01C5800227ED9 /* RNSharedElementStyle.m */; };
+		21CDDEBF22C612EC0081ABDB /* RNSharedElementTransitionItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 21CDDEBE22C612EC0081ABDB /* RNSharedElementTransitionItem.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -40,6 +41,8 @@
 		214D6B5D22B01BD900227ED9 /* RNSharedElementDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RNSharedElementDelegate.h; sourceTree = "<group>"; };
 		214D6B5E22B01BDA00227ED9 /* RNSharedElementTransitionManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RNSharedElementTransitionManager.h; sourceTree = "<group>"; };
 		214D6B6322B01C5800227ED9 /* RNSharedElementStyle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RNSharedElementStyle.m; sourceTree = "<group>"; };
+		21CDDEBD22C612EB0081ABDB /* RNSharedElementTransitionItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RNSharedElementTransitionItem.h; sourceTree = "<group>"; };
+		21CDDEBE22C612EC0081ABDB /* RNSharedElementTransitionItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RNSharedElementTransitionItem.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -68,6 +71,8 @@
 				214D6B5C22B01BD900227ED9 /* RNSharedElementTransition.m */,
 				214D6B5E22B01BDA00227ED9 /* RNSharedElementTransitionManager.h */,
 				214D6B5A22B01BD900227ED9 /* RNSharedElementTransitionManager.m */,
+				21CDDEBD22C612EB0081ABDB /* RNSharedElementTransitionItem.h */,
+				21CDDEBE22C612EC0081ABDB /* RNSharedElementTransitionItem.m */,
 				214D6B5422B01BD900227ED9 /* RNSharedElementNode.h */,
 				214D6B5622B01BD900227ED9 /* RNSharedElementNode.m */,
 				214D6B5722B01BD900227ED9 /* RNSharedElementNodeManager.h */,
@@ -114,7 +119,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 58B511D61A9E6C8500147676 /* Build configuration list for PBXProject "RNSharedElementTransition" */;
+			buildConfigurationList = 58B511D61A9E6C8500147676 /* Build configuration list for PBXProject "RNSharedElement" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -142,6 +147,7 @@
 				214D6B6122B01BDA00227ED9 /* RNSharedElementTransitionManager.m in Sources */,
 				214D6B6022B01BDA00227ED9 /* RNSharedElementNode.m in Sources */,
 				214D6B6422B01C5800227ED9 /* RNSharedElementStyle.m in Sources */,
+				21CDDEBF22C612EC0081ABDB /* RNSharedElementTransitionItem.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -264,7 +270,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		58B511D61A9E6C8500147676 /* Build configuration list for PBXProject "RNSharedElementTransition" */ = {
+		58B511D61A9E6C8500147676 /* Build configuration list for PBXProject "RNSharedElement" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				58B511ED1A9E6C8500147676 /* Debug */,

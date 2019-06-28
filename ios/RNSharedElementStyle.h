@@ -9,9 +9,9 @@
 #import <UIKit/UIKit.h>
 
 @interface RNSharedElementStyle : NSObject
+@property (nonatomic, assign) UIView* view;
 @property (nonatomic, assign) CGRect layout;
 @property (nonatomic, assign) CGSize size;
-@property (nonatomic, assign) CGRect visibleLayout;
 @property (nonatomic, assign) UIViewContentMode contentMode;
 @property (nonatomic, assign) CGFloat opacity;
 @property (nonatomic, assign) UIColor* backgroundColor;
