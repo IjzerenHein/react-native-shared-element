@@ -8,8 +8,10 @@ import {
   Body,
   Router
 } from "../components";
+import { fromRight } from 'react-navigation-transitions';
+import { fromRightEx } from "../transitions";
 import type { Test } from "../types";
-import { fadeIn } from "react-navigation-transitions";
+
 
 const styles = StyleSheet.create({
   container: {
@@ -76,29 +78,24 @@ export class TestScreen extends React.Component<PropsType> {
   }
 
   onPressButton = () => {
-    this.transition();
+    this.transition(Router.defaultProps.transitionConfig);
   };
 
   onPressSlowButton = () => {
-    this.transition({
-      duration: 4000
-    });
+    this.transition(
+      fromRightEx(4000),
+    );
   };
 
   onPressDebugButton = () => {
     this.transition({
-      duration: 8000,
+      ...fromRight(8000),
       debug: true
     });
   };
 
-  transition(cfg: any) {
+  transition(transitionConfig: any) {
     const { test, end, description } = this.props;
-    const transitionConfig = fadeIn();
-    if (cfg) {
-      transitionConfig.debug = cfg.debug || false;
-      transitionConfig.transitionSpec.duration = cfg.duration;
-    }
     const config = {
       transitionConfig,
       sharedElements: {

@@ -6,7 +6,7 @@ import { ScreenTransitionContext } from "./ScreenTransitionContext";
 import type { ScreenTransitionContextOnSharedElementsUpdatedEvent } from "./ScreenTransitionContext";
 import { PanGestureHandler, State } from "react-native-gesture-handler";
 import { NavBar } from "./NavBar";
-import { fromRight } from "react-navigation-transitions";
+import { fromRightEx } from '../transitions';
 import type { TransitionConfig } from "react-navigation";
 
 const WIDTH = Dimensions.get("window").width;
@@ -17,7 +17,8 @@ const styles = StyleSheet.create({
     flex: 1
   },
   node: {
-    ...StyleSheet.absoluteFillObject
+    ...StyleSheet.absoluteFillObject,
+    backfaceVisibility: 'hidden'
   },
   swipeBackOverlay: {
     position: "absolute",
@@ -41,6 +42,7 @@ type RouterTransitionConfig = {
 
 interface RouterProps {
   initialNode: React.Node;
+  transitionConfig: TransitionConfig
 }
 
 type RouterSharedElementConfig =
@@ -66,8 +68,6 @@ type RouterConfig = {
   transitionConfig?: RouterTransitionConfig
 };
 
-const defaultTransitionConfig = fromRight();
-
 let router;
 
 export class Router extends React.Component<RouterProps, RouterState> {
@@ -77,6 +77,10 @@ export class Router extends React.Component<RouterProps, RouterState> {
     [{ nativeEvent: { translationX: this._swipeBackAnimValue } }],
     { useNativeDriver: true }
   );
+
+  static defaultProps = {
+    transitionConfig: fromRightEx()
+  }
 
   constructor(props: RouterProps) {
     super(props);
@@ -95,7 +99,7 @@ export class Router extends React.Component<RouterProps, RouterState> {
       ),
       sharedElementScreens: [],
       sharedElementConfig: [undefined],
-      transitionConfig: [defaultTransitionConfig]
+      transitionConfig: [Router.defaultProps.transitionConfig]
     };
   }
 
@@ -118,7 +122,6 @@ export class Router extends React.Component<RouterProps, RouterState> {
     const endIndex = startIndex + 1;
     const config = sharedElementConfig[endIndex];
     const { debug } = transitionConfig[endIndex];
-    console.log("YOLO: ", transitionConfig[endIndex]);
     if (!config) return;
     const nodes = {};
     const startScreen = sharedElementScreens[startIndex];
@@ -226,8 +229,14 @@ export class Router extends React.Component<RouterProps, RouterState> {
     }
   };
 
+  getTransitionConfig(index: number): TransitionConfig {
+    //return this.state.transitionConfig[index];
+    return this.state.transitionConfig[this.state.nextIndex];
+  }
+
   render() {
-    const { stack, animValue, transitionConfig } = this.state;
+    const { stack, animValue } = this.state;
+
     return (
       <View style={styles.container}>
         {stack.map((node: React.Node, index: number) => (
@@ -235,7 +244,7 @@ export class Router extends React.Component<RouterProps, RouterState> {
             key={`screen${index}`}
             style={[
               styles.node,
-              transitionConfig[index].screenInterpolator({
+              this.getTransitionConfig(index).screenInterpolator({
                 layout: {
                   initHeight: HEIGHT,
                   initWidth: WIDTH
@@ -258,7 +267,7 @@ export class Router extends React.Component<RouterProps, RouterState> {
             ]}
           >
             <ScreenTransitionContext
-              style={styles.node}
+              style={StyleSheet.absoluteFill}
               onSharedElementsUpdated={this.onSharedElementsUpdated}
             >
               {node}
@@ -292,7 +301,7 @@ export class Router extends React.Component<RouterProps, RouterState> {
       sharedElementConfig
     } = this.state;
     const transitionConfig =
-      (config && config.transitionConfig) || defaultTransitionConfig;
+      (config && config.transitionConfig) || Router.defaultProps.transitionConfig;
     this.setState({
       stack: [...stack, node],
       nextIndex: nextIndex + 1,
@@ -320,7 +329,7 @@ export class Router extends React.Component<RouterProps, RouterState> {
     const { stack, nextIndex } = this.state;
     if (stack.length <= 1) return;
     const transitionConfig = [...this.state.transitionConfig];
-    transitionConfig[nextIndex] =
+    transitionConfig[nextIndex - 1] =
       (config && config.transitionConfig) || transitionConfig[nextIndex];
     this.setState({
       nextIndex: nextIndex - 1,

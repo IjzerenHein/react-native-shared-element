@@ -64,18 +64,19 @@ const styles = StyleSheet.create({
     width: "100%"
   },
   smallRound: {
-    borderRadius: 40
+    borderRadius: 60
   },
   regularRound: {
-    borderRadius: 80
+    borderRadius: 100
   },
   largeRound: {
-    borderRadius: 120
+    borderRadius: 140
   },
   maxRound: {}
 });
 
 type PropsType = {
+  style?: any,
   hero: Hero,
   end?: boolean,
   size: Size,
@@ -88,6 +89,7 @@ type PropsType = {
 export class TestImage extends React.Component<PropsType> {
   static defaultProps = {
     hero: Heroes[0],
+    style: {},
     size: "default",
     position: "default",
     resizeMode: "cover",
@@ -97,6 +99,7 @@ export class TestImage extends React.Component<PropsType> {
 
   render() {
     const {
+      style,
       hero,
       end,
       size,
@@ -123,7 +126,8 @@ export class TestImage extends React.Component<PropsType> {
             style={[
               styles.image,
               styles[resolvedSize],
-              round ? styles[`${resolvedSize}Round`] : undefined
+              round ? styles[`${resolvedSize}Round`] : undefined,
+              style
             ]}
             resizeMode={resizeMode}
             source={hero.photo}

@@ -44,10 +44,21 @@ export const Tests: (Test | TestGroup)[] = [
     animation: "dissolve"
   },
   {
-    name: "Image Border-radius",
-    description: `It's a common case that the border-radius of the start- and end image are not the same. The border-radius should correctly animate for the transition.`,
-    start: <TestImage size="regular" round />,
-    end: <TestImage end size="regular" resizeMode="contain" />
+    name: "Styles",
+    tests: [
+      {
+        name: "Image Border-radius",
+        description: `It's a common case that the border-radius of the start- and end image are not the same. The border-radius should correctly animate for the transition.`,
+        start: <TestImage size="regular" round />,
+        end: <TestImage end size="regular" resizeMode="contain" />
+      },
+      {
+        name: "Image Opacity",
+        description: `The transition should use the start- and ending opacity of the image and create a smooth transition.`,
+        start: <TestImage size="regular" round style={{opacity: 0.5}} />,
+        end: <TestImage end size="regular" resizeMode="contain" />
+      },
+    ]
   },
   {
     name: "Image Resize-modes",
