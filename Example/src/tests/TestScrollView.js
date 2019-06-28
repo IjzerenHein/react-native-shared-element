@@ -18,6 +18,11 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.back,
     justifyContent: "center",
     alignItems: "center"
+  },
+  scrollView: {
+    borderWidth: 1,
+    borderColor: Colors.gray,
+    borderStyle: "dashed"
   }
 });
 
@@ -53,6 +58,7 @@ export class TestScrollView extends React.Component<PropsType> {
           }}
         >
           <FlatList
+            style={styles.scrollView}
             horizontal={horizontal}
             inverted={inverted}
             data={[hero2, hero]}

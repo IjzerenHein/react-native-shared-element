@@ -200,6 +200,13 @@ export const Tests: (Test | TestGroup)[] = [
         name: "Clip right  ➔  Full reveal",
         start: <TestScrollView horizontal />,
         end: <TestImage end size="max" />
+      },
+      {
+        name: "Clip & border-radius",
+        description:
+          "The clipping-mask should be correctly applied, also when a border-radius is used with the content",
+        start: <TestScrollView round />,
+        end: <TestImage end size="max" />
       }
     ]
   }
