@@ -36,7 +36,10 @@ export type SharedElementMeasureData = {
     contentWidth: number,
     contentHeight: number
   },
-  contentType: "none" | "snapshotView" | "snapshotImage" | "image"
+  contentType: "none" | "snapshotView" | "snapshotImage" | "image",
+  style: {
+    borderRadius: number
+  }
 };
 
 export type SharedElementOnMeasureEvent = {
@@ -153,7 +156,7 @@ export class SharedElementTransition extends React.Component<
   renderDebugLayer(name: SharedElementNodeType) {
     const event = this.state[name];
     if (!event || !this.props.debug) return undefined;
-    const { layout } = event;
+    const { layout, style } = event;
     const isContentDifferent =
       layout.x !== layout.contentX ||
       layout.y !== layout.contentY ||
