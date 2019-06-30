@@ -40,10 +40,20 @@ export const Tests: (Test | TestGroup)[] = [
   {
     name: "Image Dissolve",
     description: `When two images are distinctly different, the "dissolve" animation creates a cross fade between the images.`,
-    start: <TestImage size="regular" />,
-    end: <TestImage end size="regular" hero={Heroes[2]} />,
-    animation: "dissolve"
-  },
+    tests: [
+      {
+        name: "Dissolve similar aspect-ratios",
+        start: <TestImage size="regular" resizeMode='cover' />,
+        end: <TestImage end size="large" hero={Heroes[2]}/>,
+        animation: "dissolve"
+      },
+      {
+        name: "Dissolve different aspect-ratios",
+        start: <TestImage size="regular" resizeMode='contain' />,
+        end: <TestImage end size="large" hero={Heroes[8]} resizeMode='cover' />,
+        animation: "dissolve"
+      },
+    ]},
   {
     name: "Image Styles",
     tests: [

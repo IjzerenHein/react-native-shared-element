@@ -26,8 +26,10 @@
 - (instancetype)initWithNodeManager:(RNSharedElementNodeManager*)nodeManager name:(NSString*)name isAncestor:(BOOL)isAncestor;
 
 - (CGRect) contentLayoutForContent:(id)content contentType:(RNSharedElementContentType)contentType;
-- (CGSize) contentSizeForContent:(id)content contentType:(RNSharedElementContentType)contentType;
 - (CGRect) visibleLayoutForAncestor:(RNSharedElementTransitionItem*) ancestor;
+
++ (CGSize) contentSizeFor:(CGRect)layout content:(id)content contentType:(RNSharedElementContentType)contentType;
++ (CGRect) contentLayoutFor:(CGRect)layout content:(id)content contentType:(RNSharedElementContentType)contentType contentMode:(UIViewContentMode) contentMode reverse:(BOOL)reverse;
 
 @end
 

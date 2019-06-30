@@ -398,18 +398,18 @@
     if (startStyle && endStyle) {
         interpolatedStyle = [self getInterpolatedStyle:startStyle style2:endStyle position:_nodePosition];
         interpolatedLayout = [self getInterpolatedLayout:startLayout layout2:endLayout position:_nodePosition];
-        interpolatedContentLayout = [self getInterpolatedLayout:startContentLayout layout2:endContentLayout position:_nodePosition];
         interpolatedClipInsets = [self getInterpolatedClipInsets:interpolatedLayout startClipInsets:startClipInsets startVisibleLayout:startVisibleLayout endClipInsets:endClipInsets endVisibleLayout:endVisibleLayout];
+        interpolatedContentLayout = [self getInterpolatedLayout:startContentLayout layout2:endContentLayout position:_nodePosition];
     } else if (startStyle) {
         interpolatedStyle = startStyle;
         interpolatedLayout = startLayout;
-        interpolatedContentLayout = startContentLayout;
         interpolatedClipInsets = startClipInsets;
+        interpolatedContentLayout = startContentLayout;
     } else {
         interpolatedStyle = endStyle;
         interpolatedLayout = endLayout;
-        interpolatedContentLayout = endContentLayout;
         interpolatedClipInsets = endClipInsets;
+        interpolatedContentLayout = endContentLayout;
     }
     
     // Update frame
@@ -426,20 +426,44 @@
     maskLayer.cornerRadius = interpolatedStyle.cornerRadius;
     self.layer.mask = maskLayer;
     
-    // Update content
-    CGRect contentFrame = interpolatedContentLayout;
-    contentFrame.origin.x -= interpolatedLayout.origin.x;
-    contentFrame.origin.y -= interpolatedLayout.origin.y;
-    _primaryImageView.frame = contentFrame;
-    _secondaryImageView.frame = contentFrame;
-    
-    // Update specified animation styles
+    // Update style
     [self applyStyle:interpolatedStyle layer:self.layer];
+    
+    // Update content
+    if ([_animation isEqualToString:@"move"]) {
+        
+        // In case of move, we correctly calculate the content-frame
+        // and interpolate between the start- and end-state, assuming
+        // that the start- and end-content (image) has the same aspect-ratio
+        CGRect contentFrame = interpolatedContentLayout;
+        contentFrame.origin.x -= interpolatedLayout.origin.x;
+        contentFrame.origin.y -= interpolatedLayout.origin.y;
+        _primaryImageView.frame = contentFrame;
+    }
+    else {
+        
+        // In all other cases, animate and interpolate both the start- and
+        // end views to look like each other
+        CGRect startContentLayout2 = startStyle ? [RNSharedElementTransitionItem contentLayoutFor:endStyle ? endContentLayout : startContentLayout content:startItem.content contentType:startItem.contentType contentMode:startStyle.contentMode reverse:YES] : CGRectZero;
+        CGRect startInterpolatedContentLayout = [self getInterpolatedLayout:startContentLayout layout2:startContentLayout2 position:_nodePosition];
+        startInterpolatedContentLayout.origin.x -= interpolatedLayout.origin.x;
+        startInterpolatedContentLayout.origin.y -= interpolatedLayout.origin.y;
+        _primaryImageView.frame = startInterpolatedContentLayout;
+        
+        // End node
+        CGRect endContentLayout1 = endStyle ? [RNSharedElementTransitionItem contentLayoutFor:startStyle ? startContentLayout : endContentLayout content:endItem.content contentType:endItem.contentType contentMode:endStyle.contentMode reverse:YES] : CGRectZero;
+        CGRect endInterpolatedContentLayout = [self getInterpolatedLayout:endContentLayout1 layout2:endContentLayout position:_nodePosition];
+        endInterpolatedContentLayout.origin.x -= interpolatedLayout.origin.x;
+        endInterpolatedContentLayout.origin.y -= interpolatedLayout.origin.y;
+        _secondaryImageView.frame = endInterpolatedContentLayout;
+    }
+    
+    // In case of a dissolve, fade-in the end-content
     if ([_animation isEqualToString:@"dissolve"]) {
         _primaryImageView.layer.opacity = 1.0f;
         _secondaryImageView.layer.opacity = MIN(MAX(_nodePosition, 0.0f), 1.0f);
     }
-    
+
     // Fire events
     if ((startAncestor.style != nil) && !startAncestor.hasCalledOnMeasure) {
         startAncestor.hasCalledOnMeasure = YES;
