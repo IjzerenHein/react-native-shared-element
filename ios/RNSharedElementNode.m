@@ -204,12 +204,14 @@ NSArray* _imageResolvers;
         content = image;
         contentType = RNSharedElementContentTypeRawImage;
     }
+    /*else if ([NSStringFromClass(view.class) isEqualToString:@"RCTView"] && !view.subviews.count) {
+        content = [[UIView alloc]init];
+        contentType = RNSharedElementContentTypeSnapshotView;
+    }*/
     else {
         UIView* snapshotView = [_view snapshotViewAfterScreenUpdates:NO];
         content = snapshotView;
         contentType = RNSharedElementContentTypeSnapshotView;
-        snapshotView.layer.borderWidth = 0;
-        snapshotView.layer.cornerRadius = 0;
     }
     /*else {
         NSLog(@"drawViewHierarchyInRect: bounds: %@", NSStringFromCGRect(bounds));
