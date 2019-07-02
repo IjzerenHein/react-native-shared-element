@@ -5,6 +5,7 @@ import { Heroes } from "../assets";
 import type { Test, TestGroup } from "../types";
 import { TestImage } from "./TestImage";
 import { TestScrollView } from "./TestScrollView";
+import { TestView } from './TestView';
 import FastImage from "react-native-fast-image";
 // import ImageZoom from "react-native-image-pan-zoom";
 import PhotoView from "react-native-photo-view";
@@ -248,6 +249,21 @@ export const Tests: (Test | TestGroup)[] = [
         start: <TestScrollView round />,
         end: <TestImage end size="max" />
       }
+    ]
+  },
+  {
+    name: "View Transitions",
+    tests: [
+      {
+        name: "Simple move",
+        start: <TestView position='top'/>,
+        end: <TestView position='bottom'/>
+      },
+      {
+        name: "Move & scale",
+        start: <TestView position='top'/>,
+        end: <TestView position='bottom' size='large'/>
+      },
     ]
   }
 ];
