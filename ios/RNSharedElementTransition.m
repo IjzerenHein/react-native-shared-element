@@ -60,10 +60,7 @@
         [_outerStyleView addSubview:_innerClipView];
         
         _primaryImageView = [self createImageView];
-        [_innerClipView addSubview:_primaryImageView];
-        
         _secondaryImageView = [self createImageView];
-        [_innerClipView addSubview:_secondaryImageView];
     }
     
     return self;
@@ -162,10 +159,6 @@
             item.needsLayout = NO;
             [item.node requestStyle:self useCache:YES];
         }
-        if (item.needsContent) {
-            item.needsContent = NO;
-            [item.node requestContent:self useCache:YES];
-        }
     }
     [self updateNodeVisibility];
 }
@@ -190,10 +183,10 @@
     // NSLog(@"didLoadContent: %@", content);
     RNSharedElementTransitionItem* item = [self findItemForNode:node];
     if (item == nil) return;
+    item.content = content;
+    item.contentType = contentType;
     if ((contentType == RNSharedElementContentTypeSnapshotImage) || (contentType == RNSharedElementContentTypeRawImage)) {
         UIImage* image = content;
-        item.content = content;
-        item.contentType = contentType;
         if ([_animation isEqualToString:@"move"]) {
             if (_primaryImageView.image == nil) {
                 [self updateViewWithImage:_primaryImageView image:image];
@@ -207,9 +200,6 @@
                 [self updateViewWithImage:_secondaryImageView image:image];
             }
         }
-    }
-    else if (contentType == RNSharedElementContentTypeSnapshotView) {
-        // TODO
     }
     [self updateStyle];
     [self updateNodeVisibility];
@@ -462,6 +452,8 @@
     _innerClipView.frame = innerClipFrame;
     
     // Update content
+    UIView* contentView1 = (startItem.contentType == RNSharedElementContentTypeSnapshotView) ? startItem.content : _primaryImageView;
+    if (contentView1.superview != _innerClipView) [_innerClipView addSubview:contentView1];
     if ([_animation isEqualToString:@"move"]) {
         
         // In case of move, we correctly calculate the content-frame
@@ -470,9 +462,12 @@
         CGRect contentFrame = interpolatedContentLayout;
         contentFrame.origin.x -= interpolatedLayout.origin.x;
         contentFrame.origin.y -= interpolatedLayout.origin.y;
-        _primaryImageView.frame = contentFrame;
+        contentView1.frame = contentFrame;
     }
     else {
+        // Update content-view 2
+        UIView* contentView2 = (endItem.contentType == RNSharedElementContentTypeSnapshotView) ? endItem.content : _secondaryImageView;
+        if (contentView2.superview != _innerClipView) [_innerClipView addSubview:contentView2];
         
         // In all other cases, animate and interpolate both the start- and
         // end views to look like each other
@@ -480,20 +475,20 @@
         CGRect startInterpolatedContentLayout = [self getInterpolatedLayout:startContentLayout layout2:startContentLayout2 position:_nodePosition];
         startInterpolatedContentLayout.origin.x -= interpolatedLayout.origin.x;
         startInterpolatedContentLayout.origin.y -= interpolatedLayout.origin.y;
-        _primaryImageView.frame = startInterpolatedContentLayout;
+        contentView1.frame = startInterpolatedContentLayout;
         
         // End node
         CGRect endContentLayout1 = endStyle ? [RNSharedElementTransitionItem contentLayoutFor:startStyle ? startContentLayout : endContentLayout content:endItem.content contentType:endItem.contentType contentMode:endStyle.contentMode reverse:YES] : CGRectZero;
         CGRect endInterpolatedContentLayout = [self getInterpolatedLayout:endContentLayout1 layout2:endContentLayout position:_nodePosition];
         endInterpolatedContentLayout.origin.x -= interpolatedLayout.origin.x;
         endInterpolatedContentLayout.origin.y -= interpolatedLayout.origin.y;
-        _secondaryImageView.frame = endInterpolatedContentLayout;
-    }
-    
-    // In case of a dissolve, fade-in the end-content
-    if ([_animation isEqualToString:@"dissolve"]) {
-        _primaryImageView.layer.opacity = 1.0f;
-        _secondaryImageView.layer.opacity = MIN(MAX(_nodePosition, 0.0f), 1.0f);
+        contentView2.frame = endInterpolatedContentLayout;
+        
+        // In case of a dissolve, fade-in the end-content
+        if ([_animation isEqualToString:@"dissolve"]) {
+            contentView1.layer.opacity = 1.0f;
+            contentView2.layer.opacity = MIN(MAX(_nodePosition, 0.0f), 1.0f);
+        }
     }
 
     // Fire events
@@ -532,6 +527,10 @@
                 if (item.needsLayout) {
                     item.needsLayout = NO;
                     [item.node requestStyle:self useCache:YES];
+                }
+                if (item.needsContent) {
+                    item.needsContent = NO;
+                    [item.node requestContent:self useCache:YES];
                 }
             }
             _initialLayoutPassCompleted = YES;

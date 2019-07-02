@@ -78,7 +78,7 @@
 
 + (CGSize) contentSizeFor:(CGRect)layout content:(id)content contentType:(RNSharedElementContentType)contentType
 {
-    if (!content) return CGSizeZero;
+    if (!content) return layout.size;
     if (contentType != RNSharedElementContentTypeRawImage) return layout.size;
     CGSize size = layout.size;
     return [content isKindOfClass:[UIImage class]] ? ((UIImage*)content).size : size;
@@ -86,7 +86,7 @@
 
 + (CGRect) contentLayoutFor:(CGRect)layout content:(id)content contentType:(RNSharedElementContentType)contentType contentMode:(UIViewContentMode) contentMode reverse:(BOOL)reverse
 {
-    if (!content) return CGRectZero;
+    if (!content) return layout;
     if (contentType != RNSharedElementContentTypeRawImage) return layout;
     CGSize size = layout.size;
     CGSize contentSize = [RNSharedElementTransitionItem contentSizeFor:layout content:content contentType:contentType];

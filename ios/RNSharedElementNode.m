@@ -205,6 +205,13 @@ NSArray* _imageResolvers;
         contentType = RNSharedElementContentTypeRawImage;
     }
     else {
+        UIView* snapshotView = [_view snapshotViewAfterScreenUpdates:NO];
+        content = snapshotView;
+        contentType = RNSharedElementContentTypeSnapshotView;
+        snapshotView.layer.borderWidth = 0;
+        snapshotView.layer.cornerRadius = 0;
+    }
+    /*else {
         NSLog(@"drawViewHierarchyInRect: bounds: %@", NSStringFromCGRect(bounds));
         UIGraphicsBeginImageContextWithOptions(bounds.size, NO, 0.0f);
         BOOL res = [view drawViewHierarchyInRect:bounds afterScreenUpdates:NO]; // NEVER USE YES, IT CREATED VISUAL ARTEFACTS ON THE CREEN
@@ -213,7 +220,7 @@ NSArray* _imageResolvers;
         NSLog(@"drawViewHierarchyInRect: RESULT: %li", res);
         content = image;
         contentType = RNSharedElementContentTypeSnapshotImage;
-    }
+    }*/
     
     // If the content could not be obtained, then try again later
     if (content == nil) {
@@ -223,15 +230,6 @@ NSArray* _imageResolvers;
         }
         return;
     }
-    
-    /*
-     - (UIView*) snapshot
-     {
-     UIView* snapshot = [_view snapshotViewAfterScreenUpdates:YES];
-     _cachedSnapshot = snapshot;
-     return snapshot;
-     }*/
-    
     NSLog(@"Content fetched: %@, contentType: %d, size: %@", content, contentType, NSStringFromCGSize(bounds.size));
     
     _contentCache = content;
