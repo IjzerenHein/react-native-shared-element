@@ -25,6 +25,8 @@
 @implementation RNSharedElementTransition
 {
     NSArray* _items;
+    UIView* _outerStyleView;
+    UIView* _innerClipView;
     UIImageView* _primaryImageView;
     UIImageView* _secondaryImageView;
     BOOL _reactFrameSet;
@@ -45,10 +47,23 @@
         _reactFrameSet = NO;
         _initialLayoutPassCompleted = NO;
         self.userInteractionEnabled = NO;
+        
+        _outerStyleView = [[UIImageView alloc]init];
+        _outerStyleView.userInteractionEnabled = NO;
+        _outerStyleView.frame = self.bounds;
+        [self addSubview:_outerStyleView];
+        
+        _innerClipView = [[UIImageView alloc]init];
+        _innerClipView.userInteractionEnabled = NO;
+        _innerClipView.frame = self.bounds;
+        _innerClipView.layer.masksToBounds = YES;
+        [_outerStyleView addSubview:_innerClipView];
+        
         _primaryImageView = [self createImageView];
-        [self addSubview:_primaryImageView];
+        [_innerClipView addSubview:_primaryImageView];
+        
         _secondaryImageView = [self createImageView];
-        [self addSubview:_secondaryImageView];
+        [_innerClipView addSubview:_secondaryImageView];
     }
     
     return self;
@@ -163,8 +178,8 @@
     }
     
     // Apply trilinear filtering to smooth out mis-sized images
-    self.layer.minificationFilter = kCAFilterTrilinear;
-    self.layer.magnificationFilter = kCAFilterTrilinear;
+    view.layer.minificationFilter = kCAFilterTrilinear;
+    view.layer.magnificationFilter = kCAFilterTrilinear;
     
     // NSLog(@"updateWithImage: %@", NSStringFromCGRect(self.frame));
     view.image = image;
@@ -413,21 +428,38 @@
     }
     
     // Update frame
-    [super reactSetFrame:interpolatedLayout];
+    CGRect parentBounds = self.superview.bounds;
+    [super reactSetFrame:parentBounds];
     
     // Update clipping mask (handles scrollview/parent clipping)
+    // This kind of clipping is performed at the top level.
+    CGFloat clipLeft = interpolatedClipInsets.left != 0.0f ? interpolatedClipInsets.left + interpolatedLayout.origin.x : 0.0f;
+    CGFloat clipTop = interpolatedClipInsets.top != 0.0f ? interpolatedClipInsets.top + interpolatedLayout.origin.y : 0.0f;
+    CGFloat clipBottom = interpolatedClipInsets.bottom != 0.0f ? parentBounds.size.height - (interpolatedLayout.origin.y + interpolatedLayout.size.height) + interpolatedClipInsets.bottom : 0.0f;
+    CGFloat clipRight = interpolatedClipInsets.right != 0.0f ? parentBounds.size.width - (interpolatedLayout.origin.x + interpolatedLayout.size.width) + interpolatedClipInsets.right : 0.0f;
+    CGRect clipFrame = CGRectMake(
+                                 clipLeft,
+                                 clipTop,
+                                 parentBounds.size.width - clipLeft - clipRight,
+                                 parentBounds.size.height - clipTop - clipBottom);
     CALayer *maskLayer = [[CALayer alloc] init];
-    maskLayer.frame = CGRectMake(
-                                 interpolatedClipInsets.left,
-                                 interpolatedClipInsets.top,
-                                 interpolatedLayout.size.width - interpolatedClipInsets.left - interpolatedClipInsets.right,
-                                 interpolatedLayout.size.height - interpolatedClipInsets.top - interpolatedClipInsets.bottom);
     maskLayer.backgroundColor = [UIColor whiteColor].CGColor;
-    maskLayer.cornerRadius = interpolatedStyle.cornerRadius;
+    maskLayer.frame = clipFrame;
     self.layer.mask = maskLayer;
     
-    // Update style
-    [self applyStyle:interpolatedStyle layer:self.layer];
+    // Update outer style view. This view has all styles such as border-color,
+    // background color, and shadow. Because of the shadow, the view itsself
+    // does not mask its bounds, otherwise the shadow isn't visible.
+    _outerStyleView.frame = interpolatedLayout;
+    [self applyStyle:interpolatedStyle layer:_outerStyleView.layer];
+    
+    // Update inner clip view. This view holds the image/content views
+    // inside and clips their content.
+    CGRect innerClipFrame = interpolatedLayout;
+    innerClipFrame.origin.x = 0;
+    innerClipFrame.origin.y = 0;
+    _innerClipView.layer.cornerRadius = interpolatedStyle.cornerRadius;
+    _innerClipView.frame = innerClipFrame;
     
     // Update content
     if ([_animation isEqualToString:@"move"]) {
