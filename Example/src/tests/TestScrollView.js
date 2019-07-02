@@ -27,28 +27,31 @@ const styles = StyleSheet.create({
 });
 
 type PropsType = {
-  hero: Hero,
-  hero2: Hero,
   horizontal: boolean,
   inverted: boolean,
   size: Size,
   round?: boolean,
-  ImageComponent: any
+  ImageComponent: any,
+  heroes: Hero[]
 };
+
+const heroes2 = [...Heroes];
+heroes2[0] = Heroes[1];
+heroes2[1] = Heroes[0];
 
 export class TestScrollView extends React.Component<PropsType> {
   static defaultProps = {
-    hero: Heroes[0],
-    hero2: Heroes[1],
     horizontal: false,
     inverted: false,
     size: "default",
-    ImageComponent: Image
+    ImageComponent: Image,
+    heroes: heroes2
   };
 
   render() {
-    const { hero, hero2, size, horizontal, inverted } = this.props;
+    const { heroes, size, horizontal, inverted } = this.props;
     const sizePx = SIZES[size === "default" ? "regular" : size];
+    const isMax = size === 'max';
     return (
       <View style={styles.container}>
         <View
@@ -58,10 +61,10 @@ export class TestScrollView extends React.Component<PropsType> {
           }}
         >
           <FlatList
-            style={styles.scrollView}
+            style={!isMax ? styles.scrollView : undefined}
             horizontal={horizontal}
             inverted={inverted}
-            data={[hero2, hero]}
+            data={heroes}
             renderItem={this.renderItem}
             keyExtractor={this.keyExtractor}
           />
@@ -76,9 +79,10 @@ export class TestScrollView extends React.Component<PropsType> {
     const hero = item;
     const { size, ImageComponent, round, horizontal } = this.props;
     const sizePx = SIZES[size === "default" ? "regular" : size];
+    const isMax = size === 'max';
     const sizeStyle = {
-      width: horizontal ? sizePx / 1.5 : sizePx,
-      height: horizontal ? sizePx : sizePx / 1.5
+      width: horizontal ? sizePx / (isMax ? 3.5 : 1.5) : sizePx,
+      height: horizontal ? sizePx : sizePx / (isMax ? 3.5 : 1.5)
     };
 
     const content = (

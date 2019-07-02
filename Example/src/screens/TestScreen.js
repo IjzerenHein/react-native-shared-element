@@ -30,7 +30,7 @@ const styles = StyleSheet.create({
   },
   button: {
     flex: 1,
-    marginRight: 20
+    marginRight: 10
   },
   debugButton: {
     flex: 1

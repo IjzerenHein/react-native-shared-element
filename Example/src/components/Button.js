@@ -4,11 +4,14 @@ import { StyleSheet, View, TouchableOpacity } from "react-native";
 import { Heading2 } from "./Text";
 import { Shadows, Colors } from "./Colors";
 
+const HEIGHT = 40;
+
 const styles = StyleSheet.create({
   container: {
     backgroundColor: Colors.blue,
-    borderRadius: 8,
-    padding: 12,
+    height: HEIGHT,
+    borderRadius: HEIGHT / 2,
+    paddingHorizontal: 12,
     justifyContent: "center",
     alignItems: "center",
     ...Shadows.elevation1

@@ -28,12 +28,6 @@ export class MainScreen extends React.Component<{}> {
             label="Tests"
             onPress={() => Router.push(<TestsScreen tests={Tests} />)}
           />
-          <ListItem
-            label="Image Move"
-            onPress={() =>
-              Router.push(<TilesScreen title="Image Move" animation="move" />)
-            }
-          />
           {/*<ListItem
             label="Image & Text"
             onPress={() => Router.push(<ListScreen title="Image & Text" />)}

@@ -254,6 +254,16 @@ export const Tests: (Test | TestGroup)[] = [
       "When a part of the content is initially clipped, the transition should reveal that content gradually to make for a smooth transition",
     tests: [
       {
+        name: 'ScrollView',
+        start: <TestScrollView size='max' />,
+        end: <TestImage end position="center" />
+      },
+      {
+        name: 'Inverted Flatlist',
+        start: <TestScrollView size='max' inverted />,
+        end: <TestImage end size='max' />
+      },
+      {
         name: "Clip top  ➔  Slide down",
         start: <TestScrollView inverted />,
         end: <TestImage end position="bottom" />
