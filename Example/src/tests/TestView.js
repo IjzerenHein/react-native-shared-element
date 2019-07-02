@@ -10,6 +10,7 @@ import {
 import { Colors, Shadows, ScreenTransition } from "../components";
 import type { Hero, Size, Position } from "../types";
 import { Heroes } from "../assets";
+import LinearGradient from "react-native-linear-gradient";
 
 const SIZES = {
   max: Dimensions.get("window").width,
@@ -65,14 +66,7 @@ const styles = StyleSheet.create({
   },
   content: {
     ...Shadows.elevation1,
-    backgroundColor: Colors.back
-  },
-  horizontal: {
-    flexDirection: 'row',
-    alignItems: 'center'
-  },
-  vertical: {
-    flexDirection: 'column',
+    backgroundColor: Colors.back,
     alignItems: 'center'
   },
   max: {
@@ -82,6 +76,7 @@ const styles = StyleSheet.create({
 });
 
 type PropsType = {
+  style? : any,
   hero: Hero,
   end?: boolean,
   size: Size,
@@ -100,60 +95,105 @@ export class TestView extends React.Component<PropsType> {
 
   render() {
     const {
+      style,
       hero,
       end,
       size,
       position,
       vertical
     } = this.props;
+    const isMax = size === 'max';
     const resolvedPosition =
-      position === "default" ? (end ? "right" : "left") : position;
+      position === "default" ? (isMax ? 'center' : end ? "right" : "left") : position;
     const sizePx = SIZES[size === "default" ? "regular" : size];
     return (
       <View
         style={[
           styles.container,
-          size !== "max" ? styles[resolvedPosition] : undefined
+          !isMax ? styles[resolvedPosition] : undefined
         ]}
       >
         <ScreenTransition sharedId="testContent">
           <View style={[
             styles.content,
-            vertical ? styles.vertical : styles.horizontal,
-            { borderRadius: (sizePx + (sizePx / 2.5)) / 2 }
+            isMax ? undefined : {
+              flexDirection: vertical ? 'column-reverse' : 'row-reverse',
+              borderRadius: (sizePx + (sizePx / 2.5)) / 2
+            },
+            style
           ]}>
-            <Image
-              style={[
-                styles.logo,
-                {
-                  width: sizePx / 2,
-                  height: sizePx / 2,
-                  borderRadius: sizePx / 4,
-                  margin: sizePx / 5
-                },
-              ]}
-              source={require('../assets/fist.png')}
-            />
-            <Text style={[styles.text, {
-              fontSize: sizePx / 2.3,
-              margin: sizePx / 8
-              }]}>
-              {hero.name}
-            </Text>
-            <Image
-              style={[
-                styles.image,
-                {
+            <View>
+              <ScreenTransition sharedId="testImage">
+                <Image
+                  style={[
+                    styles.image,
+                    isMax ? {
+                      width: sizePx,
+                      height: sizePx
+                    } : {
+                      width: sizePx,
+                      height: sizePx,
+                      borderRadius: sizePx / 2,
+                      margin: sizePx / 8
+                    },
+                  ]}
+                  source={hero.photo}
+                />
+              </ScreenTransition>
+              <ScreenTransition sharedId="testOverlay" style={StyleSheet.absoluteFill}>
+                {isMax ? <LinearGradient
+                  style={StyleSheet.absoluteFill}
+                  colors={["#000000FF", "#00000000", "#000000FF"]}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 0, y: 1 }}
+                /> : <View style={{
                   width: sizePx,
                   height: sizePx,
                   borderRadius: sizePx / 2,
                   margin: sizePx / 8
-                },
-              ]}
-              source={hero.photo}
-            />
+                }} />}
+              </ScreenTransition>
             </View>
-          </ScreenTransition>
+            <ScreenTransition sharedId="testTitle" style={isMax ? {
+              position: 'absolute',
+              left: 0,
+              right: 0,
+              bottom: 20,
+              flexDirection: 'row',
+              justifyContent: 'center'
+            } : undefined}>
+              <Text style={[styles.text, isMax ? {
+                fontSize: sizePx / 8,
+                color: Colors.back
+                } : {
+                fontSize: sizePx / 2.3,
+                margin: sizePx / 8
+                }]}>
+                {hero.name}
+              </Text>
+            </ScreenTransition>
+            <ScreenTransition sharedId="testLogo" style={isMax ? StyleSheet.absoluteFill : undefined}>
+              <Image
+                style={[
+                  styles.logo,
+                  isMax ? {
+                    position: 'absolute',
+                    left: 20,
+                    top: 20,
+                    width: 30,
+                    height: 30
+                  } : {
+                    width: sizePx / 2,
+                    height: sizePx / 2,
+                    borderRadius: sizePx / 4,
+                    margin: sizePx / 5
+                  },
+                ]}
+                source={require('../assets/fist.png')}
+              />
+            </ScreenTransition>
+          </View>
+        </ScreenTransition>
       </View>
     );
   }

@@ -17,7 +17,6 @@ import {
 } from "../components";
 import type { SharedElementAnimation } from "react-native-shared-element-transition";
 import { Heroes } from "../assets";
-import { GradientScreen } from "./GradientScreen";
 import type { Hero } from "../types";
 import { fadeIn } from "react-navigation-transitions";
 import type { TransitionConfig } from "react-navigation";
@@ -68,7 +67,6 @@ export class ListScreen extends React.Component<PropsType> {
   static defaultProps = {
     title: "Bullets",
     animation: "move",
-    DetailComponent: GradientScreen,
     transitionConfig: fadeIn()
   };
 

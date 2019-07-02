@@ -17,11 +17,12 @@ export type Test = {
   description?: string,
   start: React.Node,
   end: React.Node,
-  animation?: SharedElementAnimation
+  animation?: SharedElementAnimation,
+  multi?: boolean
 };
 
 export type TestGroup = {
   name: string,
-  tests: Test[],
+  tests: (Test | TestGroup)[],
   description?: string
 };

@@ -9,6 +9,14 @@ import {
 import { Colors, ScreenTransition } from "../components";
 import type { Hero, Size, Position, ResizeMode } from "../types";
 import { Heroes } from "../assets";
+import ImageZoom from "react-native-image-pan-zoom";
+
+const SIZES = {
+  max: Dimensions.get("window").width,
+  small: 120,
+  regular: 200,
+  large: 280
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -47,32 +55,10 @@ const styles = StyleSheet.create({
   image: {
     // TODO
   },
-  small: {
-    width: 120,
-    height: 120
-  },
-  regular: {
-    width: 200,
-    height: 200
-  },
-  large: {
-    width: 280,
-    height: 280
-  },
   max: {
     flex: 1,
     width: "100%"
   },
-  smallRound: {
-    borderRadius: 60
-  },
-  regularRound: {
-    borderRadius: 100
-  },
-  largeRound: {
-    borderRadius: 140
-  },
-  maxRound: {}
 });
 
 type PropsType = {
@@ -83,7 +69,8 @@ type PropsType = {
   position: Position,
   resizeMode: ResizeMode,
   round?: boolean,
-  ImageComponent: any
+  ImageComponent: any,
+  panZoom?: boolean
 };
 
 export class TestImage extends React.Component<PropsType> {
@@ -94,7 +81,8 @@ export class TestImage extends React.Component<PropsType> {
     position: "default",
     resizeMode: "cover",
     round: false,
-    ImageComponent: Image
+    ImageComponent: Image,
+    panZoom: false
   };
 
   render() {
@@ -106,33 +94,51 @@ export class TestImage extends React.Component<PropsType> {
       position,
       resizeMode,
       round,
-      ImageComponent
+      ImageComponent,
+      panZoom
     } = this.props;
-    const resolvedSize = size === "default" ? "regular" : size;
+    const sizePx = SIZES[size === "default" ? "regular" : size];
     const resolvedPosition =
       position === "default" ? (end ? "right" : "left") : position;
+    const imageContent = (
+      <ScreenTransition
+        sharedId="testContent"
+        style={size === "max" ? { flex: 1 } : undefined}
+      >
+        <ImageComponent
+          style={[
+            styles.image,
+            {
+              width: sizePx,
+              height: sizePx,
+              borderRadius: round ? sizePx / 2 : 0
+            },
+            style
+          ]}
+          resizeMode={resizeMode}
+          source={hero.photo}
+        />
+      </ScreenTransition>
+    );
+    const content = panZoom ? (
+      <ImageZoom
+        cropWidth={SIZES.max}
+        cropHeight={SIZES.max}
+        imageWidth={sizePx}
+        imageHeight={sizePx}
+      >
+        {imageContent}
+      </ImageZoom>
+    ) : imageContent;
+
+
     return (
       <View
         style={[
           styles.container,
-          resolvedSize !== "max" ? styles[resolvedPosition] : undefined
+          size !== "max" ? styles[resolvedPosition] : undefined
         ]}
-      >
-        <ScreenTransition
-          sharedId="testContent"
-          style={resolvedSize === "max" ? { flex: 1 } : undefined}
-        >
-          <ImageComponent
-            style={[
-              styles.image,
-              styles[resolvedSize],
-              round ? styles[`${resolvedSize}Round`] : undefined,
-              style
-            ]}
-            resizeMode={resizeMode}
-            source={hero.photo}
-          />
-        </ScreenTransition>
+      >{content}
       </View>
     );
   }

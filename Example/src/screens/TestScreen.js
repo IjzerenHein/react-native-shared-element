@@ -96,7 +96,15 @@ export class TestScreen extends React.Component<PropsType> {
 
   transition(transitionConfig: any) {
     const { test, end, description } = this.props;
-    const config = {
+    const config = test.multi ? {
+      transitionConfig,
+      sharedElements: {
+        testImage: test.animation || "move",
+        testOverlay: test.animation || "dissolve",
+        testLogo: test.animation || "move",
+        testTitle: test.animation || "dissolve"
+      }
+    } : {
       transitionConfig,
       sharedElements: {
         testContent: test.animation || "move"

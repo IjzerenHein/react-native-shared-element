@@ -10,7 +10,7 @@ const styles = StyleSheet.create({
     color: Colors.text
   },
   heading2: {
-    fontSize: 18,
+    fontSize: 17,
     fontWeight: "700",
     color: Colors.text
   },
