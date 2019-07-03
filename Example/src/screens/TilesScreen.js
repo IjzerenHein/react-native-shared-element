@@ -19,7 +19,7 @@ import type{ TransitionConfig } from "react-navigation";
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.back
+    backgroundColor: Colors.empty
   },
   content: {
     flex: 1

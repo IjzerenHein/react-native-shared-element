@@ -4,12 +4,15 @@ export const Colors = {
   //back: "#222222",
   //text: "#FFFFFF",
   gray: "#888888",
-  navBar: "#DDDDDD",
-  back: "#F0F0F0",
+  navBar: "#ffe256",
+  //navBar: "royalblue",
+  separator: '#DDDDDD',
+  empty: '#F0F0F0',
+  back: "#FFFFFF",
   dark: '#222222',
   text: "#222222",
   blue: "royalblue",
-  yellow: 'yellow'
+  yellow: '#ffe256'
 };
 
 export const Shadows = {

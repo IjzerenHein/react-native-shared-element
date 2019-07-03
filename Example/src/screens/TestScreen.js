@@ -20,9 +20,9 @@ const styles = StyleSheet.create({
   },
   bottomContainer: {
     flex: 1,
-    borderTopLeftRadius: 8,
-    borderTopRightRadius: 8,
-    backgroundColor: Colors.navBar,
+    borderTopLeftRadius: 16,
+    borderTopRightRadius: 16,
+    backgroundColor: Colors.empty,
     padding: 20
   },
   buttonContainer: {

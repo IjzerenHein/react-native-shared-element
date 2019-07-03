@@ -16,7 +16,7 @@ const styles = StyleSheet.create({
   },
   caption: {
     fontSize: 14,
-    fontWeight: "600",
+    fontWeight: "400",
     color: Colors.gray
   },
   body: {

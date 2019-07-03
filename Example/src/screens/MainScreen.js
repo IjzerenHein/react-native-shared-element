@@ -12,7 +12,7 @@ import { Tests } from "../tests";
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.back
+    backgroundColor: Colors.empty
   },
   content: {
     flex: 1
@@ -26,12 +26,14 @@ export class MainScreen extends React.Component<{}> {
         <NavBar title="Shared Element Demo" back="none" />
         <ScrollView style={styles.content}>
           <ListItem
-            label="Tests"
+            label="Test Cases"
+            description='Test cases for development and diagnosing problems'
             onPress={() => Router.push(<TestsScreen tests={Tests} />)}
           />
           <ListItem
-            label="Tiles"
-            onPress={() => Router.push(<TilesScreen DetailComponent={PagerScreen} />)}
+            label="Image Tiles"
+            description='Image tiles that zoom-in on then allow gestures to paginate and dismiss'
+            onPress={() => Router.push(<TilesScreen title='Image Tiles' DetailComponent={PagerScreen} />)}
           />
           {/*<ListItem
             label="Image & Text"

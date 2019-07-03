@@ -1,18 +1,29 @@
 // @flow
 import * as React from "react";
 import { StyleSheet, View, Image, TouchableOpacity } from "react-native";
-import { Heading2 } from "./Text";
+import { Heading2, Caption } from "./Text";
 import { ScreenTransition } from "./ScreenTransition";
 import { Colors } from "./Colors";
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     flexDirection: "row",
     alignItems: "center",
     backgroundColor: Colors.back,
-    height: 60,
-    paddingHorizontal: 16
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    borderColor: Colors.separator,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    minHeight: 60
+  },
+  content: {
+    flex: 1,
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'flex-start'
+  },
+  description: {
+    marginTop: 1
   },
   image: {
     width: 44,
@@ -34,6 +45,7 @@ const styles = StyleSheet.create({
 
 export interface ListItemProps {
   label: string;
+  description?: string,
   image?: any;
   imageSharedId?: string;
   data?: any;
@@ -56,7 +68,7 @@ export class ListItem extends React.Component<ListItemProps> {
   }
 
   render() {
-    const { label, onPress } = this.props;
+    const { label, description, onPress } = this.props;
     return (
       <TouchableOpacity
         activeOpacity={0.5}
@@ -65,7 +77,10 @@ export class ListItem extends React.Component<ListItemProps> {
       >
         <View style={styles.container}>
           {this.renderImage()}
-          <Heading2>{label}</Heading2>
+          <View style={styles.content}>
+            <Heading2>{label}</Heading2>
+            {description ? <Caption style={styles.description}>{description}</Caption> : undefined}
+          </View>
         </View>
       </TouchableOpacity>
     );
