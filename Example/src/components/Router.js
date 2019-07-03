@@ -329,11 +329,15 @@ export class Router extends React.Component<RouterProps, RouterState> {
     const { stack, nextIndex } = this.state;
     if (stack.length <= 1) return;
     const transitionConfig = [...this.state.transitionConfig];
+    const sharedElementConfig = [...this.state.sharedElementConfig];
     transitionConfig[nextIndex] =
       (config && config.transitionConfig) || transitionConfig[nextIndex];
+      sharedElementConfig[nextIndex] =
+      (config && config.sharedElements) || sharedElementConfig[nextIndex];
     this.setState({
       nextIndex: nextIndex - 1,
-      transitionConfig
+      transitionConfig,
+      sharedElementConfig
     });
     const { transitionSpec } = transitionConfig[nextIndex];
     const { timing, ...spec } = transitionSpec;
