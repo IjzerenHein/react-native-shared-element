@@ -3,7 +3,7 @@ import * as React from "react";
 import { StyleSheet, View, Image, StatusBar, ScrollView, Dimensions } from "react-native";
 import { NavBar, ScreenTransition, Colors, Router, Heading1, Body, Shadows } from "../components";
 import type { Hero } from "../types";
-import { fadeIn } from "react-navigation-transitions";
+import { fadeIn } from "../transitions";
 
 const styles = StyleSheet.create({
   flex: {

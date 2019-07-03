@@ -6,7 +6,7 @@ import { ScreenTransitionContext } from "./ScreenTransitionContext";
 import type { ScreenTransitionContextOnSharedElementsUpdatedEvent } from "./ScreenTransitionContext";
 import { PanGestureHandler, State } from "react-native-gesture-handler";
 import { NavBar } from "./NavBar";
-import { fromRightEx } from '../transitions';
+import { fromRight } from '../transitions';
 import type { TransitionConfig } from "react-navigation";
 
 const WIDTH = Dimensions.get("window").width;
@@ -77,7 +77,7 @@ export class Router extends React.Component<RouterProps, RouterState> {
   );
 
   static defaultProps = {
-    transitionConfig: fromRightEx()
+    transitionConfig: fromRight()
   }
 
   constructor(props: RouterProps) {

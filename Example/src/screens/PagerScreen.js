@@ -4,7 +4,7 @@ import { StyleSheet, View, Image, Dimensions, Animated, StatusBar } from "react-
 import { NavBar, ScreenTransition, Colors, Router } from "../components";
 import type { Hero } from "../types";
 import { Heroes } from "../assets";
-import { fadeIn } from "react-navigation-transitions";
+import { fadeIn } from "../transitions";
 import { PanGestureHandler, State, FlatList } from "react-native-gesture-handler";
 
 const WIDTH = Dimensions.get('window').width;

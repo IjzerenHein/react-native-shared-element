@@ -1,3 +1,4 @@
 // @flow
 export * from "./blurFadeIn";
-export * from './fromRightEx';
+export * from './fromRight';
+export * from './fadeIn';

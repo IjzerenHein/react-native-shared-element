@@ -8,8 +8,7 @@ import {
   Body,
   Router
 } from "../components";
-import { fromRight } from 'react-navigation-transitions';
-import { fromRightEx } from "../transitions";
+import { fromRight } from "../transitions";
 import type { Test } from "../types";
 
 
@@ -83,7 +82,7 @@ export class TestScreen extends React.Component<PropsType> {
 
   onPressSlowButton = () => {
     this.transition(
-      fromRightEx(4000),
+      fromRight(4000),
     );
   };
 

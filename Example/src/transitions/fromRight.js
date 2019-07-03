@@ -1,16 +1,15 @@
 // @flow
 import { Easing, Animated } from "react-native";
 
-export function fromRightEx(duration: number = 300) {
+export function fromRight(duration: number = 500) {
   return {
     transitionSpec: {
       duration,
-      easing: Easing.out(Easing.poly(4)),
+      easing: Easing.bezier(0.2833, 0.99, 0.31833, 0.99),
       timing: Animated.timing,
       useNativeDriver: true,
     },
-    // $FlowFixMe
-    screenInterpolator: ({ layout, position, scene }) => {
+    screenInterpolator: ({ layout, position, scene }: any) => {
       const { index } = scene;
       const { initWidth } = layout;
 
@@ -31,22 +30,6 @@ export function fromRightEx(duration: number = 300) {
         }),
         shadowRadius: 5
       };
-
-      /*const scale = position.interpolate({
-        inputRange: [index - 1, index - 0.2, index, index + 0.2, index + 1],
-        outputRange: [scaleFactor, scaleFactor, 1, scaleFactor, scaleFactor],
-      });*/
-
-      /*const opacity = position.interpolate({
-        inputRange: [index - 1, index, index + 1],
-        outputRange: [1, 1, 0.5],
-      });*/
-
-      /*const zIndex = position.interpolate({
-        inputRange: [index -1, index, index + 1],
-        outputRange: [0, 10, 0]
-      });*/
-
       return {
         transform: [{ translateX }],
         ...shadow

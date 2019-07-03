@@ -18,7 +18,7 @@ import {
 import type { SharedElementAnimation } from "react-native-shared-element-transition";
 import { Heroes } from "../assets";
 import type { Hero } from "../types";
-import { fadeIn } from "react-navigation-transitions";
+import { fadeIn } from "../transitions";
 import type { TransitionConfig } from "react-navigation";
 
 const styles = StyleSheet.create({
