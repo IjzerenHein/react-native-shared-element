@@ -51,6 +51,12 @@ type RouterSharedElementConfig =
     [key: string]: boolean
   };
 
+type RouterAction = {
+  action: 'push' | 'pop',
+  config?: RouterConfig,
+  node?: React.Node,
+};
+
 interface RouterState {
   stack: React.Node[];
   prevIndex: number;
@@ -59,6 +65,7 @@ interface RouterState {
   transitionConfig: ?RouterTransitionConfig;
   sharedElementConfig: ?RouterSharedElementConfig;
   sharedElementScreens: Array<?ScreenTransitionContextOnSharedElementsUpdatedEvent>;
+  actionsQueue: Array<RouterAction>
 }
 
 type RouterConfig = {
@@ -85,6 +92,7 @@ export class Router extends React.Component<RouterProps, RouterState> {
     router = this;
     this.state = {
       stack: [props.initialNode],
+      actionsQueue: [],
       prevIndex: 0,
       nextIndex: 0,
       animValue: Animated.subtract(
@@ -286,52 +294,86 @@ export class Router extends React.Component<RouterProps, RouterState> {
   };
 
   push(node: React.Node, config?: RouterConfig) {
+    const { nextIndex, prevIndex } = this.state;
+    const action = {
+      action: 'push',
+      node,
+      config
+    };
+    if (nextIndex !== prevIndex) {
+      this.setState({
+        actionsQueue: [...this.state.actionsQueue, action]
+      });
+    }
+    else {
+      this.handleAction(action);
+    }
+  }
+
+  pop(config?: RouterConfig) {
+    const { nextIndex, prevIndex } = this.state;
+    const action: RouterAction = {
+      action: 'pop',
+      config
+    };
+    if (nextIndex !== prevIndex) {
+      this.setState({
+        actionsQueue: [...this.state.actionsQueue, action]
+      });
+    }
+    else {
+      this.handleAction(action);
+    }
+  }
+
+  handleAction({action, config, node}: RouterAction) {
     const {
       stack,
       nextIndex,
       sharedElementScreens,
     } = this.state;
     const transitionConfig = (config && config.transitionConfig) ? config.transitionConfig : this.props.transitionConfig;
-    this.setState({
-      stack: [...stack, node],
-      nextIndex: nextIndex + 1,
-      sharedElementScreens: [...sharedElementScreens, undefined],
-      sharedElementConfig: (config && config.sharedElements) ? config.sharedElements : undefined,
-      transitionConfig
-    });
-    const { transitionSpec } = transitionConfig;
-    const { timing, ...spec } = transitionSpec;
-    const anim = timing.call(Animated, this._animValue, {
-      ...spec,
-      toValue: stack.length
-    });
-    anim.start(({ finished }) => {
-      if (finished) {
-        this.pruneStack(stack.length + 1);
-      }
-    });
-  }
-
-  pop(config?: RouterConfig) {
-    const { stack, nextIndex } = this.state;
-    if (stack.length <= 1) return;
-    const transitionConfig = (config && config.transitionConfig) ? config.transitionConfig : this.props.transitionConfig;
-    this.setState({
-      nextIndex: nextIndex - 1,
-      transitionConfig,
-      sharedElementConfig: (config && config.sharedElements) ? config.sharedElements : undefined,
-    });
-    const { transitionSpec } = transitionConfig;
-    const { timing, ...spec } = transitionSpec;
-    const anim = timing.call(Animated, this._animValue, {
-      ...spec,
-      toValue: stack.length - 2
-    });
-    anim.start(({ finished }) => {
-      if (finished) {
-        this.pruneStack(stack.length - 1);
-      }
-    });
+    const sharedElementConfig = (config && config.sharedElements) ? config.sharedElements : undefined;
+    if (action === 'push') {
+      this.setState({
+        // $FlowFixMe
+        stack: [...stack, node],
+        nextIndex: nextIndex + 1,
+        sharedElementScreens: [...sharedElementScreens, undefined],
+        sharedElementConfig,
+        transitionConfig
+      });
+      const { transitionSpec } = transitionConfig;
+      const { timing, ...spec } = transitionSpec;
+      const anim = timing.call(Animated, this._animValue, {
+        ...spec,
+        toValue: stack.length
+      });
+      anim.start(({ finished }) => {
+        if (finished) {
+          this.pruneStack(stack.length + 1);
+        }
+      });
+    }
+    else {
+      if (stack.length <= 1) return;
+      this.setState({
+        nextIndex: nextIndex - 1,
+        transitionConfig,
+        sharedElementConfig,
+      });
+      const { transitionSpec } = transitionConfig;
+      const { timing, ...spec } = transitionSpec;
+      const anim = timing.call(Animated, this._animValue, {
+        ...spec,
+        toValue: stack.length - 2
+      });
+      anim.start(({ finished }) => {
+        if (finished) {
+          this.pruneStack(stack.length - 1);
+        }
+      });
+    }
   }
 
   pruneStack(count: number) {
@@ -341,16 +383,26 @@ export class Router extends React.Component<RouterProps, RouterState> {
       prevIndex,
       sharedElementScreens,
     } = this.state;
+    let { actionsQueue } = this.state;
+    let onComplete;
+    if (actionsQueue.length) {
+      const action = actionsQueue[0];
+      actionsQueue = actionsQueue.slice(0);
+      actionsQueue.splice(0, 1);
+      onComplete = () => this.handleAction(action);
+    }
     if (stack.length > count) {
       this.setState({
         stack: stack.slice(0, count),
         sharedElementScreens: sharedElementScreens.slice(0, count),
-        prevIndex: nextIndex
-      });
+        prevIndex: nextIndex,
+        actionsQueue
+      }, onComplete);
     } else if (nextIndex !== prevIndex) {
       this.setState({
-        prevIndex: nextIndex
-      });
+        prevIndex: nextIndex,
+        actionsQueue
+      }, onComplete);
     }
   }
 
