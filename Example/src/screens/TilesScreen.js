@@ -190,6 +190,7 @@ export class TilesScreen extends React.Component<PropsType> {
     if (type === 'card') {
       sharedElements[`heroBackground.${hero.id}`] = 'move';
       sharedElements[`heroPhoto.${hero.id}`] = 'move';
+      sharedElements[`heroCloseButton.${hero.id}`] = 'dissolve';
       sharedElements[`heroName.${hero.id}`] = 'move';
       sharedElements[`heroDescription.${hero.id}`] = 'fade-top';
     }

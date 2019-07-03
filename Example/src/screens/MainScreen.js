@@ -31,12 +31,12 @@ export class MainScreen extends React.Component<{}> {
           />
           <ListItem
             label="Tiles Demo"
-            description='Image tiles that zoom-in on then allow gestures to paginate and dismiss'
+            description='Image tiles that zoom-in and then allow gestures to paginate and dismiss'
             onPress={() => Router.push(<TilesScreen type='tile' title='Tiles Demo' DetailComponent={PagerScreen} />)}
           />
           <ListItem
             label="Card Demo"
-            description='Image tiles that zoom-in on then allow gestures to paginate and dismiss'
+            description='Card reveal shared element transition'
             onPress={() => Router.push(<TilesScreen type='card' title='Cards Demo' DetailComponent={CardScreen} />)}
           />
           {/*<ListItem

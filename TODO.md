@@ -1,5 +1,6 @@
 Essential:
 [ ] Clipping doesn't work when not visible at all
+[ ] Parent clipping with border-radii
 [X] Image resizeMode other than 'cover'
 [X] ImageBackground support
 [X] Scrollview clipping

@@ -1,6 +1,6 @@
 // @flow
 import * as React from "react";
-import { StyleSheet, View, Image, Dimensions, Animated } from "react-native";
+import { StyleSheet, View, Image, Dimensions, Animated, StatusBar } from "react-native";
 import { NavBar, ScreenTransition, Colors, Router } from "../components";
 import type { Hero } from "../types";
 import { Heroes } from "../assets";
@@ -62,6 +62,7 @@ export class PagerScreen extends React.Component<PropsType, StateType> {
     const initialIndex = Heroes.findIndex(({id}) => id === hero.id);
     return (
       <View style={styles.container}>
+        <StatusBar barStyle='light-content' />
         <Animated.View style={[styles.background, {
           opacity: dismissAnimValue.interpolate({
             inputRange: [-400, -300, -50, 50, 300, 400],
