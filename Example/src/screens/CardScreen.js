@@ -1,6 +1,6 @@
 // @flow
 import * as React from "react";
-import { StyleSheet, View, Image, StatusBar, ScrollView } from "react-native";
+import { StyleSheet, View, Image, StatusBar, ScrollView, Dimensions } from "react-native";
 import { NavBar, ScreenTransition, Colors, Router, Heading1, Body, Shadows } from "../components";
 import type { Hero } from "../types";
 import { fadeIn } from "react-navigation-transitions";
@@ -24,7 +24,7 @@ const styles = StyleSheet.create({
     top: 0
   },
   image: {
-    height: 200,
+    height: Dimensions.get('window').width * 0.75,
     width: "100%",
     resizeMode: "cover"
   },
