@@ -472,23 +472,40 @@
         // In all other cases, animate and interpolate both the start- and
         // end views to look like each other
         CGRect startContentLayout2 = startStyle ? [RNSharedElementTransitionItem contentLayoutFor:endStyle ? endContentLayout : startContentLayout content:startItem.content contentType:startItem.contentType contentMode:startStyle.contentMode reverse:YES] : CGRectZero;
+        CGRect endContentLayout1 = endStyle ? [RNSharedElementTransitionItem contentLayoutFor:startStyle ? startContentLayout : endContentLayout content:endItem.content contentType:endItem.contentType contentMode:endStyle.contentMode reverse:YES] : CGRectZero;
+        
+        // Calculate interpolated layout
         CGRect startInterpolatedContentLayout = [self getInterpolatedLayout:startContentLayout layout2:startContentLayout2 position:_nodePosition];
+        CGRect endInterpolatedContentLayout = [self getInterpolatedLayout:endContentLayout1 layout2:endContentLayout position:_nodePosition];
+        if ([_animation isEqualToString:@"fade-top"]) {
+            startInterpolatedContentLayout.size.height = startContentLayout.size.height;
+            endInterpolatedContentLayout.size.height = endContentLayout.size.height;
+        } else if ([_animation isEqualToString:@"fade-bottom"]) {
+            startInterpolatedContentLayout.origin.y -= startContentLayout.size.height - startInterpolatedContentLayout.size.height;
+            endInterpolatedContentLayout.origin.y -= endContentLayout.size.height - endInterpolatedContentLayout.size.height;
+        } else if ([_animation isEqualToString:@"fade-left"]) {
+            startInterpolatedContentLayout.size.width = startContentLayout.size.width;
+            endInterpolatedContentLayout.size.width = endContentLayout.size.width;
+        } else if ([_animation isEqualToString:@"fade-right"]) {
+            startInterpolatedContentLayout.origin.x -= startContentLayout.size.width - startInterpolatedContentLayout.size.width;
+            endInterpolatedContentLayout.origin.x -= endContentLayout.size.width - endInterpolatedContentLayout.size.width;
+        }
+        
+        // Update start node
         startInterpolatedContentLayout.origin.x -= interpolatedLayout.origin.x;
         startInterpolatedContentLayout.origin.y -= interpolatedLayout.origin.y;
         contentView1.frame = startInterpolatedContentLayout;
         
-        // End node
-        CGRect endContentLayout1 = endStyle ? [RNSharedElementTransitionItem contentLayoutFor:startStyle ? startContentLayout : endContentLayout content:endItem.content contentType:endItem.contentType contentMode:endStyle.contentMode reverse:YES] : CGRectZero;
-        CGRect endInterpolatedContentLayout = [self getInterpolatedLayout:endContentLayout1 layout2:endContentLayout position:_nodePosition];
+        // Update end node
         endInterpolatedContentLayout.origin.x -= interpolatedLayout.origin.x;
         endInterpolatedContentLayout.origin.y -= interpolatedLayout.origin.y;
         contentView2.frame = endInterpolatedContentLayout;
         
         // In case of a dissolve, fade-in the end-content
-        if ([_animation isEqualToString:@"dissolve"]) {
-            contentView1.layer.opacity = 1.0f;
+        //if ([_animation isEqualToString:@"dissolve"]) {
+            contentView1.layer.opacity = 1.0f - MIN(MAX(_nodePosition, 0.0f), 1.0f);
             contentView2.layer.opacity = MIN(MAX(_nodePosition, 0.0f), 1.0f);
-        }
+        //}
     }
 
     // Fire events

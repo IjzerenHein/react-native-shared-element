@@ -89,7 +89,7 @@ export class TilesScreen extends React.Component<PropsType> {
     title: "Tiles",
     animation: "move",
     DetailComponent: DetailScreen,
-    transitionConfig: fadeIn(4000),
+    transitionConfig: fadeIn(),
     overlay: false,
     resizeMode: "cover"
   };
@@ -191,7 +191,7 @@ export class TilesScreen extends React.Component<PropsType> {
       sharedElements[`heroBackground.${hero.id}`] = 'move';
       sharedElements[`heroPhoto.${hero.id}`] = 'move';
       sharedElements[`heroName.${hero.id}`] = 'move';
-      //sharedElements[`heroDescription.${hero.id}`] = 'dissolve';
+      sharedElements[`heroDescription.${hero.id}`] = 'fade-top';
     }
     else {
       sharedElements[`heroPhoto.${hero.id}`] = animation;

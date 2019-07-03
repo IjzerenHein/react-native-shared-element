@@ -11,7 +11,7 @@ import {
 } from "react-native";
 import type { SharedElementNode } from "./SharedElement";
 
-export type SharedElementAnimation = "move" | "dissolve";
+export type SharedElementAnimation = "move" | "dissolve" | "fade-top" | "fade-bottom" | "fade-left" | "fade-right";
 
 export type SharedElementNodeType =
   | "startNode"
