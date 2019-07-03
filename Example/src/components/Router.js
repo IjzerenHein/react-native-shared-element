@@ -56,15 +56,13 @@ interface RouterState {
   prevIndex: number;
   nextIndex: number;
   animValue: Animated.Node;
-  transitionConfig: Array<RouterTransitionConfig>;
+  transitionConfig: ?RouterTransitionConfig;
+  sharedElementConfig: ?RouterSharedElementConfig;
   sharedElementScreens: Array<?ScreenTransitionContextOnSharedElementsUpdatedEvent>;
-  sharedElementConfig: Array<?RouterSharedElementConfig>;
 }
 
 type RouterConfig = {
-  sharedElements?: {
-    [sharedId: string]: boolean
-  },
+  sharedElements?: RouterSharedElementConfig,
   transitionConfig?: RouterTransitionConfig
 };
 
@@ -98,8 +96,8 @@ export class Router extends React.Component<RouterProps, RouterState> {
         })
       ),
       sharedElementScreens: [],
-      sharedElementConfig: [undefined],
-      transitionConfig: [Router.defaultProps.transitionConfig]
+      sharedElementConfig: undefined,
+      transitionConfig: undefined
     };
   }
 
@@ -120,13 +118,12 @@ export class Router extends React.Component<RouterProps, RouterState> {
     }
     const startIndex = Math.min(prevIndex, nextIndex);
     const endIndex = startIndex + 1;
-    const config = sharedElementConfig[endIndex];
-    const { debug } = transitionConfig[endIndex];
-    if (!config) return;
+    if (!sharedElementConfig || !transitionConfig) return;
+    const { debug } = transitionConfig;
     const nodes = {};
     const startScreen = sharedElementScreens[startIndex];
     const endScreen = sharedElementScreens[endIndex];
-    for (let sharedId in config) {
+    for (let sharedId in sharedElementConfig) {
       nodes[sharedId] = {
         start: {
           node: startScreen ? startScreen.nodes[sharedId] : undefined,
@@ -137,7 +134,7 @@ export class Router extends React.Component<RouterProps, RouterState> {
           ancestor: endScreen ? endScreen.ancestor : undefined
         },
         animation:
-          (config[sharedId] === true ? "move" : config[sharedId]) || "move"
+          (sharedElementConfig[sharedId] === true ? "move" : sharedElementConfig[sharedId]) || "move"
       };
     }
     // console.log('renderSharedElementTransitions: ', nodes);
@@ -229,14 +226,9 @@ export class Router extends React.Component<RouterProps, RouterState> {
     }
   };
 
-  getTransitionConfig(index: number): TransitionConfig {
-    //return this.state.transitionConfig[index];
-    return this.state.transitionConfig[this.state.nextIndex];
-  }
-
   render() {
     const { stack, animValue } = this.state;
-
+    const transitionConfig = this.state.transitionConfig || this.props.transitionConfig;
     return (
       <View style={styles.container}>
         {stack.map((node: React.Node, index: number) => (
@@ -244,7 +236,7 @@ export class Router extends React.Component<RouterProps, RouterState> {
             key={`screen${index}`}
             style={[
               styles.node,
-              this.getTransitionConfig(index).screenInterpolator({
+              transitionConfig.screenInterpolator({
                 layout: {
                   initHeight: HEIGHT,
                   initWidth: WIDTH
@@ -298,19 +290,14 @@ export class Router extends React.Component<RouterProps, RouterState> {
       stack,
       nextIndex,
       sharedElementScreens,
-      sharedElementConfig
     } = this.state;
-    const transitionConfig =
-      (config && config.transitionConfig) || Router.defaultProps.transitionConfig;
+    const transitionConfig = (config && config.transitionConfig) ? config.transitionConfig : this.props.transitionConfig;
     this.setState({
       stack: [...stack, node],
       nextIndex: nextIndex + 1,
       sharedElementScreens: [...sharedElementScreens, undefined],
-      sharedElementConfig: [
-        ...sharedElementConfig,
-        config && config.sharedElements
-      ],
-      transitionConfig: [...this.state.transitionConfig, transitionConfig]
+      sharedElementConfig: (config && config.sharedElements) ? config.sharedElements : undefined,
+      transitionConfig
     });
     const { transitionSpec } = transitionConfig;
     const { timing, ...spec } = transitionSpec;
@@ -328,18 +315,13 @@ export class Router extends React.Component<RouterProps, RouterState> {
   pop(config?: RouterConfig) {
     const { stack, nextIndex } = this.state;
     if (stack.length <= 1) return;
-    const transitionConfig = [...this.state.transitionConfig];
-    const sharedElementConfig = [...this.state.sharedElementConfig];
-    transitionConfig[nextIndex] =
-      (config && config.transitionConfig) || transitionConfig[nextIndex];
-      sharedElementConfig[nextIndex] =
-      (config && config.sharedElements) || sharedElementConfig[nextIndex];
+    const transitionConfig = (config && config.transitionConfig) ? config.transitionConfig : this.props.transitionConfig;
     this.setState({
       nextIndex: nextIndex - 1,
       transitionConfig,
-      sharedElementConfig
+      sharedElementConfig: (config && config.sharedElements) ? config.sharedElements : undefined,
     });
-    const { transitionSpec } = transitionConfig[nextIndex];
+    const { transitionSpec } = transitionConfig;
     const { timing, ...spec } = transitionSpec;
     const anim = timing.call(Animated, this._animValue, {
       ...spec,
@@ -358,15 +340,11 @@ export class Router extends React.Component<RouterProps, RouterState> {
       nextIndex,
       prevIndex,
       sharedElementScreens,
-      sharedElementConfig,
-      transitionConfig
     } = this.state;
     if (stack.length > count) {
       this.setState({
         stack: stack.slice(0, count),
         sharedElementScreens: sharedElementScreens.slice(0, count),
-        sharedElementConfig: sharedElementConfig.slice(0, count),
-        transitionConfig: transitionConfig.slice(0, count),
         prevIndex: nextIndex
       });
     } else if (nextIndex !== prevIndex) {
@@ -384,24 +362,3 @@ export class Router extends React.Component<RouterProps, RouterState> {
     return router.pop(config);
   }
 }
-
-/*{
-                opacity: animValue.interpolate({
-                  inputRange: [index - 1, index, index + 1, index + 2],
-                  outputRange: [1, 1, 0.5, 0.5]
-                }),
-                transform: [
-                  {
-                    translateX: animValue.interpolate({
-                      inputRange: [index - 2, index - 1, index, index + 1],
-                      outputRange: [WIDTH, WIDTH, 0, 0]
-                    })
-                  },
-                  {
-                    scale: animValue.interpolate({
-                      inputRange: [index - 1, index, index + 1, index + 2],
-                      outputRange: [1, 1, 0.7, 0.7]
-                    })
-                  }
-                ]
-              }*/
