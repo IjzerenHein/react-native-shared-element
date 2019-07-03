@@ -2,9 +2,10 @@
 import * as React from "react";
 import {
   StyleSheet,
-  ScrollView,
+  FlatList,
   View,
   TouchableOpacity,
+  Dimensions,
   Image
 } from "react-native";
 import { Router, NavBar, ScreenTransition, Colors } from "../components";
@@ -13,7 +14,7 @@ import { Heroes } from "../assets";
 import { DetailScreen } from "./DetailScreen";
 import type { Hero } from "../types";
 import { fadeIn } from "react-navigation-transitions";
-import type { TransitionConfig } from "react-navigation";
+import type{ TransitionConfig } from "react-navigation";
 
 const styles = StyleSheet.create({
   container: {
@@ -24,10 +25,17 @@ const styles = StyleSheet.create({
     flex: 1
   },
   item: {
-    height: 100
+    height: 160,
+    width: Dimensions.get('window').width / 2,
+    borderColor: Colors.back,
+    borderRightWidth: 2,
+    borderBottomWidth: 2
+  },
+  itemOdd: {
+    borderRightWidth: 0,
   },
   image: {
-    height: 100,
+    height: '100%',
     width: "100%"
   }
 });
@@ -51,12 +59,31 @@ export class TilesScreen extends React.Component<TilesScreenProps> {
     resizeMode: "cover"
   };
 
-  renderItem(hero: Hero) {
+  render() {
+    const { title } = this.props;
+    return (
+      <View style={styles.container}>
+        <NavBar title={title} />
+        <FlatList
+          style={styles.content}
+          numColumns={2}
+          horizontal={false}
+          data={Heroes}
+          renderItem={this.renderItem}
+          keyExtractor={this.keyExtractor} />
+      </View>
+    );
+  }
+
+  keyExtractor = (item: any) => item.id;
+
+  renderItem = ({ item, index }: any) => {
+    const hero = item;
     const { resizeMode } = this.props;
     return (
       <TouchableOpacity
         key={`Hero${hero.id}`}
-        style={styles.item}
+        style={[styles.item, index % 2 ? styles.itemOdd : undefined]}
         activeOpacity={1}
         onPress={() => this.onPressItem(hero)}
       >
@@ -74,18 +101,6 @@ export class TilesScreen extends React.Component<TilesScreenProps> {
           <View style={StyleSheet.absoluteFill} collapsable={false} />
         </ScreenTransition>
       </TouchableOpacity>
-    );
-  }
-
-  render() {
-    const { title } = this.props;
-    return (
-      <View style={styles.container}>
-        <NavBar title={title} />
-        <ScrollView style={styles.content}>
-          {Heroes.map(item => this.renderItem(item))}
-        </ScrollView>
-      </View>
     );
   }
 

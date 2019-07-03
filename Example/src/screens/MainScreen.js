@@ -6,6 +6,7 @@ import { TilesScreen } from "./TilesScreen";
 import { BlurScreen } from "./BlurScreen";
 import { blurFadeIn } from "../transitions";
 import { TestsScreen } from "./TestsScreen";
+import { PagerScreen } from "./PagerScreen";
 import { Tests } from "../tests";
 
 const styles = StyleSheet.create({
@@ -27,6 +28,10 @@ export class MainScreen extends React.Component<{}> {
           <ListItem
             label="Tests"
             onPress={() => Router.push(<TestsScreen tests={Tests} />)}
+          />
+          <ListItem
+            label="Tiles"
+            onPress={() => Router.push(<TilesScreen DetailComponent={PagerScreen} />)}
           />
           {/*<ListItem
             label="Image & Text"

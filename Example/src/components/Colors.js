@@ -6,6 +6,7 @@ export const Colors = {
   gray: "#888888",
   navBar: "#DDDDDD",
   back: "#F0F0F0",
+  dark: '#222222',
   text: "#222222",
   blue: "royalblue",
   yellow: 'yellow'

@@ -34,6 +34,7 @@ export interface NavBarProps {
   title?: string;
   back: "default" | "none" | "close";
   light?: boolean;
+  onBack?: () => void
 }
 
 const HIT_SLOP = {
@@ -52,7 +53,7 @@ export class NavBar extends React.Component<NavBarProps> {
 
   renderBack() {
     let icon;
-    const { back } = this.props;
+    const { back, light } = this.props;
     switch (back) {
       case "none":
         return;
@@ -71,7 +72,7 @@ export class NavBar extends React.Component<NavBarProps> {
         onPress={this.onPressBack}
         hitSlop={HIT_SLOP}
       >
-        <Icon name={icon} size={28} color={Colors.text} />
+        <Icon name={icon} size={28} color={light ? Colors.back : Colors.text} />
       </TouchableOpacity>
     );
   }
@@ -93,6 +94,11 @@ export class NavBar extends React.Component<NavBarProps> {
   }
 
   onPressBack = () => {
-    Router.pop();
+    if (this.props.onBack) {
+      this.props.onBack();
+    }
+    else {
+      Router.pop();
+    }
   };
 }
