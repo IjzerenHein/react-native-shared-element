@@ -3,10 +3,9 @@ import * as React from "react";
 import { StyleSheet, ScrollView, View } from "react-native";
 import { Router, NavBar, ListItem, Colors } from "../components";
 import { TilesScreen } from "./TilesScreen";
-import { BlurScreen } from "./BlurScreen";
-import { blurFadeIn } from "../transitions";
 import { TestsScreen } from "./TestsScreen";
 import { PagerScreen } from "./PagerScreen";
+import { CardScreen } from "./CardScreen";
 import { Tests } from "../tests";
 
 const styles = StyleSheet.create({
@@ -31,15 +30,20 @@ export class MainScreen extends React.Component<{}> {
             onPress={() => Router.push(<TestsScreen tests={Tests} />)}
           />
           <ListItem
-            label="Image Tiles"
+            label="Tiles Demo"
             description='Image tiles that zoom-in on then allow gestures to paginate and dismiss'
-            onPress={() => Router.push(<TilesScreen title='Image Tiles' DetailComponent={PagerScreen} />)}
+            onPress={() => Router.push(<TilesScreen type='tile' title='Tiles Demo' DetailComponent={PagerScreen} />)}
+          />
+          <ListItem
+            label="Card Demo"
+            description='Image tiles that zoom-in on then allow gestures to paginate and dismiss'
+            onPress={() => Router.push(<TilesScreen type='card' title='Cards Demo' DetailComponent={CardScreen} />)}
           />
           {/*<ListItem
             label="Image & Text"
             onPress={() => Router.push(<ListScreen title="Image & Text" />)}
           />*/}
-          <ListItem
+          {/*<ListItem
             label="Image & Blur background"
             onPress={() =>
               Router.push(
@@ -51,7 +55,7 @@ export class MainScreen extends React.Component<{}> {
                 />
               )
             }
-          />
+          />*/}
         </ScrollView>
       </View>
     );
