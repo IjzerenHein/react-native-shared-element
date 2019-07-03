@@ -117,7 +117,7 @@ export const Tests: (Test | TestGroup)[] = [
           {
             name: "Image Shadow   ➔  No shadow",
             description: `The transition should use the start- and ending opacity of the image and create a smooth transition.`,
-            start: <TestImage size="regular" round style={{...Shadows.elevation2, backgroundColor: 'green'}} />,
+            start: <TestImage size="regular" round style={{...Shadows.elevation2, backgroundColor: 'white'}} />,
             end: <TestImage end size="regular" round />
           },
         ]

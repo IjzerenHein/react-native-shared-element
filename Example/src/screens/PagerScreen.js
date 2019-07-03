@@ -8,6 +8,7 @@ import { fadeIn } from "../transitions";
 import { PanGestureHandler, State, FlatList } from "react-native-gesture-handler";
 
 const WIDTH = Dimensions.get('window').width;
+const HEIGHT = Dimensions.get('window').height;
 
 const styles = StyleSheet.create({
   container: {
@@ -19,6 +20,10 @@ const styles = StyleSheet.create({
   },
   flex: {
     flex: 1
+  },
+  scrollView: {
+    width: WIDTH,
+    height: HEIGHT
   },
   content: {
     flex: 1,
@@ -78,7 +83,7 @@ export class PagerScreen extends React.Component<PropsType, StateType> {
             transform: [{translateY: Animated.multiply(dismissAnimValue, 0.5)}]
           }]}>
             <FlatList
-              style={styles.flex}
+              style={styles.scrollView}
               horizontal
               pagingEnabled
               data={Heroes}

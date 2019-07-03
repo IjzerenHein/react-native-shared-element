@@ -56,9 +56,6 @@ export class CardScreen extends React.Component<PropsType, StateType> {
           <ScreenTransition sharedId={`heroPhoto.${id}`}>
             <Image style={styles.image} source={photo} />
           </ScreenTransition>
-          <ScreenTransition sharedId={`heroCloseButton.${id}`} style={styles.navBar}>
-            <NavBar light back='close' onBack={this.onBack} />
-          </ScreenTransition>
           <View style={styles.content}>
             <ScreenTransition sharedId={`heroName.${id}`} style={styles.name}>
               <Heading1>{name}</Heading1>
@@ -68,6 +65,9 @@ export class CardScreen extends React.Component<PropsType, StateType> {
             </ScreenTransition> : undefined}
           </View>
         </ScrollView>
+        <ScreenTransition sharedId={`heroCloseButton.${id}`} style={styles.navBar}>
+          <NavBar light back='close' onBack={this.onBack} />
+        </ScreenTransition>
       </View>
     );
   }
