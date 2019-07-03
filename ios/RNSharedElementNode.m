@@ -232,7 +232,7 @@ NSArray* _imageResolvers;
         }
         return;
     }
-    NSLog(@"Content fetched: %@, contentType: %d, size: %@", content, contentType, NSStringFromCGSize(bounds.size));
+    //NSLog(@"Content fetched: %@, contentType: %d, size: %@", content, contentType, NSStringFromCGSize(bounds.size));
     
     _contentCache = content;
     _contentTypeCache = contentType;
@@ -296,7 +296,7 @@ NSArray* _imageResolvers;
     style.shadowRadius = layer.shadowRadius;
     style.shadowOpacity = layer.shadowOpacity;
     
-    NSLog(@"Style fetched: %@, realSize: %@, opacity: %lf", NSStringFromCGRect(layout), NSStringFromCGSize(view.bounds.size), style.opacity);
+    //NSLog(@"Style fetched: %@, realSize: %@, opacity: %lf", NSStringFromCGRect(layout), NSStringFromCGSize(view.bounds.size), style.opacity);
     
     _styleCache = style;
     
