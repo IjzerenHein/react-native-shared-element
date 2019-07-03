@@ -1,67 +1,100 @@
 
 # react-native-shared-element-transition
 
-Shared element transition component that runs entirely natively for fast and perfect transitions without any flickering 💫
+Essential Native Shared element transition Primitives for react-native 💫
 
-## WIP, go away
+## Work in progress
 
-## TEMP API
+- [Basic usage](#basic-usage)
+- [How it works](#howitworks)
+- [Documentation](#documentation)
+
+
+## Basic usage
 
 ```js
-import { SharedElementTransition } from 'react-native-shared-element-transition';
+import { SharedElement, SharedElementTransition } from 'react-native-shared-element-transition';
 
 
 // Scene 1
 let source1;
 <View>
-    <Image
-        style={styles.image}
-        source={...}
-        ref={(ref) => {
-            source1 = sourceFromRef(ref);
-        }}
-    />
+  ...
+  <SharedElement onSource={source => source1 = source}>
+    <Image style={styles.image} source={...} />
+  </SharedElement>
+  ...
 </View>
 
 
 // Scene2
 let source2;
 <View>
-    <Image
-        style={styles.image}
-        source={...}
-        ref={(ref) => {
-            source2 = sourceFromRef(ref);
-        }}
-    />
+  ...
+  <SharedElement onSource={source => source2 = source}>
+    <Image style={styles.image} source={...} />
+  </SharedElement>
+  ...
 </View>
 
 // Render overlay in front of screen
+const position = new Animated.Value(0);
 <View style={StyleSheet.absoluteFill}>
-    <SharedElementTransition
-        sources={[source1, source2]}
-        value={Animated.Value} />
+  <SharedElementTransition
+    start={{node: source1}}
+    end={{node: source2}}
+    position={position} />
 </View>
 ```
 
 ### How it works
 
-react-native-shared-element-transition is a component that runs shared element transitions
-entirely native without requiring any passes over the JavaScript bridge. It works by taking in two
-"sources" which can be obtained from a ref or a `<SharedElementSource>` wrapper.
+react-native-shared-element-transition is a *"primative"* that runs shared element transitions
+entirely native without requiring any passes over the JavaScript bridge. It works by taking in a start- and end node, which are obtained using the `<SharedElement>` component.
+
 Whenever a transition between screens occurs (e.g. performed by a router/navigator), a view in
-front of the app should be rendered to host the shared-element-transitions.
-The `value` prop is used to interpolate between the start- and end source, `0` meaning "Show the start
-source" and `1` meaning "Show the end source".
+front of the app should be rendered to host the shared element transitions.
+The `position` prop is used to interpolate between the start- and end nodes, `0` meaning "Show the start node" and `1` meaning "Show the end node".
 
 Whenever the `<SharedElementTransition>` component is rendered, it performs the following tasks:
-- Measure the size of all sources
-- Obtain the visual content of the sources (e.g. an image)
-- Obtain the styles of sources
+- Measure the size of the provided nodes
+- Obtain the visual content of the sources (e.g. an image or a snapshot)
+- Obtain the styles of nodes
 - Render a visual copy of first source at its current position
-- Hide the original sources whenever the visual copies are on the screen
-- Monitor the `value` prop and render the shared element transition accordingly
-- Upon unmount, re-show the original copies
+- Hide the nodes whenever the visual copies are on the screen
+- Monitor the `position` prop and render the shared element transition accordingly
+- Upon unmount, re-show the original elements
 
-You typically do not use this component directly, but instead use a Router or Transition engine instead
-to handle the administration and mounting instead.
+You typically do not use this component directly, but instead use a Router or Transition-engine which provides a higher-level API.
+
+## Documentation
+
+### SharedElement
+
+The `<SharedElement>` component accepts a single child and returns a `node` to it through the `onNode` event handler. The child must be a "real" view which exists in the native view hierarchy.
+
+#### Props
+
+| Property        | Type       | Description                                                                          |
+| --------------- | ---------- | ------------------------------------------------------------------------------------ |
+| `children`      | `element`  | A single child component, which must map to a real view in the native view hierarchy |
+| `onNode`        | `function` | Event handler that sets or unsets the node-handle                                    |
+| `View props...` |            | Other props supported byt View                                                       |
+
+### SharedElementTransition
+
+The `<SharedElementTransition>` component executes a shared element transition natively. It natively performs the following tasks: measure, clone, hide, animate and unhide, to achieve the best results.
+
+#### Props
+
+| Property    | Type                                                       | Description                                                                |
+| ----------- | ---------------------------------------------------------- | -------------------------------------------------------------------------- |
+| `start`     | `{ node: SharedElementNode, ancestor: SharedElementNode }` | Start node- and ancestor                                                   |
+| `end`       | `{ node: SharedElementNode, ancestor: SharedElementNode }` | End node- and ancestor                                                     |
+| `animation` | SharedElementAnimation                                     | See Animations                                                             |
+| `position`  | `number | Animated.Value`                                  | Interpolated position (0..1), between the start- and end nodes             |
+| `debug`     | `boolean`                                                  | Renders debug overlays for diagnosing measuring and animations             |
+| `onMeasure` | `function`                                                 | Event handler that is called when nodes have been measured and snapshotted |
+
+## Todo
+
