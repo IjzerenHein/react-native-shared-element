@@ -1,4 +1,4 @@
-package com.ijzerenhein.visualclone;
+package com.ijzerenhein.sharedelement;
 
 import java.util.*;
 
@@ -8,15 +8,15 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.uimanager.ViewManager;
 
 public class RNSharedElementPackage implements ReactPackage {
-    private RNSharedElementDataManager cloneDataManager = new RNSharedElementDataManager();
+    private RNSharedElementNodeManager nodeManager = new RNSharedElementNodeManager();
 
     @Override
     public List<NativeModule> createNativeModules(ReactApplicationContext reactContext) {
-        return Arrays.<NativeModule>asList(new RNSharedElementModule(reactContext, this.cloneDataManager));
+        return Arrays.<NativeModule>asList(new RNSharedElementModule(reactContext, this.nodeManager));
     }
 
     @Override
     public List<ViewManager> createViewManagers(ReactApplicationContext reactContext) {
-        return Arrays.<ViewManager>asList(new RNSharedElementManager(this.cloneDataManager));
+        return Arrays.<ViewManager>asList(new RNSharedElementManager(this.nodeManager));
     }
 }

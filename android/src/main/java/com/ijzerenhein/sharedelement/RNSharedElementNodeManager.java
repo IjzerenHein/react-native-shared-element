@@ -1,12 +1,12 @@
-package com.ijzerenhein.visualclone;
+package com.ijzerenhein.sharedelement;
 
 import java.util.Map;
 import java.util.HashMap;
 
-public class RNSharedElementDataManager extends Object {
-    private Map<String, RNSharedElementData> mItems = new HashMap<String, RNSharedElementData>();
+public class RNSharedElementNodeManager extends Object {
+    private Map<String, RNSharedElementNode> mItems = new HashMap<String, RNSharedElementNode>();
 
-    public RNSharedElementData acquire(String key) {
+    public RNSharedElementNode acquire(String key) {
         synchronized (mItems) {
             RNSharedElementData item = mItems.get(key);
             if (item != null) {
@@ -16,7 +16,7 @@ public class RNSharedElementDataManager extends Object {
         }
     }
 
-    public int release(RNSharedElementData item) {
+    public int release(RNSharedElementNode item) {
         synchronized (mItems) {
             item.setRefCount(item.getRefCount() - 1);
             if (item.getRefCount() == 0) {
@@ -26,7 +26,7 @@ public class RNSharedElementDataManager extends Object {
         }
     }
 
-    public void put(RNSharedElementData item) {
+    public void put(RNSharedElementNode item) {
         synchronized (mItems) {
             mItems.put(item.getKey(), item);
         }

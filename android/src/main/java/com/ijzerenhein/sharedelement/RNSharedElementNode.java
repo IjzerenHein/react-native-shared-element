@@ -1,11 +1,11 @@
-package com.ijzerenhein.visualclone;
+package com.ijzerenhein.sharedelement;
 
 import java.util.Map;
 
 import android.view.View;
 import android.graphics.RectF;
 
-public class RNSharedElementData extends Object {
+public class RNSharedElementNode extends Object {
     private String mSharedId;
     private View mView;
     private RectF mLayout;

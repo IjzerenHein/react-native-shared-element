@@ -1,5 +1,4 @@
-
-package com.ijzerenhein.visualclone;
+package com.ijzerenhein.sharedelement;
 
 /*
 import android.util.Log;
@@ -13,36 +12,32 @@ import android.graphics.Canvas;
 import com.facebook.react.uimanager.ThemedReactContext;
 import com.facebook.react.views.view.ReactViewGroup;
 
-public class RNSharedElementView extends ReactViewGroup {
+public class RNSharedElementTransition extends ReactViewGroup {
 
-    static String LOG_TAG = "RNSharedElement";
+    static String LOG_TAG = "RNSharedElementTransition";
 
-    private RNSharedElementDataManager mCloneDataManager;
-    private RNSharedElementData mData = null;
-    private String mId = null;
-    private int mOptions = 0;
-    private int mContentType = 0;
-    private float mBlurRadius = 0.0f;
+    private String mAnimation = null;
+    private float mNodePosition = 0.0f;
 
     public RNSharedElementView(ThemedReactContext themedReactContext,
             RNSharedElementDataManager cloneDataManager) {
         super(themedReactContext);
         // Log.d(LOG_TAG, "Clone construct");
-        mCloneDataManager = cloneDataManager;
+        //mCloneDataManager = cloneDataManager;
     }
 
     public void releaseData() {
-        if (mData != null) {
+        /*if (mData != null) {
             mCloneDataManager.release(mData);
             mData = null;
-        }
+        }*/
     }
 
-    private String getDebugName() {
+    /*private String getDebugName() {
         String source = ((mOptions & RNSharedElementOption.TARGET) != 0) ? "target" : "source";
         String type = ((mOptions & RNSharedElementOption.SCENE) != 0) ? "scene" : "component";
         return source + " " + type + " " + mId;
-    }
+    }*/
 
     @Override
     protected void onDraw(Canvas canvas) {
@@ -72,46 +67,16 @@ public class RNSharedElementView extends ReactViewGroup {
         mData.getView().draw(canvas);
     }
 
-    public void setInitialData(RNSharedElementData data, int options, int contentType) {
-        // Log.d(LOG_TAG, "setInitialData " + getDebugName() + ", layout: " +
-        // data.getLayout());
-        mData = data;
-        mOptions = options;
-        mContentType = contentType;
-        invalidate();
-    }
-
-    public void setId(final String id) {
-        if (mId != id) {
-            mId = id;
+    public void setAnimation(final String animation) {
+        if (mAnimation != animation) {
+            mAnimation = animation;
             invalidate();
         }
     }
 
-    public void setOptions(final int options) {
-        if (mOptions != options) {
-            // boolean wasVisible = ((mOptions & RNSharedElementOption.VISIBLE) != 0);
-            // boolean isVisible = ((options & RNSharedElementOption.VISIBLE) != 0);
-            mOptions = options;
-            /*
-             * if (wasVisible && !isVisible) { // setVisibility(View.INVISIBLE);
-             * Log.d(LOG_TAG, "HIDE " + getDebugName() + ", left: " + getLeft() + ", top: "
-             * + getTop()); }
-             */
-            invalidate();
-        }
-    }
-
-    public void setContentType(final int contentType) {
-        if (mContentType != contentType) {
-            mContentType = contentType;
-            invalidate();
-        }
-    }
-
-    public void setBlurRadius(final float blurRadius) {
-        if (mBlurRadius != blurRadius) {
-            mBlurRadius = blurRadius;
+    public void setNodePosition(final float nodePosition) {
+        if (mNodePosition != nodePosition) {
+            mNodePosition = nodePosition;
             invalidate();
         }
     }
