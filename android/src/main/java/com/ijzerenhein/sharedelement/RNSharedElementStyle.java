@@ -1,8 +1,8 @@
 package com.ijzerenhein.sharedelement;
 
 import android.view.View;
+import android.util.SizeF;
 import android.graphics.RectF;
-import android.graphics.SizeF;
 import android.graphics.Color;
 
 import com.facebook.drawee.drawable.ScalingUtils;

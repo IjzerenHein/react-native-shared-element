@@ -40,16 +40,16 @@ public class RNSharedElementTransitionManager extends ReactViewManager {
 
     @ReactProp(name = "animation")
     public void setAnimation(final RNSharedElementTransition view, final String animation) {
-        view.setAnimation(id);
+        view.setAnimation(animation);
     }
 
     @ReactProp(name = "startNode")
-    public void setStartNode(final RNSharedElementView view, final ReadableMap startNode) {
+    public void setStartNode(final RNSharedElementTransition view, final ReadableMap startNode) {
         //view.setStartNode(startNode);
     }
 
     @ReactProp(name = "endNode")
-    public void setEndNode(final RNSharedElementView view, final ReadableMap endNode) {
+    public void setEndNode(final RNSharedElementTransition view, final ReadableMap endNode) {
         // view.setEndNode(endNode);
     }
 }

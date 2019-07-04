@@ -4,7 +4,7 @@ import java.util.Map;
 import java.util.HashMap;
 
 public class RNSharedElementNodeManager extends Object {
-    private Map<int, RNSharedElementNode> mNodes = new HashMap<int, RNSharedElementNode>();
+    private Map<Integer, RNSharedElementNode> mNodes = new HashMap<Integer, RNSharedElementNode>();
 
     public RNSharedElementNode acquire(int reactTag) {
         synchronized (mNodes) {

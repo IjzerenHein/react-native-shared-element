@@ -24,7 +24,7 @@ public class RNSharedElementTransitionItem extends Object{
         return mNode;
     }
 
-    public setNode(RNSharedElementNode node) {
+    public void setNode(RNSharedElementNode node) {
         mNode = node;
     }
 }

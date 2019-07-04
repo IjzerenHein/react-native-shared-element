@@ -7,6 +7,7 @@ import android.graphics.RectF;
 
 public class RNSharedElementNode extends Object {
     private int mReactTag;
+    private View mView;
     private boolean mIsParent;
     private int mRefCount;
     private int mHideRefCount;

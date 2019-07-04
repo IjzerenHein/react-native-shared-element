@@ -17,6 +17,6 @@ public class RNSharedElementPackage implements ReactPackage {
 
     @Override
     public List<ViewManager> createViewManagers(ReactApplicationContext reactContext) {
-        return Arrays.<ViewManager>asList(new RNSharedElementManager(this.nodeManager));
+        return Arrays.<ViewManager>asList(new RNSharedElementTransitionManager(this.nodeManager));
     }
 }

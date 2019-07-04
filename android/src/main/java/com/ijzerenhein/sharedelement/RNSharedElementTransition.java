@@ -18,9 +18,9 @@ public class RNSharedElementTransition extends ReactViewGroup {
 
     private String mAnimation = "move";
     private float mNodePosition = 0.0f;
-    private ArrayList<RNSharedElementTransition> mItems = new ArrayList<RNSharedElementTransition>();
+    private ArrayList<RNSharedElementTransitionItem> mItems = new ArrayList<RNSharedElementTransitionItem>();
 
-    public RNSharedElementView(ThemedReactContext themedReactContext, RNSharedElementNodeManager nodeManager) {
+    public RNSharedElementTransition(ThemedReactContext themedReactContext, RNSharedElementNodeManager nodeManager) {
         super(themedReactContext);
         mItems.add(new RNSharedElementTransitionItem(nodeManager, "startAncestor", true));
         mItems.add(new RNSharedElementTransitionItem(nodeManager, "endAncestor", true));
