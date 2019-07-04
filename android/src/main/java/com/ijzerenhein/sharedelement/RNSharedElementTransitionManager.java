@@ -1,19 +1,24 @@
 package com.ijzerenhein.sharedelement;
 
+import android.view.View;
+
 import com.facebook.react.uimanager.annotations.ReactProp;
 import com.facebook.react.uimanager.ThemedReactContext;
+import com.facebook.react.uimanager.UIManagerModule;
 import com.facebook.react.views.view.ReactViewManager;
 import com.facebook.react.views.view.ReactViewGroup;
 import com.facebook.react.bridge.ReadableMap;
+import com.facebook.react.bridge.ReactApplicationContext;
 
 public class RNSharedElementTransitionManager extends ReactViewManager {
-
+    private ReactApplicationContext mReactContext;
     private RNSharedElementNodeManager mNodeManager;
 
     public static final String REACT_CLASS = "RNSharedElementTransition";
 
-    RNSharedElementTransitionManager(RNSharedElementNodeManager nodeManager) {
+    RNSharedElementTransitionManager(ReactApplicationContext reactContext, RNSharedElementNodeManager nodeManager) {
         super();
+        mReactContext = reactContext;
         mNodeManager = nodeManager;
     }
 
@@ -43,13 +48,29 @@ public class RNSharedElementTransitionManager extends ReactViewManager {
         view.setAnimation(animation);
     }
 
+    private RNSharedElementNode nodeFromMap(final ReadableMap map) {
+        if (map == null) return null;
+        UIManagerModule uiManager = mReactContext.getNativeModule(UIManagerModule.class);
+        int nodeHandle = map.getInt("nodeHandle");
+        boolean isParent = map.getBoolean("isParent");
+        /*View view = uiManager
+            .getUIImplementation()
+            .getUIViewOperationQueue()
+            .getNativeViewHierarchyManager()
+            .resolveView(nodeHandle);*/
+        View view = null;
+        return mNodeManager.acquire(nodeHandle, view, isParent);
+    }
+
     @ReactProp(name = "startNode")
     public void setStartNode(final RNSharedElementTransition view, final ReadableMap startNode) {
-        //view.setStartNode(startNode);
+        view.setStartNode(nodeFromMap(startNode.getMap("node")));
+        view.setStartAncestor(nodeFromMap(startNode.getMap("ancestor")));
     }
 
     @ReactProp(name = "endNode")
     public void setEndNode(final RNSharedElementTransition view, final ReadableMap endNode) {
-        // view.setEndNode(endNode);
+        view.setEndNode(nodeFromMap(endNode.getMap("node")));
+        view.setEndAncestor(nodeFromMap(endNode.getMap("ancestor")));
     }
 }

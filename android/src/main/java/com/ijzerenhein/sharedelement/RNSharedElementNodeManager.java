@@ -3,15 +3,20 @@ package com.ijzerenhein.sharedelement;
 import java.util.Map;
 import java.util.HashMap;
 
+import android.view.View;
+
 public class RNSharedElementNodeManager extends Object {
     private Map<Integer, RNSharedElementNode> mNodes = new HashMap<Integer, RNSharedElementNode>();
 
-    public RNSharedElementNode acquire(int reactTag) {
+    public RNSharedElementNode acquire(int reactTag, View view, boolean isParent) {
         synchronized (mNodes) {
             RNSharedElementNode node = mNodes.get(reactTag);
             if (node != null) {
                 node.setRefCount(node.getRefCount() + 1);
+                return node;
             }
+            node = new RNSharedElementNode(reactTag, view, isParent);
+            mNodes.put(reactTag, node);
             return node;
         }
     }
