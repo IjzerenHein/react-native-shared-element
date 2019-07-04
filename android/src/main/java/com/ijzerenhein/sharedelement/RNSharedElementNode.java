@@ -6,34 +6,21 @@ import android.view.View;
 import android.graphics.RectF;
 
 public class RNSharedElementNode extends Object {
-    private String mSharedId;
-    private View mView;
-    private RectF mLayout;
-    private int mOptions;
+    private int mReactTag;
+    private boolean mIsParent;
     private int mRefCount;
+    private int mHideRefCount;
 
-    public RNSharedElementData(String sharedId, View view, RectF layout, int options) {
-        mSharedId = sharedId;
-        mLayout = layout;
+    public RNSharedElementNode(int reactTag, View view, boolean isParent) {
+        mReactTag = reactTag;
         mView = view;
-        mOptions = options;
+        mIsParent = isParent;
         mRefCount = 1;
+        mHideRefCount = 1;
     }
 
-    public String getSharedId() {
-        return mSharedId;
-    }
-
-    public View getView() {
-        return mView;
-    }
-
-    public RectF getLayout() {
-        return mLayout;
-    }
-
-    public int getOptions() {
-        return mOptions;
+    public int getReactTag() {
+        return mReactTag;
     }
 
     public int getRefCount() {
@@ -44,17 +31,18 @@ public class RNSharedElementNode extends Object {
         mRefCount = refCount;
     }
 
-    public String getKey() {
-        return keyForSharedId(mSharedId, mOptions);
+    public int getHideRefCount() {
+        return mHideRefCount;
     }
 
-    public static String keyForSharedId(String sharedId, int options) {
-        String type;
-        if ((options & RNSharedElementOption.SCENE) != 0) {
-            type = ((options & RNSharedElementOption.TARGET) != 0) ? "TargetScene" : "SourceScene";
-        } else {
-            type = ((options & RNSharedElementOption.TARGET) != 0) ? "TargetComponent" : "SourceComponent";
+    public void setHideRefCount(int hideRefCount) {
+        mHideRefCount = hideRefCount;
+        if (mHideRefCount == 1) {
+            // TODO HIDE
+        } else if (mHideRefCount == 0) {
+            // TODO SHOW
         }
-        return type + ":" + sharedId;
     }
+
+    // TODO
 }

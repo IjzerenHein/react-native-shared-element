@@ -4,31 +4,25 @@ import java.util.Map;
 import java.util.HashMap;
 
 public class RNSharedElementNodeManager extends Object {
-    private Map<String, RNSharedElementNode> mItems = new HashMap<String, RNSharedElementNode>();
+    private Map<int, RNSharedElementNode> mNodes = new HashMap<int, RNSharedElementNode>();
 
-    public RNSharedElementNode acquire(String key) {
-        synchronized (mItems) {
-            RNSharedElementData item = mItems.get(key);
-            if (item != null) {
-                item.setRefCount(item.getRefCount() + 1);
+    public RNSharedElementNode acquire(int reactTag) {
+        synchronized (mNodes) {
+            RNSharedElementNode node = mNodes.get(reactTag);
+            if (node != null) {
+                node.setRefCount(node.getRefCount() + 1);
             }
-            return item;
+            return node;
         }
     }
 
-    public int release(RNSharedElementNode item) {
-        synchronized (mItems) {
-            item.setRefCount(item.getRefCount() - 1);
-            if (item.getRefCount() == 0) {
-                mItems.remove(item.getKey());
+    public int release(RNSharedElementNode node) {
+        synchronized (mNodes) {
+            node.setRefCount(node.getRefCount() - 1);
+            if (node.getRefCount() == 0) {
+                mNodes.remove(node.getReactTag());
             }
-            return item.getRefCount();
-        }
-    }
-
-    public void put(RNSharedElementNode item) {
-        synchronized (mItems) {
-            mItems.put(item.getKey(), item);
+            return node.getRefCount();
         }
     }
 }

@@ -44,12 +44,12 @@ public class RNSharedElementTransitionManager extends ReactViewManager {
     }
 
     @ReactProp(name = "startNode")
-    public void setOptions(final RNSharedElementView view, final ReadableMap startNode) {
-        view.setStartNode(startNode);
+    public void setStartNode(final RNSharedElementView view, final ReadableMap startNode) {
+        //view.setStartNode(startNode);
     }
 
     @ReactProp(name = "endNode")
-    public void setOptions(final RNSharedElementView view, final ReadableMap endNode) {
-        view.setEndNode(endNode);
+    public void setEndNode(final RNSharedElementView view, final ReadableMap endNode) {
+        // view.setEndNode(endNode);
     }
 }

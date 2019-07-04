@@ -11,8 +11,7 @@ public class RNSharedElementModule extends ReactContextBaseJavaModule {
 
     static String LOG_TAG = "RNSharedElementModule";
 
-    public RNSharedElementModule(ReactApplicationContext reactContext,
-            RNSharedElementNodeManager nodeManager) {
+    public RNSharedElementModule(ReactApplicationContext reactContext, RNSharedElementNodeManager nodeManager) {
         super(reactContext);
         mNodeManager = nodeManager;
     }

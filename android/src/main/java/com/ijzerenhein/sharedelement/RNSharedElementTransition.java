@@ -1,11 +1,6 @@
 package com.ijzerenhein.sharedelement;
 
-/*
-import android.util.Log;
-import android.graphics.Paint;
-import android.graphics.Color;
-import android.view.View;
-*/
+import java.util.ArrayList;
 
 import android.graphics.Canvas;
 
@@ -16,55 +11,43 @@ public class RNSharedElementTransition extends ReactViewGroup {
 
     static String LOG_TAG = "RNSharedElementTransition";
 
-    private String mAnimation = null;
-    private float mNodePosition = 0.0f;
+    static int ITEM_START_ANCESTOR = 0;
+    static int ITEM_END_ANCESTOR = 1;
+    static int ITEM_START = 2;
+    static int ITEM_END = 3;
 
-    public RNSharedElementView(ThemedReactContext themedReactContext,
-            RNSharedElementDataManager cloneDataManager) {
+    private String mAnimation = "move";
+    private float mNodePosition = 0.0f;
+    private ArrayList<RNSharedElementTransition> mItems = new ArrayList<RNSharedElementTransition>();
+
+    public RNSharedElementView(ThemedReactContext themedReactContext, RNSharedElementNodeManager nodeManager) {
         super(themedReactContext);
-        // Log.d(LOG_TAG, "Clone construct");
-        //mCloneDataManager = cloneDataManager;
+        mItems.add(new RNSharedElementTransitionItem(nodeManager, "startAncestor", true));
+        mItems.add(new RNSharedElementTransitionItem(nodeManager, "endAncestor", true));
+        mItems.add(new RNSharedElementTransitionItem(nodeManager, "startNode", false));
+        mItems.add(new RNSharedElementTransitionItem(nodeManager, "endNode", false));
     }
 
     public void releaseData() {
-        /*if (mData != null) {
-            mCloneDataManager.release(mData);
-            mData = null;
-        }*/
+        for (RNSharedElementTransitionItem item : mItems) {
+            item.setNode(null);
+        }
     }
 
-    /*private String getDebugName() {
-        String source = ((mOptions & RNSharedElementOption.TARGET) != 0) ? "target" : "source";
-        String type = ((mOptions & RNSharedElementOption.SCENE) != 0) ? "scene" : "component";
-        return source + " " + type + " " + mId;
-    }*/
+    public void setStartNode(RNSharedElementNode node) {
+        mItems.get(ITEM_START).setNode(node);
+    }
 
-    @Override
-    protected void onDraw(Canvas canvas) {
-        // Log.d(LOG_TAG, "onDraw " + getDebugName() + ", width: " + canvas.getWidth() +
-        // ", height: " + canvas.getHeight());
-        if ((mData == null) && (mId != null) && ((mOptions & RNSharedElementOption.INITIAL) == 0)) {
-            // Log.d(LOG_TAG, "mCloneDataManager.acquire " + getDebugName() + ", options: "
-            // + mOptions);
-            mData = mCloneDataManager.acquire(RNSharedElementData.keyForSharedId(mId, mOptions));
-            // if (mData != null) Log.d(LOG_TAG, "Success!!");
-        }
+    public void setEndNode(RNSharedElementNode node) {
+        mItems.get(ITEM_END).setNode(node);
+    }
 
-        if (mData == null)
-            return;
-        if ((mOptions & RNSharedElementOption.VISIBLE) == 0)
-            return;
-        if (mContentType == RNSharedElementContentType.CHILDREN) {
-            /*
-             * Paint paint = new Paint(); int width = this.getWidth(); int height =
-             * this.getHeight(); paint.setColor(Color.BLUE);
-             * paint.setStyle(Paint.Style.FILL); //fill the background with blue color
-             * canvas.drawRect(0, 0, width, height, paint);
-             */
-            return;
-        }
+    public void setStartAncestor(RNSharedElementNode node) {
+        mItems.get(ITEM_START_ANCESTOR).setNode(node);
+    }
 
-        mData.getView().draw(canvas);
+    public void setEndAncestor(RNSharedElementNode node) {
+        mItems.get(ITEM_END_ANCESTOR).setNode(node);
     }
 
     public void setAnimation(final String animation) {
