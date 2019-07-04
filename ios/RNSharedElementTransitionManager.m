@@ -46,7 +46,6 @@ RCT_EXPORT_MODULE(RNSharedElementTransition);
     return nil;
 }
 
-RCT_EXPORT_VIEW_PROPERTY(autoHide, BOOL);
 RCT_EXPORT_VIEW_PROPERTY(nodePosition, CGFloat);
 RCT_EXPORT_VIEW_PROPERTY(animation, NSString);
 RCT_CUSTOM_VIEW_PROPERTY(startNode, NSObject, RNSharedElementTransition)

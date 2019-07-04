@@ -140,15 +140,7 @@
 - (void)updateNodeVisibility
 {
     for (RNSharedElementTransitionItem* item in _items) {
-        item.hidden = _autoHide && _initialLayoutPassCompleted && item.style != nil && item.content != nil;
-    }
-}
-
-- (void)setAutoHide:(BOOL)autoHide
-{
-    if (_autoHide != autoHide) {
-        _autoHide = autoHide;
-        [self updateNodeVisibility];
+        item.hidden = _initialLayoutPassCompleted && item.style != nil && item.content != nil;
     }
 }
 

@@ -56,7 +56,6 @@ export type SharedElementTransitionProps = {
   },
   position: number | Animated.Node | void,
   animation?: SharedElementAnimation,
-  autoHide?: boolean,
   debug?: boolean,
   style?: any,
   onMeasure?: (event: SharedElementOnMeasureEvent) => void,
@@ -121,7 +120,6 @@ export class SharedElementTransition extends React.Component<
   StateType
 > {
   static defaultProps = {
-    autoHide: true,
     start: {},
     end: {},
     SharedElementComponent: RNAnimatedSharedElementTransition
