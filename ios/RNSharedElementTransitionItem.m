@@ -30,7 +30,6 @@
     _contentType = RNSharedElementContentTypeNone;
     _style = nil;
     _hidden = NO;
-    _hasCalledOnMeasure = NO;
     return self;
 }
 
@@ -51,7 +50,6 @@
     _contentType = RNSharedElementContentTypeNone;
     _style = nil;
     _hidden = NO;
-    _hasCalledOnMeasure = NO;
 }
 
 - (void) setHidden:(BOOL)hidden
