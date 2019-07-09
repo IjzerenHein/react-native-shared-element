@@ -5,8 +5,19 @@ import java.util.HashMap;
 
 import android.view.View;
 
+import com.facebook.react.uimanager.NativeViewHierarchyManager;
+
 public class RNSharedElementNodeManager extends Object {
     private Map<Integer, RNSharedElementNode> mNodes = new HashMap<Integer, RNSharedElementNode>();
+    private NativeViewHierarchyManager mNativeViewHierarchyManager;
+
+    public void setNativeViewHierarchyManager(NativeViewHierarchyManager nativeViewHierarchyManager) {
+        mNativeViewHierarchyManager = nativeViewHierarchyManager;
+    }
+
+    public NativeViewHierarchyManager getNativeViewHierarchyManager() {
+        return mNativeViewHierarchyManager;
+    }
 
     public RNSharedElementNode acquire(int reactTag, View view, boolean isParent) {
         synchronized (mNodes) {

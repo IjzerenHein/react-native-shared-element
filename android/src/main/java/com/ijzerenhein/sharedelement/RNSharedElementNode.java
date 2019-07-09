@@ -1,23 +1,40 @@
 package com.ijzerenhein.sharedelement;
 
 import java.util.Map;
+import java.util.ArrayList;
 
 import android.view.View;
+import android.view.ViewGroup;
 import android.graphics.RectF;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.ColorDrawable;
+import android.util.SizeF;
+
+import com.facebook.react.uimanager.PixelUtil;
+import com.facebook.react.bridge.Callback;
+import com.facebook.drawee.drawable.ScalingUtils.ScaleType;
 
 public class RNSharedElementNode extends Object {
     private int mReactTag;
     private View mView;
+    private View mResolvedView;
     private boolean mIsParent;
     private int mRefCount;
     private int mHideRefCount;
+    private RNSharedElementStyle mStyleCache;
+    private ArrayList<Callback> mStyleCallbacks;
 
     public RNSharedElementNode(int reactTag, View view, boolean isParent) {
         mReactTag = reactTag;
         mView = view;
         mIsParent = isParent;
         mRefCount = 1;
-        mHideRefCount = 1;
+        mHideRefCount = 0;
+        mStyleCache = null;
+        mStyleCallbacks = null;
+        mResolvedView = null;
+        updateView();
     }
 
     public int getReactTag() {
@@ -32,18 +49,103 @@ public class RNSharedElementNode extends Object {
         mRefCount = refCount;
     }
 
-    public int getHideRefCount() {
-        return mHideRefCount;
-    }
-
-    public void setHideRefCount(int hideRefCount) {
-        mHideRefCount = hideRefCount;
+    public void addHideRef() {
+        mHideRefCount++;
         if (mHideRefCount == 1) {
-            // TODO HIDE
-        } else if (mHideRefCount == 0) {
-            // TODO SHOW
+            mResolvedView.setVisibility(View.INVISIBLE);
         }
     }
 
-    // TODO
+    public void releaseHideRef() {
+        mHideRefCount--;
+        if (mHideRefCount == 0) {
+            mResolvedView.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private View resolveView(View view) {
+        if (view == null) return null;
+        // TODO
+        return view;
+    }
+
+    private void updateView() {
+        View view = mView;
+        if (mIsParent) {
+            for(int index = 0; index < ((ViewGroup)mView).getChildCount(); ++index) {
+                view = ((ViewGroup)mView).getChildAt(index);
+                break;
+            }
+        }
+        view = resolveView(view);
+        if (mResolvedView == view) return;
+        mResolvedView = view;
+    }
+
+    public void requestStyle(Callback callback) {
+        if (mStyleCache != null) {
+            callback.invoke(mStyleCache, this);
+            return;
+        }
+
+        if (mStyleCallbacks == null) mStyleCallbacks = new ArrayList<Callback>();
+        mStyleCallbacks.add(callback);
+        updateStyle();
+    }
+
+    private void updateStyle() {
+        View view = mResolvedView;
+        if (view == null || mStyleCallbacks == null) return;
+
+        // Get size and absolute position
+        int width = view.getWidth();
+        int height = view.getHeight();
+        if (width == 0 && height == 0) return;
+
+        // Get absolute layout
+        int[] location = new int[2]; 
+        view.getLocationOnScreen(location);
+
+        // Convert to DIPs
+        RectF layout = new RectF(PixelUtil.toDIPFromPixel(location[0]),
+                                PixelUtil.toDIPFromPixel(location[1]),
+                                PixelUtil.toDIPFromPixel(location[0] + width),
+                                PixelUtil.toDIPFromPixel(location[1] + height));
+        SizeF size = new SizeF(layout.width(), layout.height());
+
+        // Get background color
+        int backgroundColor = Color.TRANSPARENT;
+        Drawable background = view.getBackground();
+        if (background instanceof ColorDrawable) {
+            backgroundColor = ((ColorDrawable) background).getColor();
+        }
+
+        // Get elevation
+        float elevation = 0;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            elevation = view.getElevation();
+        }
+
+        // Create style
+        RNSharedElementStyle style = new RNSharedElementStyle(
+            view,
+            layout,
+            size,
+            ScaleType.FIT_XY, // TODO
+            view.getAlpha(),
+            backgroundColor,
+            0, // borderRadius TODO
+            0, // borderWidth TODO
+            0, // borderColor TODO
+            elevation
+        );
+        mStyleCache = style;
+
+        // Notify callbacks
+        ArrayList<Callback> callbacks = mStyleCallbacks;
+        mStyleCallbacks = null;
+        for (Callback callback : callbacks) { 
+            callback.invoke(style, this);
+        }
+    }
 }

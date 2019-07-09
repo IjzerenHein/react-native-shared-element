@@ -5,30 +5,30 @@ import android.util.SizeF;
 import android.graphics.RectF;
 import android.graphics.Color;
 
-import com.facebook.drawee.drawable.ScalingUtils;
+import com.facebook.drawee.drawable.ScalingUtils.ScaleType;
 
 public class RNSharedElementStyle extends Object {
     private View mView;
     private RectF mLayout;
     private SizeF mSize;
-    private ScalingUtils.ScaleType mScaleType;
-    private Color mBackgroundColor;
+    private ScaleType mScaleType;
+    private int mBackgroundColor;
     private float mOpacity;
     private float mBorderRadius;
     private float mBorderWidth;
-    private Color mBorderColor;
+    private int mBorderColor;
     private float mElevation;
     
     public RNSharedElementStyle(
         View view,
         RectF layout,
         SizeF size,
-        ScalingUtils.ScaleType scaleType,
+        ScaleType scaleType,
         float opacity,
-        Color backgroundColor,
+        int backgroundColor,
         float borderRadius,
         float borderWidth,
-        Color borderColor,
+        int borderColor,
         float elevation) {
         mView = view;
         mLayout = layout;
@@ -54,7 +54,26 @@ public class RNSharedElementStyle extends Object {
         return mSize;
     }
 
-    public ScalingUtils.ScaleType getScaleType() {
+
+    /*
+    if ("contain".equals(resizeModeValue)) {
+      return ScalingUtils.ScaleType.FIT_CENTER;
+    }
+    if ("cover".equals(resizeModeValue)) {
+      return ScalingUtils.ScaleType.CENTER_CROP;
+    }
+    if ("stretch".equals(resizeModeValue)) {
+      return ScalingUtils.ScaleType.FIT_XY;
+    }
+    if ("center".equals(resizeModeValue)) {
+      return ScalingUtils.ScaleType.CENTER_INSIDE;
+    }
+    if ("repeat".equals(resizeModeValue)) {
+      // Handled via a combination of ScaleType and TileMode
+      return ScaleTypeStartInside.INSTANCE;
+    }*/
+
+    public ScaleType getScaleType() {
         return mScaleType;
     }
 
@@ -62,7 +81,7 @@ public class RNSharedElementStyle extends Object {
         return mOpacity;
     }
 
-    public Color getBackgroundColor() {
+    public int getBackgroundColor() {
         return mBackgroundColor;
     }
 
@@ -74,7 +93,7 @@ public class RNSharedElementStyle extends Object {
         return mBorderWidth;
     }
 
-    public Color getBorderColor() {
+    public int getBorderColor() {
         return mBorderColor;
     }
 

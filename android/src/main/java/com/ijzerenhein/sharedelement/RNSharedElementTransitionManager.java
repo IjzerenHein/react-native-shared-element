@@ -5,12 +5,11 @@ import android.view.View;
 import com.facebook.react.uimanager.annotations.ReactProp;
 import com.facebook.react.uimanager.ThemedReactContext;
 import com.facebook.react.uimanager.UIManagerModule;
-import com.facebook.react.views.view.ReactViewManager;
-import com.facebook.react.views.view.ReactViewGroup;
+import com.facebook.react.uimanager.SimpleViewManager;
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.ReactApplicationContext;
 
-public class RNSharedElementTransitionManager extends ReactViewManager {
+public class RNSharedElementTransitionManager extends SimpleViewManager<RNSharedElementTransition> {
     private ReactApplicationContext mReactContext;
     private RNSharedElementNodeManager mNodeManager;
 
@@ -28,14 +27,14 @@ public class RNSharedElementTransitionManager extends ReactViewManager {
     }
 
     @Override
-    public ReactViewGroup createViewInstance(ThemedReactContext context) {
+    public RNSharedElementTransition createViewInstance(ThemedReactContext context) {
         return new RNSharedElementTransition(context, mNodeManager);
     }
 
     @Override
-    public void onDropViewInstance(ReactViewGroup view) {
+    public void onDropViewInstance(RNSharedElementTransition view) {
         super.onDropViewInstance(view);
-        ((RNSharedElementTransition) view).releaseData();
+        view.releaseData();
     }
 
     @ReactProp(name = "nodePosition")
@@ -48,29 +47,25 @@ public class RNSharedElementTransitionManager extends ReactViewManager {
         view.setAnimation(animation);
     }
 
-    private RNSharedElementNode nodeFromMap(final ReadableMap map) {
+    private RNSharedElementNode nodeFromMap(final ReadableMap map, final String name) {
         if (map == null) return null;
-        UIManagerModule uiManager = mReactContext.getNativeModule(UIManagerModule.class);
-        int nodeHandle = map.getInt("nodeHandle");
-        boolean isParent = map.getBoolean("isParent");
-        /*View view = uiManager
-            .getUIImplementation()
-            .getUIViewOperationQueue()
-            .getNativeViewHierarchyManager()
-            .resolveView(nodeHandle);*/
-        View view = null;
+        if (!map.hasKey(name)) return null;
+        final ReadableMap mapItem = map.getMap(name);
+        int nodeHandle = mapItem.getInt("nodeHandle");
+        boolean isParent = mapItem.getBoolean("isParent");
+        View view = mNodeManager.getNativeViewHierarchyManager().resolveView(nodeHandle);
         return mNodeManager.acquire(nodeHandle, view, isParent);
     }
 
     @ReactProp(name = "startNode")
     public void setStartNode(final RNSharedElementTransition view, final ReadableMap startNode) {
-        view.setStartNode(nodeFromMap(startNode.getMap("node")));
-        view.setStartAncestor(nodeFromMap(startNode.getMap("ancestor")));
+        view.setStartNode(nodeFromMap(startNode, "node"));
+        view.setStartAncestor(nodeFromMap(startNode, "ancestor"));
     }
 
     @ReactProp(name = "endNode")
     public void setEndNode(final RNSharedElementTransition view, final ReadableMap endNode) {
-        view.setEndNode(nodeFromMap(endNode.getMap("node")));
-        view.setEndAncestor(nodeFromMap(endNode.getMap("ancestor")));
+        view.setEndNode(nodeFromMap(endNode, "node"));
+        view.setEndAncestor(nodeFromMap(endNode, "ancestor"));
     }
 }
