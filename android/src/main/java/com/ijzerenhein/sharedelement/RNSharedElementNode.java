@@ -5,11 +5,10 @@ import java.util.ArrayList;
 
 import android.view.View;
 import android.view.ViewGroup;
-import android.graphics.RectF;
+import android.graphics.Rect;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.ColorDrawable;
-import android.util.SizeF;
 
 import com.facebook.react.uimanager.PixelUtil;
 import com.facebook.react.bridge.Callback;
@@ -52,14 +51,14 @@ public class RNSharedElementNode extends Object {
     public void addHideRef() {
         mHideRefCount++;
         if (mHideRefCount == 1) {
-            mResolvedView.setVisibility(View.INVISIBLE);
+            //mResolvedView.setVisibility(View.INVISIBLE);
         }
     }
 
     public void releaseHideRef() {
         mHideRefCount--;
         if (mHideRefCount == 0) {
-            mResolvedView.setVisibility(View.VISIBLE);
+            //mResolvedView.setVisibility(View.VISIBLE);
         }
     }
 
@@ -105,13 +104,7 @@ public class RNSharedElementNode extends Object {
         // Get absolute layout
         int[] location = new int[2]; 
         view.getLocationOnScreen(location);
-
-        // Convert to DIPs
-        RectF layout = new RectF(PixelUtil.toDIPFromPixel(location[0]),
-                                PixelUtil.toDIPFromPixel(location[1]),
-                                PixelUtil.toDIPFromPixel(location[0] + width),
-                                PixelUtil.toDIPFromPixel(location[1] + height));
-        SizeF size = new SizeF(layout.width(), layout.height());
+        Rect layout = new Rect(location[0], location[1], location[0] + width, location[1] + height);
 
         // Get background color
         int backgroundColor = Color.TRANSPARENT;
@@ -130,7 +123,8 @@ public class RNSharedElementNode extends Object {
         RNSharedElementStyle style = new RNSharedElementStyle(
             view,
             layout,
-            size,
+            width,
+            height,
             ScaleType.FIT_XY, // TODO
             view.getAlpha(),
             backgroundColor,

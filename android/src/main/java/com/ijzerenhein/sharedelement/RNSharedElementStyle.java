@@ -1,16 +1,16 @@
 package com.ijzerenhein.sharedelement;
 
 import android.view.View;
-import android.util.SizeF;
-import android.graphics.RectF;
+import android.graphics.Rect;
 import android.graphics.Color;
 
 import com.facebook.drawee.drawable.ScalingUtils.ScaleType;
 
 public class RNSharedElementStyle extends Object {
     private View mView;
-    private RectF mLayout;
-    private SizeF mSize;
+    private Rect mLayout;
+    private int mWidth;
+    private int mHeight;
     private ScaleType mScaleType;
     private int mBackgroundColor;
     private float mOpacity;
@@ -21,8 +21,9 @@ public class RNSharedElementStyle extends Object {
     
     public RNSharedElementStyle(
         View view,
-        RectF layout,
-        SizeF size,
+        Rect layout,
+        int width,
+        int height,
         ScaleType scaleType,
         float opacity,
         int backgroundColor,
@@ -32,7 +33,8 @@ public class RNSharedElementStyle extends Object {
         float elevation) {
         mView = view;
         mLayout = layout;
-        mSize = size;
+        mWidth = width;
+        mHeight = height;
         mScaleType = scaleType;
         mOpacity = opacity;
         mBackgroundColor = backgroundColor;
@@ -46,14 +48,17 @@ public class RNSharedElementStyle extends Object {
         return mView;
     }
 
-    public RectF getLayout() {
+    public Rect getLayout() {
         return mLayout;
     }
 
-    public SizeF getSize() {
-        return mSize;
+    public int getWidth() {
+        return mWidth;
     }
 
+    public int getHeight() {
+        return mHeight;
+    }
 
     /*
     if ("contain".equals(resizeModeValue)) {

@@ -2,7 +2,12 @@ package com.ijzerenhein.sharedelement;
 
 import java.util.ArrayList;
 
+import android.util.Log;
 import android.graphics.Canvas;
+import android.graphics.Rect;
+import android.graphics.Paint;
+import android.graphics.Color;
+import android.view.View;
 
 import com.facebook.react.bridge.Callback;
 import com.facebook.react.uimanager.ThemedReactContext;
@@ -22,6 +27,7 @@ public class RNSharedElementTransition extends GenericDraweeView {
     private boolean mReactLayoutSet = false;
     private boolean mInitialLayoutPassCompleted = false;
     private ArrayList<RNSharedElementTransitionItem> mItems = new ArrayList<RNSharedElementTransitionItem>();
+    private int[] mParentLocation = new int[2];
 
     public RNSharedElementTransition(ThemedReactContext themedReactContext, RNSharedElementNodeManager nodeManager) {
         super(themedReactContext);
@@ -60,19 +66,26 @@ public class RNSharedElementTransition extends GenericDraweeView {
     public void setAnimation(final String animation) {
         if (mAnimation != animation) {
             mAnimation = animation;
-            updateStyle();
+            updateLayoutAndInvalidate();
         }
     }
 
     public void setNodePosition(final float nodePosition) {
         if (mNodePosition != nodePosition) {
             mNodePosition = nodePosition;
-            updateStyle();
+            Log.d(LOG_TAG, "setNodePosition " + nodePosition + ", mInitialLayoutPassCompleted: " + mInitialLayoutPassCompleted);
+            updateLayoutAndInvalidate();
         }
     }
 
+    @Override
     public void layout(int l, int t, int r, int b) {
-        super.layout(l, t, r, b);
+        //int width = ((View)getParent()).getWidth();
+        //int height = ((View)getParent()).getHeight();
+        /*int width = r;
+        int height = 1000;
+        Log.d(LOG_TAG, "layout: " + l + ":" + t + ":" + r + ":" + b + ", width: " + width + ", height: " + height);
+        super.layout(0, 0, width, height);*/
 
         if (!mReactLayoutSet) {
             mReactLayoutSet = true;
@@ -81,7 +94,7 @@ public class RNSharedElementTransition extends GenericDraweeView {
             // has completed
             requestStyles(true);
             mInitialLayoutPassCompleted = true;
-            updateStyle();
+            updateLayoutAndInvalidate();
             updateNodeVisibility();
         }
     }
@@ -96,7 +109,7 @@ public class RNSharedElementTransition extends GenericDraweeView {
                     public void invoke(Object... args) {
                         RNSharedElementStyle style = (RNSharedElementStyle) args[0];
                         item.setStyle(style);
-                        updateStyle();
+                        updateLayoutAndInvalidate();
                         updateNodeVisibility();
                     }
                 });
@@ -104,15 +117,119 @@ public class RNSharedElementTransition extends GenericDraweeView {
         }
     }
 
-    private void updateStyle() {
+    private void updateLayoutAndInvalidate() {
         if (!mInitialLayoutPassCompleted) return;
-
-        // TODO
+        Rect layout = calculateLayout(mNodePosition);
+        Log.d(LOG_TAG, "updateLayoutAndInvalidate: " + layout);
+        if (layout != null) super.layout(layout.left, layout.top, layout.right, layout.bottom);
+        invalidate();
     }
 
     private void updateNodeVisibility() {
         for (RNSharedElementTransitionItem item : mItems) {
             item.setHidden(mInitialLayoutPassCompleted && item.getStyle() != null && !item.isAncestor());
+        }
+    }
+
+    private Rect normalizeLayout(Rect layout, RNSharedElementTransitionItem ancestor) {
+        RNSharedElementStyle style = ancestor.getStyle();
+        if (style == null) {
+            return new Rect(
+                layout.left - mParentLocation[0],
+                layout.top - mParentLocation[1],
+                layout.right - mParentLocation[0],
+                layout.bottom - mParentLocation[1]
+            );
+        }
+
+        Rect ancestorLayout = style.getLayout();
+        return new Rect(
+            layout.left - ancestorLayout.left,
+            layout.top - ancestorLayout.top,
+            layout.right - ancestorLayout.left,
+            layout.bottom - ancestorLayout.top
+        );
+    }
+
+    private Rect getInterpolatedLayout(Rect layout1, Rect layout2, float position) {
+        return new Rect(
+            (int) (layout1.left + ((layout2.left - layout1.left) * position)),
+            (int) (layout1.top + ((layout2.top - layout1.top) * position)),
+            (int) (layout1.right + ((layout2.right - layout1.right) * position)),
+            (int) (layout1.bottom + ((layout2.bottom - layout1.bottom) * position))
+        );
+    }
+
+    private Rect calculateLayout(float position) {
+
+        // Local data
+        RNSharedElementTransitionItem startItem = mItems.get(ITEM_START);
+        RNSharedElementTransitionItem startAncestor = mItems.get(ITEM_START_ANCESTOR);
+        RNSharedElementTransitionItem endItem = mItems.get(ITEM_END);
+        RNSharedElementTransitionItem endAncestor = mItems.get(ITEM_END_ANCESTOR);
+
+        // Get styles
+        RNSharedElementStyle startStyle = startItem.getStyle();
+        RNSharedElementStyle endStyle = endItem.getStyle();
+        if ((startStyle == null) && (endStyle == null)) return null;
+
+        // Get layout
+        getLocationOnScreen(mParentLocation);
+        Rect startLayout = (startStyle != null) ? normalizeLayout(startStyle.getLayout(), startAncestor) : new Rect();
+        Rect endLayout = (endStyle != null) ? normalizeLayout(endStyle.getLayout(), endAncestor) : new Rect();
+
+        // Get interpolated layout
+        if ((startStyle != null) && (endStyle != null)) {
+            return getInterpolatedLayout(startLayout, endLayout, position);
+        } else if (startStyle != null) {
+            return startLayout;
+        } else {
+            return endLayout;
+        }
+    }
+
+    @Override
+    protected void onDraw(Canvas canvas) {
+    
+        // Local data
+        RNSharedElementTransitionItem startItem = mItems.get(ITEM_START);
+        RNSharedElementTransitionItem startAncestor = mItems.get(ITEM_START_ANCESTOR);
+        RNSharedElementTransitionItem endItem = mItems.get(ITEM_END);
+        RNSharedElementTransitionItem endAncestor = mItems.get(ITEM_END_ANCESTOR);
+
+        // Prepare operations
+        /*getLocationOnScreen(mParentLocation);*/
+
+        // Get start layout
+        RNSharedElementStyle startStyle = startItem.getStyle();
+        //Rect startLayout = (startStyle != null) ? normalizeLayout(startStyle.getLayout(), startAncestor) : new Rect();
+
+        // Get end layout
+        RNSharedElementStyle endStyle = endItem.getStyle();
+        //Rect endLayout = (endStyle != null) ? normalizeLayout(endStyle.getLayout(), endAncestor) : new Rect();
+
+        // Get interpolated style & layout
+        /*Rect interpolatedLayout;
+        if ((startStyle == null) && (endStyle == null)) return;
+        if ((startStyle != null) && (endStyle != null)) {
+            interpolatedLayout = getInterpolatedLayout(startLayout, endLayout, mNodePosition);
+        } else if (startStyle != null) {
+            interpolatedLayout = startLayout;
+        } else {
+            interpolatedLayout = endLayout;
+        }
+
+        Log.d(LOG_TAG, "onDraw " + mNodePosition + ", interpolatedLayout: " + interpolatedLayout);*/
+
+        // Draw content
+        /*Paint paint = new Paint();
+        paint.setColor(Color.rgb(255, 0, 0));
+        canvas.drawRect(0, 0, getWidth(), getHeight(), paint);*/
+
+        // Draw content
+        if (startStyle != null) {
+            Log.d(LOG_TAG, "onDraw: width: " + getWidth() + ", height:" + getHeight());
+            startStyle.getView().draw(canvas);
         }
     }
 
