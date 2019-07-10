@@ -5,13 +5,17 @@ import java.util.ArrayList;
 import android.util.Log;
 import android.graphics.Canvas;
 import android.graphics.Rect;
+import android.graphics.RectF;
 import android.graphics.Paint;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.view.View;
+import android.widget.ImageView;
 
 import com.facebook.react.bridge.Callback;
 import com.facebook.react.uimanager.ThemedReactContext;
 import com.facebook.drawee.view.GenericDraweeView;
+import com.facebook.drawee.generic.GenericDraweeHierarchy;
 
 public class RNSharedElementTransition extends GenericDraweeView {
 
@@ -228,8 +232,24 @@ public class RNSharedElementTransition extends GenericDraweeView {
 
         // Draw content
         if (startStyle != null) {
+            View startView = startStyle.getView();
+            if (startView instanceof GenericDraweeView) {
+                GenericDraweeView startImageView = (GenericDraweeView) startView;
+                GenericDraweeHierarchy hierarchy = startImageView.getHierarchy();
+                RectF imageBounds = new RectF();
+                hierarchy.getActualImageBounds(imageBounds);
+                Log.d(LOG_TAG, "onDraw, GenericDraweeView, imageBounds: " + imageBounds);
+            }
+            /*else if (startView instanceof ImageView) {
+                ImageView startImageView = (ImageView) startView;
+                Drawable drawable = startImageView.getDrawable();
+                int intrinsicWidth = drawable.getIntrinsicWidth();
+                int intrinsicHeight = drawable.getIntrinsicHeight();
+                Log.d(LOG_TAG, "onDraw, imageDrawable: " + drawable + ", width: " + intrinsicWidth + ", height: " + intrinsicHeight);
+            }*/
             //Log.d(LOG_TAG, "onDraw: width: " + getWidth() + ", height:" + getHeight());
-            startStyle.getView().draw(canvas);
+            startView.layout(startView.getLeft(), startView.getTop(), getWidth(), getHeight());
+            startView.draw(canvas);
         }
     }
 

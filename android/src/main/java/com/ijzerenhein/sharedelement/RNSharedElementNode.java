@@ -52,15 +52,26 @@ public class RNSharedElementNode extends Object {
         mHideRefCount++;
         if (mHideRefCount == 1) {
             mView.setAlpha(0);
-            //mView.setVisibility(View.INVISIBLE);
         }
     }
 
     public void releaseHideRef() {
         mHideRefCount--;
         if (mHideRefCount == 0) {
+            if (mStyleCache != null) {
+
+                // Restore original size
+                Rect layout = mStyleCache.getLayout();
+                mResolvedView.layout(mResolvedView.getLeft(), mResolvedView.getTop(), layout.right - layout.left, layout.bottom - layout.top);
+
+                // TODO 
+                // restore borderRadius
+                // restore borderColor
+                // restore borderStyle
+                // restore backgroundColor
+                // restore elevation
+            }
             mView.setAlpha(1);
-            //mView.setVisibility(View.VISIBLE);
         }
     }
 
