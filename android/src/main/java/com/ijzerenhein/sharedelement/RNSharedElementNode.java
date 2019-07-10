@@ -51,14 +51,16 @@ public class RNSharedElementNode extends Object {
     public void addHideRef() {
         mHideRefCount++;
         if (mHideRefCount == 1) {
-            //mResolvedView.setVisibility(View.INVISIBLE);
+            mView.setAlpha(0);
+            //mView.setVisibility(View.INVISIBLE);
         }
     }
 
     public void releaseHideRef() {
         mHideRefCount--;
         if (mHideRefCount == 0) {
-            //mResolvedView.setVisibility(View.VISIBLE);
+            mView.setAlpha(1);
+            //mView.setVisibility(View.VISIBLE);
         }
     }
 

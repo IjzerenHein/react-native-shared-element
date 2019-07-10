@@ -73,7 +73,7 @@ public class RNSharedElementTransition extends GenericDraweeView {
     public void setNodePosition(final float nodePosition) {
         if (mNodePosition != nodePosition) {
             mNodePosition = nodePosition;
-            Log.d(LOG_TAG, "setNodePosition " + nodePosition + ", mInitialLayoutPassCompleted: " + mInitialLayoutPassCompleted);
+            //Log.d(LOG_TAG, "setNodePosition " + nodePosition + ", mInitialLayoutPassCompleted: " + mInitialLayoutPassCompleted);
             updateLayoutAndInvalidate();
         }
     }
@@ -120,7 +120,7 @@ public class RNSharedElementTransition extends GenericDraweeView {
     private void updateLayoutAndInvalidate() {
         if (!mInitialLayoutPassCompleted) return;
         Rect layout = calculateLayout(mNodePosition);
-        Log.d(LOG_TAG, "updateLayoutAndInvalidate: " + layout);
+        //Log.d(LOG_TAG, "updateLayoutAndInvalidate: " + layout);
         if (layout != null) super.layout(layout.left, layout.top, layout.right, layout.bottom);
         invalidate();
     }
@@ -228,7 +228,7 @@ public class RNSharedElementTransition extends GenericDraweeView {
 
         // Draw content
         if (startStyle != null) {
-            Log.d(LOG_TAG, "onDraw: width: " + getWidth() + ", height:" + getHeight());
+            //Log.d(LOG_TAG, "onDraw: width: " + getWidth() + ", height:" + getHeight());
             startStyle.getView().draw(canvas);
         }
     }
