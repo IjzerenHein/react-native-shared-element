@@ -21,6 +21,7 @@ import com.facebook.react.views.image.ReactImageView;
 import com.facebook.react.views.view.ReactViewGroup;
 import com.facebook.drawee.view.GenericDraweeView;
 import com.facebook.drawee.generic.GenericDraweeHierarchy;
+import com.facebook.drawee.interfaces.DraweeController;
 
 public class RNSharedElementNode extends Object {
     private int mReactTag;
@@ -103,6 +104,22 @@ public class RNSharedElementNode extends Object {
         fetchInitialStyle();
     }
 
+    private RectF getContentsRect(View view) {
+        if (view instanceof GenericDraweeView) {
+            GenericDraweeView imageView = (GenericDraweeView) view;
+            DraweeController controller = imageView.getController();
+            GenericDraweeHierarchy hierarchy = imageView.getHierarchy();
+            String controllerDetails = controller.toString();
+            if (controllerDetails.contains("fetchedImage=0")) {
+                return null;
+            }
+            RectF imageBounds = new RectF();
+            hierarchy.getActualImageBounds(imageBounds);
+            return imageBounds;
+        }
+        return new RectF(0, 0, view.getWidth(), view.getHeight());
+    }
+
     private void fetchInitialStyle() {
         View view = mResolvedView;
         if (view == null || mStyleCallbacks == null) return;
@@ -124,18 +141,10 @@ public class RNSharedElementNode extends Object {
         // Get content size (e.g. the size of the underlying image of an image-view)
         float contentWidth = width;
         float contentHeight = height;
-        if (view instanceof GenericDraweeView) {
-            GenericDraweeView imageView = (GenericDraweeView) view;
-            GenericDraweeHierarchy hierarchy = imageView.getHierarchy();
-            if (hierarchy == null) return;
-            RectF imageBounds = new RectF();
-            Drawable drawable = imageView.getDrawable();
-            hierarchy.getActualImageBounds(imageBounds);
-            ScaleType scaleType = hierarchy.getActualImageScaleType();
-            if ((imageBounds.width() == 0) && (imageBounds.height() == 0)) return;
-            contentWidth = imageBounds.width();
-            contentHeight = imageBounds.height();
-        }
+        RectF contentsRect = getContentsRect(view);
+        if (contentsRect == null) return;
+        contentWidth = contentsRect.width();
+        contentHeight = contentsRect.height();
 
         // Create style
         RNSharedElementStyle style = new RNSharedElementStyle();
