@@ -17,6 +17,7 @@ import com.facebook.react.bridge.ReadableMap;
 import com.facebook.drawee.drawable.ScalingUtils.ScaleType;
 import com.facebook.react.views.image.ImageResizeMode;
 import com.facebook.react.views.image.ReactImageView;
+import com.facebook.react.views.view.ReactViewGroup;
 
 public class RNSharedElementNode extends Object {
     private int mReactTag;
@@ -124,8 +125,8 @@ public class RNSharedElementNode extends Object {
         
         // Pre-fill the style with the style-config
         if (mStyleConfig.hasKey("opacity")) style.opacity = (float) mStyleConfig.getDouble("opacity");
-        //if (mStyleConfig.hasKey("backgroundColor")) style.borderColor = (float) mStyleConfig.getDouble("backgroundColor");
-        //if (mStyleConfig.hasKey("borderColor")) style.borderColor = (float) mStyleConfig.getDouble("borderColor");
+        if (mStyleConfig.hasKey("backgroundColor")) style.backgroundColor = mStyleConfig.getInt("backgroundColor");
+        if (mStyleConfig.hasKey("borderColor")) style.borderColor = mStyleConfig.getInt("borderColor");
         if (mStyleConfig.hasKey("borderWidth")) style.borderWidth = (float) mStyleConfig.getDouble("borderWidth");
         if (mStyleConfig.hasKey("resizeMode")) style.scaleType = ImageResizeMode.toScaleType(mStyleConfig.getString("resizeMode"));
         if (mStyleConfig.hasKey("elevation")) style.elevation = (float) mStyleConfig.getDouble("elevation");
@@ -179,13 +180,6 @@ public class RNSharedElementNode extends Object {
         if (mStyleConfig.hasKey("borderBottomLeftRadius")) style.borderBottomLeftRadius = (float) mStyleConfig.getDouble("borderBottomLeftRadius");
         if (mStyleConfig.hasKey("borderBottomRightRadius")) style.borderBottomRightRadius = (float) mStyleConfig.getDouble("borderBottomRightRadius");
 
-
-        // Get background color
-        Drawable background = view.getBackground();
-        if (background instanceof ColorDrawable) {
-            style.backgroundColor = ((ColorDrawable) background).getColor();
-        }
-
         // Get opacity
         style.opacity = view.getAlpha();
 
@@ -215,11 +209,14 @@ public class RNSharedElementNode extends Object {
         view.layout(frame.left, frame.top, frame.width(), frame.height());
 
         // Set opacity
-        view.setAlpha(style.opacity);
+        //view.setAlpha(style.opacity);
 
+        view.setBackgroundColor(style.backgroundColor);
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            view.setElevation(style.elevation);
+        }
         if (view instanceof ReactImageView) {
             ReactImageView imageView = (ReactImageView) view;
-            imageView.setBackgroundColor(style.backgroundColor);
             imageView.setBorderColor(style.borderColor);
             imageView.setBorderWidth(style.borderWidth);
             imageView.setBorderRadius(PixelUtil.toPixelFromDIP(style.borderTopLeftRadius), 0);
@@ -230,19 +227,18 @@ public class RNSharedElementNode extends Object {
             imageView.setTileMode(ImageResizeMode.defaultTileMode());
             imageView.maybeUpdateView();
         }
-        else {
-            // TODO
+        else if (view instanceof ReactViewGroup) {
+            ReactViewGroup viewGroup = (ReactViewGroup) view;
+            viewGroup.setOpacityIfPossible(style.opacity);
+            float borderColorRGB = (float) ((int)style.borderColor & 0x00FFFFFF);
+            float borderColorAlpha = (float) ((int)style.borderColor >>> 24);
+            viewGroup.setBorderColor(0, borderColorRGB, borderColorAlpha);
+            viewGroup.setBorderWidth(0, PixelUtil.toPixelFromDIP(style.borderWidth));
+            viewGroup.setBorderRadius(PixelUtil.toPixelFromDIP(style.borderTopLeftRadius), 0);
+            viewGroup.setBorderRadius(PixelUtil.toPixelFromDIP(style.borderTopRightRadius), 1);
+            viewGroup.setBorderRadius(PixelUtil.toPixelFromDIP(style.borderBottomRightRadius), 2);
+            viewGroup.setBorderRadius(PixelUtil.toPixelFromDIP(style.borderBottomLeftRadius), 3);
         }
-
-
-        // TODO 
-        // restore resizeMode (scaleType)
-        // restore borderRadius
-        // restore borderColor
-        // restore borderStyle
-        // restore backgroundColor
-        // restore elevation
-
     }
 
     public void draw(Canvas canvas, RNSharedElementStyle style) {
