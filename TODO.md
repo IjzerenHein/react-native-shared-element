@@ -13,3 +13,13 @@ Essential:
 Would be nice:
 [ ] Web support
 [-] Non-native implementation
+
+
+
+Android problems so far:
+- [X] Getting to the underlying (image) content (intrinsic size is required for proper animation)
+- [ ] Getting to the border color/width/style
+- [ ] Getting to the resizeMode (ScaleType)
+- [ ] Background color?
+- [ ] Draw requires Scale transform
+- [ ] Blur-radius?

@@ -5,6 +5,7 @@ import java.util.HashMap;
 
 import android.view.View;
 
+import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.uimanager.NativeViewHierarchyManager;
 
 public class RNSharedElementNodeManager extends Object {
@@ -19,14 +20,14 @@ public class RNSharedElementNodeManager extends Object {
         return mNativeViewHierarchyManager;
     }
 
-    public RNSharedElementNode acquire(int reactTag, View view, boolean isParent) {
+    public RNSharedElementNode acquire(int reactTag, View view, boolean isParent, ReadableMap styleConfig) {
         synchronized (mNodes) {
             RNSharedElementNode node = mNodes.get(reactTag);
             if (node != null) {
                 node.setRefCount(node.getRefCount() + 1);
                 return node;
             }
-            node = new RNSharedElementNode(reactTag, view, isParent);
+            node = new RNSharedElementNode(reactTag, view, isParent, styleConfig);
             mNodes.put(reactTag, node);
             return node;
         }

@@ -128,10 +128,18 @@ export class SharedElementTransition extends React.Component<
   state = {};
 
   static prepareNode(node: ?SharedElementNode): any {
+    let nodeStyle = {};
+    if (node && node.parentInstance) {
+      const child = React.Children.only(node.parentInstance.props.children);
+      const props = child ? child.props : {};
+      nodeStyle = StyleSheet.flatten([props.style]) || {};
+      nodeStyle.resizeMode = nodeStyle.resizeMode || props.resizeMode;
+    }
     return node
       ? {
           nodeHandle: node.nodeHandle,
-          isParent: node.isParent
+          isParent: node.isParent,
+          nodeStyle
         }
       : undefined;
   }

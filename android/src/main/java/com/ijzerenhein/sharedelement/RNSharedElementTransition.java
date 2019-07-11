@@ -146,7 +146,7 @@ public class RNSharedElementTransition extends GenericDraweeView {
             );
         }
 
-        Rect ancestorLayout = style.getLayout();
+        Rect ancestorLayout = style.layout;
         return new Rect(
             layout.left - ancestorLayout.left,
             layout.top - ancestorLayout.top,
@@ -164,6 +164,40 @@ public class RNSharedElementTransition extends GenericDraweeView {
         );
     }
 
+    private int getInterpolatedColor(int color1, int color2, float position) {
+        // Interpolate using the HSV model
+        // https://stackoverflow.com/a/38536770/3785358
+        float[] hsva = new float[3];
+        float[] hsvb = new float[3];
+        float[] hsv_output = new float[3];
+        Color.colorToHSV(color1, hsva);
+        Color.colorToHSV(color2, hsvb);
+        for (int i = 0; i < 3; i++) {
+            hsv_output[i] = hsva[i] + ((hsvb[i] - hsva[i]) * position);
+        }
+        int alpha_a = Color.alpha(color1);
+        int alpha_b = Color.alpha(color2);
+        float alpha_output = alpha_a + ((alpha_b - alpha_a) * position);
+        return Color.HSVToColor((int) alpha_output, hsv_output);
+    }
+
+    private RNSharedElementStyle getInterpolatedStyle(RNSharedElementStyle style1, RNSharedElementStyle style2, float position) {
+        RNSharedElementStyle result = new RNSharedElementStyle();
+        result.scaleType = style1.scaleType;
+        result.layout = getInterpolatedLayout(style1.layout, style2.layout, position);
+        result.frame = getInterpolatedLayout(style1.frame, style2.frame, position);
+        result.opacity = style1.opacity + ((style2.opacity - style1.opacity) * position);
+        result.backgroundColor = getInterpolatedColor(style1.backgroundColor, style2.backgroundColor, position);
+        result.borderTopLeftRadius = style1.borderTopLeftRadius + ((style2.borderTopLeftRadius - style1.borderTopLeftRadius) * position);
+        result.borderTopRightRadius = style1.borderTopRightRadius + ((style2.borderTopRightRadius - style1.borderTopRightRadius) * position);
+        result.borderBottomLeftRadius = style1.borderBottomLeftRadius + ((style2.borderBottomLeftRadius - style1.borderBottomLeftRadius) * position);
+        result.borderBottomRightRadius = style1.borderBottomRightRadius + ((style2.borderBottomRightRadius - style1.borderBottomRightRadius) * position);
+        result.borderWidth = style1.borderWidth + ((style2.borderWidth - style1.borderWidth) * position);
+        result.borderColor = getInterpolatedColor(style1.backgroundColor, style2.backgroundColor, position);
+        result.elevation = style1.elevation + ((style2.elevation - style1.elevation) * position);
+        return result;
+    }
+
     private Rect calculateLayout(float position) {
 
         // Local data
@@ -179,8 +213,8 @@ public class RNSharedElementTransition extends GenericDraweeView {
 
         // Get layout
         getLocationOnScreen(mParentLocation);
-        Rect startLayout = (startStyle != null) ? normalizeLayout(startStyle.getLayout(), startAncestor) : new Rect();
-        Rect endLayout = (endStyle != null) ? normalizeLayout(endStyle.getLayout(), endAncestor) : new Rect();
+        Rect startLayout = (startStyle != null) ? normalizeLayout(startStyle.layout, startAncestor) : new Rect();
+        Rect endLayout = (endStyle != null) ? normalizeLayout(endStyle.layout, endAncestor) : new Rect();
 
         // Get interpolated layout
         if ((startStyle != null) && (endStyle != null)) {
@@ -213,44 +247,28 @@ public class RNSharedElementTransition extends GenericDraweeView {
         //Rect endLayout = (endStyle != null) ? normalizeLayout(endStyle.getLayout(), endAncestor) : new Rect();
 
         // Get interpolated style & layout
-        /*Rect interpolatedLayout;
+        //Rect interpolatedLayout;
+        RNSharedElementStyle interpolatedStyle;
         if ((startStyle == null) && (endStyle == null)) return;
         if ((startStyle != null) && (endStyle != null)) {
-            interpolatedLayout = getInterpolatedLayout(startLayout, endLayout, mNodePosition);
+            //interpolatedLayout = getInterpolatedLayout(startLayout, endLayout, mNodePosition);
+            interpolatedStyle = getInterpolatedStyle(startStyle, endStyle, mNodePosition);
         } else if (startStyle != null) {
-            interpolatedLayout = startLayout;
+            //interpolatedLayout = startLayout;
+            interpolatedStyle = startStyle;
         } else {
-            interpolatedLayout = endLayout;
+            //interpolatedLayout = endLayout;
+            interpolatedStyle = endStyle;
         }
 
-        Log.d(LOG_TAG, "onDraw " + mNodePosition + ", interpolatedLayout: " + interpolatedLayout);*/
+        //Log.d(LOG_TAG, "onDraw " + mNodePosition + ", interpolatedStyle: " + interpolatedStyle);
+
+        startItem.getNode().draw(canvas, interpolatedStyle);
 
         // Draw content
         /*Paint paint = new Paint();
         paint.setColor(Color.rgb(255, 0, 0));
         canvas.drawRect(0, 0, getWidth(), getHeight(), paint);*/
-
-        // Draw content
-        if (startStyle != null) {
-            View startView = startStyle.getView();
-            if (startView instanceof GenericDraweeView) {
-                GenericDraweeView startImageView = (GenericDraweeView) startView;
-                GenericDraweeHierarchy hierarchy = startImageView.getHierarchy();
-                RectF imageBounds = new RectF();
-                hierarchy.getActualImageBounds(imageBounds);
-                Log.d(LOG_TAG, "onDraw, GenericDraweeView, imageBounds: " + imageBounds);
-            }
-            /*else if (startView instanceof ImageView) {
-                ImageView startImageView = (ImageView) startView;
-                Drawable drawable = startImageView.getDrawable();
-                int intrinsicWidth = drawable.getIntrinsicWidth();
-                int intrinsicHeight = drawable.getIntrinsicHeight();
-                Log.d(LOG_TAG, "onDraw, imageDrawable: " + drawable + ", width: " + intrinsicWidth + ", height: " + intrinsicHeight);
-            }*/
-            //Log.d(LOG_TAG, "onDraw: width: " + getWidth() + ", height:" + getHeight());
-            startView.layout(startView.getLeft(), startView.getTop(), getWidth(), getHeight());
-            startView.draw(canvas);
-        }
     }
 
     private void fireMeasureEvent() {

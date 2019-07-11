@@ -6,6 +6,7 @@ export interface SharedElementNode {
   ref: any;
   nodeHandle: number;
   isParent: boolean;
+  parentInstance: any
 }
 
 export interface SharedElementProps extends View.propTypes.style {
@@ -13,13 +14,14 @@ export interface SharedElementProps extends View.propTypes.style {
   onNode: (node: ?SharedElementNode) => void;
 }
 
-export function nodeFromRef(ref: any, isParent?: boolean): ?SharedElementNode {
+export function nodeFromRef(ref: any, isParent?: boolean, parentInstance?: any): ?SharedElementNode {
   const nodeHandle = ref ? findNodeHandle(ref) : undefined;
   return nodeHandle
     ? {
         ref,
         nodeHandle,
-        isParent: isParent || false
+        isParent: isParent || false,
+        parentInstance
       }
     : undefined;
 }
@@ -36,7 +38,7 @@ export class SharedElement extends React.Component<SharedElementProps> {
   }
 
   onSetRef = (ref: any) => {
-    this._node = nodeFromRef(ref, true);
+    this._node = nodeFromRef(ref, true, this);
     if (this.props.onNode) {
       this.props.onNode(this._node);
     }

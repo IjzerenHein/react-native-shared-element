@@ -5,6 +5,7 @@ import java.util.ArrayList;
 
 import android.view.View;
 import android.view.ViewGroup;
+import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
@@ -12,25 +13,30 @@ import android.graphics.drawable.ColorDrawable;
 
 import com.facebook.react.uimanager.PixelUtil;
 import com.facebook.react.bridge.Callback;
+import com.facebook.react.bridge.ReadableMap;
 import com.facebook.drawee.drawable.ScalingUtils.ScaleType;
+import com.facebook.react.views.image.ImageResizeMode;
+import com.facebook.react.views.image.ReactImageView;
 
 public class RNSharedElementNode extends Object {
     private int mReactTag;
     private View mView;
-    private View mResolvedView;
     private boolean mIsParent;
+    private ReadableMap mStyleConfig;
+    private View mResolvedView;
     private int mRefCount;
     private int mHideRefCount;
-    private RNSharedElementStyle mStyleCache;
+    private RNSharedElementStyle mInitialStyle;
     private ArrayList<Callback> mStyleCallbacks;
 
-    public RNSharedElementNode(int reactTag, View view, boolean isParent) {
+    public RNSharedElementNode(int reactTag, View view, boolean isParent, ReadableMap styleConfig) {
         mReactTag = reactTag;
         mView = view;
         mIsParent = isParent;
+        mStyleConfig = styleConfig;
         mRefCount = 1;
         mHideRefCount = 0;
-        mStyleCache = null;
+        mInitialStyle = null;
         mStyleCallbacks = null;
         mResolvedView = null;
         updateView();
@@ -58,19 +64,7 @@ public class RNSharedElementNode extends Object {
     public void releaseHideRef() {
         mHideRefCount--;
         if (mHideRefCount == 0) {
-            if (mStyleCache != null) {
-
-                // Restore original size
-                Rect layout = mStyleCache.getLayout();
-                mResolvedView.layout(mResolvedView.getLeft(), mResolvedView.getTop(), layout.right - layout.left, layout.bottom - layout.top);
-
-                // TODO 
-                // restore borderRadius
-                // restore borderColor
-                // restore borderStyle
-                // restore backgroundColor
-                // restore elevation
-            }
+            if (mInitialStyle != null) setDrawStyle(mInitialStyle);
             mView.setAlpha(1);
         }
     }
@@ -95,58 +89,113 @@ public class RNSharedElementNode extends Object {
     }
 
     public void requestStyle(Callback callback) {
-        if (mStyleCache != null) {
-            callback.invoke(mStyleCache, this);
+        if (mInitialStyle != null) {
+            callback.invoke(mInitialStyle, this);
             return;
         }
 
         if (mStyleCallbacks == null) mStyleCallbacks = new ArrayList<Callback>();
         mStyleCallbacks.add(callback);
-        updateStyle();
+        fetchInitialStyle();
     }
 
-    private void updateStyle() {
+    private void fetchInitialStyle() {
         View view = mResolvedView;
         if (view == null || mStyleCallbacks == null) return;
 
-        // Get size and absolute position
+        // Get relative size and position
+        int left = view.getLeft();
+        int top = view.getTop();
         int width = view.getWidth();
         int height = view.getHeight();
         if (width == 0 && height == 0) return;
+        Rect frame = new Rect(left, top, left + width, top + height);
 
         // Get absolute layout
         int[] location = new int[2]; 
         view.getLocationOnScreen(location);
+        // TODO, adjust width & height for scaling transforms
         Rect layout = new Rect(location[0], location[1], location[0] + width, location[1] + height);
 
+        // Create style
+        RNSharedElementStyle style = new RNSharedElementStyle();
+        style.layout = layout;
+        style.frame = frame;
+        
+        // Pre-fill the style with the style-config
+        if (mStyleConfig.hasKey("opacity")) style.opacity = (float) mStyleConfig.getDouble("opacity");
+        //if (mStyleConfig.hasKey("backgroundColor")) style.borderColor = (float) mStyleConfig.getDouble("backgroundColor");
+        //if (mStyleConfig.hasKey("borderColor")) style.borderColor = (float) mStyleConfig.getDouble("borderColor");
+        if (mStyleConfig.hasKey("borderWidth")) style.borderWidth = (float) mStyleConfig.getDouble("borderWidth");
+        if (mStyleConfig.hasKey("resizeMode")) style.scaleType = ImageResizeMode.toScaleType(mStyleConfig.getString("resizeMode"));
+        if (mStyleConfig.hasKey("elevation")) style.elevation = (float) mStyleConfig.getDouble("elevation");
+
+        // Border-radius
+        boolean isRTL = false;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            isRTL = view.getLayoutDirection() == View.LAYOUT_DIRECTION_RTL;
+        }
+        if (mStyleConfig.hasKey("borderRadius")) {
+            float borderRadius = (float) mStyleConfig.getDouble("borderRadius");
+            style.borderTopLeftRadius = borderRadius;
+            style.borderTopRightRadius = borderRadius;
+            style.borderBottomLeftRadius = borderRadius;
+            style.borderBottomRightRadius = borderRadius;
+        }
+        if (mStyleConfig.hasKey("borderTopEndRadius")) {
+            float borderRadius = (float) mStyleConfig.getDouble("borderTopEndRadius");
+            if (isRTL) {
+                style.borderTopLeftRadius = borderRadius;
+            } else {
+                style.borderTopRightRadius = borderRadius;
+            }
+        }
+        if (mStyleConfig.hasKey("borderTopStartRadius")) {
+            float borderRadius = (float) mStyleConfig.getDouble("borderTopStartRadius");
+            if (isRTL) {
+                style.borderTopRightRadius = borderRadius;
+            } else {
+                style.borderTopLeftRadius = borderRadius;
+            }
+        }
+        if (mStyleConfig.hasKey("borderBottomEndRadius")) {
+            float borderRadius = (float) mStyleConfig.getDouble("borderBottomEndRadius");
+            if (isRTL) {
+                style.borderBottomLeftRadius = borderRadius;
+            } else {
+                style.borderBottomRightRadius = borderRadius;
+            }
+        }
+        if (mStyleConfig.hasKey("borderBottomStartRadius")) {
+            float borderRadius = (float) mStyleConfig.getDouble("borderBottomStartRadius");
+            if (isRTL) {
+                style.borderBottomRightRadius = borderRadius;
+            } else {
+                style.borderBottomLeftRadius = borderRadius;
+            }
+        }
+        if (mStyleConfig.hasKey("borderTopLeftRadius")) style.borderTopLeftRadius = (float) mStyleConfig.getDouble("borderTopLeftRadius");
+        if (mStyleConfig.hasKey("borderTopRightRadius")) style.borderTopRightRadius = (float) mStyleConfig.getDouble("borderTopRightRadius");
+        if (mStyleConfig.hasKey("borderBottomLeftRadius")) style.borderBottomLeftRadius = (float) mStyleConfig.getDouble("borderBottomLeftRadius");
+        if (mStyleConfig.hasKey("borderBottomRightRadius")) style.borderBottomRightRadius = (float) mStyleConfig.getDouble("borderBottomRightRadius");
+
+
         // Get background color
-        int backgroundColor = Color.TRANSPARENT;
         Drawable background = view.getBackground();
         if (background instanceof ColorDrawable) {
-            backgroundColor = ((ColorDrawable) background).getColor();
+            style.backgroundColor = ((ColorDrawable) background).getColor();
         }
+
+        // Get opacity
+        style.opacity = view.getAlpha();
 
         // Get elevation
-        float elevation = 0;
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-            elevation = view.getElevation();
+            style.elevation = view.getElevation();
         }
 
-        // Create style
-        RNSharedElementStyle style = new RNSharedElementStyle(
-            view,
-            layout,
-            width,
-            height,
-            ScaleType.FIT_XY, // TODO
-            view.getAlpha(),
-            backgroundColor,
-            0, // borderRadius TODO
-            0, // borderWidth TODO
-            0, // borderColor TODO
-            elevation
-        );
-        mStyleCache = style;
+        // Update initial style cache
+        mInitialStyle = style;
 
         // Notify callbacks
         ArrayList<Callback> callbacks = mStyleCallbacks;
@@ -155,4 +204,70 @@ public class RNSharedElementNode extends Object {
             callback.invoke(style, this);
         }
     }
+
+    private void setDrawStyle(RNSharedElementStyle style) {
+
+        // Get view to update
+        View view = mResolvedView;
+
+        // Set layout
+        Rect frame = style.frame;
+        view.layout(frame.left, frame.top, frame.width(), frame.height());
+
+        // Set opacity
+        view.setAlpha(style.opacity);
+
+        if (view instanceof ReactImageView) {
+            ReactImageView imageView = (ReactImageView) view;
+            imageView.setBackgroundColor(style.backgroundColor);
+            imageView.setBorderColor(style.borderColor);
+            imageView.setBorderWidth(style.borderWidth);
+            imageView.setBorderRadius(PixelUtil.toPixelFromDIP(style.borderTopLeftRadius), 0);
+            imageView.setBorderRadius(PixelUtil.toPixelFromDIP(style.borderTopRightRadius), 1);
+            imageView.setBorderRadius(PixelUtil.toPixelFromDIP(style.borderBottomRightRadius), 2);
+            imageView.setBorderRadius(PixelUtil.toPixelFromDIP(style.borderBottomLeftRadius), 3);
+            imageView.setScaleType(style.scaleType);
+            imageView.setTileMode(ImageResizeMode.defaultTileMode());
+            imageView.maybeUpdateView();
+        }
+        else {
+            // TODO
+        }
+
+
+        // TODO 
+        // restore resizeMode (scaleType)
+        // restore borderRadius
+        // restore borderColor
+        // restore borderStyle
+        // restore backgroundColor
+        // restore elevation
+
+    }
+
+    public void draw(Canvas canvas, RNSharedElementStyle style) {
+        setDrawStyle(style);
+        mResolvedView.draw(canvas);
+    }
 }
+
+
+/*
+
+View startView = startStyle.getView();
+            if (startView instanceof GenericDraweeView) {
+                GenericDraweeView startImageView = (GenericDraweeView) startView;
+                GenericDraweeHierarchy hierarchy = startImageView.getHierarchy();
+                RectF imageBounds = new RectF();
+                hierarchy.getActualImageBounds(imageBounds);
+                Log.d(LOG_TAG, "onDraw, GenericDraweeView, imageBounds: " + imageBounds);
+            }
+
+            else if (startView instanceof ImageView) {
+                ImageView startImageView = (ImageView) startView;
+                Drawable drawable = startImageView.getDrawable();
+                int intrinsicWidth = drawable.getIntrinsicWidth();
+                int intrinsicHeight = drawable.getIntrinsicHeight();
+                Log.d(LOG_TAG, "onDraw, imageDrawable: " + drawable + ", width: " + intrinsicWidth + ", height: " + intrinsicHeight);
+            }
+            */

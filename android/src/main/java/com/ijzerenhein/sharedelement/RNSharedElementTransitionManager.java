@@ -53,8 +53,9 @@ public class RNSharedElementTransitionManager extends SimpleViewManager<RNShared
         final ReadableMap mapItem = map.getMap(name);
         int nodeHandle = mapItem.getInt("nodeHandle");
         boolean isParent = mapItem.getBoolean("isParent");
+        ReadableMap styleConfig = mapItem.getMap("nodeStyle");
         View view = mNodeManager.getNativeViewHierarchyManager().resolveView(nodeHandle);
-        return mNodeManager.acquire(nodeHandle, view, isParent);
+        return mNodeManager.acquire(nodeHandle, view, isParent, styleConfig);
     }
 
     @ReactProp(name = "startNode")
