@@ -6,6 +6,7 @@ import android.util.Log;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.view.View;
 
 import com.facebook.react.bridge.Callback;
@@ -79,13 +80,6 @@ public class RNSharedElementTransition extends GenericDraweeView {
 
     @Override
     public void layout(int l, int t, int r, int b) {
-        //int width = ((View)getParent()).getWidth();
-        //int height = ((View)getParent()).getHeight();
-        /*int width = r;
-        int height = 1000;
-        Log.d(LOG_TAG, "layout: " + l + ":" + t + ":" + r + ":" + b + ", width: " + width + ", height: " + height);
-        super.layout(0, 0, width, height);*/
-
         if (!mReactLayoutSet) {
             mReactLayoutSet = true;
 
@@ -179,8 +173,11 @@ public class RNSharedElementTransition extends GenericDraweeView {
     private RNSharedElementStyle getInterpolatedStyle(RNSharedElementStyle style1, RNSharedElementStyle style2, float position) {
         RNSharedElementStyle result = new RNSharedElementStyle();
         result.scaleType = style1.scaleType;
-        result.layout = getInterpolatedLayout(style1.layout, style2.layout, position);
-        result.frame = getInterpolatedLayout(style1.frame, style2.frame, position);
+        result.layout = getInterpolatedLayout(style1.frame, style2.frame, position);
+        Rect contentLayout1 = style1.getContentLayout(style1.frame, false);
+        Rect contentLayout2 = style2.getContentLayout(style2.frame, false);
+        Rect interpolatedContentLayout = getInterpolatedLayout(contentLayout1, contentLayout2, position);
+        result.frame = interpolatedContentLayout;
         result.opacity = style1.opacity + ((style2.opacity - style1.opacity) * position);
         result.backgroundColor = getInterpolatedColor(style1.backgroundColor, style2.backgroundColor, position);
         result.borderTopLeftRadius = style1.borderTopLeftRadius + ((style2.borderTopLeftRadius - style1.borderTopLeftRadius) * position);
@@ -223,6 +220,7 @@ public class RNSharedElementTransition extends GenericDraweeView {
 
     @Override
     protected void onDraw(Canvas canvas) {
+        //Log.d(LOG_TAG, "onDraw " + mNodePosition + ", interpolatedStyle: " + interpolatedStyle);
     
         // Local data
         RNSharedElementTransitionItem startItem = mItems.get(ITEM_START);
@@ -256,9 +254,34 @@ public class RNSharedElementTransition extends GenericDraweeView {
             interpolatedStyle = endStyle;
         }
 
-        //Log.d(LOG_TAG, "onDraw " + mNodePosition + ", interpolatedStyle: " + interpolatedStyle);
 
-        startItem.getNode().draw(canvas, interpolatedStyle);
+        // Start canvas drawing
+        canvas.save();
+
+        // Clip contents
+        //canvas.clipRect(0, 0, getWidth(), getHeight());
+
+        // Draw content
+        Paint backgroundPaint = new Paint();
+        backgroundPaint.setColor(Color.argb(128, 255, 0, 0));
+        canvas.drawRect(0, 0, getWidth(), getHeight(), backgroundPaint);
+
+        // Draw start-item
+        canvas.save();
+        canvas.translate(
+            interpolatedStyle.frame.left - interpolatedStyle.layout.left,
+            interpolatedStyle.frame.top - interpolatedStyle.layout.top
+        );
+        Paint contentPaint = new Paint();
+        contentPaint.setColor(Color.argb(128, 0, 0, 2550));
+        canvas.drawRect(0, 0, interpolatedStyle.frame.width(), interpolatedStyle.frame.height(), contentPaint);
+        //startItem.getNode().draw(canvas, interpolatedStyle);
+        canvas.restore();
+
+
+        // Restore canvas
+        canvas.restore();
+
     }
 
     private void fireMeasureEvent() {

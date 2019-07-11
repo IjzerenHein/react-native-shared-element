@@ -129,7 +129,9 @@ public class RNSharedElementNode extends Object {
             GenericDraweeHierarchy hierarchy = imageView.getHierarchy();
             if (hierarchy == null) return;
             RectF imageBounds = new RectF();
+            Drawable drawable = imageView.getDrawable();
             hierarchy.getActualImageBounds(imageBounds);
+            ScaleType scaleType = hierarchy.getActualImageScaleType();
             if ((imageBounds.width() == 0) && (imageBounds.height() == 0)) return;
             contentWidth = imageBounds.width();
             contentHeight = imageBounds.height();
@@ -225,7 +227,8 @@ public class RNSharedElementNode extends Object {
 
         // Set layout
         Rect frame = style.frame;
-        view.layout(frame.left, frame.top, frame.width(), frame.height());
+        //view.layout(frame.left, frame.top, frame.width(), frame.height());
+        view.layout(0, 0, frame.width(), frame.height());
 
         // Set opacity
         //view.setAlpha(style.opacity);
@@ -243,6 +246,8 @@ public class RNSharedElementNode extends Object {
             imageView.setBorderRadius(style.borderBottomRightRadius, 2);
             imageView.setBorderRadius(style.borderBottomLeftRadius, 3);
             imageView.setScaleType(style.scaleType);
+            //imageView.setScaleType(ScaleType.FIT_XY);
+            //imageView.setScaleType(ScaleType.FIT_CENTER);
             imageView.setTileMode(ImageResizeMode.defaultTileMode());
             imageView.maybeUpdateView();
         }
