@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.graphics.Canvas;
 import android.graphics.Rect;
+import android.graphics.RectF;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.ColorDrawable;
@@ -18,6 +19,8 @@ import com.facebook.drawee.drawable.ScalingUtils.ScaleType;
 import com.facebook.react.views.image.ImageResizeMode;
 import com.facebook.react.views.image.ReactImageView;
 import com.facebook.react.views.view.ReactViewGroup;
+import com.facebook.drawee.view.GenericDraweeView;
+import com.facebook.drawee.generic.GenericDraweeHierarchy;
 
 public class RNSharedElementNode extends Object {
     private int mReactTag;
@@ -104,7 +107,7 @@ public class RNSharedElementNode extends Object {
         View view = mResolvedView;
         if (view == null || mStyleCallbacks == null) return;
 
-        // Get relative size and position
+        // Get relative size and position within parent
         int left = view.getLeft();
         int top = view.getTop();
         int width = view.getWidth();
@@ -118,18 +121,34 @@ public class RNSharedElementNode extends Object {
         // TODO, adjust width & height for scaling transforms
         Rect layout = new Rect(location[0], location[1], location[0] + width, location[1] + height);
 
+        // Get content size (e.g. the size of the underlying image of an image-view)
+        float contentWidth = width;
+        float contentHeight = height;
+        if (view instanceof GenericDraweeView) {
+            GenericDraweeView imageView = (GenericDraweeView) view;
+            GenericDraweeHierarchy hierarchy = imageView.getHierarchy();
+            if (hierarchy == null) return;
+            RectF imageBounds = new RectF();
+            hierarchy.getActualImageBounds(imageBounds);
+            if ((imageBounds.width() == 0) && (imageBounds.height() == 0)) return;
+            contentWidth = imageBounds.width();
+            contentHeight = imageBounds.height();
+        }
+
         // Create style
         RNSharedElementStyle style = new RNSharedElementStyle();
         style.layout = layout;
         style.frame = frame;
+        style.contentWidth = contentWidth;
+        style.contentHeight = contentHeight;
         
         // Pre-fill the style with the style-config
         if (mStyleConfig.hasKey("opacity")) style.opacity = (float) mStyleConfig.getDouble("opacity");
         if (mStyleConfig.hasKey("backgroundColor")) style.backgroundColor = mStyleConfig.getInt("backgroundColor");
         if (mStyleConfig.hasKey("borderColor")) style.borderColor = mStyleConfig.getInt("borderColor");
-        if (mStyleConfig.hasKey("borderWidth")) style.borderWidth = (float) mStyleConfig.getDouble("borderWidth");
+        if (mStyleConfig.hasKey("borderWidth")) style.borderWidth = PixelUtil.toPixelFromDIP((float) mStyleConfig.getDouble("borderWidth"));
         if (mStyleConfig.hasKey("resizeMode")) style.scaleType = ImageResizeMode.toScaleType(mStyleConfig.getString("resizeMode"));
-        if (mStyleConfig.hasKey("elevation")) style.elevation = (float) mStyleConfig.getDouble("elevation");
+        if (mStyleConfig.hasKey("elevation")) style.elevation = PixelUtil.toPixelFromDIP((float) mStyleConfig.getDouble("elevation"));
 
         // Border-radius
         boolean isRTL = false;
@@ -137,14 +156,14 @@ public class RNSharedElementNode extends Object {
             isRTL = view.getLayoutDirection() == View.LAYOUT_DIRECTION_RTL;
         }
         if (mStyleConfig.hasKey("borderRadius")) {
-            float borderRadius = (float) mStyleConfig.getDouble("borderRadius");
+            float borderRadius = PixelUtil.toPixelFromDIP((float) mStyleConfig.getDouble("borderRadius"));
             style.borderTopLeftRadius = borderRadius;
             style.borderTopRightRadius = borderRadius;
             style.borderBottomLeftRadius = borderRadius;
             style.borderBottomRightRadius = borderRadius;
         }
         if (mStyleConfig.hasKey("borderTopEndRadius")) {
-            float borderRadius = (float) mStyleConfig.getDouble("borderTopEndRadius");
+            float borderRadius = PixelUtil.toPixelFromDIP((float) mStyleConfig.getDouble("borderTopEndRadius"));
             if (isRTL) {
                 style.borderTopLeftRadius = borderRadius;
             } else {
@@ -152,7 +171,7 @@ public class RNSharedElementNode extends Object {
             }
         }
         if (mStyleConfig.hasKey("borderTopStartRadius")) {
-            float borderRadius = (float) mStyleConfig.getDouble("borderTopStartRadius");
+            float borderRadius = PixelUtil.toPixelFromDIP((float) mStyleConfig.getDouble("borderTopStartRadius"));
             if (isRTL) {
                 style.borderTopRightRadius = borderRadius;
             } else {
@@ -160,7 +179,7 @@ public class RNSharedElementNode extends Object {
             }
         }
         if (mStyleConfig.hasKey("borderBottomEndRadius")) {
-            float borderRadius = (float) mStyleConfig.getDouble("borderBottomEndRadius");
+            float borderRadius = PixelUtil.toPixelFromDIP((float) mStyleConfig.getDouble("borderBottomEndRadius"));
             if (isRTL) {
                 style.borderBottomLeftRadius = borderRadius;
             } else {
@@ -168,25 +187,25 @@ public class RNSharedElementNode extends Object {
             }
         }
         if (mStyleConfig.hasKey("borderBottomStartRadius")) {
-            float borderRadius = (float) mStyleConfig.getDouble("borderBottomStartRadius");
+            float borderRadius = PixelUtil.toPixelFromDIP((float) mStyleConfig.getDouble("borderBottomStartRadius"));
             if (isRTL) {
                 style.borderBottomRightRadius = borderRadius;
             } else {
                 style.borderBottomLeftRadius = borderRadius;
             }
         }
-        if (mStyleConfig.hasKey("borderTopLeftRadius")) style.borderTopLeftRadius = (float) mStyleConfig.getDouble("borderTopLeftRadius");
-        if (mStyleConfig.hasKey("borderTopRightRadius")) style.borderTopRightRadius = (float) mStyleConfig.getDouble("borderTopRightRadius");
-        if (mStyleConfig.hasKey("borderBottomLeftRadius")) style.borderBottomLeftRadius = (float) mStyleConfig.getDouble("borderBottomLeftRadius");
-        if (mStyleConfig.hasKey("borderBottomRightRadius")) style.borderBottomRightRadius = (float) mStyleConfig.getDouble("borderBottomRightRadius");
+        if (mStyleConfig.hasKey("borderTopLeftRadius")) style.borderTopLeftRadius = PixelUtil.toPixelFromDIP((float) mStyleConfig.getDouble("borderTopLeftRadius"));
+        if (mStyleConfig.hasKey("borderTopRightRadius")) style.borderTopRightRadius = PixelUtil.toPixelFromDIP((float) mStyleConfig.getDouble("borderTopRightRadius"));
+        if (mStyleConfig.hasKey("borderBottomLeftRadius")) style.borderBottomLeftRadius = PixelUtil.toPixelFromDIP((float) mStyleConfig.getDouble("borderBottomLeftRadius"));
+        if (mStyleConfig.hasKey("borderBottomRightRadius")) style.borderBottomRightRadius = PixelUtil.toPixelFromDIP((float) mStyleConfig.getDouble("borderBottomRightRadius"));
 
         // Get opacity
         style.opacity = view.getAlpha();
 
         // Get elevation
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+        /*if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
             style.elevation = view.getElevation();
-        }
+        }*/
 
         // Update initial style cache
         mInitialStyle = style;
@@ -219,10 +238,10 @@ public class RNSharedElementNode extends Object {
             ReactImageView imageView = (ReactImageView) view;
             imageView.setBorderColor(style.borderColor);
             imageView.setBorderWidth(style.borderWidth);
-            imageView.setBorderRadius(PixelUtil.toPixelFromDIP(style.borderTopLeftRadius), 0);
-            imageView.setBorderRadius(PixelUtil.toPixelFromDIP(style.borderTopRightRadius), 1);
-            imageView.setBorderRadius(PixelUtil.toPixelFromDIP(style.borderBottomRightRadius), 2);
-            imageView.setBorderRadius(PixelUtil.toPixelFromDIP(style.borderBottomLeftRadius), 3);
+            imageView.setBorderRadius(style.borderTopLeftRadius, 0);
+            imageView.setBorderRadius(style.borderTopRightRadius, 1);
+            imageView.setBorderRadius(style.borderBottomRightRadius, 2);
+            imageView.setBorderRadius(style.borderBottomLeftRadius, 3);
             imageView.setScaleType(style.scaleType);
             imageView.setTileMode(ImageResizeMode.defaultTileMode());
             imageView.maybeUpdateView();
@@ -233,12 +252,13 @@ public class RNSharedElementNode extends Object {
             float borderColorRGB = (float) ((int)style.borderColor & 0x00FFFFFF);
             float borderColorAlpha = (float) ((int)style.borderColor >>> 24);
             viewGroup.setBorderColor(0, borderColorRGB, borderColorAlpha);
-            viewGroup.setBorderWidth(0, PixelUtil.toPixelFromDIP(style.borderWidth));
-            viewGroup.setBorderRadius(PixelUtil.toPixelFromDIP(style.borderTopLeftRadius), 0);
-            viewGroup.setBorderRadius(PixelUtil.toPixelFromDIP(style.borderTopRightRadius), 1);
-            viewGroup.setBorderRadius(PixelUtil.toPixelFromDIP(style.borderBottomRightRadius), 2);
-            viewGroup.setBorderRadius(PixelUtil.toPixelFromDIP(style.borderBottomLeftRadius), 3);
+            viewGroup.setBorderWidth(0, style.borderWidth);
+            viewGroup.setBorderRadius(style.borderTopLeftRadius, 0);
+            viewGroup.setBorderRadius(style.borderTopRightRadius, 1);
+            viewGroup.setBorderRadius(style.borderBottomRightRadius, 2);
+            viewGroup.setBorderRadius(style.borderBottomLeftRadius, 3);
         }
+        // TODO z-index reset?
     }
 
     public void draw(Canvas canvas, RNSharedElementStyle style) {
@@ -246,24 +266,3 @@ public class RNSharedElementNode extends Object {
         mResolvedView.draw(canvas);
     }
 }
-
-
-/*
-
-View startView = startStyle.getView();
-            if (startView instanceof GenericDraweeView) {
-                GenericDraweeView startImageView = (GenericDraweeView) startView;
-                GenericDraweeHierarchy hierarchy = startImageView.getHierarchy();
-                RectF imageBounds = new RectF();
-                hierarchy.getActualImageBounds(imageBounds);
-                Log.d(LOG_TAG, "onDraw, GenericDraweeView, imageBounds: " + imageBounds);
-            }
-
-            else if (startView instanceof ImageView) {
-                ImageView startImageView = (ImageView) startView;
-                Drawable drawable = startImageView.getDrawable();
-                int intrinsicWidth = drawable.getIntrinsicWidth();
-                int intrinsicHeight = drawable.getIntrinsicHeight();
-                Log.d(LOG_TAG, "onDraw, imageDrawable: " + drawable + ", width: " + intrinsicWidth + ", height: " + intrinsicHeight);
-            }
-            */

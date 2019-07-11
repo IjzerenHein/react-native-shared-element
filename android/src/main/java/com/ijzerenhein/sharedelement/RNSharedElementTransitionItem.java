@@ -8,7 +8,6 @@ public class RNSharedElementTransitionItem extends Object{
     private boolean mHidden;
     private boolean mNeedsStyle;
     private RNSharedElementStyle mStyle;
-    // private boolean mNeedsContent;
 
     public RNSharedElementTransitionItem(RNSharedElementNodeManager nodeManager, String name, boolean isAncestor) {
         mNodeManager = nodeManager;
@@ -18,8 +17,6 @@ public class RNSharedElementTransitionItem extends Object{
         mHidden = false;
         mNeedsStyle = false;
         mStyle = null;
-        // mNeedsContent = !isAncestor;
-        // mContent = null;
     }
 
     public String getName() {
@@ -61,9 +58,6 @@ public class RNSharedElementTransitionItem extends Object{
         mHidden = false;
         mNeedsStyle = node != null;
         mStyle = null;
-        // mNeedsContent = !mIsAncestor && (node != null);
-        //mContent = null;
-        //mContentType = ;
     }
 
     public boolean getNeedsStyle() {
@@ -81,12 +75,4 @@ public class RNSharedElementTransitionItem extends Object{
     public RNSharedElementStyle getStyle() {
         return mStyle;
     }
-
-    /*public boolean getNeedsContent() {
-        return mNeedsContent;
-    }
-
-    public void setNeedsContent(boolean needsContent) {
-        mNeedsContent = needsContent;
-    }*/
 }

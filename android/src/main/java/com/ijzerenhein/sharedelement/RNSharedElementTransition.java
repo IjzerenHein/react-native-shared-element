@@ -5,17 +5,12 @@ import java.util.ArrayList;
 import android.util.Log;
 import android.graphics.Canvas;
 import android.graphics.Rect;
-import android.graphics.RectF;
-import android.graphics.Paint;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.view.View;
-import android.widget.ImageView;
 
 import com.facebook.react.bridge.Callback;
 import com.facebook.react.uimanager.ThemedReactContext;
 import com.facebook.drawee.view.GenericDraweeView;
-import com.facebook.drawee.generic.GenericDraweeHierarchy;
 
 public class RNSharedElementTransition extends GenericDraweeView {
 
@@ -264,11 +259,6 @@ public class RNSharedElementTransition extends GenericDraweeView {
         //Log.d(LOG_TAG, "onDraw " + mNodePosition + ", interpolatedStyle: " + interpolatedStyle);
 
         startItem.getNode().draw(canvas, interpolatedStyle);
-
-        // Draw content
-        /*Paint paint = new Paint();
-        paint.setColor(Color.rgb(255, 0, 0));
-        canvas.drawRect(0, 0, getWidth(), getHeight(), paint);*/
     }
 
     private void fireMeasureEvent() {

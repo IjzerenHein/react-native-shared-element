@@ -8,6 +8,8 @@ import com.facebook.drawee.drawable.ScalingUtils.ScaleType;
 public class RNSharedElementStyle extends Object {
     public Rect layout = new Rect(); // absolute layout on screen
     public Rect frame = new Rect(); // frame rect relative to parent
+    public float contentWidth = 0;
+    public float contentHeight = 0;
     public ScaleType scaleType = ScaleType.FIT_XY;
     public int backgroundColor = Color.TRANSPARENT;
     public float opacity = 1;
