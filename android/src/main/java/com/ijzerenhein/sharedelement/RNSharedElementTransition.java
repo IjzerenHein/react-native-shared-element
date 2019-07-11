@@ -45,22 +45,22 @@ public class RNSharedElementTransition extends GenericDraweeView {
 
     public void setStartNode(RNSharedElementNode node) {
         mItems.get(ITEM_START).setNode(node);
-        requestStyles(false);
+        requestStylesAndContent(false);
     }
 
     public void setEndNode(RNSharedElementNode node) {
         mItems.get(ITEM_END).setNode(node);
-        requestStyles(false);
+        requestStylesAndContent(false);
     }
 
     public void setStartAncestor(RNSharedElementNode node) {
         mItems.get(ITEM_START_ANCESTOR).setNode(node);
-        requestStyles(false);
+        requestStylesAndContent(false);
     }
 
     public void setEndAncestor(RNSharedElementNode node) {
         mItems.get(ITEM_END_ANCESTOR).setNode(node);
-        requestStyles(false);
+        requestStylesAndContent(false);
     }
 
     public void setAnimation(final String animation) {
@@ -85,14 +85,14 @@ public class RNSharedElementTransition extends GenericDraweeView {
 
             // TODO - do this later after the whole layout pass
             // has completed
-            requestStyles(true);
+            requestStylesAndContent(true);
             mInitialLayoutPassCompleted = true;
             updateLayoutAndInvalidate();
             updateNodeVisibility();
         }
     }
 
-    private void requestStyles(boolean force) {
+    private void requestStylesAndContent(boolean force) {
         if (!mInitialLayoutPassCompleted && !force) return;
         for (final RNSharedElementTransitionItem item : mItems) {
             if (item.getNeedsStyle()) {
@@ -102,6 +102,18 @@ public class RNSharedElementTransition extends GenericDraweeView {
                     public void invoke(Object... args) {
                         RNSharedElementStyle style = (RNSharedElementStyle) args[0];
                         item.setStyle(style);
+                        updateLayoutAndInvalidate();
+                        updateNodeVisibility();
+                    }
+                });
+            }
+            if (item.getNeedsContent()) {
+                item.setNeedsContent(false);
+                item.getNode().requestContent(new Callback() {
+                    @Override
+                    public void invoke(Object... args) {
+                        RNSharedElementContent content = (RNSharedElementContent) args[0];
+                        item.setContent(content);
                         updateLayoutAndInvalidate();
                         updateNodeVisibility();
                     }
@@ -170,12 +182,26 @@ public class RNSharedElementTransition extends GenericDraweeView {
         return Color.HSVToColor((int) alpha_output, hsv_output);
     }
 
-    private RNSharedElementStyle getInterpolatedStyle(RNSharedElementStyle style1, RNSharedElementStyle style2, float position) {
+    private RNSharedElementStyle getInterpolatedStyle(
+        RNSharedElementStyle style1,
+        RNSharedElementContent content1,
+        RNSharedElementStyle style2,
+        RNSharedElementContent content2,
+        float position
+    ) {
         RNSharedElementStyle result = new RNSharedElementStyle();
         result.scaleType = style1.scaleType;
         result.layout = getInterpolatedLayout(style1.frame, style2.frame, position);
-        Rect contentLayout1 = style1.getContentLayout(style1.frame, false);
-        Rect contentLayout2 = style2.getContentLayout(style2.frame, false);
+        Rect contentLayout1 = RNSharedElementTransitionItem.getContentLayout(
+            style1.frame,
+            (content1 != null) ? content1.size : content2.size,
+            style1.scaleType,
+            false);
+        Rect contentLayout2 = RNSharedElementTransitionItem.getContentLayout(
+            style2.frame,
+            (content2 != null) ? content2.size : content1.size,
+            style2.scaleType,
+            false);
         Rect interpolatedContentLayout = getInterpolatedLayout(contentLayout1, contentLayout2, position);
         result.frame = interpolatedContentLayout;
         result.opacity = style1.opacity + ((style2.opacity - style1.opacity) * position);
@@ -233,19 +259,22 @@ public class RNSharedElementTransition extends GenericDraweeView {
 
         // Get start layout
         RNSharedElementStyle startStyle = startItem.getStyle();
+        RNSharedElementContent startContent = startItem.getContent();
         //Rect startLayout = (startStyle != null) ? normalizeLayout(startStyle.getLayout(), startAncestor) : new Rect();
 
         // Get end layout
         RNSharedElementStyle endStyle = endItem.getStyle();
+        RNSharedElementContent endContent = endItem.getContent();
         //Rect endLayout = (endStyle != null) ? normalizeLayout(endStyle.getLayout(), endAncestor) : new Rect();
 
         // Get interpolated style & layout
         //Rect interpolatedLayout;
         RNSharedElementStyle interpolatedStyle;
         if ((startStyle == null) && (endStyle == null)) return;
+        if ((startContent == null) && (endContent == null)) return;
         if ((startStyle != null) && (endStyle != null)) {
             //interpolatedLayout = getInterpolatedLayout(startLayout, endLayout, mNodePosition);
-            interpolatedStyle = getInterpolatedStyle(startStyle, endStyle, mNodePosition);
+            interpolatedStyle = getInterpolatedStyle(startStyle, startContent, endStyle, endContent, mNodePosition);
         } else if (startStyle != null) {
             //interpolatedLayout = startLayout;
             interpolatedStyle = startStyle;
@@ -254,17 +283,16 @@ public class RNSharedElementTransition extends GenericDraweeView {
             interpolatedStyle = endStyle;
         }
 
-
         // Start canvas drawing
         canvas.save();
 
         // Clip contents
-        //canvas.clipRect(0, 0, getWidth(), getHeight());
+        canvas.clipRect(0, 0, getWidth(), getHeight());
 
         // Draw content
-        Paint backgroundPaint = new Paint();
+        /*Paint backgroundPaint = new Paint();
         backgroundPaint.setColor(Color.argb(128, 255, 0, 0));
-        canvas.drawRect(0, 0, getWidth(), getHeight(), backgroundPaint);
+        canvas.drawRect(0, 0, getWidth(), getHeight(), backgroundPaint);*/
 
         // Draw start-item
         canvas.save();
@@ -272,12 +300,11 @@ public class RNSharedElementTransition extends GenericDraweeView {
             interpolatedStyle.frame.left - interpolatedStyle.layout.left,
             interpolatedStyle.frame.top - interpolatedStyle.layout.top
         );
-        Paint contentPaint = new Paint();
+        /*Paint contentPaint = new Paint();
         contentPaint.setColor(Color.argb(128, 0, 0, 2550));
-        canvas.drawRect(0, 0, interpolatedStyle.frame.width(), interpolatedStyle.frame.height(), contentPaint);
-        //startItem.getNode().draw(canvas, interpolatedStyle);
+        canvas.drawRect(0, 0, interpolatedStyle.frame.width(), interpolatedStyle.frame.height(), contentPaint);*/
+        startItem.getNode().draw(canvas, interpolatedStyle);
         canvas.restore();
-
 
         // Restore canvas
         canvas.restore();

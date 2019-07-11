@@ -31,8 +31,10 @@ public class RNSharedElementNode extends Object {
     private View mResolvedView;
     private int mRefCount;
     private int mHideRefCount;
-    private RNSharedElementStyle mInitialStyle;
+    private RNSharedElementStyle mStyleCache;
     private ArrayList<Callback> mStyleCallbacks;
+    private RNSharedElementContent mContentCache;
+    private ArrayList<Callback> mContentCallbacks;
 
     public RNSharedElementNode(int reactTag, View view, boolean isParent, ReadableMap styleConfig) {
         mReactTag = reactTag;
@@ -41,8 +43,10 @@ public class RNSharedElementNode extends Object {
         mStyleConfig = styleConfig;
         mRefCount = 1;
         mHideRefCount = 0;
-        mInitialStyle = null;
+        mStyleCache = null;
         mStyleCallbacks = null;
+        mContentCache = null;
+        mContentCallbacks = null;
         mResolvedView = null;
         updateView();
     }
@@ -69,7 +73,7 @@ public class RNSharedElementNode extends Object {
     public void releaseHideRef() {
         mHideRefCount--;
         if (mHideRefCount == 0) {
-            if (mInitialStyle != null) setDrawStyle(mInitialStyle);
+            if (mStyleCache != null) setDrawStyle(mStyleCache);
             mView.setAlpha(1);
         }
     }
@@ -94,11 +98,10 @@ public class RNSharedElementNode extends Object {
     }
 
     public void requestStyle(Callback callback) {
-        if (mInitialStyle != null) {
-            callback.invoke(mInitialStyle, this);
+        if (mStyleCache != null) {
+            callback.invoke(mStyleCache, this);
             return;
         }
-
         if (mStyleCallbacks == null) mStyleCallbacks = new ArrayList<Callback>();
         mStyleCallbacks.add(callback);
         fetchInitialStyle();
@@ -138,20 +141,10 @@ public class RNSharedElementNode extends Object {
         // TODO, adjust width & height for scaling transforms
         Rect layout = new Rect(location[0], location[1], location[0] + width, location[1] + height);
 
-        // Get content size (e.g. the size of the underlying image of an image-view)
-        float contentWidth = width;
-        float contentHeight = height;
-        RectF contentsRect = getContentsRect(view);
-        if (contentsRect == null) return;
-        contentWidth = contentsRect.width();
-        contentHeight = contentsRect.height();
-
         // Create style
         RNSharedElementStyle style = new RNSharedElementStyle();
         style.layout = layout;
         style.frame = frame;
-        style.contentWidth = contentWidth;
-        style.contentHeight = contentHeight;
         
         // Pre-fill the style with the style-config
         if (mStyleConfig.hasKey("opacity")) style.opacity = (float) mStyleConfig.getDouble("opacity");
@@ -219,13 +212,52 @@ public class RNSharedElementNode extends Object {
         }*/
 
         // Update initial style cache
-        mInitialStyle = style;
+        mStyleCache = style;
 
         // Notify callbacks
         ArrayList<Callback> callbacks = mStyleCallbacks;
         mStyleCallbacks = null;
         for (Callback callback : callbacks) { 
             callback.invoke(style, this);
+        }
+    }
+
+    public void requestContent(Callback callback) {
+        if (mContentCache != null) {
+            callback.invoke(mContentCache, this);
+            return;
+        }
+        if (mContentCallbacks == null) mContentCallbacks = new ArrayList<Callback>();
+        mContentCallbacks.add(callback);
+        fetchInitialContent();
+    }
+
+    private void fetchInitialContent() {
+        View view = mResolvedView;
+        if (view == null || mContentCallbacks == null) return;
+
+        // Verify view size
+        int width = view.getWidth();
+        int height = view.getHeight();
+        if (width == 0 && height == 0) return;
+
+        // Get content size (e.g. the size of the underlying image of an image-view)
+        RectF contentsRect = getContentsRect(view);
+        if (contentsRect == null) return;
+
+        // Create content
+        RNSharedElementContent content = new RNSharedElementContent();
+        content.view = view;
+        content.size = contentsRect;
+        
+        // Update cache
+        mContentCache = content;
+
+        // Notify callbacks
+        ArrayList<Callback> callbacks = mContentCallbacks;
+        mContentCallbacks = null;
+        for (Callback callback : callbacks) { 
+            callback.invoke(content, this);
         }
     }
 
@@ -249,7 +281,7 @@ public class RNSharedElementNode extends Object {
         if (view instanceof ReactImageView) {
             ReactImageView imageView = (ReactImageView) view;
             imageView.setBorderColor(style.borderColor);
-            imageView.setBorderWidth(style.borderWidth);
+            imageView.setBorderWidth(PixelUtil.toDIPFromPixel(style.borderWidth));
             imageView.setBorderRadius(style.borderTopLeftRadius, 0);
             imageView.setBorderRadius(style.borderTopRightRadius, 1);
             imageView.setBorderRadius(style.borderBottomRightRadius, 2);
