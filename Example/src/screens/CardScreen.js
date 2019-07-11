@@ -48,7 +48,7 @@ export class CardScreen extends React.Component<PropsType, StateType> {
     const { id, name, photo, description } = hero;
     return (
       <View style={styles.flex}>
-        <StatusBar barStyle='light-content' />
+        <StatusBar barStyle='light-content' animated />
         <ScreenTransition sharedId={`heroBackground.${id}`} style={StyleSheet.absoluteFill}>
           <View style={styles.background} />
         </ScreenTransition>

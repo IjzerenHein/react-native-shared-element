@@ -1,13 +1,13 @@
 // @flow
 import * as React from "react";
-import { StyleSheet, View, TouchableOpacity, Platform } from "react-native";
+import { StyleSheet, View, TouchableOpacity } from "react-native";
 import { Heading2 } from "./Text";
 import { Router } from "./Router";
 import { Colors } from "./Colors";
 import { Icon } from "./Icon";
 import { getStatusBarHeight } from 'react-native-iphone-x-helper'
 
-const HEIGHT = 56 + ((Platform.OS === 'android') ? 0 : getStatusBarHeight());
+const HEIGHT = 56 + getStatusBarHeight();
 
 const styles = StyleSheet.create({
   container: {

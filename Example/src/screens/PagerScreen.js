@@ -67,7 +67,7 @@ export class PagerScreen extends React.Component<PropsType, StateType> {
     const initialIndex = Heroes.findIndex(({id}) => id === hero.id);
     return (
       <View style={styles.container}>
-        <StatusBar barStyle='light-content' />
+        <StatusBar barStyle='light-content' animated/>
         <Animated.View style={[styles.background, {
           opacity: dismissAnimValue.interpolate({
             inputRange: [-400, -300, -50, 50, 300, 400],

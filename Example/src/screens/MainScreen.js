@@ -1,6 +1,6 @@
 // @flow
 import * as React from "react";
-import { StyleSheet, ScrollView, View } from "react-native";
+import { StyleSheet, ScrollView, View, StatusBar } from "react-native";
 import { Router, NavBar, ListItem, Colors } from "../components";
 import { TilesScreen } from "./TilesScreen";
 import { TestsScreen } from "./TestsScreen";
@@ -22,6 +22,7 @@ export class MainScreen extends React.Component<{}> {
   render() {
     return (
       <View style={styles.container}>
+        <StatusBar barStyle='dark-content' animated />
         <NavBar title="Shared Element Demo" back="none" />
         <ScrollView style={styles.content}>
           <ListItem
