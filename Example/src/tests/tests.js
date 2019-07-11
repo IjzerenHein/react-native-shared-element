@@ -4,8 +4,9 @@ import { ImageBackground } from "react-native";
 import { Heroes } from "../assets";
 import type { Test, TestGroup } from "../types";
 import { TestImage } from "./TestImage";
+import { TestView } from "./TestView";
 import { TestScrollView } from "./TestScrollView";
-import { TestView } from './TestView';
+import { TestCompoundView } from './TestCompoundView';
 import FastImage from "react-native-fast-image";
 import PhotoView from "react-native-photo-view";
 import { Colors, Shadows } from "../components";
@@ -203,23 +204,106 @@ export const Tests: (Test | TestGroup)[] = [
     ]
   },
   {
+    name: "Views",
+    tests: [
+      {
+        name: "View Move & Scale",
+        tests: [
+          {
+            name: "Simple move",
+            description:
+              "The most basic form of a shared-element transition. The view should move smoothly without flickering from the start- to the end state, and back",
+            start: <TestView />,
+            end: <TestView end />
+          },
+          {
+            name: "Move & scale",
+            description:
+              "Another basic form of a shared-element transition. The view should move & scale correctly without flickering from the start- to the end state, and back",
+            start: <TestView size="small" />,
+            end: <TestView end size="large" />
+          },
+          {
+            name: "Full size",
+            description: "TODO",
+            start: <TestView size="small" />,
+            end: <TestView end size="max" />
+          }
+        ]
+      },
+      {
+        name: "View Styles",
+        tests: [
+          {
+            name: "View Opacity",
+            description: `The transition should use the start- and ending opacity of the image and create a smooth transition.`,
+            start: <TestView size="regular" round style={{opacity: 0.5}} />,
+            end: <TestView end size="regular" round />
+          },
+          {
+            name: "View Border-radius",
+            description: `The border-radius should correctly animate for the transition.`,
+            start: <TestView size="regular" round />,
+            end: <TestView end size="regular" />
+          },
+          {
+            name: "View Border  ➔  No-border",
+            description: `The transition should use the start- and ending opacity of the image and create a smooth transition.`,
+            start: <TestView size="regular" round style={{borderWidth: 5, borderColor: Colors.yellow}} />,
+            end: <TestView end size="regular" round />
+          },
+          {
+            name: "View Border  ➔  Other border",
+            description: `The transition should use the start- and ending opacity of the image and create a smooth transition.`,
+            start: <TestView size="regular" round style={{borderWidth: 5, borderColor: Colors.yellow}} />,
+            end: <TestView end size="regular" round style={{borderWidth: 2, borderColor: Colors.black}} />
+          },
+          {
+            name: "View Shadow   ➔  No shadow",
+            description: `The transition should use the start- and ending opacity of the image and create a smooth transition.`,
+            start: <TestView size="regular" round style={{...Shadows.elevation2, backgroundColor: 'white'}} />,
+            end: <TestView end size="regular" round />
+          },
+        ]
+      },
+      {
+        name: "View Dissolve",
+        description: `Views with a different appearance should smoothly "dissolve" into one another`,
+        tests: [
+          {
+            name: "Dissolve",
+            start: <TestView size="regular" />,
+            end: <TestView end size="regular" color={Colors.yellow} />,
+            animation: "dissolve"
+          },
+          {
+            name: "Dissolve != aspect-ratios",
+            start: <TestView size="regular" />,
+            end: <TestView end size="large" color={Colors.yellow} />,
+            animation: "dissolve"
+          },
+        ]
+      },
+    ]
+  },
+  {
     name: "Compound components",
     description: 'Components with multiple children can be animated separately or as a whole',
     tests: [
       {
         name: "Simple move",
-        start: <TestView position='top'/>,
-        end: <TestView position='bottom'/>
+        start: <TestCompoundView position='top'/>,
+        end: <TestCompoundView position='bottom'/>
       },
       {
         name: "Move & scale",
-        start: <TestView position='top'/>,
-        end: <TestView position='bottom' size='large'/>
+        start: <TestCompoundView position='top'/>,
+        end: <TestCompoundView position='bottom' size='large'/>
       },
       {
         name: "Dissolve",
-        start: <TestView size="regular" position='top' />,
-        end: <TestView end size="regular" position='bottom' hero={Heroes[2]} />,
+        start: <TestCompoundView size="regular" position='top' />,
+        end: <TestCompoundView end size="regular" position='bottom' hero={Heroes[2]} />,
         animation: "dissolve"
       },
     ]
@@ -230,20 +314,20 @@ export const Tests: (Test | TestGroup)[] = [
     tests: [
       {
         name: "Move multiple",
-        start: <TestView position='top'/>,
-        end: <TestView position='bottom' />,
+        start: <TestCompoundView position='top'/>,
+        end: <TestCompoundView position='bottom' />,
         multi: true
       },
       {
         name: "Move & scale multiple",
-        start: <TestView position='top'/>,
-        end: <TestView position='bottom' size='large'/>,
+        start: <TestCompoundView position='top'/>,
+        end: <TestCompoundView position='bottom' size='large'/>,
         multi: true
       },
       {
         name: "Gradient overlay",
-        start: <TestView size="regular" position='center' />,
-        end: <TestView size='max' />,
+        start: <TestCompoundView size="regular" position='center' />,
+        end: <TestCompoundView size='max' />,
         multi: true
       },
     ]
