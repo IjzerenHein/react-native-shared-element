@@ -1,12 +1,15 @@
 package com.ijzerenhein.sharedelement;
 
 import java.util.ArrayList;
+import javax.annotation.Nullable;
 
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.graphics.drawable.Animatable;
 
 import com.facebook.react.uimanager.PixelUtil;
 import com.facebook.react.bridge.Callback;
@@ -15,7 +18,16 @@ import com.facebook.react.views.image.ImageResizeMode;
 import com.facebook.react.views.image.ReactImageView;
 import com.facebook.react.views.view.ReactViewGroup;
 
+import com.facebook.imagepipeline.image.ImageInfo;
+import com.facebook.drawee.view.GenericDraweeView;
+import com.facebook.drawee.controller.BaseControllerListener;
+import com.facebook.drawee.controller.ControllerListener;
+import com.facebook.drawee.interfaces.DraweeController;
+import com.facebook.drawee.backends.pipeline.PipelineDraweeController;
+
 public class RNSharedElementNode extends Object {
+    static String LOG_TAG = "RNSharedElementNode";
+
     private int mReactTag;
     private View mView;
     private boolean mIsParent;
@@ -27,6 +39,7 @@ public class RNSharedElementNode extends Object {
     private ArrayList<Callback> mStyleCallbacks;
     private RNSharedElementContent mContentCache;
     private ArrayList<Callback> mContentCallbacks;
+    private ControllerListener mDraweeControllerListener;
 
     public RNSharedElementNode(int reactTag, View view, boolean isParent, ReadableMap styleConfig) {
         mReactTag = reactTag;
@@ -40,6 +53,7 @@ public class RNSharedElementNode extends Object {
         mContentCache = null;
         mContentCallbacks = null;
         mResolvedView = null;
+        mDraweeControllerListener = null;
         updateView();
     }
 
@@ -53,6 +67,9 @@ public class RNSharedElementNode extends Object {
 
     public void setRefCount(int refCount) {
         mRefCount = refCount;
+        if (mRefCount == 0) {
+            removeDraweeControllerListener();
+        }
     }
 
     public void addHideRef() {
@@ -86,6 +103,7 @@ public class RNSharedElementNode extends Object {
         }
         view = resolveView(view);
         if (mResolvedView == view) return;
+        removeDraweeControllerListener();
         mResolvedView = view;
     }
 
@@ -162,7 +180,11 @@ public class RNSharedElementNode extends Object {
 
         // Get content size (e.g. the size of the underlying image of an image-view)
         RectF contentSize = RNSharedElementContent.getSize(view);
-        if (contentSize == null) return;
+        if (contentSize == null) {
+            // Image has not yet been fetches, listen for it
+            addDraweeControllerListener();
+            return;
+        }
 
         // Create content
         RNSharedElementContent content = new RNSharedElementContent();
@@ -227,5 +249,47 @@ public class RNSharedElementNode extends Object {
     public void draw(Canvas canvas, RNSharedElementStyle style) {
         setDrawStyle(style);
         mResolvedView.draw(canvas);
+    }
+
+    private void addDraweeControllerListener() {
+        if (mDraweeControllerListener != null) return;
+
+        if (!(mResolvedView instanceof GenericDraweeView)) return;
+        GenericDraweeView imageView = (GenericDraweeView) mResolvedView;
+        PipelineDraweeController controller = (PipelineDraweeController) imageView.getController();
+        if (!(controller instanceof PipelineDraweeController)) return;
+
+        mDraweeControllerListener = new BaseControllerListener<ImageInfo>() {
+            @Override
+            public void onSubmit(String id, Object callerContext) {
+                Log.d(LOG_TAG, "mDraweeControllerListener.onSubmit: " + id + ", callerContext: " + callerContext);
+            }
+    
+            @Override
+            public void onFinalImageSet(
+              String id,
+              @Nullable final ImageInfo imageInfo,
+              @Nullable Animatable animatable) {
+                Log.d(LOG_TAG, "mDraweeControllerListener.onFinalImageSet: " + id + ", imageInfo: " + imageInfo);
+                removeDraweeControllerListener();
+                fetchInitialContent();
+            }
+    
+            @Override
+            public void onFailure(String id, Throwable throwable) {
+                Log.d(LOG_TAG, "mDraweeControllerListener.onFailure: " + id + ", throwable: " + throwable);
+            }
+        };
+
+        controller.addControllerListener(mDraweeControllerListener);
+    }
+
+    private void removeDraweeControllerListener() {
+        if (mDraweeControllerListener == null) return;
+        GenericDraweeView imageView = (GenericDraweeView) mResolvedView;
+        PipelineDraweeController controller = (PipelineDraweeController) imageView.getController();
+        if (!(controller instanceof PipelineDraweeController)) return;
+        controller.removeControllerListener(mDraweeControllerListener);
+        mDraweeControllerListener = null;
     }
 }
