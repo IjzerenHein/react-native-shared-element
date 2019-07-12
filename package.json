@@ -48,7 +48,7 @@
     "babel-plugin-module-resolver": "^3.2.0",
     "detox": "^12.1.2",
     "eslint": "5.16.0",
-    "flow-bin": "^0.102.0",
+    "flow-bin": "^0.86.0",
     "jest": "^24.7.0",
     "metro-react-native-babel-preset": "0.51.1",
     "prettier": "^1.16.4",

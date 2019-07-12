@@ -106,10 +106,13 @@ export function withScreenTransitionContext(WrappedComponent: any) {
       </Context.Consumer>
     );
   };
-  comp.propTypes = {
-    ...(WrappedComponent.propTypes || {}),
-  };
-  delete comp.propTypes.screenTransitionContext;
+  if (WrappedComponent.propTypes) {
+    const propTypes = {
+      ...WrappedComponent.propTypes,
+    };
+    delete propTypes.screenTransitionContext;
+    comp.propTypes = propTypes;
+  }
   comp.defaultProps = WrappedComponent.defaultProps;
   return comp;
 }
