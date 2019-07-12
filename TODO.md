@@ -5,7 +5,7 @@ Essential:
 [X] ImageBackground support
 [X] Scrollview clipping
 [X] visibleLayout issue when scene is offsetted outside the screen  
-[ ] Compound view "dissolve" issue
+[ ] Compound view "fade" issue
 [ ] Android support
 [ ] Show / hide animations
 [ ] Show / hide animations on Shared Element renderer

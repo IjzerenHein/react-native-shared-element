@@ -154,23 +154,23 @@ export const Tests: (Test | TestGroup)[] = [
         ]
       },
       {
-        name: "Image Dissolve",
+        name: "Image Fade",
         description:
-          'When two images are distinctly different, the "dissolve" animation should create a smooth cross fade between the content',
+          'When two images are distinctly different, the "fade" animation should create a smooth cross fade between the content',
         tests: [
           {
-            name: "Dissolve",
+            name: "Fade",
             start: <TestImage size="regular" resizeMode="cover" />,
             end: <TestImage end size="large" hero={Heroes[2]} />,
-            animation: "dissolve"
+            animation: "fade"
           },
           {
-            name: "Dissolve != aspect-ratios",
+            name: "Fade != aspect-ratios",
             start: <TestImage size="regular" resizeMode="contain" />,
             end: (
               <TestImage end size="large" hero={Heroes[8]} resizeMode="cover" />
             ),
-            animation: "dissolve"
+            animation: "fade"
           }
         ]
       },
@@ -330,21 +330,21 @@ export const Tests: (Test | TestGroup)[] = [
         ]
       },
       {
-        name: "View Dissolve",
+        name: "View Fade",
         description:
-          'Views with a different appearance should smoothly "dissolve" into one another',
+          'Views with a different appearance should smoothly "fade" into one another',
         tests: [
           {
-            name: "Dissolve",
+            name: "Fade",
             start: <TestView size="regular" />,
             end: <TestView end size="regular" color={Colors.yellow} />,
-            animation: "dissolve"
+            animation: "fade"
           },
           {
-            name: "Dissolve != aspect-ratios",
+            name: "Fade != aspect-ratios",
             start: <TestView size="regular" />,
             end: <TestView end size="large" color={Colors.yellow} />,
-            animation: "dissolve"
+            animation: "fade"
           }
         ]
       }
@@ -366,7 +366,7 @@ export const Tests: (Test | TestGroup)[] = [
         end: <TestCompoundView position="bottom" size="large" />
       },
       {
-        name: "Dissolve",
+        name: "Fade",
         start: <TestCompoundView size="regular" position="top" />,
         end: (
           <TestCompoundView
@@ -376,7 +376,7 @@ export const Tests: (Test | TestGroup)[] = [
             hero={Heroes[2]}
           />
         ),
-        animation: "dissolve"
+        animation: "fade"
       }
     ]
   },

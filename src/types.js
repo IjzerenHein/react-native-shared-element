@@ -9,7 +9,8 @@ export type SharedElementNode = {
 
 export type SharedElementAnimation =
   | "move"
-  | "dissolve"
+  | "fade"
+  | "fade-stretch"
   | "fade-top"
   | "fade-bottom"
   | "fade-left"

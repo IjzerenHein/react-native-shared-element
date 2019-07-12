@@ -493,11 +493,9 @@
         endInterpolatedContentLayout.origin.y -= interpolatedLayout.origin.y;
         contentView2.frame = endInterpolatedContentLayout;
         
-        // In case of a dissolve, fade-in the end-content
-        //if ([_animation isEqualToString:@"dissolve"]) {
-            contentView1.layer.opacity = 1.0f - MIN(MAX(_nodePosition, 0.0f), 1.0f);
-            contentView2.layer.opacity = MIN(MAX(_nodePosition, 0.0f), 1.0f);
-        //}
+        // Cross-fade
+        contentView1.layer.opacity = 1.0f - MIN(MAX(_nodePosition, 0.0f), 1.0f);
+        contentView2.layer.opacity = MIN(MAX(_nodePosition, 0.0f), 1.0f);
     }
 
     // Fire events

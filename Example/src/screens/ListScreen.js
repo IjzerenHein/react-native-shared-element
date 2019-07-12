@@ -121,7 +121,7 @@ export class ListScreen extends React.Component<PropsType> {
     const { animation, DetailComponent, transitionConfig } = this.props;
     const sharedElements = {
       [`heroPhoto.${hero.id}`]: animation,
-      [`heroPhotoOverlay.${hero.id}`]: "dissolve",
+      [`heroPhotoOverlay.${hero.id}`]: "fade",
       [`heroName.${hero.id}`]: animation
     };
     Router.push(<DetailComponent hero={hero} />, {

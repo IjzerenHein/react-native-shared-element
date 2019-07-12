@@ -91,9 +91,9 @@ export class TestScreen extends React.Component<PropsType> {
           transitionConfig,
           sharedElements: {
             testImage: test.animation || "move",
-            testOverlay: test.animation || "dissolve",
+            testOverlay: test.animation || "fade",
             testLogo: test.animation || "move",
-            testTitle: test.animation || "dissolve"
+            testTitle: test.animation || "fade"
           }
         }
       : {

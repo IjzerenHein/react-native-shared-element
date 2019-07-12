@@ -208,19 +208,19 @@ export class TilesScreen extends React.Component<PropsType> {
       overlay,
       type
     } = this.props;
-    const alternateHero = animation === "dissolve" ? Heroes[0] : hero;
+    const alternateHero = animation === "fade" ? Heroes[0] : hero;
     const sharedElements = {};
     if (type === "card") {
       sharedElements[`heroBackground.${hero.id}`] = "move";
       sharedElements[`heroPhoto.${hero.id}`] = "move";
-      sharedElements[`heroCloseButton.${hero.id}`] = "dissolve";
+      sharedElements[`heroCloseButton.${hero.id}`] = "fade";
       sharedElements[`heroName.${hero.id}`] = "move";
       sharedElements[`heroDescription.${hero.id}`] = "fade-top";
     } else {
       sharedElements[`heroPhoto.${hero.id}`] = animation;
     }
     if (overlay) {
-      sharedElements[`heroPhotoOverlay.${hero.id}`] = "dissolve";
+      sharedElements[`heroPhotoOverlay.${hero.id}`] = "fade";
     }
     Router.push(
       <DetailComponent

@@ -104,7 +104,7 @@ export class CardScreen extends React.Component<PropsType, StateType> {
     const sharedElements = {
       [`heroBackground.${hero.id}`]: "move",
       [`heroPhoto.${hero.id}`]: "move",
-      [`heroCloseButton.${hero.id}`]: "dissolve",
+      [`heroCloseButton.${hero.id}`]: "fade",
       [`heroName.${hero.id}`]: "move",
       [`heroDescription.${hero.id}`]: "fade-top"
     };
