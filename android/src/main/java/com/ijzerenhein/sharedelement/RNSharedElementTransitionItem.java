@@ -19,7 +19,7 @@ public class RNSharedElementTransitionItem extends Object{
         mHidden = false;
         mNeedsStyle = false;
         mStyle = null;
-        mNeedsContent = !isAncestor;
+        mNeedsContent = false;
         mContent = null;
     }
 
