@@ -1,10 +1,5 @@
 package com.ijzerenhein.sharedelement;
 
-import android.graphics.Rect;
-import android.graphics.RectF;
-
-import com.facebook.drawee.drawable.ScalingUtils.ScaleType;
-
 public class RNSharedElementTransitionItem extends Object{
     private RNSharedElementNodeManager mNodeManager;
     private String mName;
@@ -102,37 +97,4 @@ public class RNSharedElementTransitionItem extends Object{
     public RNSharedElementContent getContent() {
         return mContent;
     }
-
-    static public Rect getContentLayout(Rect layout, RectF contentSize, ScaleType scaleType, boolean reverse) {
-        float width = layout.width();
-        float height = layout.height();
-        float contentAspectRatio = (contentSize.width() / contentSize.height());
-        boolean lo = (width / height) < contentAspectRatio;
-        boolean aspectRatioCriteria = reverse ? !lo : lo;
-        if (scaleType == ScaleType.FIT_CENTER) {
-          // contain
-          if (aspectRatioCriteria) {
-            height = width / contentAspectRatio;
-          } else {
-            width = height * contentAspectRatio;
-          }
-        } else if (scaleType == ScaleType.CENTER_CROP) {
-          // cover
-          if (aspectRatioCriteria) {
-            width = height * contentAspectRatio;
-          } else {
-            height = width / contentAspectRatio;
-          }
-        } else if (scaleType == ScaleType.CENTER_INSIDE) {
-          // center
-          width = contentSize.width();
-          height = contentSize.height();
-        }
-        return new Rect(
-          (int) (layout.left + ((layout.width() - width) / 2)),
-          (int) (layout.top + ((layout.height() - height) / 2)),
-          (int) (layout.right - ((layout.width() - width) / 2)),
-          (int) (layout.bottom - ((layout.height() - height) / 2))
-        );
-      }
 }

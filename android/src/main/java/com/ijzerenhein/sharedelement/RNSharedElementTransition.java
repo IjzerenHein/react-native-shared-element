@@ -7,11 +7,11 @@ import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.view.View;
 
 import com.facebook.react.bridge.Callback;
 import com.facebook.react.uimanager.ThemedReactContext;
 import com.facebook.drawee.view.GenericDraweeView;
+import com.facebook.drawee.drawable.ScalingUtils;
 
 public class RNSharedElementTransition extends GenericDraweeView {
 
@@ -190,14 +190,15 @@ public class RNSharedElementTransition extends GenericDraweeView {
         float position
     ) {
         RNSharedElementStyle result = new RNSharedElementStyle();
-        result.scaleType = style1.scaleType;
+        //result.scaleType = style1.scaleType;
+        result.scaleType = ScalingUtils.ScaleType.CENTER_CROP;
         result.layout = getInterpolatedLayout(style1.frame, style2.frame, position);
-        Rect contentLayout1 = RNSharedElementTransitionItem.getContentLayout(
+        Rect contentLayout1 = RNSharedElementContent.getLayout(
             style1.frame,
             (content1 != null) ? content1.size : content2.size,
             style1.scaleType,
             false);
-        Rect contentLayout2 = RNSharedElementTransitionItem.getContentLayout(
+        Rect contentLayout2 = RNSharedElementContent.getLayout(
             style2.frame,
             (content2 != null) ? content2.size : content1.size,
             style2.scaleType,
@@ -253,9 +254,6 @@ public class RNSharedElementTransition extends GenericDraweeView {
         RNSharedElementTransitionItem startAncestor = mItems.get(ITEM_START_ANCESTOR);
         RNSharedElementTransitionItem endItem = mItems.get(ITEM_END);
         RNSharedElementTransitionItem endAncestor = mItems.get(ITEM_END_ANCESTOR);
-
-        // Prepare operations
-        /*getLocationOnScreen(mParentLocation);*/
 
         // Get start layout
         RNSharedElementStyle startStyle = startItem.getStyle();

@@ -1,6 +1,5 @@
 package com.ijzerenhein.sharedelement;
 
-import java.util.Map;
 import java.util.ArrayList;
 
 import android.view.View;
@@ -8,18 +7,13 @@ import android.view.ViewGroup;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.graphics.RectF;
-import android.graphics.Color;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.ColorDrawable;
 
 import com.facebook.react.uimanager.PixelUtil;
 import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.ReadableMap;
-import com.facebook.drawee.drawable.ScalingUtils.ScaleType;
 import com.facebook.react.views.image.ImageResizeMode;
 import com.facebook.react.views.image.ReactImageView;
 import com.facebook.react.views.view.ReactViewGroup;
-import com.facebook.drawee.view.GenericDraweeView;
 
 public class RNSharedElementNode extends Object {
     private int mReactTag;
@@ -213,7 +207,6 @@ public class RNSharedElementNode extends Object {
             imageView.setBorderRadius(style.borderBottomLeftRadius, 3);
             imageView.setScaleType(style.scaleType);
             //imageView.setScaleType(ScaleType.FIT_XY);
-            //imageView.setScaleType(ScaleType.FIT_CENTER);
             imageView.setTileMode(ImageResizeMode.defaultTileMode());
             imageView.maybeUpdateView();
         }
