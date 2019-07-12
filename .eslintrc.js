@@ -1,10 +1,14 @@
 module.exports = {
-  extends: '@react-native-community',
+  extends: ['@react-native-community', 'prettier'],
+  plugins: ['prettier', 'react', 'react-native'],
+  parserOptions: {
+    ecmaFeatures: {
+      jsx: true,
+    },
+  },
   env: {
     node: true,
-  },
-  rules: {
-    'prettier/prettier': [2, 'fb'],
+    'react-native/react-native': true,
   },
   settings: {
     react: {

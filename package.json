@@ -13,12 +13,13 @@
   "repository": "https://github.com/IjzerenHein/react-native-shared-element-transition",
   "bugs": "https://github.com/IjzerenHein/react-native-shared-element-transition",
   "license": "MIT",
-  "react-native": "src/index.js",
   "main": "lib/commonjs/index.js",
+  "module": "lib/module/index.js",
+  "react-native": "src/index.js",
+  "types": "lib/typescript/src/index.d.ts",
   "files": [
     "src/",
     "lib/",
-    "typings/",
     "/ios",
     "/android",
     "/windows",
@@ -37,31 +38,21 @@
     "react-native": "*"
   },
   "devDependencies": {
-    "@babel/core": "^7.4.3",
-    "@babel/runtime": "^7.4.3",
-    "@react-native-community/bob": "^0.3.4",
-    "@react-native-community/eslint-config": "^0.0.3",
-    "@semantic-release/git": "^7.0.8",
-    "babel-core": "^7.0.0-bridge.0",
-    "babel-eslint": "^10.0.1",
-    "babel-jest": "^24.7.0",
-    "babel-plugin-module-resolver": "^3.2.0",
-    "detox": "^12.1.2",
-    "eslint": "5.16.0",
+    "@react-native-community/bob": "^0.6.1",
+    "@react-native-community/eslint-config": "^0.0.5",
+    "eslint": "^5.16.0",
+    "eslint-config-prettier": "^6.0.0",
+    "eslint-plugin-prettier": "^3.1.0",
+    "eslint-plugin-react": "^7.14.2",
+    "eslint-plugin-react-native": "^3.7.0",
     "flow-bin": "^0.86.0",
     "jest": "^24.7.0",
     "metro-react-native-babel-preset": "0.51.1",
-    "prettier": "^1.16.4",
+    "prettier": "^1.17.0",
     "react": "16.6.3",
     "react-native": "0.58.4",
     "react-test-renderer": "16.6.3",
-    "semantic-release": "^15.13.3"
-  },
-  "jest": {
-    "preset": "react-native",
-    "setupFilesAfterEnv": [
-      "<rootDir>/jest.setup.js"
-    ]
+    "typescript": "^3.5.3"
   },
   "@react-native-community/bob": {
     "source": "src",
@@ -73,7 +64,8 @@
           "flow": true
         }
       ],
-      "module"
+      "module",
+      "typescript"
     ]
   }
 }
