@@ -1,46 +1,60 @@
 // @flow
-import * as React from 'react';
-import { StyleSheet, View, Image, StatusBar, ScrollView, Dimensions } from 'react-native';
-import { NavBar, ScreenTransition, Colors, Router, Heading1, Body, Shadows } from '../components';
-import type { Hero } from '../types';
-import { fadeIn } from '../transitions';
+import * as React from "react";
+import {
+  StyleSheet,
+  View,
+  Image,
+  StatusBar,
+  ScrollView,
+  Dimensions
+} from "react-native";
+import {
+  NavBar,
+  ScreenTransition,
+  Colors,
+  Router,
+  Heading1,
+  Body,
+  Shadows
+} from "../components";
+import type { Hero } from "../types";
+import { fadeIn } from "../transitions";
 
 const styles = StyleSheet.create({
   flex: {
-    flex: 1,
+    flex: 1
   },
   background: {
     ...StyleSheet.absoluteFillObject,
     backgroundColor: Colors.back,
-    ...Shadows.elevation1,
+    ...Shadows.elevation1
   },
   content: {
-    padding: 20,
+    padding: 20
   },
   navBar: {
-    position: 'absolute',
+    position: "absolute",
     left: 0,
     right: 0,
-    top: 0,
+    top: 0
   },
   image: {
-    height: Dimensions.get('window').width * 0.75,
-    width: '100%',
-    resizeMode: 'cover',
+    height: Dimensions.get("window").width * 0.75,
+    width: "100%",
+    resizeMode: "cover"
   },
   name: {
-    alignSelf: 'flex-start',
+    alignSelf: "flex-start"
   },
   description: {
-    marginTop: 4,
-  },
+    marginTop: 4
+  }
 });
 
 type PropsType = {
-  hero: Hero;
-}
-type StateType = {
-}
+  hero: Hero
+};
+type StateType = {};
 
 export class CardScreen extends React.Component<PropsType, StateType> {
   render() {
@@ -49,7 +63,10 @@ export class CardScreen extends React.Component<PropsType, StateType> {
     return (
       <View style={styles.flex}>
         <StatusBar barStyle="light-content" animated />
-        <ScreenTransition sharedId={`heroBackground.${id}`} style={StyleSheet.absoluteFill}>
+        <ScreenTransition
+          sharedId={`heroBackground.${id}`}
+          style={StyleSheet.absoluteFill}
+        >
           <View style={styles.background} />
         </ScreenTransition>
         <ScrollView style={styles.flex}>
@@ -60,12 +77,22 @@ export class CardScreen extends React.Component<PropsType, StateType> {
             <ScreenTransition sharedId={`heroName.${id}`} style={styles.name}>
               <Heading1>{name}</Heading1>
             </ScreenTransition>
-            {description ? <ScreenTransition sharedId={`heroDescription.${id}`} style={styles.description}>
-              <Body>{description}</Body>
-            </ScreenTransition> : undefined}
+            {description ? (
+              <ScreenTransition
+                sharedId={`heroDescription.${id}`}
+                style={styles.description}
+              >
+                <Body>{description}</Body>
+              </ScreenTransition>
+            ) : (
+              undefined
+            )}
           </View>
         </ScrollView>
-        <ScreenTransition sharedId={`heroCloseButton.${id}`} style={styles.navBar}>
+        <ScreenTransition
+          sharedId={`heroCloseButton.${id}`}
+          style={styles.navBar}
+        >
           <NavBar light back="close" onBack={this.onBack} />
         </ScreenTransition>
       </View>
@@ -75,15 +102,15 @@ export class CardScreen extends React.Component<PropsType, StateType> {
   onBack = () => {
     const { hero } = this.props;
     const sharedElements = {
-      [`heroBackground.${hero.id}`]: 'move',
-      [`heroPhoto.${hero.id}`]: 'move',
-      [`heroCloseButton.${hero.id}`]: 'dissolve',
-      [`heroName.${hero.id}`]: 'move',
-      [`heroDescription.${hero.id}`]: 'fade-top',
+      [`heroBackground.${hero.id}`]: "move",
+      [`heroPhoto.${hero.id}`]: "move",
+      [`heroCloseButton.${hero.id}`]: "dissolve",
+      [`heroName.${hero.id}`]: "move",
+      [`heroDescription.${hero.id}`]: "fade-top"
     };
     Router.pop({
       sharedElements,
-      transitionConfig: fadeIn(),
+      transitionConfig: fadeIn()
     });
-  }
+  };
 }

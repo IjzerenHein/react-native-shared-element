@@ -1,5 +1,5 @@
 // @flow
-import * as React from 'react';
+import * as React from "react";
 import {
   StyleSheet,
   FlatList,
@@ -7,74 +7,82 @@ import {
   TouchableOpacity,
   Dimensions,
   Image,
-  ImageBackground,
-} from 'react-native';
-import { Router, NavBar, ScreenTransition, Colors, Shadows, Heading1, Body } from '../components';
-import type { SharedElementAnimation } from 'react-native-shared-element-transition';
-import { Heroes } from '../assets';
-import { DetailScreen } from './DetailScreen';
-import type { Hero } from '../types';
-import { fadeIn } from '../transitions';
-import type{ TransitionConfig } from 'react-navigation';
+  ImageBackground
+} from "react-native";
+import {
+  Router,
+  NavBar,
+  ScreenTransition,
+  Colors,
+  Shadows,
+  Heading1,
+  Body
+} from "../components";
+import type { SharedElementAnimation } from "react-native-shared-element-transition";
+import { Heroes } from "../assets";
+import { DetailScreen } from "./DetailScreen";
+import type { Hero } from "../types";
+import { fadeIn } from "../transitions";
+import type { TransitionConfig } from "react-navigation";
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.empty,
+    backgroundColor: Colors.empty
   },
   content: {
-    flex: 1,
+    flex: 1
   },
   item: {
     height: 160,
-    width: Dimensions.get('window').width / 2,
+    width: Dimensions.get("window").width / 2,
     borderColor: Colors.back,
     borderRightWidth: 2,
-    borderBottomWidth: 2,
+    borderBottomWidth: 2
   },
   itemOdd: {
-    borderRightWidth: 0,
+    borderRightWidth: 0
   },
   image: {
-    height: '100%',
-    width: '100%',
+    height: "100%",
+    width: "100%"
   },
   cardContentContainer: {
-    marginTop: 20,
+    marginTop: 20
   },
   cardContainer: {
     marginHorizontal: 20,
     marginBottom: 20,
-    flexDirection: 'column',
+    flexDirection: "column"
   },
   cardBackground: {
     ...StyleSheet.absoluteFillObject,
     backgroundColor: Colors.back,
     borderRadius: 20,
-    ...Shadows.elevation1,
+    ...Shadows.elevation1
   },
   cardImage: {
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     height: 200,
-    width: '100%',
-    resizeMode: 'cover',
-    overflow: 'hidden',
+    width: "100%",
+    resizeMode: "cover",
+    overflow: "hidden"
   },
   cardFooter: {
-    flexDirection: 'column',
-    padding: 16,
+    flexDirection: "column",
+    padding: 16
   },
   cardName: {
-    alignSelf: 'flex-start',
+    alignSelf: "flex-start"
   },
   cardDescription: {
-    marginTop: 4,
-  },
+    marginTop: 4
+  }
 });
 
 type PropsType = {
-  type: 'tile' | 'card',
+  type: "tile" | "card",
   title: string,
   animation: SharedElementAnimation,
   DetailComponent: any,
@@ -85,13 +93,13 @@ type PropsType = {
 
 export class TilesScreen extends React.Component<PropsType> {
   static defaultProps = {
-    type: 'tile',
-    title: 'Tiles',
-    animation: 'move',
+    type: "tile",
+    title: "Tiles",
+    animation: "move",
     DetailComponent: DetailScreen,
     transitionConfig: fadeIn(),
     overlay: false,
-    resizeMode: 'cover',
+    resizeMode: "cover"
   };
 
   render() {
@@ -101,12 +109,15 @@ export class TilesScreen extends React.Component<PropsType> {
         <NavBar title={title} />
         <FlatList
           style={styles.content}
-          numColumns={type === 'tile' ? 2 : 1}
-          contentContainerStyle={type === 'card' ? styles.cardContentContainer : undefined}
+          numColumns={type === "tile" ? 2 : 1}
+          contentContainerStyle={
+            type === "card" ? styles.cardContentContainer : undefined
+          }
           horizontal={false}
           data={Heroes}
           renderItem={this.renderItem}
-          keyExtractor={this.keyExtractor} />
+          keyExtractor={this.keyExtractor}
+        />
       </View>
     );
   }
@@ -115,10 +126,12 @@ export class TilesScreen extends React.Component<PropsType> {
 
   renderItem = (data: any) => {
     switch (this.props.type) {
-    case 'tile': return this.renderTile(data);
-    case 'card': return this.renderCard(data);
+      case "tile":
+        return this.renderTile(data);
+      case "card":
+        return this.renderCard(data);
     }
-  }
+  };
 
   renderCard = ({ item }: any) => {
     const hero = item;
@@ -129,26 +142,36 @@ export class TilesScreen extends React.Component<PropsType> {
         activeOpacity={1}
         onPress={() => this.onPressItem(hero)}
       >
-        <ScreenTransition sharedId={`heroBackground.${hero.id}`} style={StyleSheet.absoluteFill}>
+        <ScreenTransition
+          sharedId={`heroBackground.${hero.id}`}
+          style={StyleSheet.absoluteFill}
+        >
           <View style={styles.cardBackground} />
         </ScreenTransition>
         <ScreenTransition sharedId={`heroPhoto.${hero.id}`}>
-          <ImageBackground
-            style={styles.cardImage}
-            source={hero.photo}
-          />
+          <ImageBackground style={styles.cardImage} source={hero.photo} />
         </ScreenTransition>
         <View style={styles.cardFooter}>
-          <ScreenTransition sharedId={`heroName.${hero.id}`} style={styles.cardName}>
+          <ScreenTransition
+            sharedId={`heroName.${hero.id}`}
+            style={styles.cardName}
+          >
             <Heading1>{hero.name}</Heading1>
           </ScreenTransition>
-          {hero.description ? <ScreenTransition sharedId={`heroDescription.${hero.id}`} style={styles.cardDescription}>
-            <Body numberOfLines={3}>{hero.description}</Body>
-          </ScreenTransition> : undefined}
+          {hero.description ? (
+            <ScreenTransition
+              sharedId={`heroDescription.${hero.id}`}
+              style={styles.cardDescription}
+            >
+              <Body numberOfLines={3}>{hero.description}</Body>
+            </ScreenTransition>
+          ) : (
+            undefined
+          )}
         </View>
       </TouchableOpacity>
     );
-  }
+  };
 
   renderTile = ({ item, index }: any) => {
     const hero = item;
@@ -175,7 +198,7 @@ export class TilesScreen extends React.Component<PropsType> {
         </ScreenTransition>
       </TouchableOpacity>
     );
-  }
+  };
 
   onPressItem = (hero: Hero) => {
     const {
@@ -183,31 +206,32 @@ export class TilesScreen extends React.Component<PropsType> {
       DetailComponent,
       transitionConfig,
       overlay,
-      type,
+      type
     } = this.props;
-    const alternateHero = animation === 'dissolve' ? Heroes[0] : hero;
+    const alternateHero = animation === "dissolve" ? Heroes[0] : hero;
     const sharedElements = {};
-    if (type === 'card') {
-      sharedElements[`heroBackground.${hero.id}`] = 'move';
-      sharedElements[`heroPhoto.${hero.id}`] = 'move';
-      sharedElements[`heroCloseButton.${hero.id}`] = 'dissolve';
-      sharedElements[`heroName.${hero.id}`] = 'move';
-      sharedElements[`heroDescription.${hero.id}`] = 'fade-top';
-    }
-    else {
+    if (type === "card") {
+      sharedElements[`heroBackground.${hero.id}`] = "move";
+      sharedElements[`heroPhoto.${hero.id}`] = "move";
+      sharedElements[`heroCloseButton.${hero.id}`] = "dissolve";
+      sharedElements[`heroName.${hero.id}`] = "move";
+      sharedElements[`heroDescription.${hero.id}`] = "fade-top";
+    } else {
       sharedElements[`heroPhoto.${hero.id}`] = animation;
     }
-    if (overlay) {sharedElements[`heroPhotoOverlay.${hero.id}`] = 'dissolve';}
+    if (overlay) {
+      sharedElements[`heroPhotoOverlay.${hero.id}`] = "dissolve";
+    }
     Router.push(
       <DetailComponent
         hero={{
           ...alternateHero,
-          id: hero.id,
+          id: hero.id
         }}
       />,
       {
         sharedElements,
-        transitionConfig,
+        transitionConfig
       }
     );
   };

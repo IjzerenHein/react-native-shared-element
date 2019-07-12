@@ -1,8 +1,8 @@
 // @flow
-import * as React from 'react';
-import { StyleSheet, View, TouchableOpacity } from 'react-native';
-import { Heading2 } from './Text';
-import { Shadows, Colors } from './Colors';
+import * as React from "react";
+import { StyleSheet, View, TouchableOpacity } from "react-native";
+import { Heading2 } from "./Text";
+import { Shadows, Colors } from "./Colors";
 
 const HEIGHT = 40;
 
@@ -12,13 +12,13 @@ const styles = StyleSheet.create({
     height: HEIGHT,
     borderRadius: HEIGHT / 2,
     paddingHorizontal: 12,
-    justifyContent: 'center',
-    alignItems: 'center',
-    ...Shadows.elevation1,
+    justifyContent: "center",
+    alignItems: "center",
+    ...Shadows.elevation1
   },
   label: {
-    color: 'white',
-  },
+    color: "white"
+  }
 });
 
 export interface ButtonProps {

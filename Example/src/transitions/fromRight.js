@@ -1,5 +1,5 @@
 // @flow
-import { Easing, Animated } from 'react-native';
+import { Easing, Animated } from "react-native";
 
 export function fromRight(duration: number = 500) {
   return {
@@ -7,7 +7,7 @@ export function fromRight(duration: number = 500) {
       duration,
       easing: Easing.bezier(0.2833, 0.99, 0.31833, 0.99),
       timing: Animated.timing,
-      useNativeDriver: true,
+      useNativeDriver: true
     },
     screenInterpolator: ({ layout, position, scene }: any) => {
       const { index } = scene;
@@ -15,25 +15,25 @@ export function fromRight(duration: number = 500) {
 
       const translateX = position.interpolate({
         inputRange: [index - 1, index, index + 1],
-        outputRange: [initWidth, 0, initWidth * -0.2],
+        outputRange: [initWidth, 0, initWidth * -0.2]
       });
 
       const shadow = {
-        shadowColor: '#000000',
+        shadowColor: "#000000",
         shadowOffset: {
           width: -2,
-          height: 0,
+          height: 0
         },
         shadowOpacity: position.interpolate({
           inputRange: [index - 1, index, index + 1],
-          outputRange: [0.02, 0.25, 0.25],
+          outputRange: [0.02, 0.25, 0.25]
         }),
-        shadowRadius: 5,
+        shadowRadius: 5
       };
       return {
         transform: [{ translateX }],
-        ...shadow,
+        ...shadow
       };
-    },
+    }
   };
 }

@@ -1,4 +1,4 @@
 // @flow
-export * from './SharedElement';
-export * from './SharedElementTransition';
-export type * from './types';
+export * from "./SharedElement";
+export * from "./SharedElementTransition";
+export type * from "./types";

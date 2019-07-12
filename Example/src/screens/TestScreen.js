@@ -1,42 +1,35 @@
 // @flow
-import * as React from 'react';
-import { StyleSheet, View } from 'react-native';
-import {
-  NavBar,
-  Colors,
-  Button,
-  Body,
-  Router,
-} from '../components';
-import { fromRight } from '../transitions';
-import type { Test } from '../types';
-
+import * as React from "react";
+import { StyleSheet, View } from "react-native";
+import { NavBar, Colors, Button, Body, Router } from "../components";
+import { fromRight } from "../transitions";
+import type { Test } from "../types";
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.back,
+    backgroundColor: Colors.back
   },
   bottomContainer: {
     flex: 1,
     borderTopLeftRadius: 16,
     borderTopRightRadius: 16,
     backgroundColor: Colors.empty,
-    padding: 20,
+    padding: 20
   },
   buttonContainer: {
-    flexDirection: 'row',
+    flexDirection: "row"
   },
   button: {
     flex: 1,
-    marginRight: 10,
+    marginRight: 10
   },
   debugButton: {
-    flex: 1,
+    flex: 1
   },
   body: {
-    marginTop: 20,
-  },
+    marginTop: 20
+  }
 });
 
 interface PropsType {
@@ -56,17 +49,17 @@ export class TestScreen extends React.Component<PropsType> {
           <View style={styles.buttonContainer}>
             <Button
               style={styles.button}
-              label={'Fast'}
+              label={"Fast"}
               onPress={this.onPressButton}
             />
             <Button
               style={styles.button}
-              label={'Slow'}
+              label={"Slow"}
               onPress={this.onPressSlowButton}
             />
             <Button
               style={styles.debugButton}
-              label={'Debug'}
+              label={"Debug"}
               onPress={this.onPressDebugButton}
             />
           </View>
@@ -81,40 +74,40 @@ export class TestScreen extends React.Component<PropsType> {
   };
 
   onPressSlowButton = () => {
-    this.transition(
-      fromRight(4000),
-    );
+    this.transition(fromRight(4000));
   };
 
   onPressDebugButton = () => {
     this.transition({
       ...fromRight(8000),
-      debug: true,
+      debug: true
     });
   };
 
   transition(transitionConfig: any) {
     const { test, end, description } = this.props;
-    const config = test.multi ? {
-      transitionConfig,
-      sharedElements: {
-        testImage: test.animation || 'move',
-        testOverlay: test.animation || 'dissolve',
-        testLogo: test.animation || 'move',
-        testTitle: test.animation || 'dissolve',
-      },
-    } : {
-      transitionConfig,
-      sharedElements: {
-        testContent: test.animation || 'move',
-      },
-    };
+    const config = test.multi
+      ? {
+          transitionConfig,
+          sharedElements: {
+            testImage: test.animation || "move",
+            testOverlay: test.animation || "dissolve",
+            testLogo: test.animation || "move",
+            testTitle: test.animation || "dissolve"
+          }
+        }
+      : {
+          transitionConfig,
+          sharedElements: {
+            testContent: test.animation || "move"
+          }
+        };
     if (end) {
       // $FlowFixMe
       Router.pop(config);
     } else {
       Router.push(
-        <TestScreen test={test} end description={description || ''} />,
+        <TestScreen test={test} end description={description || ""} />,
         config
       );
     }

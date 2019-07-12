@@ -1,21 +1,21 @@
 // @flow
-import * as React from 'react';
-import { StyleSheet, ScrollView, View, StatusBar } from 'react-native';
-import { Router, NavBar, ListItem, Colors } from '../components';
-import { TilesScreen } from './TilesScreen';
-import { TestsScreen } from './TestsScreen';
-import { PagerScreen } from './PagerScreen';
-import { CardScreen } from './CardScreen';
-import { Tests } from '../tests';
+import * as React from "react";
+import { StyleSheet, ScrollView, View, StatusBar } from "react-native";
+import { Router, NavBar, ListItem, Colors } from "../components";
+import { TilesScreen } from "./TilesScreen";
+import { TestsScreen } from "./TestsScreen";
+import { PagerScreen } from "./PagerScreen";
+import { CardScreen } from "./CardScreen";
+import { Tests } from "../tests";
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.empty,
+    backgroundColor: Colors.empty
   },
   content: {
-    flex: 1,
-  },
+    flex: 1
+  }
 });
 
 export class MainScreen extends React.Component<{}> {
@@ -33,12 +33,28 @@ export class MainScreen extends React.Component<{}> {
           <ListItem
             label="Tiles Demo"
             description="Image tiles that zoom-in and then allow gestures to paginate and dismiss"
-            onPress={() => Router.push(<TilesScreen type="tile" title="Tiles Demo" DetailComponent={PagerScreen} />)}
+            onPress={() =>
+              Router.push(
+                <TilesScreen
+                  type="tile"
+                  title="Tiles Demo"
+                  DetailComponent={PagerScreen}
+                />
+              )
+            }
           />
           <ListItem
             label="Card Demo"
             description="Card reveal shared element transition"
-            onPress={() => Router.push(<TilesScreen type="card" title="Cards Demo" DetailComponent={CardScreen} />)}
+            onPress={() =>
+              Router.push(
+                <TilesScreen
+                  type="card"
+                  title="Cards Demo"
+                  DetailComponent={CardScreen}
+                />
+              )
+            }
           />
           {/*<ListItem
             label="Image & Text"

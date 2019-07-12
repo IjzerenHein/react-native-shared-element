@@ -1,8 +1,8 @@
 // @flow
-import React, { createContext } from 'react';
-import { View } from 'react-native';
-import { nodeFromRef } from 'react-native-shared-element-transition';
-import type { SharedElementNode } from 'react-native-shared-element-transition';
+import React, { createContext } from "react";
+import { View } from "react-native";
+import { nodeFromRef } from "react-native-shared-element-transition";
+import type { SharedElementNode } from "react-native-shared-element-transition";
 
 export type ScreenTransitionContextOnSharedElementsUpdatedEvent = {
   children: any,
@@ -36,15 +36,11 @@ export class ScreenTransitionContext extends React.Component<
   _sharedElementNodes = {};
   _sharedElementAncestor: ?SharedElementNode = undefined;
   state = {
-    sharedElementNodes: this._sharedElementNodes,
+    sharedElementNodes: this._sharedElementNodes
   };
 
   render() {
-    const {
-      onSharedElementsUpdated,
-      style,
-      ...otherProps
-    } = this.props;
+    const { onSharedElementsUpdated, style, ...otherProps } = this.props;
     return (
       <View style={style} collapsable={false} ref={this.onSetRef}>
         <Context.Provider value={this} {...otherProps} />
@@ -60,14 +56,16 @@ export class ScreenTransitionContext extends React.Component<
     prevProps: ScreenTransitionContextProps,
     prevState: ScreenTransitionContextState
   ) {
-    if (prevState === this.state) {return;}
+    if (prevState === this.state) {
+      return;
+    }
     const { children, onSharedElementsUpdated } = this.props;
     const { sharedElementNodes } = this.state;
     if (onSharedElementsUpdated) {
       onSharedElementsUpdated({
         children,
         ancestor: this._sharedElementAncestor,
-        nodes: sharedElementNodes,
+        nodes: sharedElementNodes
       });
     }
   }
@@ -78,20 +76,17 @@ export class ScreenTransitionContext extends React.Component<
     sharedElementNodes[sharedId] = node;
     this._sharedElementNodes = sharedElementNodes;
     this.setState({
-      sharedElementNodes,
+      sharedElementNodes
     });
   }
 
-  removeSharedElement(
-    sharedId: string,
-    node: SharedElementNode
-  ) {
+  removeSharedElement(sharedId: string, node: SharedElementNode) {
     // console.log('ScreenTransitionContext.remove: ', sharedId);
     const sharedElementNodes = { ...this._sharedElementNodes };
     delete sharedElementNodes[sharedId];
     this._sharedElementNodes = sharedElementNodes;
     this.setState({
-      sharedElementNodes,
+      sharedElementNodes
     });
   }
 }
@@ -108,7 +103,7 @@ export function withScreenTransitionContext(WrappedComponent: any) {
   };
   if (WrappedComponent.propTypes) {
     const propTypes = {
-      ...WrappedComponent.propTypes,
+      ...WrappedComponent.propTypes
     };
     delete propTypes.screenTransitionContext;
     comp.propTypes = propTypes;

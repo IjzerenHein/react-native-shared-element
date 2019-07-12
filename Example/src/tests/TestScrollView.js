@@ -1,29 +1,29 @@
 // @flow
-import * as React from 'react';
-import { StyleSheet, View, FlatList, Image, Dimensions } from 'react-native';
-import { Colors, ScreenTransition } from '../components';
-import type { Hero, Size } from '../types';
-import { Heroes } from '../assets';
+import * as React from "react";
+import { StyleSheet, View, FlatList, Image, Dimensions } from "react-native";
+import { Colors, ScreenTransition } from "../components";
+import type { Hero, Size } from "../types";
+import { Heroes } from "../assets";
 
 const SIZES = {
-  max: Dimensions.get('window').width,
+  max: Dimensions.get("window").width,
   small: 120,
   regular: 200,
-  large: 280,
+  large: 280
 };
 
 const styles = StyleSheet.create({
   container: {
-    height: Dimensions.get('window').width,
+    height: Dimensions.get("window").width,
     backgroundColor: Colors.back,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center"
   },
   scrollView: {
     borderWidth: 1,
     borderColor: Colors.gray,
-    borderStyle: 'dashed',
-  },
+    borderStyle: "dashed"
+  }
 });
 
 type PropsType = {
@@ -43,21 +43,21 @@ export class TestScrollView extends React.Component<PropsType> {
   static defaultProps = {
     horizontal: false,
     inverted: false,
-    size: 'default',
+    size: "default",
     ImageComponent: Image,
-    heroes: heroes2,
+    heroes: heroes2
   };
 
   render() {
     const { heroes, size, horizontal, inverted } = this.props;
-    const sizePx = SIZES[size === 'default' ? 'regular' : size];
-    const isMax = size === 'max';
+    const sizePx = SIZES[size === "default" ? "regular" : size];
+    const isMax = size === "max";
     return (
       <View style={styles.container}>
         <View
           style={{
             width: sizePx,
-            height: sizePx,
+            height: sizePx
           }}
         >
           <FlatList
@@ -78,11 +78,11 @@ export class TestScrollView extends React.Component<PropsType> {
   renderItem = ({ item, index }: any) => {
     const hero = item;
     const { size, ImageComponent, round, horizontal } = this.props;
-    const sizePx = SIZES[size === 'default' ? 'regular' : size];
-    const isMax = size === 'max';
+    const sizePx = SIZES[size === "default" ? "regular" : size];
+    const isMax = size === "max";
     const sizeStyle = {
       width: horizontal ? sizePx / (isMax ? 3.5 : 1.5) : sizePx,
-      height: horizontal ? sizePx : sizePx / (isMax ? 3.5 : 1.5),
+      height: horizontal ? sizePx : sizePx / (isMax ? 3.5 : 1.5)
     };
 
     const content = (
@@ -91,9 +91,9 @@ export class TestScrollView extends React.Component<PropsType> {
           sizeStyle,
           round
             ? {
-                borderRadius: sizePx / 2,
+                borderRadius: sizePx / 2
               }
-            : undefined,
+            : undefined
         ]}
         source={hero.photo}
         resizeMode="cover"

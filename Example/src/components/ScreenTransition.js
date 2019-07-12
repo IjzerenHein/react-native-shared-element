@@ -1,11 +1,11 @@
 // @flow
-import * as React from 'react';
-import { SharedElement } from 'react-native-shared-element-transition';
-import type { SharedElementNode } from 'react-native-shared-element-transition';
+import * as React from "react";
+import { SharedElement } from "react-native-shared-element-transition";
+import type { SharedElementNode } from "react-native-shared-element-transition";
 import {
   ScreenTransitionContext,
-  withScreenTransitionContext,
-} from './ScreenTransitionContext';
+  withScreenTransitionContext
+} from "./ScreenTransitionContext";
 
 export interface ScreenTransitionProps {
   sharedId?: string;
@@ -16,7 +16,7 @@ export interface ScreenTransitionProps {
 export const ScreenTransition = withScreenTransitionContext(
   class ScreenTransition extends React.Component<ScreenTransitionProps> {
     _node: ?SharedElementNode;
-    _sharedId = '';
+    _sharedId = "";
 
     constructor(props: ScreenTransitionProps) {
       super(props);
@@ -24,11 +24,7 @@ export const ScreenTransition = withScreenTransitionContext(
     }
 
     render() {
-      const {
-        sharedId,
-        screenTransitionContext,
-        ...otherProps
-      } = this.props;
+      const { sharedId, screenTransitionContext, ...otherProps } = this.props;
       return <SharedElement {...otherProps} onNode={this.onSetNode} />;
     }
 
@@ -49,7 +45,9 @@ export const ScreenTransition = withScreenTransitionContext(
     }
 
     onSetNode = (node: ?SharedElementNode) => {
-      if (this._node === node) {return;}
+      if (this._node === node) {
+        return;
+      }
       if (this._node && this._sharedId) {
         this.props.screenTransitionContext.removeSharedElement(
           this._sharedId,

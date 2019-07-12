@@ -1,28 +1,28 @@
 // @flow
-import * as React from 'react';
-import { StyleSheet, View, Image } from 'react-native';
-import { NavBar, ScreenTransition } from '../components';
-import type { Hero } from '../types';
-import { BlurView } from '@react-native-community/blur';
+import * as React from "react";
+import { StyleSheet, View, Image } from "react-native";
+import { NavBar, ScreenTransition } from "../components";
+import type { Hero } from "../types";
+import { BlurView } from "@react-native-community/blur";
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flex: 1
   },
   content: {
-    flex: 1,
+    flex: 1
   },
   navBar: {
-    position: 'absolute',
+    position: "absolute",
     left: 0,
     top: 0,
-    right: 0,
+    right: 0
   },
   image: {
     flex: 1,
-    width: '100%',
-    resizeMode: 'cover',
-  },
+    width: "100%",
+    resizeMode: "cover"
+  }
 });
 
 interface BlurScreenProps {
