@@ -1,33 +1,33 @@
 // @flow
-import * as React from "react";
-import { StyleSheet, View, TouchableOpacity } from "react-native";
-import { Heading2 } from "./Text";
-import { Router } from "./Router";
-import { Colors } from "./Colors";
-import { Icon } from "./Icon";
-import { getStatusBarHeight } from 'react-native-iphone-x-helper'
+import * as React from 'react';
+import { StyleSheet, View, TouchableOpacity } from 'react-native';
+import { Heading2 } from './Text';
+import { Router } from './Router';
+import { Colors } from './Colors';
+import { Icon } from './Icon';
+import { getStatusBarHeight } from 'react-native-iphone-x-helper';
 
 const HEIGHT = 56 + getStatusBarHeight();
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "flex-end",
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'flex-end',
     height: HEIGHT,
     backgroundColor: Colors.navBar,
     paddingHorizontal: 32,
-    paddingBottom: 16
+    paddingBottom: 16,
     //...Shadows.elevation1
   },
   lightContainer: {
-    backgroundColor: "transparent"
+    backgroundColor: 'transparent',
   },
   backContainer: {
-    position: "absolute",
+    position: 'absolute',
     left: 10,
-    bottom: 10
-  }
+    bottom: 10,
+  },
 });
 
 export interface NavBarProps {
@@ -42,12 +42,12 @@ const HIT_SLOP = {
   left: 16,
   top: 16,
   right: 16,
-  bottom: 16
+  bottom: 16,
 };
 
 export class NavBar extends React.Component<NavBarProps> {
   static defaultProps = {
-    back: "default"
+    back: 'default',
   };
 
   static HEIGHT = HEIGHT;
@@ -56,13 +56,13 @@ export class NavBar extends React.Component<NavBarProps> {
     let icon;
     const { back, light } = this.props;
     switch (back) {
-      case "none":
+      case 'none':
         return;
-      case "default":
-        icon = "chevron-left";
+      case 'default':
+        icon = 'chevron-left';
         break;
-      case "close":
-        icon = "cross";
+      case 'close':
+        icon = 'cross';
         break;
       default:
         return;
@@ -85,7 +85,7 @@ export class NavBar extends React.Component<NavBarProps> {
         style={[
           styles.container,
           light ? styles.lightContainer : undefined,
-          style
+          style,
         ]}
       >
         <Heading2 light={light}>{title}</Heading2>

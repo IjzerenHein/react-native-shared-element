@@ -1,6 +1,6 @@
 // @flow
-import * as React from "react";
-import type { SharedElementAnimation } from "react-native-shared-element-transition";
+import * as React from 'react';
+import type { SharedElementAnimation } from 'react-native-shared-element-transition';
 
 export type Position =
   | "default"

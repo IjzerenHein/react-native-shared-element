@@ -1,9 +1,9 @@
 // @flow
-import * as React from "react";
-import { StyleSheet, View, Image, StatusBar, ScrollView, Dimensions } from "react-native";
-import { NavBar, ScreenTransition, Colors, Router, Heading1, Body, Shadows } from "../components";
-import type { Hero } from "../types";
-import { fadeIn } from "../transitions";
+import * as React from 'react';
+import { StyleSheet, View, Image, StatusBar, ScrollView, Dimensions } from 'react-native';
+import { NavBar, ScreenTransition, Colors, Router, Heading1, Body, Shadows } from '../components';
+import type { Hero } from '../types';
+import { fadeIn } from '../transitions';
 
 const styles = StyleSheet.create({
   flex: {
@@ -12,28 +12,28 @@ const styles = StyleSheet.create({
   background: {
     ...StyleSheet.absoluteFillObject,
     backgroundColor: Colors.back,
-    ...Shadows.elevation1
+    ...Shadows.elevation1,
   },
   content: {
-    padding: 20
+    padding: 20,
   },
   navBar: {
     position: 'absolute',
     left: 0,
     right: 0,
-    top: 0
+    top: 0,
   },
   image: {
     height: Dimensions.get('window').width * 0.75,
-    width: "100%",
-    resizeMode: "cover"
+    width: '100%',
+    resizeMode: 'cover',
   },
   name: {
-    alignSelf: 'flex-start'
+    alignSelf: 'flex-start',
   },
   description: {
-    marginTop: 4
-  }
+    marginTop: 4,
+  },
 });
 
 type PropsType = {
@@ -48,7 +48,7 @@ export class CardScreen extends React.Component<PropsType, StateType> {
     const { id, name, photo, description } = hero;
     return (
       <View style={styles.flex}>
-        <StatusBar barStyle='light-content' animated />
+        <StatusBar barStyle="light-content" animated />
         <ScreenTransition sharedId={`heroBackground.${id}`} style={StyleSheet.absoluteFill}>
           <View style={styles.background} />
         </ScreenTransition>
@@ -66,7 +66,7 @@ export class CardScreen extends React.Component<PropsType, StateType> {
           </View>
         </ScrollView>
         <ScreenTransition sharedId={`heroCloseButton.${id}`} style={styles.navBar}>
-          <NavBar light back='close' onBack={this.onBack} />
+          <NavBar light back="close" onBack={this.onBack} />
         </ScreenTransition>
       </View>
     );
@@ -83,7 +83,7 @@ export class CardScreen extends React.Component<PropsType, StateType> {
     };
     Router.pop({
       sharedElements,
-      transitionConfig: fadeIn()
-    })
+      transitionConfig: fadeIn(),
+    });
   }
 }

@@ -5,8 +5,8 @@ The example app includes a variety of tests and receipes and is used as a simple
 ## Usage
 
 ```bash
-yarn # in the react-navigation root directory
-cd Examples
+yarn # in the root directory
+cd Example
 yarn
 react-native run-ios
 ```

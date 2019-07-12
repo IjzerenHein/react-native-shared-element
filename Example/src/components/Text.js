@@ -1,32 +1,32 @@
 // @flow
-import * as React from "react";
-import { StyleSheet, Text } from "react-native";
-import { Colors } from "./Colors";
+import * as React from 'react';
+import { StyleSheet, Text } from 'react-native';
+import { Colors } from './Colors';
 
 const styles = StyleSheet.create({
   heading1: {
     fontSize: 30,
-    fontWeight: "bold",
-    color: Colors.text
+    fontWeight: 'bold',
+    color: Colors.text,
   },
   heading2: {
     fontSize: 17,
-    fontWeight: "700",
-    color: Colors.text
+    fontWeight: '700',
+    color: Colors.text,
   },
   caption: {
     fontSize: 14,
-    fontWeight: "400",
-    color: Colors.gray
+    fontWeight: '400',
+    color: Colors.gray,
   },
   body: {
     fontSize: 17,
-    fontWeight: "500",
-    color: Colors.gray
+    fontWeight: '500',
+    color: Colors.gray,
   },
   light: {
-    color: Colors.back
-  }
+    color: Colors.back,
+  },
 });
 
 export const Heading1 = (props: any) => {

@@ -1,8 +1,8 @@
 // @flow
-import * as React from "react";
+import * as React from 'react';
 import { StatusBar } from 'react-native';
-import { Router } from "./components";
-import { MainScreen } from "./screens";
+import { Router } from './components';
+import { MainScreen } from './screens';
 
 StatusBar.setTranslucent(true);
 StatusBar.setBackgroundColor('transparent');

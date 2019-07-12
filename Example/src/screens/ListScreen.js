@@ -1,59 +1,59 @@
 // @flow
-import * as React from "react";
+import * as React from 'react';
 import {
   StyleSheet,
   ScrollView,
   View,
   TouchableOpacity,
-  Image
-} from "react-native";
+  Image,
+} from 'react-native';
 import {
   Router,
   NavBar,
   ScreenTransition,
   Colors,
   Heading2,
-  Caption
-} from "../components";
-import type { SharedElementAnimation } from "react-native-shared-element-transition";
-import { Heroes } from "../assets";
-import type { Hero } from "../types";
-import { fadeIn } from "../transitions";
-import type { TransitionConfig } from "react-navigation";
+  Caption,
+} from '../components';
+import type { SharedElementAnimation } from 'react-native-shared-element-transition';
+import { Heroes } from '../assets';
+import type { Hero } from '../types';
+import { fadeIn } from '../transitions';
+import type { TransitionConfig } from 'react-navigation';
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.back
+    backgroundColor: Colors.back,
   },
   flex: {
-    flex: 1
+    flex: 1,
   },
   item: {
     height: 100,
-    flexDirection: "row",
-    alignItems: "center",
-    paddingHorizontal: 20
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 20,
   },
   image: {
     width: 80,
     height: 80,
     borderRadius: 40,
-    overflow: "hidden"
+    overflow: 'hidden',
   },
   overlay: {
-    borderRadius: 40
+    borderRadius: 40,
   },
   content: {
     flex: 1,
     marginLeft: 20,
-    flexDirection: "column",
-    justifyContent: "center"
+    flexDirection: 'column',
+    justifyContent: 'center',
   },
   name: {
     marginBottom: 4,
-    flexDirection: "row"
-  }
+    flexDirection: 'row',
+  },
 });
 
 type PropsType = {
@@ -65,9 +65,9 @@ type PropsType = {
 
 export class ListScreen extends React.Component<PropsType> {
   static defaultProps = {
-    title: "Bullets",
-    animation: "move",
-    transitionConfig: fadeIn()
+    title: 'Bullets',
+    animation: 'move',
+    transitionConfig: fadeIn(),
   };
 
   renderItem(hero: Hero) {
@@ -99,7 +99,7 @@ export class ListScreen extends React.Component<PropsType> {
               <Heading2>{name}</Heading2>
             </ScreenTransition>
           </View>
-          <Caption>{quote || ""}</Caption>
+          <Caption>{quote || ''}</Caption>
         </View>
       </TouchableOpacity>
     );
@@ -121,12 +121,12 @@ export class ListScreen extends React.Component<PropsType> {
     const { animation, DetailComponent, transitionConfig } = this.props;
     const sharedElements = {
       [`heroPhoto.${hero.id}`]: animation,
-      [`heroPhotoOverlay.${hero.id}`]: "dissolve",
-      [`heroName.${hero.id}`]: animation
+      [`heroPhotoOverlay.${hero.id}`]: 'dissolve',
+      [`heroName.${hero.id}`]: animation,
     };
     Router.push(<DetailComponent hero={hero} />, {
       sharedElements,
-      transitionConfig
+      transitionConfig,
     });
   };
 }

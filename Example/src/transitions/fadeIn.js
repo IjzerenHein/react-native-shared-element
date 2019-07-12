@@ -1,5 +1,5 @@
 // @flow
-import { Easing, Animated } from "react-native";
+import { Easing, Animated } from 'react-native';
 
 export function fadeIn(duration: number = 400) {
   return {

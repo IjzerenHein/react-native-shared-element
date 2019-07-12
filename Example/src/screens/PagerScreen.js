@@ -1,11 +1,11 @@
 // @flow
-import * as React from "react";
-import { StyleSheet, View, Image, Dimensions, Animated, StatusBar } from "react-native";
-import { NavBar, ScreenTransition, Colors, Router } from "../components";
-import type { Hero } from "../types";
-import { Heroes } from "../assets";
-import { fadeIn } from "../transitions";
-import { PanGestureHandler, State, FlatList } from "react-native-gesture-handler";
+import * as React from 'react';
+import { StyleSheet, View, Image, Dimensions, Animated, StatusBar } from 'react-native';
+import { NavBar, ScreenTransition, Colors, Router } from '../components';
+import type { Hero } from '../types';
+import { Heroes } from '../assets';
+import { fadeIn } from '../transitions';
+import { PanGestureHandler, State, FlatList } from 'react-native-gesture-handler';
 
 const WIDTH = Dimensions.get('window').width;
 const HEIGHT = Dimensions.get('window').height;
@@ -16,27 +16,27 @@ const styles = StyleSheet.create({
   },
   background: {
     ...StyleSheet.absoluteFill,
-    backgroundColor: Colors.dark
+    backgroundColor: Colors.dark,
   },
   flex: {
-    flex: 1
+    flex: 1,
   },
   scrollView: {
     width: WIDTH,
-    height: HEIGHT
+    height: HEIGHT,
   },
   content: {
     flex: 1,
-    marginVertical: NavBar.HEIGHT
+    marginVertical: NavBar.HEIGHT,
   },
   itemContainer: {
     width: WIDTH,
   },
   image: {
     flex: 1,
-    width: "100%",
-    resizeMode: "contain"
-  }
+    width: '100%',
+    resizeMode: 'contain',
+  },
 });
 
 type PropsType = {
@@ -56,7 +56,7 @@ export class PagerScreen extends React.Component<PropsType, StateType> {
   constructor(props: PropsType) {
     super(props);
     this.state = {
-      selectedHero: props.hero
+      selectedHero: props.hero,
     };
   }
 
@@ -67,12 +67,12 @@ export class PagerScreen extends React.Component<PropsType, StateType> {
     const initialIndex = Heroes.findIndex(({id}) => id === hero.id);
     return (
       <View style={styles.container}>
-        <StatusBar barStyle='light-content' animated/>
+        <StatusBar barStyle="light-content" animated/>
         <Animated.View style={[styles.background, {
           opacity: dismissAnimValue.interpolate({
             inputRange: [-400, -300, -50, 50, 300, 400],
-            outputRange: [0.6, 0.6, 1, 1, 0.6, 0.6]
-          })
+            outputRange: [0.6, 0.6, 1, 1, 0.6, 0.6],
+          }),
         }]}>
           <NavBar back="close" light title={selectedHero.name} onBack={this.onBack}/>
         </Animated.View>
@@ -80,7 +80,7 @@ export class PagerScreen extends React.Component<PropsType, StateType> {
           onGestureEvent={this._onDismissGestureEvent}
           onHandlerStateChange={this._onDismissGestureStateChange}>
           <Animated.View style={[styles.content, {
-            transform: [{translateY: Animated.multiply(dismissAnimValue, 0.5)}]
+            transform: [{translateY: Animated.multiply(dismissAnimValue, 0.5)}],
           }]}>
             <FlatList
               style={styles.scrollView}
@@ -118,7 +118,7 @@ export class PagerScreen extends React.Component<PropsType, StateType> {
     const selectedHero = viewableItems[0].item;
     if (this.state.selectedHero !== selectedHero) {
       this.setState({
-        selectedHero
+        selectedHero,
       });
     }
   }
@@ -126,24 +126,24 @@ export class PagerScreen extends React.Component<PropsType, StateType> {
   onBack = () => {
     const hero = this.state.selectedHero;
     const sharedElements = {
-      [`heroPhoto.${hero.id}`]: 'move'
+      [`heroPhoto.${hero.id}`]: 'move',
     };
     Router.pop({
       sharedElements,
-      transitionConfig: fadeIn()
-    })
+      transitionConfig: fadeIn(),
+    });
   }
 
   _onDismissGestureStateChange = (event: any) => {
     const { nativeEvent } = event;
-    if (nativeEvent.state !== State.END) return;
+    if (nativeEvent.state !== State.END) {return;}
     if (Math.abs(nativeEvent.translationY) >= 300) {
       this.onBack();
     }
     else {
       Animated.spring(this._dismissAnimValue, {
         toValue: 0,
-        useNativeDriver: true
+        useNativeDriver: true,
       }).start();
     }
   };

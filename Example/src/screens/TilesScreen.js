@@ -1,5 +1,5 @@
 // @flow
-import * as React from "react";
+import * as React from 'react';
 import {
   StyleSheet,
   FlatList,
@@ -7,40 +7,40 @@ import {
   TouchableOpacity,
   Dimensions,
   Image,
-  ImageBackground
-} from "react-native";
-import { Router, NavBar, ScreenTransition, Colors, Shadows, Heading1, Body } from "../components";
-import type { SharedElementAnimation } from "react-native-shared-element-transition";
-import { Heroes } from "../assets";
-import { DetailScreen } from "./DetailScreen";
-import type { Hero } from "../types";
-import { fadeIn } from "../transitions";
-import type{ TransitionConfig } from "react-navigation";
+  ImageBackground,
+} from 'react-native';
+import { Router, NavBar, ScreenTransition, Colors, Shadows, Heading1, Body } from '../components';
+import type { SharedElementAnimation } from 'react-native-shared-element-transition';
+import { Heroes } from '../assets';
+import { DetailScreen } from './DetailScreen';
+import type { Hero } from '../types';
+import { fadeIn } from '../transitions';
+import type{ TransitionConfig } from 'react-navigation';
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.empty
+    backgroundColor: Colors.empty,
   },
   content: {
-    flex: 1
+    flex: 1,
   },
   item: {
     height: 160,
     width: Dimensions.get('window').width / 2,
     borderColor: Colors.back,
     borderRightWidth: 2,
-    borderBottomWidth: 2
+    borderBottomWidth: 2,
   },
   itemOdd: {
     borderRightWidth: 0,
   },
   image: {
     height: '100%',
-    width: "100%"
+    width: '100%',
   },
   cardContentContainer: {
-    marginTop: 20
+    marginTop: 20,
   },
   cardContainer: {
     marginHorizontal: 20,
@@ -57,20 +57,20 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     height: 200,
-    width: "100%",
+    width: '100%',
     resizeMode: 'cover',
-    overflow: 'hidden'
+    overflow: 'hidden',
   },
   cardFooter: {
     flexDirection: 'column',
-    padding: 16
+    padding: 16,
   },
   cardName: {
-    alignSelf: 'flex-start'
+    alignSelf: 'flex-start',
   },
   cardDescription: {
-    marginTop: 4
-  }
+    marginTop: 4,
+  },
 });
 
 type PropsType = {
@@ -86,12 +86,12 @@ type PropsType = {
 export class TilesScreen extends React.Component<PropsType> {
   static defaultProps = {
     type: 'tile',
-    title: "Tiles",
-    animation: "move",
+    title: 'Tiles',
+    animation: 'move',
     DetailComponent: DetailScreen,
     transitionConfig: fadeIn(),
     overlay: false,
-    resizeMode: "cover"
+    resizeMode: 'cover',
   };
 
   render() {
@@ -183,9 +183,9 @@ export class TilesScreen extends React.Component<PropsType> {
       DetailComponent,
       transitionConfig,
       overlay,
-      type
+      type,
     } = this.props;
-    const alternateHero = animation === "dissolve" ? Heroes[0] : hero;
+    const alternateHero = animation === 'dissolve' ? Heroes[0] : hero;
     const sharedElements = {};
     if (type === 'card') {
       sharedElements[`heroBackground.${hero.id}`] = 'move';
@@ -197,17 +197,17 @@ export class TilesScreen extends React.Component<PropsType> {
     else {
       sharedElements[`heroPhoto.${hero.id}`] = animation;
     }
-    if (overlay) sharedElements[`heroPhotoOverlay.${hero.id}`] = "dissolve";
+    if (overlay) {sharedElements[`heroPhotoOverlay.${hero.id}`] = 'dissolve';}
     Router.push(
       <DetailComponent
         hero={{
           ...alternateHero,
-          id: hero.id
+          id: hero.id,
         }}
       />,
       {
         sharedElements,
-        transitionConfig
+        transitionConfig,
       }
     );
   };
