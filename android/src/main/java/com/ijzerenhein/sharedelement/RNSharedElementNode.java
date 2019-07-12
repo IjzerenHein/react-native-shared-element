@@ -187,8 +187,7 @@ public class RNSharedElementNode extends Object {
 
         // Set layout
         Rect frame = style.frame;
-        //view.layout(frame.left, frame.top, frame.width(), frame.height());
-        view.layout(0, 0, frame.width(), frame.height());
+        view.layout(frame.left, frame.top, frame.right, frame.bottom);
 
         // Set opacity
         //view.setAlpha(style.opacity);
