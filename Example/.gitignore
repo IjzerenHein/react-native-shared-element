@@ -56,3 +56,5 @@ buck-out/
 *.jsbundle
 
 .yalc
+yalc.lock
+yarn.lock
