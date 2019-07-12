@@ -13,33 +13,67 @@
   "repository": "https://github.com/IjzerenHein/react-native-shared-element-transition",
   "bugs": "https://github.com/IjzerenHein/react-native-shared-element-transition",
   "license": "MIT",
-  "main": "src/index.js",
   "react-native": "src/index.js",
+  "main": "lib/commonjs/index.js",
   "files": [
-    "src",
-    "ios",
-    "android",
-    "windows",
-    "web"
+    "src/",
+    "lib/",
+    "typings/",
+    "/ios",
+    "/android",
+    "/windows",
+    "/web",
+    "/*.podspec"
   ],
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "flow": "flow",
-    "lint": "./node_modules/.bin/eslint ./src"
+    "test": "yarn lint && yarn flow && yarn jest",
+    "flow": "flow check",
+    "lint": "./node_modules/.bin/eslint './src' 'Example/src'",
+    "jest": "jest src/",
+    "prepare": "bob build"
   },
   "peerDependencies": {
-    "prop-types": "*",
     "react": "*",
     "react-native": "*"
   },
   "devDependencies": {
-    "babel-eslint": "^10.0.2",
-    "eslint": "^6.0.1",
-    "eslint-plugin-react": "^7.14.2",
-    "eslint-plugin-react-native": "^3.7.0",
-    "flow-bin": "0.92.0",
-    "prettier": "^1.15.3",
-    "react": "16.8.3",
-    "react-native": "0.59.9"
+    "@babel/core": "^7.4.3",
+    "@babel/runtime": "^7.4.3",
+    "@react-native-community/bob": "^0.3.4",
+    "@react-native-community/eslint-config": "^0.0.3",
+    "@semantic-release/git": "^7.0.8",
+    "babel-core": "^7.0.0-bridge.0",
+    "babel-eslint": "^10.0.1",
+    "babel-jest": "^24.7.0",
+    "babel-plugin-module-resolver": "^3.2.0",
+    "detox": "^12.1.2",
+    "eslint": "5.16.0",
+    "flow-bin": "^0.102.0",
+    "jest": "^24.7.0",
+    "metro-react-native-babel-preset": "0.51.1",
+    "prettier": "^1.16.4",
+    "react": "16.6.3",
+    "react-native": "0.58.4",
+    "react-test-renderer": "16.6.3",
+    "semantic-release": "^15.13.3"
+  },
+  "jest": {
+    "preset": "react-native",
+    "setupFilesAfterEnv": [
+      "<rootDir>/jest.setup.js"
+    ]
+  },
+  "@react-native-community/bob": {
+    "source": "src",
+    "output": "lib",
+    "targets": [
+      [
+        "commonjs",
+        {
+          "flow": true
+        }
+      ],
+      "module"
+    ]
   }
 }

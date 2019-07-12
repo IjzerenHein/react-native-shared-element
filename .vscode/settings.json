@@ -1,5 +1,12 @@
 {
   "prettier.eslintIntegration": true,
   "javascript.validate.enable": false,
-  "flow.useNPMPackagedFlow": true
+  "flow.useNPMPackagedFlow": true,
+  "java.configuration.updateBuildConfiguration": "disabled",
+  "workbench.colorCustomizations": {
+    "titleBar.activeBackground": "#ffe256",
+    "titleBar.inactiveBackground": "#ab8f04",
+    "titleBar.activeForeground": "#000000",
+    "titleBar.inactiveForeground": "#000000"
+  }
 }
