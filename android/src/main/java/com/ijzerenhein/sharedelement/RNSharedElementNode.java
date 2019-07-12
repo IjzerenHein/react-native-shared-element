@@ -20,8 +20,6 @@ import com.facebook.react.views.image.ImageResizeMode;
 import com.facebook.react.views.image.ReactImageView;
 import com.facebook.react.views.view.ReactViewGroup;
 import com.facebook.drawee.view.GenericDraweeView;
-import com.facebook.drawee.generic.GenericDraweeHierarchy;
-import com.facebook.drawee.interfaces.DraweeController;
 
 public class RNSharedElementNode extends Object {
     private int mReactTag;
@@ -107,22 +105,6 @@ public class RNSharedElementNode extends Object {
         fetchInitialStyle();
     }
 
-    private RectF getContentsRect(View view) {
-        if (view instanceof GenericDraweeView) {
-            GenericDraweeView imageView = (GenericDraweeView) view;
-            DraweeController controller = imageView.getController();
-            GenericDraweeHierarchy hierarchy = imageView.getHierarchy();
-            String controllerDetails = controller.toString();
-            if (controllerDetails.contains("fetchedImage=0")) {
-                return null;
-            }
-            RectF imageBounds = new RectF();
-            hierarchy.getActualImageBounds(imageBounds);
-            return imageBounds;
-        }
-        return new RectF(0, 0, view.getWidth(), view.getHeight());
-    }
-
     private void fetchInitialStyle() {
         View view = mResolvedView;
         if (view == null || mStyleCallbacks == null) return;
@@ -142,67 +124,10 @@ public class RNSharedElementNode extends Object {
         Rect layout = new Rect(location[0], location[1], location[0] + width, location[1] + height);
 
         // Create style
-        RNSharedElementStyle style = new RNSharedElementStyle();
+        RNSharedElementStyle style = new RNSharedElementStyle(mStyleConfig);
         style.layout = layout;
         style.frame = frame;
         
-        // Pre-fill the style with the style-config
-        if (mStyleConfig.hasKey("opacity")) style.opacity = (float) mStyleConfig.getDouble("opacity");
-        if (mStyleConfig.hasKey("backgroundColor")) style.backgroundColor = mStyleConfig.getInt("backgroundColor");
-        if (mStyleConfig.hasKey("borderColor")) style.borderColor = mStyleConfig.getInt("borderColor");
-        if (mStyleConfig.hasKey("borderWidth")) style.borderWidth = PixelUtil.toPixelFromDIP((float) mStyleConfig.getDouble("borderWidth"));
-        if (mStyleConfig.hasKey("resizeMode")) style.scaleType = ImageResizeMode.toScaleType(mStyleConfig.getString("resizeMode"));
-        if (mStyleConfig.hasKey("elevation")) style.elevation = PixelUtil.toPixelFromDIP((float) mStyleConfig.getDouble("elevation"));
-
-        // Border-radius
-        boolean isRTL = false;
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            isRTL = view.getLayoutDirection() == View.LAYOUT_DIRECTION_RTL;
-        }
-        if (mStyleConfig.hasKey("borderRadius")) {
-            float borderRadius = PixelUtil.toPixelFromDIP((float) mStyleConfig.getDouble("borderRadius"));
-            style.borderTopLeftRadius = borderRadius;
-            style.borderTopRightRadius = borderRadius;
-            style.borderBottomLeftRadius = borderRadius;
-            style.borderBottomRightRadius = borderRadius;
-        }
-        if (mStyleConfig.hasKey("borderTopEndRadius")) {
-            float borderRadius = PixelUtil.toPixelFromDIP((float) mStyleConfig.getDouble("borderTopEndRadius"));
-            if (isRTL) {
-                style.borderTopLeftRadius = borderRadius;
-            } else {
-                style.borderTopRightRadius = borderRadius;
-            }
-        }
-        if (mStyleConfig.hasKey("borderTopStartRadius")) {
-            float borderRadius = PixelUtil.toPixelFromDIP((float) mStyleConfig.getDouble("borderTopStartRadius"));
-            if (isRTL) {
-                style.borderTopRightRadius = borderRadius;
-            } else {
-                style.borderTopLeftRadius = borderRadius;
-            }
-        }
-        if (mStyleConfig.hasKey("borderBottomEndRadius")) {
-            float borderRadius = PixelUtil.toPixelFromDIP((float) mStyleConfig.getDouble("borderBottomEndRadius"));
-            if (isRTL) {
-                style.borderBottomLeftRadius = borderRadius;
-            } else {
-                style.borderBottomRightRadius = borderRadius;
-            }
-        }
-        if (mStyleConfig.hasKey("borderBottomStartRadius")) {
-            float borderRadius = PixelUtil.toPixelFromDIP((float) mStyleConfig.getDouble("borderBottomStartRadius"));
-            if (isRTL) {
-                style.borderBottomRightRadius = borderRadius;
-            } else {
-                style.borderBottomLeftRadius = borderRadius;
-            }
-        }
-        if (mStyleConfig.hasKey("borderTopLeftRadius")) style.borderTopLeftRadius = PixelUtil.toPixelFromDIP((float) mStyleConfig.getDouble("borderTopLeftRadius"));
-        if (mStyleConfig.hasKey("borderTopRightRadius")) style.borderTopRightRadius = PixelUtil.toPixelFromDIP((float) mStyleConfig.getDouble("borderTopRightRadius"));
-        if (mStyleConfig.hasKey("borderBottomLeftRadius")) style.borderBottomLeftRadius = PixelUtil.toPixelFromDIP((float) mStyleConfig.getDouble("borderBottomLeftRadius"));
-        if (mStyleConfig.hasKey("borderBottomRightRadius")) style.borderBottomRightRadius = PixelUtil.toPixelFromDIP((float) mStyleConfig.getDouble("borderBottomRightRadius"));
-
         // Get opacity
         style.opacity = view.getAlpha();
 
@@ -242,13 +167,13 @@ public class RNSharedElementNode extends Object {
         if (width == 0 && height == 0) return;
 
         // Get content size (e.g. the size of the underlying image of an image-view)
-        RectF contentsRect = getContentsRect(view);
-        if (contentsRect == null) return;
+        RectF contentSize = RNSharedElementContent.getSize(view);
+        if (contentSize == null) return;
 
         // Create content
         RNSharedElementContent content = new RNSharedElementContent();
         content.view = view;
-        content.size = contentsRect;
+        content.size = contentSize;
         
         // Update cache
         mContentCache = content;
