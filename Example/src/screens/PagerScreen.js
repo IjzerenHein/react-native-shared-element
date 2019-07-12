@@ -57,6 +57,11 @@ type StateType = {
   selectedHero: Hero
 };
 
+const VIEWABILITY_CONFIG = {
+  minimumViewTime: 0,
+  viewAreaCoveragePercentThreshold: 51
+};
+
 export class PagerScreen extends React.Component<PropsType, StateType> {
   _dismissAnimValue = new Animated.Value(0);
   _onDismissGestureEvent = Animated.event(
@@ -119,8 +124,9 @@ export class PagerScreen extends React.Component<PropsType, StateType> {
               initialScrollIndex={initialIndex}
               renderItem={this.renderItem}
               getItemLayout={this.getItemLayout}
-              onViewableItemsChanged={this.onViewableItemsChanged}
               keyExtractor={this.keyExtractor}
+              onViewableItemsChanged={this.onViewableItemsChanged}
+              viewabilityConfig={VIEWABILITY_CONFIG}
             />
           </Animated.View>
         </PanGestureHandler>
@@ -148,7 +154,9 @@ export class PagerScreen extends React.Component<PropsType, StateType> {
     );
   };
 
-  onViewableItemsChanged = ({ viewableItems }: any) => {
+  onViewableItemsChanged = (event: any) => {
+    const { viewableItems } = event;
+    if (!viewableItems.length) return;
     const selectedHero = viewableItems[0].item;
     if (this.state.selectedHero !== selectedHero) {
       this.setState({
