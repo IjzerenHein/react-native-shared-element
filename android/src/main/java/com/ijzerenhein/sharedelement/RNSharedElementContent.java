@@ -83,34 +83,34 @@ public class RNSharedElementContent extends Object {
         int oldFadeDuration = hierarchy.getFadeDuration();
 
         // Configure drawable
-        Rect bounds = new Rect(
+        /*Rect bounds = new Rect(
             style.frame.left - style.layout.left,
             style.frame.top - style.layout.top,
             (style.frame.left - style.layout.left) + style.frame.width(),
             (style.frame.top - style.layout.top) + style.frame.height()
+        );*/
+        Rect bounds = new Rect(
+          0,
+          0,
+          style.layout.width(),
+          style.layout.height()
         );
-        hierarchy.setActualImageScaleType(ScaleType.FIT_XY);
+        drawable.setBounds(bounds);
+        //hierarchy.setActualImageScaleType(ScaleType.FIT_XY);
+        hierarchy.setActualImageScaleType(style.scaleType);
         RoundingParams roundingParams = new RoundingParams();
         roundingParams.setBorderColor(style.borderColor);
         roundingParams.setBorderWidth(style.borderWidth);
         roundingParams.setRoundingMethod(RoundingParams.RoundingMethod.BITMAP_ONLY);
-        /*roundingParams.setCornersRadii(
+        roundingParams.setCornersRadii(
             style.borderTopLeftRadius,
             style.borderTopRightRadius,
             style.borderBottomRightRadius,
             style.borderBottomLeftRadius
-        );*/
-        //roundingParams.setRoundAsCircle(true);
-        roundingParams.setCornersRadii(
-            20,
-            20,
-            20,
-            20
         );
         hierarchy.setRoundingParams(roundingParams);
         hierarchy.setBackgroundImage(null);
         hierarchy.setFadeDuration(0);
-        drawable.setBounds(bounds);
 
         // Draw!
         drawable.draw(canvas);

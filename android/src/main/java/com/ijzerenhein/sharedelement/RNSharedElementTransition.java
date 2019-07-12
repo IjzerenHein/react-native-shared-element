@@ -190,8 +190,15 @@ public class RNSharedElementTransition extends GenericDraweeView {
         float position
     ) {
         RNSharedElementStyle result = new RNSharedElementStyle();
-        //result.scaleType = style1.scaleType;
-        result.scaleType = ScalingUtils.ScaleType.CENTER_CROP;
+        ScalingUtils.InterpolatingScaleType scaleType = new ScalingUtils.InterpolatingScaleType(
+            style1.scaleType,
+            style2.scaleType,
+            new Rect(0, 0, style1.layout.width(), style1.layout.height()),
+            new Rect(0, 0, style2.layout.width(), style2.layout.height())
+        );
+        // TODO - Fix stretching issue
+        scaleType.setValue(position);
+        result.scaleType = scaleType;
         result.layout = getInterpolatedLayout(style1.frame, style2.frame, position);
         Rect contentLayout1 = RNSharedElementContent.getLayout(
             style1.frame,
@@ -258,26 +265,20 @@ public class RNSharedElementTransition extends GenericDraweeView {
         // Get start layout
         RNSharedElementStyle startStyle = startItem.getStyle();
         RNSharedElementContent startContent = startItem.getContent();
-        //Rect startLayout = (startStyle != null) ? normalizeLayout(startStyle.getLayout(), startAncestor) : new Rect();
 
         // Get end layout
         RNSharedElementStyle endStyle = endItem.getStyle();
         RNSharedElementContent endContent = endItem.getContent();
-        //Rect endLayout = (endStyle != null) ? normalizeLayout(endStyle.getLayout(), endAncestor) : new Rect();
 
         // Get interpolated style & layout
-        //Rect interpolatedLayout;
         RNSharedElementStyle interpolatedStyle;
         if ((startStyle == null) && (endStyle == null)) return;
         if ((startContent == null) && (endContent == null)) return;
         if ((startStyle != null) && (endStyle != null)) {
-            //interpolatedLayout = getInterpolatedLayout(startLayout, endLayout, mNodePosition);
             interpolatedStyle = getInterpolatedStyle(startStyle, startContent, endStyle, endContent, mNodePosition);
         } else if (startStyle != null) {
-            //interpolatedLayout = startLayout;
             interpolatedStyle = startStyle;
         } else {
-            //interpolatedLayout = endLayout;
             interpolatedStyle = endStyle;
         }
 
@@ -288,9 +289,9 @@ public class RNSharedElementTransition extends GenericDraweeView {
         canvas.clipRect(0, 0, getWidth(), getHeight());
 
         // Draw content
-        Paint backgroundPaint = new Paint();
+        /*Paint backgroundPaint = new Paint();
         backgroundPaint.setColor(Color.argb(128, 255, 0, 0));
-        canvas.drawRect(0, 0, getWidth(), getHeight(), backgroundPaint);
+        canvas.drawRect(0, 0, getWidth(), getHeight(), backgroundPaint);*/
 
         // Draw start-item
         /*canvas.save();
