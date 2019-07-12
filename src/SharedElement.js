@@ -1,27 +1,25 @@
 // @flow
-import * as React from "react";
-import { View, findNodeHandle } from "react-native";
-
-export interface SharedElementNode {
-  ref: any;
-  nodeHandle: number;
-  isParent: boolean;
-  parentInstance: any
-}
+import * as React from 'react';
+import {View, findNodeHandle} from 'react-native';
+import type {SharedElementNode} from './types';
 
 export interface SharedElementProps extends View.propTypes.style {
   children: React.Node;
   onNode: (node: ?SharedElementNode) => void;
 }
 
-export function nodeFromRef(ref: any, isParent?: boolean, parentInstance?: any): ?SharedElementNode {
+export function nodeFromRef(
+  ref: any,
+  isParent?: boolean,
+  parentInstance?: any,
+): ?SharedElementNode {
   const nodeHandle = ref ? findNodeHandle(ref) : undefined;
   return nodeHandle
     ? {
         ref,
         nodeHandle,
         isParent: isParent || false,
-        parentInstance
+        parentInstance,
       }
     : undefined;
 }
@@ -31,8 +29,8 @@ export class SharedElement extends React.Component<SharedElementProps> {
 
   render() {
     const {
-      onNode, //eslint-disable-line
-       ...otherProps
+      onNode,
+      ...otherProps
     } = this.props;
     return <View ref={this.onSetRef} collapsable={false} {...otherProps} />;
   }
