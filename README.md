@@ -47,7 +47,7 @@ const position = new Animated.Value(0);
 </View>
 ```
 
-### How it works
+## How it works
 
 react-native-shared-element-transition is a *"primative"* that runs shared element transitions
 entirely native without requiring any passes over the JavaScript bridge. It works by taking in a start- and end node, which are obtained using the `<SharedElement>` component.
@@ -95,6 +95,23 @@ The `<SharedElementTransition>` component executes a shared element transition n
 | `position`  | `number | Animated.Value`                                  | Interpolated position (0..1), between the start- and end nodes             |
 | `debug`     | `boolean`                                                  | Renders debug overlays for diagnosing measuring and animations             |
 | `onMeasure` | `function`                                                 | Event handler that is called when nodes have been measured and snapshotted |
+
+### Animations
+
+The following animation-types are available.
+
+| Animation           | Description                                     |
+| ------------------- | ----------------------------------------------- |
+| `move`              |                                                 |
+| `fade`              | Cross-fades between the start- and end elements |
+| `fade-left`         |                                                 |
+| `fade-top`          |                                                 |
+| `fade-right`        |                                                 |
+| `fade-bottom`       |                                                 |
+| `fade-top-left`     |                                                 |
+| `fade-top-right`    |                                                 |
+| `fade-bottom-right` |                                                 |
+| `fade-bottom-left`  |                                                 |
 
 ## Todo
 
