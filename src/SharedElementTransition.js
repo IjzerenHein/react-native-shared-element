@@ -1,5 +1,4 @@
 // @flow
-//eslint-disable react-native/no-inline-styles
 import * as React from "react";
 import {
   View,
@@ -231,7 +230,6 @@ export class SharedElementTransition extends React.Component<
         </View>
         <View
           style={{
-            //eslint-disable-line react-native/no-inline-styles
             position: "absolute",
             overflow: "hidden",
             left: layout.visibleX,
@@ -243,7 +241,6 @@ export class SharedElementTransition extends React.Component<
           <View
             style={[
               {
-                //eslint-disable-line react-native/no-inline-styles
                 position: "absolute",
                 left: layout.x - layout.visibleX,
                 top: layout.y - layout.visibleY,
