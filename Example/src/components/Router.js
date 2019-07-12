@@ -5,7 +5,7 @@ import { SharedElementTransition } from "react-native-shared-element-transition"
 import { ScreenTransitionContext } from "./ScreenTransitionContext";
 import type { ScreenTransitionContextOnSharedElementsUpdatedEvent } from "./ScreenTransitionContext";
 import { PanGestureHandler, State } from "react-native-gesture-handler";
-import { NavBar } from "./NavBar";
+import { NavBarHeight } from "./navBar/constants";
 import { fromRight } from "../transitions";
 import type { TransitionConfig } from "react-navigation";
 
@@ -23,7 +23,7 @@ const styles = StyleSheet.create({
   swipeBackOverlay: {
     position: "absolute",
     left: 0,
-    top: NavBar.HEIGHT,
+    top: NavBarHeight,
     bottom: 0,
     width: 30
     // backgroundColor: "green",

@@ -1,20 +1,18 @@
 // @flow
 import * as React from "react";
 import { StyleSheet, View, TouchableOpacity } from "react-native";
-import { Heading2 } from "./Text";
-import { Router } from "./Router";
-import { Colors } from "./Colors";
-import { Icon } from "./Icon";
-import { getStatusBarHeight } from "react-native-iphone-x-helper";
-
-const HEIGHT = 56 + getStatusBarHeight();
+import { Heading2 } from "../Text";
+import { Router } from "../Router";
+import { Colors } from "../Colors";
+import { Icon } from "../Icon";
+import { NavBarHeight } from "./constants";
 
 const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "flex-end",
-    height: HEIGHT,
+    height: NavBarHeight,
     backgroundColor: Colors.navBar,
     paddingHorizontal: 32,
     paddingBottom: 16
@@ -50,7 +48,7 @@ export class NavBar extends React.Component<NavBarProps> {
     back: "default"
   };
 
-  static HEIGHT = HEIGHT;
+  static HEIGHT = NavBarHeight;
 
   renderBack() {
     let icon;
