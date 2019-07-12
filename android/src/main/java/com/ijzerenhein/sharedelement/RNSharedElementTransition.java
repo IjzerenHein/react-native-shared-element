@@ -212,7 +212,7 @@ public class RNSharedElementTransition extends GenericDraweeView {
         result.borderBottomLeftRadius = style1.borderBottomLeftRadius + ((style2.borderBottomLeftRadius - style1.borderBottomLeftRadius) * position);
         result.borderBottomRightRadius = style1.borderBottomRightRadius + ((style2.borderBottomRightRadius - style1.borderBottomRightRadius) * position);
         result.borderWidth = style1.borderWidth + ((style2.borderWidth - style1.borderWidth) * position);
-        result.borderColor = getInterpolatedColor(style1.backgroundColor, style2.backgroundColor, position);
+        result.borderColor = getInterpolatedColor(style1.borderColor, style2.borderColor, position);
         result.elevation = style1.elevation + ((style2.elevation - style1.elevation) * position);
         return result;
     }
@@ -288,21 +288,23 @@ public class RNSharedElementTransition extends GenericDraweeView {
         canvas.clipRect(0, 0, getWidth(), getHeight());
 
         // Draw content
-        /*Paint backgroundPaint = new Paint();
+        Paint backgroundPaint = new Paint();
         backgroundPaint.setColor(Color.argb(128, 255, 0, 0));
-        canvas.drawRect(0, 0, getWidth(), getHeight(), backgroundPaint);*/
+        canvas.drawRect(0, 0, getWidth(), getHeight(), backgroundPaint);
 
         // Draw start-item
-        canvas.save();
+        /*canvas.save();
         canvas.translate(
             interpolatedStyle.frame.left - interpolatedStyle.layout.left,
             interpolatedStyle.frame.top - interpolatedStyle.layout.top
         );
-        /*Paint contentPaint = new Paint();
-        contentPaint.setColor(Color.argb(128, 0, 0, 2550));
+        Paint contentPaint = new Paint();
+        contentPaint.setColor(Color.argb(128, 0, 0, 255));
         canvas.drawRect(0, 0, interpolatedStyle.frame.width(), interpolatedStyle.frame.height(), contentPaint);*/
-        startItem.getNode().draw(canvas, interpolatedStyle);
-        canvas.restore();
+        if (startContent != null) {
+            startContent.draw(canvas, interpolatedStyle);
+        }
+        //canvas.restore();
 
         // Restore canvas
         canvas.restore();
