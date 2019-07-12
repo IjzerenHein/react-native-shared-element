@@ -132,7 +132,11 @@ public class RNSharedElementTransition extends GenericDraweeView {
 
     private void updateNodeVisibility() {
         for (RNSharedElementTransitionItem item : mItems) {
-            item.setHidden(mInitialLayoutPassCompleted && item.getStyle() != null && !item.isAncestor());
+            boolean hidden = mInitialLayoutPassCompleted &&
+                (item.getStyle() != null) &&
+                (item.getContent() != null) &&
+                !item.isAncestor();
+            item.setHidden(hidden);
         }
     }
 

@@ -25,7 +25,7 @@ public class RNSharedElementContent extends Object {
             DraweeController controller = imageView.getController();
             GenericDraweeHierarchy hierarchy = imageView.getHierarchy();
             String controllerDetails = controller.toString();
-            if (controllerDetails.contains("fetchedImage=0")) {
+            if (controllerDetails.contains("fetchedImage=0,")) {
                 return null;
             }
             Drawable drawable = imageView.getDrawable();
