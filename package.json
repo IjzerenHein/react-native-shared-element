@@ -31,7 +31,8 @@
     "flow": "flow check",
     "lint": "./node_modules/.bin/eslint './src' 'Example/src'",
     "jest": "jest src/",
-    "prepare": "bob build"
+    "prepare": "bob build",
+    "yalc": "bob build && yalc push"
   },
   "peerDependencies": {
     "react": "*",
