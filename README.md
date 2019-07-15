@@ -1,9 +1,11 @@
 
 # react-native-shared-element-transition
 
-Essential Native Shared element transition Primitives for react-native 💫
+Essential native shared element transition primitives for react-native 💫
 
-## Work in progress
+# WORK IN PROGRESS
+
+## Index
 
 - [Basic usage](#basic-usage)
 - [How it works](#howitworks)
@@ -17,10 +19,10 @@ import { SharedElement, SharedElementTransition } from 'react-native-shared-elem
 
 
 // Scene 1
-let source1;
+let startNode;
 <View>
   ...
-  <SharedElement onSource={source => source1 = source}>
+  <SharedElement onNode={node => startNode = node}>
     <Image style={styles.image} source={...} />
   </SharedElement>
   ...
@@ -28,10 +30,10 @@ let source1;
 
 
 // Scene2
-let source2;
+let endNode;
 <View>
   ...
-  <SharedElement onSource={source => source2 = source}>
+  <SharedElement onNode={node => endNode = node}>
     <Image style={styles.image} source={...} />
   </SharedElement>
   ...
@@ -41,15 +43,15 @@ let source2;
 const position = new Animated.Value(0);
 <View style={StyleSheet.absoluteFill}>
   <SharedElementTransition
-    start={{node: source1}}
-    end={{node: source2}}
+    start={{node: startNode}}
+    end={{node: endNode}}
     position={position} />
 </View>
 ```
 
 ## How it works
 
-react-native-shared-element-transition is a *"primative"* that runs shared element transitions
+react-native-shared-element-transition is a *"primitive"* that runs shared element transitions
 entirely native without requiring any passes over the JavaScript bridge. It works by taking in a start- and end node, which are obtained using the `<SharedElement>` component.
 
 Whenever a transition between screens occurs (e.g. performed by a router/navigator), a view in
