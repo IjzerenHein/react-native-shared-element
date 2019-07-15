@@ -68,7 +68,7 @@ Whenever the `<SharedElementTransition>` component is rendered, it performs the 
 - Upon unmount, unhide the original elements
 
 You typically do not use this component directly, but instead use a Router or Transition-engine which provides a higher-level API.
-See [`./Example/components/Router.js`](./Example/components/Router.js) for an example implementation of a simple stack router using 
+See [`./Example/src/components/Router.js`](./Example/src/components/Router.js) for an example implementation of a simple stack router using 
 shared element transitions.
 
 ## API Documentation
