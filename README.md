@@ -83,7 +83,7 @@ The `<SharedElement>` component accepts a single child and returns a `node` to i
 | --------------- | ---------- | ------------------------------------------------------------------------------------ |
 | `children`      | `element`  | A single child component, which must map to a real view in the native view hierarchy |
 | `onNode`        | `function` | Event handler that sets or unsets the node-handle                                    |
-| `View props...` |            | Other props supported byt View                                                       |
+| `View props...` |            | Other props supported by View                                                        |
 
 ### SharedElementTransition
 
