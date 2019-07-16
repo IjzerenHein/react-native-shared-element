@@ -24,8 +24,11 @@ const styles = StyleSheet.create({
   flex: {
     flex: 1
   },
+  scrollViewContent: {
+    minHeight: Dimensions.get("window").height
+  },
   background: {
-    ...StyleSheet.absoluteFillObject,
+    flex: 1,
     backgroundColor: Colors.back,
     ...Shadows.elevation1
   },
@@ -63,30 +66,32 @@ export class CardScreen extends React.Component<PropsType, StateType> {
     return (
       <View style={styles.flex}>
         <StatusBar barStyle="light-content" animated />
-        <ScreenTransition
-          sharedId={`heroBackground.${id}`}
-          style={StyleSheet.absoluteFill}
-        >
-          <View style={styles.background} />
-        </ScreenTransition>
         <ScrollView style={styles.flex}>
-          <ScreenTransition sharedId={`heroPhoto.${id}`}>
-            <Image style={styles.image} source={photo} />
-          </ScreenTransition>
-          <View style={styles.content}>
-            <ScreenTransition sharedId={`heroName.${id}`} style={styles.name}>
-              <Heading1>{name}</Heading1>
+          <View style={styles.scrollViewContent}>
+            <ScreenTransition
+              sharedId={`heroBackground.${id}`}
+              style={StyleSheet.absoluteFill}
+            >
+              <View style={styles.background} />
             </ScreenTransition>
-            {description ? (
-              <ScreenTransition
-                sharedId={`heroDescription.${id}`}
-                style={styles.description}
-              >
-                <Body>{description}</Body>
+            <ScreenTransition sharedId={`heroPhoto.${id}`}>
+              <Image style={styles.image} source={photo} />
+            </ScreenTransition>
+            <View style={styles.content}>
+              <ScreenTransition sharedId={`heroName.${id}`} style={styles.name}>
+                <Heading1>{name}</Heading1>
               </ScreenTransition>
-            ) : (
-              undefined
-            )}
+              {description ? (
+                <ScreenTransition
+                  sharedId={`heroDescription.${id}`}
+                  style={styles.description}
+                >
+                  <Body>{description}</Body>
+                </ScreenTransition>
+              ) : (
+                undefined
+              )}
+            </View>
           </View>
         </ScrollView>
         <ScreenTransition
