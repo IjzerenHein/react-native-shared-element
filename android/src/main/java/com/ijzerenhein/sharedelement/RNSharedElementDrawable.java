@@ -216,10 +216,17 @@ import com.facebook.drawee.generic.RoundingParams;
 
         // Adjust scale
         Rect bounds = getBounds();
-        canvas.scale(
-            (float)bounds.width() / (float)view.getWidth(),
-            (float)bounds.height() / (float)view.getHeight()
-        );
+        float scaleX = (float)bounds.width() / (float)view.getWidth();
+        float scaleY = (float)bounds.height() / (float)view.getHeight();
+        float scale = 1;
+        if ((scaleX >= 1) && (scaleY >= 1)) {
+            scaleX = Math.min(scaleX, scaleY);
+            scaleY = scaleX;
+        } else if ((scaleX <= 1) && (scaleY <= 1)) {
+            scaleX = Math.max(scaleX, scaleY);
+            scaleY = scaleX;
+        }
+        canvas.scale(scaleX, scaleY);
 
         // Draw!
         view.draw(canvas);
