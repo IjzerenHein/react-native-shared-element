@@ -65,11 +65,6 @@ public class RNSharedElementDrawable extends Drawable {
         return mAlpha;
     }
 
-    /*@Override
-    protected void onBoundsChange(Rect bounds) {
-        super.onBoundsChange(bounds);
-    }*/
-
     /* Android's elevation implementation requires this to be implemented to know where to draw the shadow. */
     @Override
     public void getOutline(Outline outline) {
@@ -139,7 +134,7 @@ public class RNSharedElementDrawable extends Drawable {
         Drawable drawable = hierarchy.getTopLevelDrawable();
 
         // Backup current props
-        Rect oldBounds = drawable.getBounds();
+        Rect oldBounds = new Rect(drawable.getBounds());
         ScaleType oldScaleType = hierarchy.getActualImageScaleType();
         RoundingParams oldRoundingParams = hierarchy.getRoundingParams();
         Drawable oldBackgroundImage = null; //hierarchy.getBackgroundImage();
