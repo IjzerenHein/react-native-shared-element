@@ -106,6 +106,13 @@ export const Tests: (Test | TestGroup)[] = [
             end: <TestImage end size="regular" />
           },
           {
+            name: "Image Border-radius & contain",
+            description:
+              "It's a common case that the border-radius of the start- and end image are not the same. The border-radius should correctly animate for the transition.",
+            start: <TestImage size="regular" round resizeMode="contain" />,
+            end: <TestImage end size="regular" />
+          },
+          {
             name: "Image Border-radius & size",
             description:
               "It's a common case that the border-radius of the start- and end image are not the same. The border-radius should correctly animate for the transition.",
@@ -390,6 +397,12 @@ export const Tests: (Test | TestGroup)[] = [
             hero={Heroes[2]}
           />
         ),
+        animation: "fade"
+      },
+      {
+        name: "Fade & change aspect-ratio",
+        start: <TestCompoundView size="regular" position="top" />,
+        end: <TestCompoundView end size="regular" position="bottom" vertical />,
         animation: "fade"
       }
     ]
