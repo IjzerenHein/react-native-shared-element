@@ -10,11 +10,11 @@ import com.facebook.drawee.generic.GenericDraweeHierarchy;
 import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.drawable.ScalingUtils.ScaleType;
 
-public class RNSharedElementContent extends Object {
-    public View view;
-    public RectF size;
+class RNSharedElementContent {
+    View view;
+    RectF size;
 
-    static public RectF getSize(View view) {
+    static RectF getSize(View view) {
         if (view instanceof GenericDraweeView) {
             GenericDraweeView imageView = (GenericDraweeView) view;
             DraweeController controller = imageView.getController();

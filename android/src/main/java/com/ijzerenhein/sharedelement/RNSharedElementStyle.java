@@ -12,20 +12,20 @@ import com.facebook.react.bridge.ReadableMap;
 import com.facebook.drawee.drawable.ScalingUtils.ScaleType;
 import com.facebook.react.views.image.ImageResizeMode;
 
-public class RNSharedElementStyle extends Object {
-    public Rect layout = new Rect(); // absolute layout on screen
-    public Rect frame = new Rect(); // frame rect relative to parent
-    public ScaleType scaleType = ScaleType.FIT_XY;
-    public int backgroundColor = Color.TRANSPARENT;
-    public float opacity = 1;
-    public float borderTopLeftRadius = 0;
-    public float borderTopRightRadius = 0;
-    public float borderBottomLeftRadius = 0;
-    public float borderBottomRightRadius = 0;
-    public float borderWidth = 0;
-    public int borderColor = Color.TRANSPARENT;
-    public String borderStyle = "solid";
-    public float elevation = 0;
+public class RNSharedElementStyle {
+    Rect layout = new Rect(); // absolute layout on screen
+    Rect frame = new Rect(); // frame rect relative to parent
+    ScaleType scaleType = ScaleType.FIT_XY;
+    int backgroundColor = Color.TRANSPARENT;
+    float opacity = 1;
+    float borderTopLeftRadius = 0;
+    float borderTopRightRadius = 0;
+    float borderBottomLeftRadius = 0;
+    float borderBottomRightRadius = 0;
+    float borderWidth = 0;
+    int borderColor = Color.TRANSPARENT;
+    String borderStyle = "solid";
+    float elevation = 0;
 
     RNSharedElementStyle() {
         // nop

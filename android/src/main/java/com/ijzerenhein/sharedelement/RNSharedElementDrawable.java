@@ -21,8 +21,8 @@ import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.drawable.ScalingUtils.ScaleType;
 import com.facebook.drawee.generic.RoundingParams;
 
-public class RNSharedElementDrawable extends Drawable {
-    static String LOG_TAG = "RNSharedElementDrawable";
+ class RNSharedElementDrawable extends Drawable {
+    static private String LOG_TAG = "RNSharedElementDrawable";
 
     private RNSharedElementContent mContent = null;
     private RNSharedElementStyle mStyle = null;
@@ -30,23 +30,23 @@ public class RNSharedElementDrawable extends Drawable {
     private int mAlpha = 255;
     private Path mPathForBorderRadiusOutline = null;
 
-    public RNSharedElementStyle getStyle() {
+    RNSharedElementStyle getStyle() {
         return mStyle;
     }
 
-    public RNSharedElementContent getContent() {
+    RNSharedElementContent getContent() {
         return mContent;
     }
 
-    public void setStyle(RNSharedElementStyle style) {
+    void setStyle(RNSharedElementStyle style) {
         mStyle = style;
     }
 
-    public void setContent(RNSharedElementContent content) {
+    void setContent(RNSharedElementContent content) {
         mContent = content;
     }
 
-    public void setPosition(float position) {
+    void setPosition(float position) {
         mPosition = position;
     }
 

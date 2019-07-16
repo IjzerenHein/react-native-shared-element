@@ -4,7 +4,7 @@ import android.view.View;
 import android.view.ViewParent;
 import android.graphics.Rect;
 
-public class RNSharedElementTransitionItem extends Object{
+class RNSharedElementTransitionItem {
     private RNSharedElementNodeManager mNodeManager;
     private String mName;
     private boolean mIsAncestor;
@@ -16,7 +16,7 @@ public class RNSharedElementTransitionItem extends Object{
     private RNSharedElementContent mContent;
     private Rect mClippedLayoutCache;
 
-    public RNSharedElementTransitionItem(RNSharedElementNodeManager nodeManager, String name, boolean isAncestor) {
+    RNSharedElementTransitionItem(RNSharedElementNodeManager nodeManager, String name, boolean isAncestor) {
         mNodeManager = nodeManager;
         mNode = null;
         mName = name;
@@ -29,15 +29,15 @@ public class RNSharedElementTransitionItem extends Object{
         mClippedLayoutCache = null;
     }
 
-    public String getName() {
+    String getName() {
         return mName;
     }
 
-    public boolean isAncestor() {
+    boolean isAncestor() {
         return mIsAncestor;
     }
 
-    public void setHidden(boolean hidden) {
+    void setHidden(boolean hidden) {
         if (mHidden == hidden) return;
         mHidden = hidden;
         if (hidden) {
@@ -47,15 +47,15 @@ public class RNSharedElementTransitionItem extends Object{
         }
     }
 
-    public boolean getHidden() {
+    boolean getHidden() {
         return mHidden;
     }
 
-    public RNSharedElementNode getNode() {
+    RNSharedElementNode getNode() {
         return mNode;
     }
 
-    public void setNode(RNSharedElementNode node) {
+    void setNode(RNSharedElementNode node) {
         if (mNode == node) {
             if (node != null) mNodeManager.release(node);
             return;
@@ -72,61 +72,71 @@ public class RNSharedElementTransitionItem extends Object{
         mContent = null;
     }
 
-    public boolean getNeedsStyle() {
+    boolean getNeedsStyle() {
         return mNeedsStyle;
     }
 
-    public void setNeedsStyle(boolean needsStyle) {
+    void setNeedsStyle(boolean needsStyle) {
         mNeedsStyle = needsStyle;
     }
 
-    public void setStyle(RNSharedElementStyle style) {
+    void setStyle(RNSharedElementStyle style) {
         mStyle = style;
     }
 
-    public RNSharedElementStyle getStyle() {
+    RNSharedElementStyle getStyle() {
         return mStyle;
     }
 
-    public boolean getNeedsContent() {
+    boolean getNeedsContent() {
         return mNeedsContent;
     }
 
-    public void setNeedsContent(boolean needsContent) {
+    void setNeedsContent(boolean needsContent) {
         mNeedsContent = needsContent;
     }
 
-    public void setContent(RNSharedElementContent content) {
+    void setContent(RNSharedElementContent content) {
         mContent = content;
     }
 
-    public RNSharedElementContent getContent() {
+    RNSharedElementContent getContent() {
         return mContent;
     }
 
-    public View getView() {
-        // TODO
-        return null;
+    View getView() {
+        return (mNode != null) ? mNode.getResolvedView() : null;
     }
 
-    public Rect getClippedLayout(RNSharedElementTransitionItem ancestor) {
+    Rect getClippedLayout(RNSharedElementTransitionItem ancestor) {
         if (mClippedLayoutCache != null) return mClippedLayoutCache;
         if ((mStyle == null) || (ancestor == null)) return null;
         View view = getView();
         View ancestorView = ancestor.getView();
 
+        Rect clippedLayout = new Rect(mStyle.layout);
+        
+        /*Rect clippedLayout = new Rect(mStyle.layout);
+        if (!view.getGlobalVisibleRect(clippedLayout)) {
+            clippedLayout.right = clippedLayout.left;
+            clippedLayout.bottom = clippedLayout.top; 
+        }*/
         // Get visible area (some parts may be clipped in a scrollview or something)
-        Rect clippedLayout = mStyle.layout;
+        /*Rect clippedLayout = new Rect(mStyle.layout);
         ViewParent parentView = view.getParent();
         while (parentView != null) {
-            // TODO
-            /*CGRect superLayout = [superview convertRect:superview.bounds toView:nil];
-            CGRect intersectedLayout = CGRectIntersection(visibleLayout, superLayout);
-            if (isinf(intersectedLayout.origin.x) || isinf(intersectedLayout.origin.y)) break;
-            visibleLayout = intersectedLayout;*/
+            Rect bounds = new Rect(view.getLeft(), view.getTop(), view.getRight(), view.getBottom());
+            parentView.getChildVisibleRect(view, bounds, null);
+            if (!clippedLayout.intersect(bounds)) {
+                clippedLayout.right = clippedLayout.left;
+                clippedLayout.bottom = clippedLayout.top; 
+                break;
+            }
             if (parentView == ancestorView) break;
+            view = parentView;
             parentView = parentView.getParent();
-        }
+        }*/
+
         mClippedLayoutCache = clippedLayout;
         return clippedLayout;
     }

@@ -15,12 +15,13 @@ import com.facebook.react.bridge.ReadableMap;
 
 import com.facebook.imagepipeline.image.ImageInfo;
 import com.facebook.drawee.view.GenericDraweeView;
+import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.controller.BaseControllerListener;
 import com.facebook.drawee.controller.ControllerListener;
 import com.facebook.drawee.backends.pipeline.PipelineDraweeController;
 
-public class RNSharedElementNode extends Object {
-    static String LOG_TAG = "RNSharedElementNode";
+class RNSharedElementNode {
+    static private String LOG_TAG = "RNSharedElementNode";
 
     private int mReactTag;
     private View mView;
@@ -36,7 +37,7 @@ public class RNSharedElementNode extends Object {
     private ArrayList<Callback> mContentCallbacks;
     private ControllerListener mDraweeControllerListener;
 
-    public RNSharedElementNode(int reactTag, View view, boolean isParent, ReadableMap styleConfig) {
+    RNSharedElementNode(int reactTag, View view, boolean isParent, ReadableMap styleConfig) {
         mReactTag = reactTag;
         mView = view;
         mIsParent = isParent;
@@ -53,22 +54,22 @@ public class RNSharedElementNode extends Object {
         updateView();
     }
 
-    public int getReactTag() {
+    int getReactTag() {
         return mReactTag;
     }
 
-    public int getRefCount() {
+    int getRefCount() {
         return mRefCount;
     }
 
-    public void setRefCount(int refCount) {
+    void setRefCount(int refCount) {
         mRefCount = refCount;
         if (mRefCount == 0) {
             removeDraweeControllerListener();
         }
     }
 
-    public void addHideRef() {
+    void addHideRef() {
         mHideRefCount++;
         if (mHideRefCount == 1) {
             mHideAlpha = mView.getAlpha();
@@ -76,7 +77,7 @@ public class RNSharedElementNode extends Object {
         }
     }
 
-    public void releaseHideRef() {
+    void releaseHideRef() {
         mHideRefCount--;
         if (mHideRefCount == 0) {
             mView.setAlpha(mHideAlpha);
@@ -103,7 +104,11 @@ public class RNSharedElementNode extends Object {
         mResolvedView = view;
     }
 
-    public void requestStyle(Callback callback) {
+    View getResolvedView() {
+        return mResolvedView;
+    }
+
+    void requestStyle(Callback callback) {
         if (mStyleCache != null) {
             callback.invoke(mStyleCache, this);
             return;
@@ -155,7 +160,7 @@ public class RNSharedElementNode extends Object {
         }
     }
 
-    public void requestContent(Callback callback) {
+    void requestContent(Callback callback) {
         if (mContentCache != null) {
             callback.invoke(mContentCache, this);
             return;
@@ -203,8 +208,9 @@ public class RNSharedElementNode extends Object {
 
         if (!(mResolvedView instanceof GenericDraweeView)) return;
         GenericDraweeView imageView = (GenericDraweeView) mResolvedView;
-        PipelineDraweeController controller = (PipelineDraweeController) imageView.getController();
+        DraweeController controller = imageView.getController();
         if (!(controller instanceof PipelineDraweeController)) return;
+        PipelineDraweeController pipelineController = (PipelineDraweeController) controller;
 
         mDraweeControllerListener = new BaseControllerListener<ImageInfo>() {
             @Override
@@ -228,15 +234,16 @@ public class RNSharedElementNode extends Object {
             }
         };
 
-        controller.addControllerListener(mDraweeControllerListener);
+        pipelineController.addControllerListener(mDraweeControllerListener);
     }
 
     private void removeDraweeControllerListener() {
         if (mDraweeControllerListener == null) return;
         GenericDraweeView imageView = (GenericDraweeView) mResolvedView;
-        PipelineDraweeController controller = (PipelineDraweeController) imageView.getController();
+        DraweeController controller = imageView.getController();
         if (!(controller instanceof PipelineDraweeController)) return;
-        controller.removeControllerListener(mDraweeControllerListener);
+        PipelineDraweeController pipelineController = (PipelineDraweeController) controller;
+        pipelineController.removeControllerListener(mDraweeControllerListener);
         mDraweeControllerListener = null;
     }
 }
