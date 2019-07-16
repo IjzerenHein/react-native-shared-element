@@ -210,7 +210,16 @@ public class RNSharedElementTransition extends ViewGroup {
         
         // Render the end view for "fade" animations
         if (!mAnimation.equals("move")) {
-            mStartView.setAlpha(((startStyle != null) ? startStyle.opacity : 1) * (1 - mNodePosition));
+
+            // Fade out start view
+            float startAlpha = ((startStyle != null) ? startStyle.opacity : 1) * (1 - mNodePosition);
+            mStartView.setAlpha(startAlpha);
+            if (interpolatedStyle.elevation > 0) {
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.P) {
+                    mStartView.setOutlineAmbientShadowColor(Color.argb(startAlpha, 0, 0, 0));
+                    mStartView.setOutlineSpotShadowColor(Color.argb(startAlpha, 0, 0, 0));
+                }
+            }
 
             // Render the end view
             mEndView.layout(
@@ -222,8 +231,19 @@ public class RNSharedElementTransition extends ViewGroup {
             mEndDrawable.setContent(endContent);
             mEndDrawable.setStyle(interpolatedStyle);
             mEndDrawable.setPosition(mNodePosition);
-            mEndView.setElevation(interpolatedStyle.elevation);
-            mEndView.setAlpha(((endStyle != null) ? endStyle.opacity : 1) * mNodePosition);
+
+            // Fade-in end view
+            float endAlpha = ((endStyle != null) ? endStyle.opacity : 1) * mNodePosition;
+            mEndView.setAlpha(endAlpha);
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+                mEndView.setElevation(interpolatedStyle.elevation);
+            }
+            if (interpolatedStyle.elevation > 0) {
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.P) {
+                    mEndView.setOutlineAmbientShadowColor(Color.argb(endAlpha, 0, 0, 0));
+                    mEndView.setOutlineSpotShadowColor(Color.argb(endAlpha, 0, 0, 0));
+                }
+            }
             mEndDrawable.invalidateSelf();
         }
 
