@@ -17,7 +17,6 @@ import com.facebook.imagepipeline.image.ImageInfo;
 import com.facebook.drawee.view.GenericDraweeView;
 import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.controller.BaseControllerListener;
-import com.facebook.drawee.controller.ControllerListener;
 import com.facebook.drawee.backends.pipeline.PipelineDraweeController;
 
 class RNSharedElementNode {
@@ -35,7 +34,7 @@ class RNSharedElementNode {
     private ArrayList<Callback> mStyleCallbacks;
     private RNSharedElementContent mContentCache;
     private ArrayList<Callback> mContentCallbacks;
-    private ControllerListener mDraweeControllerListener;
+    private BaseControllerListener<ImageInfo> mDraweeControllerListener;
 
     RNSharedElementNode(int reactTag, View view, boolean isParent, ReadableMap styleConfig) {
         mReactTag = reactTag;
