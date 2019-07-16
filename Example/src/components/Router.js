@@ -1,6 +1,12 @@
 // @flow
 import * as React from "react";
-import { StyleSheet, View, Animated, Dimensions } from "react-native";
+import {
+  StyleSheet,
+  View,
+  Animated,
+  Dimensions,
+  BackHandler
+} from "react-native";
 import { SharedElementTransition } from "react-native-shared-element-transition";
 import { ScreenTransitionContext } from "./ScreenTransitionContext";
 import type { ScreenTransitionContextOnSharedElementsUpdatedEvent } from "./ScreenTransitionContext";
@@ -82,6 +88,7 @@ export class Router extends React.Component<RouterProps, RouterState> {
     [{ nativeEvent: { translationX: this._swipeBackAnimValue } }],
     { useNativeDriver: true }
   );
+  _backHandler: any;
 
   static defaultProps = {
     transitionConfig: fromRight()
@@ -107,6 +114,17 @@ export class Router extends React.Component<RouterProps, RouterState> {
       sharedElementConfig: undefined,
       transitionConfig: undefined
     };
+  }
+
+  componentDidMount() {
+    this._backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      this.onHardwareBackPress
+    );
+  }
+
+  componentWillUnmount() {
+    this._backHandler.remove();
   }
 
   renderSharedElementTransitions() {
@@ -300,6 +318,14 @@ export class Router extends React.Component<RouterProps, RouterState> {
     this.setState({
       sharedElementScreens: newSharedElementScreens
     });
+  };
+
+  onHardwareBackPress = () => {
+    if (this.state.stack.length > 1) {
+      this.pop();
+      return true;
+    }
+    return false;
   };
 
   push(node: React.Node, config?: RouterConfig) {
