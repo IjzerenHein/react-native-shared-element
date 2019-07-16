@@ -4,6 +4,7 @@ import java.util.Locale;
 
 import android.graphics.Rect;
 import android.graphics.Color;
+import android.graphics.Outline;
 import android.support.v4.text.TextUtilsCompat;
 import android.support.v4.view.ViewCompat;
 

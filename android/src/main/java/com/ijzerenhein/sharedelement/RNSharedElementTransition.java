@@ -7,13 +7,14 @@ import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.view.View;
+import android.view.ViewGroup;
 
 import com.facebook.react.bridge.Callback;
 import com.facebook.react.uimanager.ThemedReactContext;
-import com.facebook.drawee.view.GenericDraweeView;
 import com.facebook.drawee.drawable.ScalingUtils;
 
-public class RNSharedElementTransition extends GenericDraweeView {
+public class RNSharedElementTransition extends ViewGroup {
 
     static String LOG_TAG = "RNSharedElementTransition";
 
@@ -28,13 +29,27 @@ public class RNSharedElementTransition extends GenericDraweeView {
     private boolean mInitialLayoutPassCompleted = false;
     private ArrayList<RNSharedElementTransitionItem> mItems = new ArrayList<RNSharedElementTransitionItem>();
     private int[] mParentLocation = new int[2];
+    private View mStartView;
+    private View mEndView;
+    private RNSharedElementDrawable mStartDrawable;
+    private RNSharedElementDrawable mEndDrawable;
 
-    public RNSharedElementTransition(ThemedReactContext themedReactContext, RNSharedElementNodeManager nodeManager) {
-        super(themedReactContext);
+    public RNSharedElementTransition(ThemedReactContext context, RNSharedElementNodeManager nodeManager) {
+        super(context);
         mItems.add(new RNSharedElementTransitionItem(nodeManager, "startAncestor", true));
         mItems.add(new RNSharedElementTransitionItem(nodeManager, "endAncestor", true));
         mItems.add(new RNSharedElementTransitionItem(nodeManager, "startNode", false));
         mItems.add(new RNSharedElementTransitionItem(nodeManager, "endNode", false));
+
+        mStartView = new View(context);
+        mStartDrawable = new RNSharedElementDrawable();
+        mStartView.setBackground(mStartDrawable);
+        addView(mStartView);
+
+        mEndView = new View(context);
+        mEndDrawable = new RNSharedElementDrawable();
+        mEndView.setBackground(mEndDrawable);
+        addView(mEndView);
     }
 
     public void releaseData() {
@@ -66,7 +81,7 @@ public class RNSharedElementTransition extends GenericDraweeView {
     public void setAnimation(final String animation) {
         if (mAnimation != animation) {
             mAnimation = animation;
-            updateLayoutAndInvalidate();
+            updateLayout();
         }
     }
 
@@ -74,12 +89,12 @@ public class RNSharedElementTransition extends GenericDraweeView {
         if (mNodePosition != nodePosition) {
             mNodePosition = nodePosition;
             //Log.d(LOG_TAG, "setNodePosition " + nodePosition + ", mInitialLayoutPassCompleted: " + mInitialLayoutPassCompleted);
-            updateLayoutAndInvalidate();
+            updateLayout();
         }
     }
 
     @Override
-    public void layout(int l, int t, int r, int b) {
+    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         if (!mReactLayoutSet) {
             mReactLayoutSet = true;
 
@@ -87,7 +102,7 @@ public class RNSharedElementTransition extends GenericDraweeView {
             // has completed
             requestStylesAndContent(true);
             mInitialLayoutPassCompleted = true;
-            updateLayoutAndInvalidate();
+            updateLayout();
             updateNodeVisibility();
         }
     }
@@ -102,7 +117,7 @@ public class RNSharedElementTransition extends GenericDraweeView {
                     public void invoke(Object... args) {
                         RNSharedElementStyle style = (RNSharedElementStyle) args[0];
                         item.setStyle(style);
-                        updateLayoutAndInvalidate();
+                        updateLayout();
                         updateNodeVisibility();
                     }
                 });
@@ -114,7 +129,7 @@ public class RNSharedElementTransition extends GenericDraweeView {
                     public void invoke(Object... args) {
                         RNSharedElementContent content = (RNSharedElementContent) args[0];
                         item.setContent(content);
-                        updateLayoutAndInvalidate();
+                        updateLayout();
                         updateNodeVisibility();
                     }
                 });
@@ -122,16 +137,89 @@ public class RNSharedElementTransition extends GenericDraweeView {
         }
     }
 
-    private void updateLayoutAndInvalidate() {
+    private void updateLayout() {
         if (!mInitialLayoutPassCompleted) return;
-        Rect layout = calculateLayout(mNodePosition);
-        float elevation = calculateElevation(mNodePosition);
-        //Log.d(LOG_TAG, "updateLayoutAndInvalidate: " + layout);
-        if (layout != null) {
-            super.layout(layout.left, layout.top, layout.right, layout.bottom);
-            setElevation(elevation);
+
+        // Local data
+        RNSharedElementTransitionItem startItem = mItems.get(ITEM_START);
+        RNSharedElementTransitionItem startAncestor = mItems.get(ITEM_START_ANCESTOR);
+        RNSharedElementTransitionItem endItem = mItems.get(ITEM_END);
+        RNSharedElementTransitionItem endAncestor = mItems.get(ITEM_END_ANCESTOR);
+
+        // Get styles & content
+        RNSharedElementStyle startStyle = startItem.getStyle();
+        RNSharedElementStyle endStyle = endItem.getStyle();
+        if ((startStyle == null) && (endStyle == null)) return;
+        RNSharedElementContent startContent = startItem.getContent();
+        RNSharedElementContent endContent = endItem.getContent();
+
+        // Get layout
+        getLocationOnScreen(mParentLocation);
+        Rect startLayout = (startStyle != null) ? normalizeLayout(startStyle.layout, startAncestor) : new Rect();
+        Rect startVisibleLayout = (startStyle != null) ? normalizeLayout(startStyle.layout, startAncestor) : new Rect(); // TODO CLIP
+        Rect endLayout = (endStyle != null) ? normalizeLayout(endStyle.layout, endAncestor) : new Rect();
+        Rect endVisibleLayout = (endStyle != null) ? normalizeLayout(endStyle.layout, endAncestor) : new Rect(); // TODO CLIP
+
+        // Get interpolated layout
+        Rect interpolatedLayout;
+        Rect interpolatedVisibleLayout;
+        RNSharedElementStyle interpolatedStyle;
+        if ((startStyle != null) && (endStyle != null)) {
+            interpolatedLayout = getInterpolatedLayout(startLayout, endLayout, mNodePosition);
+            interpolatedVisibleLayout = getInterpolatedLayout(startVisibleLayout, endVisibleLayout, mNodePosition);
+            interpolatedStyle = getInterpolatedStyle(startStyle, startContent, endStyle, endContent, mNodePosition);
+        } else if (startStyle != null) {
+            interpolatedLayout = startLayout;
+            interpolatedVisibleLayout = startVisibleLayout;
+            interpolatedStyle = startStyle;
+        } else {
+            interpolatedLayout = endLayout;
+            interpolatedVisibleLayout = endVisibleLayout;
+            interpolatedStyle = endStyle;
         }
-        invalidate();
+
+        // Update outer viewgroup layout. The outer viewgroup hosts 2 inner views
+        // which draw the content & elevation. The outer viewgroup performs additional
+        // clipping on these views.
+        super.layout(
+            interpolatedVisibleLayout.left,
+            interpolatedVisibleLayout.top,
+            interpolatedVisibleLayout.right,
+            interpolatedVisibleLayout.bottom
+        );
+
+        // Render the start view
+        mStartView.layout(
+            interpolatedLayout.left - interpolatedVisibleLayout.left,
+            interpolatedLayout.top - interpolatedVisibleLayout.top,
+            (interpolatedLayout.left - interpolatedVisibleLayout.left) + interpolatedLayout.width(),
+            (interpolatedLayout.top - interpolatedVisibleLayout.top) + interpolatedLayout.height()
+        );
+        mStartDrawable.setContent(startContent);
+        mStartDrawable.setStyle(interpolatedStyle);
+        mStartView.setElevation(interpolatedStyle.elevation);
+        mStartView.setAlpha(interpolatedStyle.opacity);
+        
+        // Render the end view for "fade" animations
+        if (!mAnimation.equals("move")) {
+            mStartView.setAlpha(startStyle.opacity * (1 - mNodePosition));
+
+            // Render the end view
+            mEndView.layout(
+                interpolatedLayout.left - interpolatedVisibleLayout.left,
+                interpolatedLayout.top - interpolatedVisibleLayout.top,
+                (interpolatedLayout.left - interpolatedVisibleLayout.left) + interpolatedLayout.width(),
+                (interpolatedLayout.top - interpolatedVisibleLayout.top) + interpolatedLayout.height()
+            );
+            mEndDrawable.setContent(endContent);
+            mEndDrawable.setStyle(interpolatedStyle);
+            mEndView.setElevation(interpolatedStyle.elevation);
+            mEndView.setAlpha(endStyle.opacity * mNodePosition);
+            mEndView.invalidate();
+        }
+
+        // Invalidate
+        mStartView.invalidate();
     }
 
     private void updateNodeVisibility() {
@@ -174,20 +262,20 @@ public class RNSharedElementTransition extends GenericDraweeView {
     }
 
     private int getInterpolatedColor(int color1, int color2, float position) {
-        // Interpolate using the HSV model
-        // https://stackoverflow.com/a/38536770/3785358
-        float[] hsva = new float[3];
-        float[] hsvb = new float[3];
-        float[] hsv_output = new float[3];
-        Color.colorToHSV(color1, hsva);
-        Color.colorToHSV(color2, hsvb);
-        for (int i = 0; i < 3; i++) {
-            hsv_output[i] = hsva[i] + ((hsvb[i] - hsva[i]) * position);
-        }
-        int alpha_a = Color.alpha(color1);
-        int alpha_b = Color.alpha(color2);
-        float alpha_output = alpha_a + ((alpha_b - alpha_a) * position);
-        return Color.HSVToColor((int) alpha_output, hsv_output);
+        int redA = Color.red(color1);
+        int greenA = Color.green(color1);
+        int blueA = Color.blue(color1);
+        int alphaA = Color.alpha(color1);
+        int redB = Color.red(color2);
+        int greenB = Color.green(color2);
+        int blueB = Color.blue(color2);
+        int alphaB = Color.alpha(color2);
+        return Color.argb(
+            (int) (alphaA + ((alphaB - alphaA) * position)),
+            (int) (redA + ((redB - redA) * position)),
+            (int) (greenA + ((greenB - greenA) * position)),
+            (int) (blueA + ((blueB - blueA) * position))
+        );
     }
 
     private RNSharedElementStyle getInterpolatedStyle(
@@ -275,7 +363,7 @@ public class RNSharedElementTransition extends GenericDraweeView {
         }
     }
 
-    @Override
+    /*@Override
     protected void onDraw(Canvas canvas) {
         //Log.d(LOG_TAG, "onDraw " + mNodePosition + ", interpolatedStyle: " + interpolatedStyle);
     
@@ -312,19 +400,19 @@ public class RNSharedElementTransition extends GenericDraweeView {
         canvas.clipRect(0, 0, getWidth(), getHeight());
 
         // Draw content
-        /*Paint backgroundPaint = new Paint();
-        backgroundPaint.setColor(Color.argb(128, 255, 0, 0));
-        canvas.drawRect(0, 0, getWidth(), getHeight(), backgroundPaint);*/
+        //Paint backgroundPaint = new Paint();
+        //backgroundPaint.setColor(Color.argb(128, 255, 0, 0));
+        //canvas.drawRect(0, 0, getWidth(), getHeight(), backgroundPaint);
 
         // Draw start-item
-        /*canvas.save();
-        canvas.translate(
-            interpolatedStyle.frame.left - interpolatedStyle.layout.left,
-            interpolatedStyle.frame.top - interpolatedStyle.layout.top
-        );
-        Paint contentPaint = new Paint();
-        contentPaint.setColor(Color.argb(128, 0, 0, 255));
-        canvas.drawRect(0, 0, interpolatedStyle.frame.width(), interpolatedStyle.frame.height(), contentPaint);*/
+        //canvas.save();
+        //canvas.translate(
+        //    interpolatedStyle.frame.left - interpolatedStyle.layout.left,
+        //    interpolatedStyle.frame.top - interpolatedStyle.layout.top
+        //);
+        //Paint contentPaint = new Paint();
+        //contentPaint.setColor(Color.argb(128, 0, 0, 255));
+        //canvas.drawRect(0, 0, interpolatedStyle.frame.width(), interpolatedStyle.frame.height(), contentPaint);
         if (startContent != null) {
             startContent.draw(canvas, interpolatedStyle);
         }
@@ -332,8 +420,7 @@ public class RNSharedElementTransition extends GenericDraweeView {
 
         // Restore canvas
         canvas.restore();
-
-    }
+}*/
 
     private void fireMeasureEvent() {
         /*ReactContext reactContext = (ReactContext)getContext();

@@ -355,9 +355,9 @@ export const Tests: (Test | TestGroup)[] = [
             animation: "fade"
           },
           {
-            name: "Fade != aspect-ratios",
+            name: "Fade & border-radius",
             start: <TestView size="regular" />,
-            end: <TestView end size="large" color={Colors.yellow} />,
+            end: <TestView end size="large" round color={Colors.yellow} />,
             animation: "fade"
           }
         ]
