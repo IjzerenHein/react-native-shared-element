@@ -6,23 +6,17 @@ import javax.annotation.Nullable;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
-import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.Animatable;
 
-import com.facebook.react.uimanager.PixelUtil;
 import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.ReadableMap;
-import com.facebook.react.views.image.ImageResizeMode;
-import com.facebook.react.views.image.ReactImageView;
-import com.facebook.react.views.view.ReactViewGroup;
 
 import com.facebook.imagepipeline.image.ImageInfo;
 import com.facebook.drawee.view.GenericDraweeView;
 import com.facebook.drawee.controller.BaseControllerListener;
 import com.facebook.drawee.controller.ControllerListener;
-import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.backends.pipeline.PipelineDraweeController;
 
 public class RNSharedElementNode extends Object {
@@ -35,6 +29,7 @@ public class RNSharedElementNode extends Object {
     private View mResolvedView;
     private int mRefCount;
     private int mHideRefCount;
+    private float mHideAlpha;
     private RNSharedElementStyle mStyleCache;
     private ArrayList<Callback> mStyleCallbacks;
     private RNSharedElementContent mContentCache;
@@ -48,6 +43,7 @@ public class RNSharedElementNode extends Object {
         mStyleConfig = styleConfig;
         mRefCount = 1;
         mHideRefCount = 0;
+        mHideAlpha = 1;
         mStyleCache = null;
         mStyleCallbacks = null;
         mContentCache = null;
@@ -75,6 +71,7 @@ public class RNSharedElementNode extends Object {
     public void addHideRef() {
         mHideRefCount++;
         if (mHideRefCount == 1) {
+            mHideAlpha = mView.getAlpha();
             mView.setAlpha(0);
         }
     }
@@ -82,8 +79,7 @@ public class RNSharedElementNode extends Object {
     public void releaseHideRef() {
         mHideRefCount--;
         if (mHideRefCount == 0) {
-            if (mStyleCache != null) setDrawStyle(mStyleCache);
-            mView.setAlpha(1);
+            mView.setAlpha(mHideAlpha);
         }
     }
 
@@ -242,54 +238,5 @@ public class RNSharedElementNode extends Object {
         if (!(controller instanceof PipelineDraweeController)) return;
         controller.removeControllerListener(mDraweeControllerListener);
         mDraweeControllerListener = null;
-    }
-
-    private void setDrawStyle(RNSharedElementStyle style) {
-
-        // Get view to update
-        View view = mResolvedView;
-
-        // Set layout
-        Rect frame = style.frame;
-        view.layout(frame.left, frame.top, frame.right, frame.bottom);
-
-        // Set opacity
-        //view.setAlpha(style.opacity);
-
-        view.setBackgroundColor(style.backgroundColor);
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-            view.setElevation(style.elevation);
-        }
-        if (view instanceof ReactImageView) {
-            ReactImageView imageView = (ReactImageView) view;
-            imageView.setBorderColor(style.borderColor);
-            imageView.setBorderWidth(PixelUtil.toDIPFromPixel(style.borderWidth));
-            imageView.setBorderRadius(style.borderTopLeftRadius, 0);
-            imageView.setBorderRadius(style.borderTopRightRadius, 1);
-            imageView.setBorderRadius(style.borderBottomRightRadius, 2);
-            imageView.setBorderRadius(style.borderBottomLeftRadius, 3);
-            imageView.setScaleType(style.scaleType);
-            //imageView.setScaleType(ScaleType.FIT_XY);
-            //imageView.setTileMode(ImageResizeMode.defaultTileMode());
-            //imageView.maybeUpdateView();
-        }
-        else if (view instanceof ReactViewGroup) {
-            ReactViewGroup viewGroup = (ReactViewGroup) view;
-            viewGroup.setOpacityIfPossible(style.opacity);
-            float borderColorRGB = (float) ((int)style.borderColor & 0x00FFFFFF);
-            float borderColorAlpha = (float) ((int)style.borderColor >>> 24);
-            viewGroup.setBorderColor(0, borderColorRGB, borderColorAlpha);
-            viewGroup.setBorderWidth(0, style.borderWidth);
-            viewGroup.setBorderRadius(style.borderTopLeftRadius, 0);
-            viewGroup.setBorderRadius(style.borderTopRightRadius, 1);
-            viewGroup.setBorderRadius(style.borderBottomRightRadius, 2);
-            viewGroup.setBorderRadius(style.borderBottomLeftRadius, 3);
-        }
-        // TODO z-index reset?
-    }
-
-    public void draw(Canvas canvas, RNSharedElementStyle style) {
-        setDrawStyle(style);
-        mResolvedView.draw(canvas);
     }
 }

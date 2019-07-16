@@ -5,8 +5,6 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Outline;
 import android.graphics.PixelFormat;
@@ -16,7 +14,6 @@ import com.facebook.react.views.image.ReactImageView;
 import com.facebook.react.views.view.ReactViewGroup;
 import com.facebook.react.views.view.ReactViewBackgroundDrawable;
 
-import com.facebook.drawee.view.GenericDraweeView;
 import com.facebook.drawee.generic.GenericDraweeHierarchy;
 import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.drawable.ScalingUtils.ScaleType;
@@ -60,7 +57,6 @@ public class RNSharedElementDrawable extends Drawable {
     public void setAlpha(int alpha) {
         if (alpha != mAlpha) {
             mAlpha = alpha;
-            //invalidateSelf();
         }
     }
 
@@ -69,11 +65,10 @@ public class RNSharedElementDrawable extends Drawable {
         return mAlpha;
     }
 
-    @Override
+    /*@Override
     protected void onBoundsChange(Rect bounds) {
         super.onBoundsChange(bounds);
-        //mNeedUpdatePathForBorderRadius = true;
-    }
+    }*/
 
     /* Android's elevation implementation requires this to be implemented to know where to draw the shadow. */
     @Override
@@ -124,16 +119,16 @@ public class RNSharedElementDrawable extends Drawable {
 
         if (view instanceof ReactImageView) {
             drawReactImageView(canvas);
+            return;
         }
         else if (view instanceof ReactViewGroup) {
             ReactViewGroup viewGroup = (ReactViewGroup) view;
             if (viewGroup.getChildCount() == 0) {
                 drawViewStyles(canvas);
-            }
-            else {
-                //drawReactViewGroup(canvas, style);
+                return;
             }
         }
+        drawGenericView(canvas);
     }
 
     private void drawReactImageView(Canvas canvas) {
@@ -203,5 +198,25 @@ public class RNSharedElementDrawable extends Drawable {
 
         // Draw!
         drawable.draw(canvas);
+    }
+
+    private void drawGenericView(Canvas canvas) {
+        View view = mContent.view;
+
+        // Save canvas
+        canvas.save();
+
+        // Adjust scale
+        Rect bounds = getBounds();
+        canvas.scale(
+            (float)bounds.width() / (float)view.getWidth(),
+            (float)bounds.height() / (float)view.getHeight()
+        );
+
+        // Draw!
+        view.draw(canvas);
+
+        // Restore canvas
+        canvas.save();
     }
 }
