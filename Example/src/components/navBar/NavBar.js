@@ -3,7 +3,7 @@ import * as React from "react";
 import { StyleSheet, View, TouchableOpacity } from "react-native";
 import { Heading2 } from "../Text";
 import { Router } from "../Router";
-import { Colors } from "../Colors";
+import { Colors, Shadows } from "../Colors";
 import { Icon } from "../Icon";
 import { NavBarHeight } from "./constants";
 
@@ -25,6 +25,9 @@ const styles = StyleSheet.create({
     position: "absolute",
     left: 10,
     bottom: 10
+  },
+  icon: {
+    ...Shadows.textElevation1
   }
 });
 
@@ -71,7 +74,12 @@ export class NavBar extends React.Component<NavBarProps> {
         onPress={this.onPressBack}
         hitSlop={HIT_SLOP}
       >
-        <Icon name={icon} size={28} color={light ? Colors.back : Colors.text} />
+        <Icon
+          style={styles.icon}
+          name={icon}
+          size={28}
+          color={light ? Colors.back : Colors.text}
+        />
       </TouchableOpacity>
     );
   }

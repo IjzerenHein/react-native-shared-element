@@ -45,5 +45,10 @@ export const Shadows = {
     android: {
       elevation: 3
     }
-  })
+  }),
+  textElevation1: {
+    textShadowColor: "rgba(0, 0, 0, 1)",
+    textShadowOffset: { width: 0, height: 0 },
+    textShadowRadius: 2
+  }
 };
