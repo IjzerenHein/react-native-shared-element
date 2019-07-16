@@ -2,6 +2,7 @@ package com.ijzerenhein.sharedelement;
 
 import java.util.ArrayList;
 
+import android.os.Build;
 import android.util.Log;
 import android.graphics.Canvas;
 import android.graphics.Rect;
@@ -203,10 +204,11 @@ public class RNSharedElementTransition extends ViewGroup {
         mStartDrawable.setContent(startContent);
         mStartDrawable.setStyle(interpolatedStyle);
         mStartDrawable.setPosition(mNodePosition);
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+        mStartView.setAlpha(interpolatedStyle.opacity);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             mStartView.setElevation(interpolatedStyle.elevation);
         }
-        mStartView.setAlpha(interpolatedStyle.opacity);
+        
         
         // Render the end view for "fade" animations
         if (!mAnimation.equals("move")) {
@@ -215,7 +217,7 @@ public class RNSharedElementTransition extends ViewGroup {
             float startAlpha = ((startStyle != null) ? startStyle.opacity : 1) * (1 - mNodePosition);
             mStartView.setAlpha(startAlpha);
             if (interpolatedStyle.elevation > 0) {
-                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.P) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
                     mStartView.setOutlineAmbientShadowColor(Color.argb(startAlpha, 0, 0, 0));
                     mStartView.setOutlineSpotShadowColor(Color.argb(startAlpha, 0, 0, 0));
                 }
@@ -239,7 +241,7 @@ public class RNSharedElementTransition extends ViewGroup {
                 mEndView.setElevation(interpolatedStyle.elevation);
             }
             if (interpolatedStyle.elevation > 0) {
-                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.P) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
                     mEndView.setOutlineAmbientShadowColor(Color.argb(endAlpha, 0, 0, 0));
                     mEndView.setOutlineSpotShadowColor(Color.argb(endAlpha, 0, 0, 0));
                 }
