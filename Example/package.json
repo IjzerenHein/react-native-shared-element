@@ -6,7 +6,10 @@
     "start": "node node_modules/react-native/local-cli/cli.js start",
     "test": "jest",
     "flow": "flow",
-    "lint": "./node_modules/.bin/eslint ./src"
+    "lint": "./node_modules/.bin/eslint ./src",
+    "apk": "cd android && ./gradlew assembleRelease && cd ..",
+    "apk-install": "adb install -r android/app/build/outputs/apk/release/app-release.apk",
+    "android-clean": "cd android && ./gradlew clean && cd .."
   },
   "dependencies": {
     "@react-native-community/blur": "^3.3.1",

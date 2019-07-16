@@ -102,7 +102,7 @@ android {
     }
 
     defaultConfig {
-        applicationId "com.sharedelementexample"
+        applicationId "com.ijzerenhein.sharedelement.example"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
@@ -120,6 +120,7 @@ android {
         release {
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
+            signingConfig debug.signingConfig
         }
     }
     // applicationVariants are e.g. debug, release

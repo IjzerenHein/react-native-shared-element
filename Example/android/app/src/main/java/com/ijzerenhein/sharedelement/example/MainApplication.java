@@ -1,4 +1,4 @@
-package com.sharedelementexample;
+package com.ijzerenhein.sharedelement.example;
 
 import android.app.Application;
 
