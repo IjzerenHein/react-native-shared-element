@@ -202,7 +202,7 @@ public class RNSharedElementTransition extends ViewGroup {
         
         // Render the end view for "fade" animations
         if (!mAnimation.equals("move")) {
-            mStartView.setAlpha(startStyle.opacity * (1 - mNodePosition));
+            mStartView.setAlpha(((startStyle != null) ? startStyle.opacity : 1) * (1 - mNodePosition));
 
             // Render the end view
             mEndView.layout(
@@ -214,7 +214,7 @@ public class RNSharedElementTransition extends ViewGroup {
             mEndDrawable.setContent(endContent);
             mEndDrawable.setStyle(interpolatedStyle);
             mEndView.setElevation(interpolatedStyle.elevation);
-            mEndView.setAlpha(endStyle.opacity * mNodePosition);
+            mEndView.setAlpha(((endStyle != null) ? endStyle.opacity : 1) * mNodePosition);
             mEndView.invalidate();
         }
 
