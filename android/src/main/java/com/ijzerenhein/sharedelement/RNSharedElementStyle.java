@@ -24,6 +24,7 @@ public class RNSharedElementStyle extends Object {
     public float borderBottomRightRadius = 0;
     public float borderWidth = 0;
     public int borderColor = Color.TRANSPARENT;
+    public String borderStyle = "solid";
     public float elevation = 0;
 
     RNSharedElementStyle() {
@@ -36,6 +37,7 @@ public class RNSharedElementStyle extends Object {
         if (config.hasKey("backgroundColor")) backgroundColor = config.getInt("backgroundColor");
         if (config.hasKey("borderColor")) borderColor = config.getInt("borderColor");
         if (config.hasKey("borderWidth")) borderWidth = PixelUtil.toPixelFromDIP((float) config.getDouble("borderWidth"));
+        if (config.hasKey("borderStyle")) borderStyle = config.getString("borderStyle");
         if (config.hasKey("resizeMode")) scaleType = ImageResizeMode.toScaleType(config.getString("resizeMode"));
         if (config.hasKey("elevation")) elevation = PixelUtil.toPixelFromDIP((float) config.getDouble("elevation"));
 

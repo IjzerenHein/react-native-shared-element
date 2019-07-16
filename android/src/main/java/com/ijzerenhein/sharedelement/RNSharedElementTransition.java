@@ -125,8 +125,12 @@ public class RNSharedElementTransition extends GenericDraweeView {
     private void updateLayoutAndInvalidate() {
         if (!mInitialLayoutPassCompleted) return;
         Rect layout = calculateLayout(mNodePosition);
+        float elevation = calculateElevation(mNodePosition);
         //Log.d(LOG_TAG, "updateLayoutAndInvalidate: " + layout);
-        if (layout != null) super.layout(layout.left, layout.top, layout.right, layout.bottom);
+        if (layout != null) {
+            super.layout(layout.left, layout.top, layout.right, layout.bottom);
+            setElevation(elevation);
+        }
         invalidate();
     }
 
@@ -253,6 +257,21 @@ public class RNSharedElementTransition extends GenericDraweeView {
             return startLayout;
         } else {
             return endLayout;
+        }
+    }
+
+    private float calculateElevation(float position) {
+        RNSharedElementTransitionItem startItem = mItems.get(ITEM_START);
+        RNSharedElementTransitionItem endItem = mItems.get(ITEM_END);
+        RNSharedElementStyle startStyle = startItem.getStyle();
+        RNSharedElementStyle endStyle = endItem.getStyle();
+        if ((startStyle == null) && (endStyle == null)) return 0;
+        if ((startStyle != null) && (endStyle != null)) {
+            return startStyle.elevation + ((endStyle.elevation - startStyle.elevation) * position);
+        } else if (startStyle != null) {
+            return startStyle.elevation;
+        } else {
+            return endStyle.elevation;
         }
     }
 

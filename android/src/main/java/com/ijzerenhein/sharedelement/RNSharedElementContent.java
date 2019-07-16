@@ -5,9 +5,12 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 
 import com.facebook.react.views.image.ReactImageView;
 import com.facebook.react.views.view.ReactViewGroup;
+import com.facebook.react.views.view.ReactViewBackgroundDrawable;
 
 import com.facebook.drawee.view.GenericDraweeView;
 import com.facebook.drawee.generic.GenericDraweeHierarchy;
@@ -83,12 +86,6 @@ public class RNSharedElementContent extends Object {
         int oldFadeDuration = hierarchy.getFadeDuration();
 
         // Configure drawable
-        /*Rect bounds = new Rect(
-            style.frame.left - style.layout.left,
-            style.frame.top - style.layout.top,
-            (style.frame.left - style.layout.left) + style.frame.width(),
-            (style.frame.top - style.layout.top) + style.frame.height()
-        );*/
         Rect bounds = new Rect(
           0,
           0,
@@ -96,7 +93,6 @@ public class RNSharedElementContent extends Object {
           style.layout.height()
         );
         drawable.setBounds(bounds);
-        //hierarchy.setActualImageScaleType(ScaleType.FIT_XY);
         hierarchy.setActualImageScaleType(style.scaleType);
         RoundingParams roundingParams = new RoundingParams();
         roundingParams.setBorderColor(style.borderColor);
@@ -124,7 +120,64 @@ public class RNSharedElementContent extends Object {
     }
 
     private void drawReactViewGroup(Canvas canvas, RNSharedElementStyle style) {
-        // TODO
+        ReactViewGroup viewGroup = (ReactViewGroup) view;
+        
+        // Save canvas
+        canvas.save();
+
+        // Adjust scale
+        canvas.scale(
+            (float)style.layout.width() / (float)view.getWidth(),
+            (float)style.layout.height() / (float)view.getHeight()
+        );
+
+        //
+        //viewGroup.setOpacityIfPossible(style.opacity);
+
+        // Adjust border radius
+        // TODO - correct for scaling
+        /*viewGroup.setBorderRadius(style.borderTopLeftRadius, 0);
+        viewGroup.setBorderRadius(style.borderTopRightRadius, 1);
+        viewGroup.setBorderRadius(style.borderBottomRightRadius, 2);
+        viewGroup.setBorderRadius(style.borderBottomLeftRadius, 3);*/
+
+        // Draw!
+        view.draw(canvas);
+
+        // Restore canvas
+        canvas.save();
+    }
+
+    private void drawViewStyles(Canvas canvas, RNSharedElementStyle style) {
+
+        // Create drawable
+        ReactViewBackgroundDrawable drawable = new ReactViewBackgroundDrawable(view.getContext());
+        Rect bounds = new Rect(
+          0,
+          0,
+          style.layout.width(),
+          style.layout.height()
+        );
+        drawable.setBounds(bounds);
+
+        // Set background color
+        drawable.setColor(style.backgroundColor);
+
+        // Set border
+        float borderColorRGB = (float) ((int)style.borderColor & 0x00FFFFFF);
+        float borderColorAlpha = (float) ((int)style.borderColor >>> 24);
+        drawable.setBorderStyle(style.borderStyle);
+        for (int i = 0; i < 4; i++) {
+            drawable.setBorderColor(i, borderColorRGB, borderColorAlpha);
+            drawable.setBorderWidth(i, style.borderWidth);
+        }
+        drawable.setRadius(style.borderTopLeftRadius, 0);
+        drawable.setRadius(style.borderTopRightRadius, 1);
+        drawable.setRadius(style.borderBottomRightRadius, 2);
+        drawable.setRadius(style.borderBottomLeftRadius, 3);
+
+        // Draw!
+        drawable.draw(canvas);
     }
 
     public void draw(Canvas canvas, RNSharedElementStyle style) {
@@ -132,7 +185,13 @@ public class RNSharedElementContent extends Object {
             drawReactImageView(canvas, style);
         }
         else if (view instanceof ReactViewGroup) {
-            drawReactViewGroup(canvas, style);
+            ReactViewGroup viewGroup = (ReactViewGroup) view;
+            if (viewGroup.getChildCount() == 0) {
+                drawViewStyles(canvas, style);
+            }
+            else {
+                drawReactViewGroup(canvas, style);
+            }
         }
     }
 }
