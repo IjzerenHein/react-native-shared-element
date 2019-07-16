@@ -103,6 +103,20 @@ export const Tests: (Test | TestGroup)[] = [
             description:
               "It's a common case that the border-radius of the start- and end image are not the same. The border-radius should correctly animate for the transition.",
             start: <TestImage size="regular" round />,
+            end: <TestImage end size="regular" />
+          },
+          {
+            name: "Image Border-radius & size",
+            description:
+              "It's a common case that the border-radius of the start- and end image are not the same. The border-radius should correctly animate for the transition.",
+            start: <TestImage size="regular" round />,
+            end: <TestImage end size="max" />
+          },
+          {
+            name: "Image Border-radius & resizeMode",
+            description:
+              "It's a common case that the border-radius of the start- and end image are not the same. The border-radius should correctly animate for the transition.",
+            start: <TestImage size="regular" round resizeMode="cover" />,
             end: <TestImage end size="regular" resizeMode="contain" />
           },
           {
