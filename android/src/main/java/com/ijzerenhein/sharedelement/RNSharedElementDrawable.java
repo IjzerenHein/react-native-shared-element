@@ -1,5 +1,6 @@
 package com.ijzerenhein.sharedelement;
 
+import android.util.Log;
 import android.view.View;
 import android.graphics.Rect;
 import android.graphics.RectF;
@@ -11,6 +12,7 @@ import android.graphics.PixelFormat;
 import android.graphics.ColorFilter;
 
 import com.facebook.react.views.image.ReactImageView;
+import com.facebook.react.views.view.ColorUtil;
 import com.facebook.react.views.view.ReactViewGroup;
 import com.facebook.react.views.view.ReactViewBackgroundDrawable;
 
@@ -20,8 +22,11 @@ import com.facebook.drawee.drawable.ScalingUtils.ScaleType;
 import com.facebook.drawee.generic.RoundingParams;
 
 public class RNSharedElementDrawable extends Drawable {
+    static String LOG_TAG = "RNSharedElementDrawable";
+
     private RNSharedElementContent mContent = null;
     private RNSharedElementStyle mStyle = null;
+    private float mPosition = 0;
     private int mAlpha = 255;
     private Path mPathForBorderRadiusOutline = null;
 
@@ -41,11 +46,15 @@ public class RNSharedElementDrawable extends Drawable {
         mContent = content;
     }
 
+    public void setPosition(float position) {
+        mPosition = position;
+    }
+
     @Override
     public int getOpacity() {
         // This method was deprecated in API level 29.
         // This method is no longer used in graphics optimizations
-        return PixelFormat.TRANSPARENT;
+        return PixelFormat.TRANSLUCENT;
     }
 
     @Override
@@ -109,6 +118,7 @@ public class RNSharedElementDrawable extends Drawable {
 
     @Override
     public void draw(Canvas canvas) {
+        //Log.d(LOG_TAG, "draw: " + mPosition);
         if ((mContent == null) || (mStyle == null)) return;
         View view = mContent.view;
 
@@ -127,6 +137,9 @@ public class RNSharedElementDrawable extends Drawable {
     }
 
     private void drawReactImageView(Canvas canvas) {
+        // TODO FIX IMAGE STRETCH ISSUE WHEN IMAGE DOESN'T FILL 
+        // ENTIRE CANVAS
+
         ReactImageView imageView = (ReactImageView) mContent.view;
         RNSharedElementStyle style = mStyle;
         DraweeController controller = imageView.getController();

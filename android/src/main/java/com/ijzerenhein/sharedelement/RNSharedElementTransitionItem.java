@@ -1,5 +1,9 @@
 package com.ijzerenhein.sharedelement;
 
+import android.view.View;
+import android.view.ViewParent;
+import android.graphics.Rect;
+
 public class RNSharedElementTransitionItem extends Object{
     private RNSharedElementNodeManager mNodeManager;
     private String mName;
@@ -10,6 +14,7 @@ public class RNSharedElementTransitionItem extends Object{
     private RNSharedElementStyle mStyle;
     private boolean mNeedsContent;
     private RNSharedElementContent mContent;
+    private Rect mClippedLayoutCache;
 
     public RNSharedElementTransitionItem(RNSharedElementNodeManager nodeManager, String name, boolean isAncestor) {
         mNodeManager = nodeManager;
@@ -21,6 +26,7 @@ public class RNSharedElementTransitionItem extends Object{
         mStyle = null;
         mNeedsContent = false;
         mContent = null;
+        mClippedLayoutCache = null;
     }
 
     public String getName() {
@@ -96,5 +102,32 @@ public class RNSharedElementTransitionItem extends Object{
 
     public RNSharedElementContent getContent() {
         return mContent;
+    }
+
+    public View getView() {
+        // TODO
+        return null;
+    }
+
+    public Rect getClippedLayout(RNSharedElementTransitionItem ancestor) {
+        if (mClippedLayoutCache != null) return mClippedLayoutCache;
+        if ((mStyle == null) || (ancestor == null)) return null;
+        View view = getView();
+        View ancestorView = ancestor.getView();
+
+        // Get visible area (some parts may be clipped in a scrollview or something)
+        Rect clippedLayout = mStyle.layout;
+        ViewParent parentView = view.getParent();
+        while (parentView != null) {
+            // TODO
+            /*CGRect superLayout = [superview convertRect:superview.bounds toView:nil];
+            CGRect intersectedLayout = CGRectIntersection(visibleLayout, superLayout);
+            if (isinf(intersectedLayout.origin.x) || isinf(intersectedLayout.origin.y)) break;
+            visibleLayout = intersectedLayout;*/
+            if (parentView == ancestorView) break;
+            parentView = parentView.getParent();
+        }
+        mClippedLayoutCache = clippedLayout;
+        return clippedLayout;
     }
 }

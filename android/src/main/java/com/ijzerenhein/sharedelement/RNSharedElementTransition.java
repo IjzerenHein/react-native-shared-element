@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import android.util.Log;
 import android.graphics.Canvas;
 import android.graphics.Rect;
+import android.graphics.Point;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.view.View;
@@ -107,6 +108,11 @@ public class RNSharedElementTransition extends ViewGroup {
         }
     }
 
+    @Override
+    public boolean hasOverlappingRendering() {
+        return false;
+    }
+
     private void requestStylesAndContent(boolean force) {
         if (!mInitialLayoutPassCompleted && !force) return;
         for (final RNSharedElementTransitionItem item : mItems) {
@@ -197,6 +203,7 @@ public class RNSharedElementTransition extends ViewGroup {
         );
         mStartDrawable.setContent(startContent);
         mStartDrawable.setStyle(interpolatedStyle);
+        mStartDrawable.setPosition(mNodePosition);
         mStartView.setElevation(interpolatedStyle.elevation);
         mStartView.setAlpha(interpolatedStyle.opacity);
         
@@ -213,13 +220,14 @@ public class RNSharedElementTransition extends ViewGroup {
             );
             mEndDrawable.setContent(endContent);
             mEndDrawable.setStyle(interpolatedStyle);
+            mEndDrawable.setPosition(mNodePosition);
             mEndView.setElevation(interpolatedStyle.elevation);
             mEndView.setAlpha(((endStyle != null) ? endStyle.opacity : 1) * mNodePosition);
-            mEndView.invalidate();
+            mEndDrawable.invalidateSelf();
         }
 
         // Invalidate
-        mStartView.invalidate();
+        mStartDrawable.invalidateSelf();
     }
 
     private void updateNodeVisibility() {
@@ -292,10 +300,9 @@ public class RNSharedElementTransition extends ViewGroup {
             new Rect(0, 0, style1.layout.width(), style1.layout.height()),
             new Rect(0, 0, style2.layout.width(), style2.layout.height())
         );
-        // TODO - Fix stretching issue
         scaleType.setValue(position);
         result.scaleType = scaleType;
-        result.layout = getInterpolatedLayout(style1.frame, style2.frame, position);
+        /*result.layout = getInterpolatedLayout(style1.frame, style2.frame, position);
         Rect contentLayout1 = RNSharedElementContent.getLayout(
             style1.frame,
             (content1 != null) ? content1.size : content2.size,
@@ -307,7 +314,7 @@ public class RNSharedElementTransition extends ViewGroup {
             style2.scaleType,
             false);
         Rect interpolatedContentLayout = getInterpolatedLayout(contentLayout1, contentLayout2, position);
-        result.frame = interpolatedContentLayout;
+        result.frame = interpolatedContentLayout;*/
         result.opacity = style1.opacity + ((style2.opacity - style1.opacity) * position);
         result.backgroundColor = getInterpolatedColor(style1.backgroundColor, style2.backgroundColor, position);
         result.borderTopLeftRadius = style1.borderTopLeftRadius + ((style2.borderTopLeftRadius - style1.borderTopLeftRadius) * position);
@@ -362,65 +369,6 @@ public class RNSharedElementTransition extends ViewGroup {
             return endStyle.elevation;
         }
     }
-
-    /*@Override
-    protected void onDraw(Canvas canvas) {
-        //Log.d(LOG_TAG, "onDraw " + mNodePosition + ", interpolatedStyle: " + interpolatedStyle);
-    
-        // Local data
-        RNSharedElementTransitionItem startItem = mItems.get(ITEM_START);
-        RNSharedElementTransitionItem startAncestor = mItems.get(ITEM_START_ANCESTOR);
-        RNSharedElementTransitionItem endItem = mItems.get(ITEM_END);
-        RNSharedElementTransitionItem endAncestor = mItems.get(ITEM_END_ANCESTOR);
-
-        // Get start layout
-        RNSharedElementStyle startStyle = startItem.getStyle();
-        RNSharedElementContent startContent = startItem.getContent();
-
-        // Get end layout
-        RNSharedElementStyle endStyle = endItem.getStyle();
-        RNSharedElementContent endContent = endItem.getContent();
-
-        // Get interpolated style & layout
-        RNSharedElementStyle interpolatedStyle;
-        if ((startStyle == null) && (endStyle == null)) return;
-        if ((startContent == null) && (endContent == null)) return;
-        if ((startStyle != null) && (endStyle != null)) {
-            interpolatedStyle = getInterpolatedStyle(startStyle, startContent, endStyle, endContent, mNodePosition);
-        } else if (startStyle != null) {
-            interpolatedStyle = startStyle;
-        } else {
-            interpolatedStyle = endStyle;
-        }
-
-        // Start canvas drawing
-        canvas.save();
-
-        // Clip contents
-        canvas.clipRect(0, 0, getWidth(), getHeight());
-
-        // Draw content
-        //Paint backgroundPaint = new Paint();
-        //backgroundPaint.setColor(Color.argb(128, 255, 0, 0));
-        //canvas.drawRect(0, 0, getWidth(), getHeight(), backgroundPaint);
-
-        // Draw start-item
-        //canvas.save();
-        //canvas.translate(
-        //    interpolatedStyle.frame.left - interpolatedStyle.layout.left,
-        //    interpolatedStyle.frame.top - interpolatedStyle.layout.top
-        //);
-        //Paint contentPaint = new Paint();
-        //contentPaint.setColor(Color.argb(128, 0, 0, 255));
-        //canvas.drawRect(0, 0, interpolatedStyle.frame.width(), interpolatedStyle.frame.height(), contentPaint);
-        if (startContent != null) {
-            startContent.draw(canvas, interpolatedStyle);
-        }
-        //canvas.restore();
-
-        // Restore canvas
-        canvas.restore();
-}*/
 
     private void fireMeasureEvent() {
         /*ReactContext reactContext = (ReactContext)getContext();

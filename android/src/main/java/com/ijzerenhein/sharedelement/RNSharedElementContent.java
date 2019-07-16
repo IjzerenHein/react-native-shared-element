@@ -31,6 +31,7 @@ public class RNSharedElementContent extends Object {
         return new RectF(0, 0, view.getWidth(), view.getHeight());
     }
 
+    /*
     static public Rect getLayout(Rect layout, RectF contentSize, ScaleType scaleType, boolean reverse) {
         float width = layout.width();
         float height = layout.height();
@@ -62,5 +63,5 @@ public class RNSharedElementContent extends Object {
                 (int) (layout.right - ((layout.width() - width) / 2)),
                 (int) (layout.bottom - ((layout.height() - height) / 2))
         );
-    }
+    }*/
 }
