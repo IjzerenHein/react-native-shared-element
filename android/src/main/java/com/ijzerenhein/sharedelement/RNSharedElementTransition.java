@@ -174,26 +174,34 @@ public class RNSharedElementTransition extends ViewGroup {
         getLocationOnScreen(mParentLocation);
         Rect startLayout = (startStyle != null) ? normalizeLayout(startStyle.layout, startAncestor) : new Rect();
         Rect startClippedLayout = (startStyle != null) ? normalizeLayout(startItem.getClippedLayout(startAncestor), startAncestor) : new Rect();
+        Rect startClipInsets = getClipInsets(startLayout, startClippedLayout);
         Rect endLayout = (endStyle != null) ? normalizeLayout(endStyle.layout, endAncestor) : new Rect();
         Rect endClippedLayout = (endStyle != null) ? normalizeLayout(endItem.getClippedLayout(endAncestor), endAncestor) : new Rect();
+        Rect endClipInsets = getClipInsets(endLayout, endClippedLayout);
 
         // Get interpolated layout
         Rect interpolatedLayout;
-        Rect interpolatedClippedLayout;
+        Rect interpolatedClipInsets;
         RNSharedElementStyle interpolatedStyle;
         if ((startStyle != null) && (endStyle != null)) {
             interpolatedLayout = getInterpolatedLayout(startLayout, endLayout, mNodePosition);
-            interpolatedClippedLayout = getInterpolatedLayout(startClippedLayout, endClippedLayout, mNodePosition);
+            interpolatedClipInsets = getInterpolatedClipInsets(interpolatedLayout, startClipInsets, startClippedLayout, endClipInsets, endClippedLayout, mNodePosition);
             interpolatedStyle = getInterpolatedStyle(startStyle, startContent, endStyle, endContent, mNodePosition);
         } else if (startStyle != null) {
             interpolatedLayout = startLayout;
-            interpolatedClippedLayout = startClippedLayout;
+            interpolatedClipInsets = startClipInsets;
             interpolatedStyle = startStyle;
         } else {
             interpolatedLayout = endLayout;
-            interpolatedClippedLayout = endClippedLayout;
+            interpolatedClipInsets = endClipInsets;
             interpolatedStyle = endStyle;
         }
+        Rect interpolatedClippedLayout = new Rect(
+            interpolatedLayout.left + interpolatedClipInsets.left,
+            interpolatedLayout.top + interpolatedClipInsets.top,
+            interpolatedLayout.right - interpolatedClipInsets.right,
+            interpolatedLayout.bottom - interpolatedClipInsets.bottom
+        );
 
         // Update outer viewgroup layout. The outer viewgroup hosts 2 inner views
         // which draw the content & elevation. The outer viewgroup performs additional
@@ -293,6 +301,63 @@ public class RNSharedElementTransition extends ViewGroup {
         );
     }
 
+    private Rect getClipInsets(Rect layout, Rect clippedLayout) {
+        return new Rect(
+            clippedLayout.left - layout.left,
+            clippedLayout.top - layout.top,
+            clippedLayout.right - layout.right,
+            clippedLayout.bottom - layout.bottom
+        );
+    }
+
+    private Rect getInterpolatedClipInsets(
+        Rect interpolatedLayout,
+        Rect startClipInsets,
+        Rect startClippedLayout,
+        Rect endClipInsets,
+        Rect endClippedLayout,
+        float position) {
+        Rect clipInsets = new Rect();
+
+        // Top
+        if ((endClipInsets.top == 0) && (startClipInsets.top != 0) && (startClippedLayout.top <= endClippedLayout.top)) {
+            clipInsets.top = Math.max(0, startClippedLayout.top - interpolatedLayout.top);
+        } else if ((startClipInsets.top == 0) && (endClipInsets.top != 0) && (endClippedLayout.top <= startClippedLayout.top)) {
+            clipInsets.top = Math.max(0, endClippedLayout.top - interpolatedLayout.top);
+        } else {
+            clipInsets.top = (int) (startClipInsets.top + ((endClipInsets.top - startClipInsets.top) * position));
+        }
+
+        // Bottom
+        if ((endClipInsets.bottom == 0) && (startClipInsets.bottom != 0) && (startClippedLayout.bottom >= endClippedLayout.bottom)) {
+            clipInsets.bottom = Math.max(0, interpolatedLayout.bottom - startClippedLayout.bottom);
+        } else if ((startClipInsets.bottom == 0) && (endClipInsets.bottom != 0) && (endClippedLayout.bottom >= startClippedLayout.bottom)) {
+            clipInsets.bottom = Math.max(0, interpolatedLayout.bottom - endClippedLayout.bottom);
+        } else {
+            clipInsets.bottom = (int) (startClipInsets.bottom + ((endClipInsets.bottom - startClipInsets.bottom) * position));
+        }
+
+        // Left
+        if ((endClipInsets.left == 0) && (startClipInsets.left != 0) && (startClippedLayout.left <= endClippedLayout.left)) {
+            clipInsets.left = Math.max(0, startClippedLayout.left - interpolatedLayout.left);
+        } else if ((startClipInsets.left == 0) && (endClipInsets.left != 0) && (endClippedLayout.left <= startClippedLayout.left)) {
+            clipInsets.left = Math.max(0, endClippedLayout.left - interpolatedLayout.left);
+        } else {
+            clipInsets.left = (int) (startClipInsets.left + ((endClipInsets.left - startClipInsets.left) * position));
+        }
+
+         // Right
+        if ((endClipInsets.right == 0) && (startClipInsets.right != 0) && (startClippedLayout.right >= endClippedLayout.right)) {
+            clipInsets.right = Math.max(0, interpolatedLayout.right - startClippedLayout.right);
+        } else if ((startClipInsets.right == 0) && (endClipInsets.right != 0) && (endClippedLayout.right >= startClippedLayout.right)) {
+            clipInsets.right = Math.max(0, interpolatedLayout.right - endClippedLayout.right);
+        } else {
+            clipInsets.right = (int) (startClipInsets.right + ((endClipInsets.right - startClipInsets.right) * position));
+        }
+
+        return clipInsets;
+    }
+
     private Rect getInterpolatedLayout(Rect layout1, Rect layout2, float position) {
         return new Rect(
             (int) (layout1.left + ((layout2.left - layout1.left) * position)),
@@ -383,15 +448,15 @@ public class RNSharedElementTransition extends ViewGroup {
                                         @"x": @(layout.origin.x),
                                         @"y": @(layout.origin.y),
                                         @"width": @(layout.size.width),
-                                        @"height": @(layout.size.height),
+                                        @"height": @(layout.height()),
                                         @"visibleX": @(visibleLayout.origin.x),
                                         @"visibleY": @(visibleLayout.origin.y),
                                         @"visibleWidth": @(visibleLayout.size.width),
-                                        @"visibleHeight": @(visibleLayout.size.height),
+                                        @"visibleHeight": @(visibleLayout.height()),
                                         @"contentX": @(contentLayout.origin.x),
                                         @"contentY": @(contentLayout.origin.y),
                                         @"contentWidth": @(contentLayout.size.width),
-                                        @"contentHeight": @(contentLayout.size.height),
+                                        @"contentHeight": @(contentLayout.height()),
                                         },
                                 @"contentType": item.contentTypeName,
                                 @"style": @{
