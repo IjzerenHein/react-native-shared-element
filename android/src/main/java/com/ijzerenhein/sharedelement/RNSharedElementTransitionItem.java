@@ -2,6 +2,7 @@ package com.ijzerenhein.sharedelement;
 
 import android.view.View;
 import android.view.ViewParent;
+import android.view.ViewGroup;
 import android.graphics.Rect;
 
 class RNSharedElementTransitionItem {
@@ -113,29 +114,41 @@ class RNSharedElementTransitionItem {
         if ((mStyle == null) || (ancestor == null)) return null;
         View view = getView();
         View ancestorView = ancestor.getView();
-
-        Rect clippedLayout = new Rect(mStyle.layout);
         
-        /*Rect clippedLayout = new Rect(mStyle.layout);
-        if (!view.getGlobalVisibleRect(clippedLayout)) {
-            clippedLayout.right = clippedLayout.left;
-            clippedLayout.bottom = clippedLayout.top; 
-        }*/
         // Get visible area (some parts may be clipped in a scrollview or something)
-        /*Rect clippedLayout = new Rect(mStyle.layout);
+        Rect clippedLayout = new Rect(mStyle.layout);
         ViewParent parentView = view.getParent();
+        int[] location = new int[2]; 
         while (parentView != null) {
-            Rect bounds = new Rect(view.getLeft(), view.getTop(), view.getRight(), view.getBottom());
-            parentView.getChildVisibleRect(view, bounds, null);
+            if (!(parentView instanceof ViewGroup)) break;
+            ViewGroup viewGroup = (ViewGroup) parentView;
+            viewGroup.getLocationOnScreen(location);
+            /*int left = viewGroup.getLeft();
+            int top = viewGroup.getTop();
+            int right = viewGroup.getRight();
+            int bottom = viewGroup.getBottom();
+            int width = viewGroup.getWidth();
+            int height = viewGroup.getHeight();*/
+            //Rect globalVisibilityRect = new Rect();
+            //viewGroup.getGlobalVisibleRect(globalVisibilityRect);
+
+            Rect bounds = new Rect(
+                location[0],
+                location[1],
+                location[0] + (viewGroup.getWidth()), 
+                location[1] + (viewGroup.getHeight())
+            );
             if (!clippedLayout.intersect(bounds)) {
+                view.getLocationOnScreen(location);
+                clippedLayout.left = location[0] + (int) (view.getWidth() / 2);
+                clippedLayout.top = location[1] + (int) (view.getHeight() / 2);
                 clippedLayout.right = clippedLayout.left;
-                clippedLayout.bottom = clippedLayout.top; 
+                clippedLayout.bottom = clippedLayout.top;
                 break;
             }
             if (parentView == ancestorView) break;
-            view = parentView;
             parentView = parentView.getParent();
-        }*/
+        }
 
         mClippedLayoutCache = clippedLayout;
         return clippedLayout;

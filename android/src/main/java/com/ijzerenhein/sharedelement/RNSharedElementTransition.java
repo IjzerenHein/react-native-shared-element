@@ -113,6 +113,17 @@ public class RNSharedElementTransition extends ViewGroup {
         return false;
     }
 
+    @Override
+    protected void dispatchDraw(Canvas canvas) {
+        canvas.clipRect(0, 0, getWidth(), getHeight());
+        super.dispatchDraw(canvas);
+
+        // Draw content
+        /*Paint backgroundPaint = new Paint();
+        backgroundPaint.setColor(Color.argb(128, 255, 0, 0));
+        canvas.drawRect(0, 0, getWidth()+300, getHeight() + 300, backgroundPaint);*/
+    }
+
     private void requestStylesAndContent(boolean force) {
         if (!mInitialLayoutPassCompleted && !force) return;
         for (final RNSharedElementTransitionItem item : mItems) {
@@ -208,7 +219,6 @@ public class RNSharedElementTransition extends ViewGroup {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             mStartView.setElevation(interpolatedStyle.elevation);
         }
-        
         
         // Render the end view for "fade" animations
         if (!mAnimation.equals("move")) {
