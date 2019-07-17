@@ -139,11 +139,22 @@ class RNSharedElementTransitionItem {
                 location[1] + (viewGroup.getHeight())
             );
             if (!clippedLayout.intersect(bounds)) {
-                view.getLocationOnScreen(location);
-                clippedLayout.left = location[0] + (int) (view.getWidth() / 2);
-                clippedLayout.top = location[1] + (int) (view.getHeight() / 2);
-                clippedLayout.right = clippedLayout.left;
-                clippedLayout.bottom = clippedLayout.top;
+                if (clippedLayout.bottom < bounds.top) {
+                    clippedLayout.top = bounds.top;
+                    clippedLayout.bottom = bounds.top;
+                }
+                if (clippedLayout.top > bounds.bottom) {
+                    clippedLayout.top = bounds.bottom;
+                    clippedLayout.bottom = bounds.bottom;
+                }
+                if (clippedLayout.right < bounds.left) {
+                    clippedLayout.left = bounds.left;
+                    clippedLayout.right = bounds.left;
+                }
+                if (clippedLayout.left > bounds.right) {
+                    clippedLayout.left = bounds.right;
+                    clippedLayout.right = bounds.right;
+                }
                 break;
             }
             if (parentView == ancestorView) break;

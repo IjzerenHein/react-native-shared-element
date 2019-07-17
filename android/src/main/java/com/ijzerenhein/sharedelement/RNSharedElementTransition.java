@@ -234,12 +234,6 @@ public class RNSharedElementTransition extends ViewGroup {
             // Fade out start view
             float startAlpha = ((startStyle != null) ? startStyle.opacity : 1) * (1 - mNodePosition);
             mStartView.setAlpha(startAlpha);
-            if (interpolatedStyle.elevation > 0) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                    mStartView.setOutlineAmbientShadowColor(Color.argb(startAlpha, 0, 0, 0));
-                    mStartView.setOutlineSpotShadowColor(Color.argb(startAlpha, 0, 0, 0));
-                }
-            }
 
             // Render the end view
             mEndView.layout(
@@ -258,12 +252,21 @@ public class RNSharedElementTransition extends ViewGroup {
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
                 mEndView.setElevation(interpolatedStyle.elevation);
             }
+
+            // Also apply a fade effect on the elevation. This reduces the shadow visibility
+            // underneath the view which becomes visible when the transparency of the view
+            // is set. This in turn makes the shadow very visible and gives the whole view
+            // a "grayish" appearance. The following code tries to reduce that visual artefact.
             if (interpolatedStyle.elevation > 0) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                    mStartView.setOutlineAmbientShadowColor(Color.argb(startAlpha, 0, 0, 0));
+                    mStartView.setOutlineSpotShadowColor(Color.argb(startAlpha, 0, 0, 0));
                     mEndView.setOutlineAmbientShadowColor(Color.argb(endAlpha, 0, 0, 0));
                     mEndView.setOutlineSpotShadowColor(Color.argb(endAlpha, 0, 0, 0));
                 }
             }
+
+            // Invalidate
             mEndDrawable.invalidateSelf();
         }
 
