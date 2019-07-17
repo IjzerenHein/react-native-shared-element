@@ -19,7 +19,7 @@ import {
 } from "../components";
 import type { Hero } from "../types";
 import { fadeIn } from "../transitions";
-import LinearGradient from "react-native-linear-gradient";
+// import LinearGradient from "react-native-linear-gradient";
 
 const styles = StyleSheet.create({
   flex: {

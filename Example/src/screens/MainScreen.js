@@ -7,6 +7,7 @@ import { TestsScreen } from "./TestsScreen";
 import { PagerScreen } from "./PagerScreen";
 import { CardScreen } from "./CardScreen";
 import { Tests } from "../tests";
+import { fadeIn } from "../transitions";
 
 const styles = StyleSheet.create({
   container: {
@@ -57,13 +58,14 @@ export class MainScreen extends React.Component<{}> {
             }
           />
           <ListItem
-            label="Gradient overlay Demo"
-            description='Card with gradient overlay "scrim" for better readability'
+            label='Gradient "scrim" Demo'
+            description='Image with gradient overlay "scrim" for better readability'
             onPress={() =>
               Router.push(
                 <TilesScreen
                   type="card2"
-                  title="Gradient overlay Demo"
+                  title='Gradient "scrim" Demo'
+                  transitionConfig={fadeIn(0, true)}
                   DetailComponent={CardScreen}
                 />
               )
