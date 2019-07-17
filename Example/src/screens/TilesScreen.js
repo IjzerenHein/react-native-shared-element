@@ -16,6 +16,7 @@ import {
   Colors,
   Shadows,
   Heading1,
+  Heading2,
   Body
 } from "../components";
 import type { SharedElementAnimation } from "react-native-shared-element-transition";
@@ -24,6 +25,7 @@ import { DetailScreen } from "./DetailScreen";
 import type { Hero } from "../types";
 import { fadeIn } from "../transitions";
 import type { TransitionConfig } from "react-navigation";
+import LinearGradient from "react-native-linear-gradient";
 
 const styles = StyleSheet.create({
   container: {
@@ -48,11 +50,12 @@ const styles = StyleSheet.create({
     width: "100%"
   },
   cardContentContainer: {
-    marginTop: 20
+    marginTop: 10,
+    marginBottom: 10
   },
   cardContainer: {
     marginHorizontal: 20,
-    marginBottom: 20,
+    marginVertical: 10,
     flexDirection: "column"
   },
   cardBackground: {
@@ -69,6 +72,22 @@ const styles = StyleSheet.create({
     resizeMode: "cover",
     overflow: "hidden"
   },
+  cardImage2: {
+    borderRadius: 20,
+    height: 400,
+    width: "100%",
+    resizeMode: "cover",
+    overflow: "hidden"
+  },
+  cardGradientOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    borderRadius: 20
+  },
+  cardOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    padding: 16,
+    justifyContent: "flex-end"
+  },
   cardFooter: {
     flexDirection: "column",
     padding: 16
@@ -78,16 +97,16 @@ const styles = StyleSheet.create({
   },
   cardDescription: {
     marginTop: 4
-  }
+  },
+  cardQuote: {}
 });
 
 type PropsType = {
-  type: "tile" | "card",
+  type: "tile" | "card" | "card2",
   title: string,
   animation: SharedElementAnimation,
   DetailComponent: any,
   transitionConfig: TransitionConfig,
-  overlay?: boolean,
   resizeMode?: "cover" | "contain" | "stretch" | "center" | "repeat"
 };
 
@@ -98,7 +117,6 @@ export class TilesScreen extends React.Component<PropsType> {
     animation: "move",
     DetailComponent: DetailScreen,
     transitionConfig: fadeIn(),
-    overlay: false,
     resizeMode: "cover"
   };
 
@@ -130,47 +148,9 @@ export class TilesScreen extends React.Component<PropsType> {
         return this.renderTile(data);
       case "card":
         return this.renderCard(data);
+      case "card2":
+        return this.renderCard2(data);
     }
-  };
-
-  renderCard = ({ item }: any) => {
-    const hero = item;
-    return (
-      <TouchableOpacity
-        key={`Hero${hero.id}`}
-        style={styles.cardContainer}
-        activeOpacity={1}
-        onPress={() => this.onPressItem(hero)}
-      >
-        <ScreenTransition
-          sharedId={`heroBackground.${hero.id}`}
-          style={StyleSheet.absoluteFill}
-        >
-          <View style={styles.cardBackground} />
-        </ScreenTransition>
-        <ScreenTransition sharedId={`heroPhoto.${hero.id}`}>
-          <ImageBackground style={styles.cardImage} source={hero.photo} />
-        </ScreenTransition>
-        <View style={styles.cardFooter}>
-          <ScreenTransition
-            sharedId={`heroName.${hero.id}`}
-            style={styles.cardName}
-          >
-            <Heading1>{hero.name}</Heading1>
-          </ScreenTransition>
-          {hero.description ? (
-            <ScreenTransition
-              sharedId={`heroDescription.${hero.id}`}
-              style={styles.cardDescription}
-            >
-              <Body numberOfLines={3}>{hero.description}</Body>
-            </ScreenTransition>
-          ) : (
-            undefined
-          )}
-        </View>
-      </TouchableOpacity>
-    );
   };
 
   renderTile = ({ item, index }: any) => {
@@ -200,39 +180,133 @@ export class TilesScreen extends React.Component<PropsType> {
     );
   };
 
+  renderCard = ({ item }: any) => {
+    const hero = item;
+    return (
+      <TouchableOpacity
+        key={`Hero${hero.id}`}
+        style={styles.cardContainer}
+        activeOpacity={1}
+        onPress={() => this.onPressItem(hero)}
+      >
+        <ScreenTransition
+          sharedId={`heroBackground.${hero.id}`}
+          style={StyleSheet.absoluteFill}
+        >
+          <View style={styles.cardBackground} />
+        </ScreenTransition>
+        <ScreenTransition sharedId={`heroPhoto.${hero.id}`}>
+          <Image style={styles.cardImage} source={hero.photo} />
+        </ScreenTransition>
+        <View style={styles.cardFooter}>
+          <ScreenTransition
+            sharedId={`heroName.${hero.id}`}
+            style={styles.cardName}
+          >
+            <Heading2>{hero.name}</Heading2>
+          </ScreenTransition>
+          {hero.description ? (
+            <ScreenTransition
+              sharedId={`heroDescription.${hero.id}`}
+              style={styles.cardDescription}
+            >
+              <Body numberOfLines={3}>{hero.description}</Body>
+            </ScreenTransition>
+          ) : (
+            undefined
+          )}
+        </View>
+      </TouchableOpacity>
+    );
+  };
+
+  renderCard2 = ({ item }: any) => {
+    const hero = item;
+    return (
+      <TouchableOpacity
+        key={`Hero${hero.id}`}
+        style={styles.cardContainer}
+        activeOpacity={1}
+        onPress={() => this.onPressItem(hero)}
+      >
+        <ScreenTransition
+          sharedId={`heroBackground.${hero.id}`}
+          style={StyleSheet.absoluteFill}
+        >
+          <View style={styles.cardBackground} />
+        </ScreenTransition>
+        <ScreenTransition sharedId={`heroPhoto.${hero.id}`}>
+          <Image style={styles.cardImage2} source={hero.photo} />
+        </ScreenTransition>
+        <ScreenTransition
+          sharedId={`heroGradientOverlay.${hero.id}`}
+          style={StyleSheet.absoluteFill}
+        >
+          <LinearGradient
+            style={styles.cardGradientOverlay}
+            colors={["#00000000", "#000000FF"]}
+            start={{ x: 0, y: 0.5 }}
+            end={{ x: 0, y: 1 }}
+          />
+        </ScreenTransition>
+        <View style={styles.cardOverlay}>
+          <ScreenTransition
+            sharedId={`heroName.${hero.id}`}
+            style={styles.cardName2}
+          >
+            <Heading1 light>{hero.name}</Heading1>
+          </ScreenTransition>
+          <ScreenTransition
+            sharedId={`heroDescription.${hero.id}`}
+            style={styles.cardQuote}
+          >
+            {hero.quote ? (
+              <Body numberOfLines={1} light>
+                {hero.quote}
+              </Body>
+            ) : (
+              <View />
+            )}
+          </ScreenTransition>
+        </View>
+      </TouchableOpacity>
+    );
+  };
+
   onPressItem = (hero: Hero) => {
-    const {
-      animation,
-      DetailComponent,
-      transitionConfig,
-      overlay,
-      type
-    } = this.props;
+    const { animation, DetailComponent, transitionConfig, type } = this.props;
     const alternateHero = animation === "fade" ? Heroes[0] : hero;
     const sharedElements = {};
-    if (type === "card") {
-      sharedElements[`heroBackground.${hero.id}`] = "move";
-      sharedElements[`heroPhoto.${hero.id}`] = "move";
-      sharedElements[`heroCloseButton.${hero.id}`] = "fade";
-      sharedElements[`heroName.${hero.id}`] = "move";
-      sharedElements[`heroDescription.${hero.id}`] = "fade-top";
-    } else {
-      sharedElements[`heroPhoto.${hero.id}`] = animation;
-    }
-    if (overlay) {
-      sharedElements[`heroPhotoOverlay.${hero.id}`] = "fade";
-    }
-    Router.push(
-      <DetailComponent
-        hero={{
-          ...alternateHero,
-          id: hero.id
-        }}
-      />,
-      {
-        sharedElements,
-        transitionConfig
+    const props = {
+      hero: {
+        ...alternateHero,
+        id: hero.id
       }
-    );
+    };
+    switch (type) {
+      case "tile":
+        sharedElements[`heroPhoto.${hero.id}`] = animation;
+        break;
+      case "card":
+        sharedElements[`heroBackground.${hero.id}`] = "move";
+        sharedElements[`heroPhoto.${hero.id}`] = "move";
+        sharedElements[`heroCloseButton.${hero.id}`] = "fade";
+        sharedElements[`heroName.${hero.id}`] = "move";
+        sharedElements[`heroDescription.${hero.id}`] = "fade-top";
+        break;
+      case "card2":
+        sharedElements[`heroBackground.${hero.id}`] = "move";
+        sharedElements[`heroPhoto.${hero.id}`] = "move";
+        sharedElements[`heroGradientOverlay.${hero.id}`] = "fade";
+        sharedElements[`heroCloseButton.${hero.id}`] = "fade";
+        sharedElements[`heroName.${hero.id}`] = "fade";
+        sharedElements[`heroDescription.${hero.id}`] = "fade-top";
+        props.gradientOverlay = true;
+        break;
+    }
+    Router.push(<DetailComponent {...props} />, {
+      sharedElements,
+      transitionConfig
+    });
   };
 }

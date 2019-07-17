@@ -1,7 +1,7 @@
 // @flow
 import * as React from "react";
 import { StyleSheet, View, TouchableOpacity } from "react-native";
-import { Heading2 } from "./Text";
+import { Heading3 } from "./Text";
 import { Shadows, Colors } from "./Colors";
 
 const HEIGHT = 40;
@@ -38,7 +38,7 @@ export class Button extends React.Component<ButtonProps> {
         style={style}
       >
         <View style={[styles.container]}>
-          <Heading2 style={styles.label}>{label}</Heading2>
+          <Heading3 style={styles.label}>{label}</Heading3>
         </View>
       </TouchableOpacity>
     );

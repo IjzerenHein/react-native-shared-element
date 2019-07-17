@@ -1,7 +1,7 @@
 // @flow
 import * as React from "react";
 import { StyleSheet, View, TouchableOpacity } from "react-native";
-import { Heading2 } from "../Text";
+import { Heading3 } from "../Text";
 import { Router } from "../Router";
 import { Colors, Shadows } from "../Colors";
 import { Icon } from "../Icon";
@@ -94,7 +94,7 @@ export class NavBar extends React.Component<NavBarProps> {
           style
         ]}
       >
-        <Heading2 light={light}>{title}</Heading2>
+        <Heading3 light={light}>{title}</Heading3>
         {this.renderBack()}
       </View>
     );

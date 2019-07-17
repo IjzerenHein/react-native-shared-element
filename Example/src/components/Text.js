@@ -5,11 +5,16 @@ import { Colors } from "./Colors";
 
 const styles = StyleSheet.create({
   heading1: {
-    fontSize: 30,
+    fontSize: 40,
     fontWeight: "bold",
     color: Colors.text
   },
   heading2: {
+    fontSize: 30,
+    fontWeight: "bold",
+    color: Colors.text
+  },
+  heading3: {
     fontSize: 17,
     fontWeight: "700",
     color: Colors.text
@@ -44,6 +49,15 @@ export const Heading2 = (props: any) => {
     <Text
       {...otherProps}
       style={[styles.heading2, light ? styles.light : undefined, props.style]}
+    />
+  );
+};
+export const Heading3 = (props: any) => {
+  const { light, ...otherProps } = props;
+  return (
+    <Text
+      {...otherProps}
+      style={[styles.heading3, light ? styles.light : undefined, props.style]}
     />
   );
 };

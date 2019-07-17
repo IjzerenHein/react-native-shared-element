@@ -1,7 +1,7 @@
 // @flow
 import * as React from "react";
 import { StyleSheet, View, Image, TouchableOpacity } from "react-native";
-import { Heading2, Caption } from "./Text";
+import { Heading3, Caption } from "./Text";
 import { ScreenTransition } from "./ScreenTransition";
 import { Colors } from "./Colors";
 
@@ -80,7 +80,7 @@ export class ListItem extends React.Component<ListItemProps> {
         <View style={styles.container}>
           {this.renderImage()}
           <View style={styles.content}>
-            <Heading2>{label}</Heading2>
+            <Heading3>{label}</Heading3>
             {description ? (
               <Caption style={styles.description}>{description}</Caption>
             ) : (
