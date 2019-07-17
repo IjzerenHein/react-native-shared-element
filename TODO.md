@@ -1,25 +1,22 @@
-Essential:
-[ ] Clipping doesn't work when not visible at all
-[ ] Parent clipping with border-radii
-[X] Image resizeMode other than 'cover'
-[X] ImageBackground support
-[X] Scrollview clipping
-[X] visibleLayout issue when scene is offsetted outside the screen  
-[ ] Compound view "fade" issue
-[ ] Android support
-[ ] Show / hide animations
-[ ] Show / hide animations on Shared Element renderer
+Open issues:
+[ ] Strategy for animation-types (auto?)
+[ ] iOS clipping when content is entirely not visible
+[ ] iOS border-radius clipping (parent clipping)
+[ ] iOS Compound view "fade" issue
+[ ] Android backgroundImage support
+[ ] Android FastImage support
+[ ] Android inverted scrollview clipping
+[ ] Android image resizeMode mode & border-radius drawing artefact
+[ ] Android scale transform support
+[ ] Android elevation-shadow & clip artefact
+[ ] Android clip doesn't work correctly when border-radius is used
 
 Would be nice:
+[ ] Show / hide animations
+[ ] Show / hide animations on Shared Element renderer
+[ ] Better image fade
 [ ] Web support
-[-] Non-native implementation
+[ ] Blur radius
 
-
-
-Android problems so far:
-- [X] Getting to the underlying (image) content (intrinsic size is required for proper animation)
-- [ ] Getting to the border color/width/style
-- [ ] Getting to the resizeMode (ScaleType)
-- [ ] Background color?
-- [ ] Draw requires Scale transform
-- [ ] Blur-radius?
+Probably not:
+[ ] react-native-photo-view

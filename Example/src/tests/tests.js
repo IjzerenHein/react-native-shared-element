@@ -202,7 +202,13 @@ export const Tests: (Test | TestGroup)[] = [
             name: "ImageBackground",
             description:
               "ImageBackground wraps Image in a View so that children can be added to a sibling view. The wrapped Image should be correctly detected and you should not be any stretching",
-            start: <TestImage size="regular" resizeMode="cover" />,
+            start: (
+              <TestImage
+                size="regular"
+                resizeMode="cover"
+                ImageComponent={ImageBackground}
+              />
+            ),
             end: (
               <TestImage
                 end
@@ -216,7 +222,13 @@ export const Tests: (Test | TestGroup)[] = [
             name: "FastImage",
             description:
               "FastImage is a popular <Image> alternative that offers caching benefits. The underlying image should be correctly detected and you should not see any stretching",
-            start: <TestImage size="regular" resizeMode="cover" />,
+            start: (
+              <TestImage
+                size="regular"
+                resizeMode="cover"
+                ImageComponent={FastImage}
+              />
+            ),
             end: (
               <TestImage
                 end
