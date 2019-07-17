@@ -6,7 +6,8 @@ import {
   Image,
   Dimensions,
   Animated,
-  StatusBar
+  StatusBar,
+  Platform
 } from "react-native";
 import { NavBar, ScreenTransition, Colors, Router } from "../components";
 import type { Hero } from "../types";
@@ -15,11 +16,16 @@ import { fadeIn } from "../transitions";
 import {
   PanGestureHandler,
   State,
-  FlatList
+  FlatList,
+  createNativeWrapper
 } from "react-native-gesture-handler";
+import ViewPager from "@react-native-community/viewpager";
+
+const RNGHViewPager = createNativeWrapper(ViewPager, {
+  disallowInterruption: true
+});
 
 const WIDTH = Dimensions.get("window").width;
-const HEIGHT = Dimensions.get("window").height;
 
 const styles = StyleSheet.create({
   container: {
@@ -31,10 +37,6 @@ const styles = StyleSheet.create({
   },
   flex: {
     flex: 1
-  },
-  scrollView: {
-    width: WIDTH,
-    height: HEIGHT
   },
   content: {
     flex: 1,
@@ -74,6 +76,40 @@ export class PagerScreen extends React.Component<PropsType, StateType> {
     this.state = {
       selectedHero: props.hero
     };
+  }
+
+  renderPager(items: Hero[], initialIndex: number) {
+    if (Platform.OS === "android") {
+      return (
+        <RNGHViewPager
+          style={styles.flex}
+          initialPage={initialIndex}
+          onPageSelected={this.onPageSelected}
+        >
+          {items.map((item, index) =>
+            this.renderItem({
+              item,
+              index
+            })
+          )}
+        </RNGHViewPager>
+      );
+    } else {
+      return (
+        <FlatList
+          style={styles.flex}
+          horizontal
+          pagingEnabled
+          data={Heroes}
+          initialScrollIndex={initialIndex}
+          renderItem={this.renderItem}
+          getItemLayout={this.getItemLayout}
+          keyExtractor={this.keyExtractor}
+          onViewableItemsChanged={this.onViewableItemsChanged}
+          viewabilityConfig={VIEWABILITY_CONFIG}
+        />
+      );
+    }
   }
 
   render() {
@@ -116,18 +152,7 @@ export class PagerScreen extends React.Component<PropsType, StateType> {
               }
             ]}
           >
-            <FlatList
-              style={styles.scrollView}
-              horizontal
-              pagingEnabled
-              data={Heroes}
-              initialScrollIndex={initialIndex}
-              renderItem={this.renderItem}
-              getItemLayout={this.getItemLayout}
-              keyExtractor={this.keyExtractor}
-              onViewableItemsChanged={this.onViewableItemsChanged}
-              viewabilityConfig={VIEWABILITY_CONFIG}
-            />
+            {this.renderPager(Heroes, initialIndex)}
           </Animated.View>
         </PanGestureHandler>
       </View>
@@ -146,7 +171,7 @@ export class PagerScreen extends React.Component<PropsType, StateType> {
     const hero = item;
     const { id, photo } = hero;
     return (
-      <View style={styles.itemContainer}>
+      <View style={styles.itemContainer} key={`item.${item.id}`}>
         <ScreenTransition sharedId={`heroPhoto.${id}`} style={styles.flex}>
           <Image style={styles.image} source={photo} />
         </ScreenTransition>
@@ -158,6 +183,15 @@ export class PagerScreen extends React.Component<PropsType, StateType> {
     const { viewableItems } = event;
     if (!viewableItems.length) return;
     const selectedHero = viewableItems[0].item;
+    if (this.state.selectedHero !== selectedHero) {
+      this.setState({
+        selectedHero
+      });
+    }
+  };
+
+  onPageSelected = ({ nativeEvent }: any) => {
+    const selectedHero = Heroes[nativeEvent.position];
     if (this.state.selectedHero !== selectedHero) {
       this.setState({
         selectedHero
