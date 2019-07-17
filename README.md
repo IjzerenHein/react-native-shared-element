@@ -7,11 +7,20 @@ Essential native shared element transition primitives for react-native 💫
 
 ## Index
 
+- [Installation](#installation)
 - [Basic usage](#basic-usage)
 - [How it works](#how-it-works)
 - [API Documentation](#api-documentation)
 - [Example app](#example-app)
 
+
+## Installation
+
+`yarn add react-native-shared-element-transition`
+
+Link the native code
+
+`react-native link react-native-shared-element-transition`
 
 ## Basic usage
 
@@ -123,3 +132,13 @@ The example app is located in [`./Example`](./Example) and serves as an explorat
 
 ## Todo
 
+
+## License
+
+Shared element transition library is licensed under [The MIT License](./LICENSE.txt).
+
+## Credits
+
+This project is supported by amazing people from [Expo.io](https://expo.io)
+
+[![expo](https://avatars2.githubusercontent.com/u/12504344?v=3&s=100 "Expo.io")](https://expo.io)
