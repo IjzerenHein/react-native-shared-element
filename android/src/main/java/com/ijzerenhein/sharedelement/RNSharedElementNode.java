@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.Animatable;
+import android.widget.ImageView;
 
 import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.ReadableMap;
@@ -85,7 +86,23 @@ class RNSharedElementNode {
 
     private View resolveView(View view) {
         if (view == null) return null;
-        // TODO
+
+        // If the view is a ViewGroup and it contains exactly one
+        // imageview with the same size, then use that imageview
+        if (view instanceof ViewGroup) {
+            ViewGroup viewGroup = (ViewGroup) view;
+            if (viewGroup.getChildCount() == 1) {
+                View childView = viewGroup.getChildAt(0);
+                if (childView instanceof ImageView) {
+                    if ((childView.getLeft() == 0) &&
+                        (childView.getTop() == 0) &&
+                        (childView.getWidth() == viewGroup.getWidth()) &&
+                        (childView.getHeight() == viewGroup.getHeight())) {
+                        return childView;
+                    }
+                }
+            }
+        }
         return view;
     }
 
