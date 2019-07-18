@@ -1,7 +1,7 @@
 
 # react-native-shared-element-transition
 
-Essential native shared element transition primitives for react-native 💫
+Native shared element transition primitives for react-native 💫
 
 # WORK IN PROGRESS
 
