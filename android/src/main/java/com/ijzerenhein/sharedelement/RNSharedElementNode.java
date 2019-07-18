@@ -6,8 +6,10 @@ import javax.annotation.Nullable;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewParent;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.graphics.Matrix;
 import android.graphics.drawable.Animatable;
 import android.widget.ImageView;
 
@@ -109,9 +111,8 @@ class RNSharedElementNode {
     private void updateView() {
         View view = mView;
         if (mIsParent) {
-            for(int index = 0; index < ((ViewGroup)mView).getChildCount(); ++index) {
-                view = ((ViewGroup)mView).getChildAt(index);
-                break;
+            if (((ViewGroup)mView).getChildCount() >= 1) {
+                view = ((ViewGroup)mView).getChildAt(0);
             }
         }
         view = resolveView(view);
@@ -134,6 +135,26 @@ class RNSharedElementNode {
         fetchInitialStyle();
     }
 
+    private static Matrix getViewTransformMatrix(View view) {
+        Matrix matrix = view.getMatrix();
+        ViewParent parentView = view.getParent();
+        if (parentView instanceof View) {
+            Matrix parentMatrix = RNSharedElementNode.getViewTransformMatrix((View)parentView);
+
+            // Multipy
+            float[] vals1 = new float[9];
+            float[] vals2 = new float[9];
+            matrix.getValues(vals1);
+            parentMatrix.getValues(vals2);
+            for (int i = 0; i < 9; i++) {
+                vals1[i] *= vals2[i];
+            }
+            matrix = new Matrix();
+            matrix.setValues(vals1);
+        }
+        return matrix;
+    }
+
     private void fetchInitialStyle() {
         View view = mResolvedView;
         if (view == null || mStyleCallbacks == null) return;
@@ -149,8 +170,16 @@ class RNSharedElementNode {
         // Get absolute layout
         int[] location = new int[2]; 
         view.getLocationOnScreen(location);
-        // TODO, adjust width & height for scaling transforms
-        Rect layout = new Rect(location[0], location[1], location[0] + width, location[1] + height);
+        Matrix matrix = RNSharedElementNode.getViewTransformMatrix(view);
+        float[] f = new float[9];
+        matrix.getValues(f);
+        float scaleX = f[Matrix.MSCALE_X];
+        float scaleY = f[Matrix.MSCALE_Y];
+        Rect layout = new Rect(
+            location[0],
+            location[1],
+            location[0] + (int) (width * scaleX),
+            location[1] + (int) (height * scaleY));
 
         // Create style
         RNSharedElementStyle style = new RNSharedElementStyle(mStyleConfig);

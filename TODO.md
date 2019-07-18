@@ -8,10 +8,10 @@ Open issues:
 [ ] iOS View border tests regularly fail
 [ ] iOS Compound components Fade test fails (target images are not loaded)
 [X] Android backgroundImage support
+[X] Android scale transform support
 [ ] Android FastImage support
 [ ] Android inverted scrollview clipping
 [ ] Android image resizeMode mode & border-radius drawing artefact
-[ ] Android scale transform support
 [ ] Android elevation-shadow & clip artefact
 [ ] Android clip doesn't work correctly when border-radius is used
 
