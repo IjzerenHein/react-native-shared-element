@@ -75,7 +75,7 @@ export class NavBar extends React.Component<NavBarProps> {
         hitSlop={HIT_SLOP}
       >
         <Icon
-          style={styles.icon}
+          style={light ? styles.icon : undefined}
           name={icon}
           size={28}
           color={light ? Colors.back : Colors.text}
