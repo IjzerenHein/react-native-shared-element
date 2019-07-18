@@ -108,22 +108,26 @@ export class CardScreen extends React.Component<PropsType, StateType> {
               <View style={styles.background} />
             </ScreenTransition>
             <Animated.View
-              style={{
-                transform: [
-                  {
-                    translateY: scrollOffset.interpolate({
-                      inputRange: [-1, 0, 1],
-                      outputRange: [-1, 0, 0]
-                    })
-                  },
-                  {
-                    scale: scrollOffset.interpolate({
-                      inputRange: [IMAGE_HEIGHT / -2, 0, 1],
-                      outputRange: [2, 1, 1]
-                    })
-                  }
-                ]
-              }}
+              style={
+                Platform.OS === "ios"
+                  ? {
+                      transform: [
+                        {
+                          translateY: scrollOffset.interpolate({
+                            inputRange: [-1, 0, 1],
+                            outputRange: [-1, 0, 0]
+                          })
+                        },
+                        {
+                          scale: scrollOffset.interpolate({
+                            inputRange: [IMAGE_HEIGHT / -2, 0, 1],
+                            outputRange: [2, 1, 1]
+                          })
+                        }
+                      ]
+                    }
+                  : undefined
+              }
             >
               <ScreenTransition sharedId={`heroPhoto.${id}`}>
                 <Image style={styles.image} source={photo} />
