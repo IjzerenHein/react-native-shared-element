@@ -26,6 +26,7 @@ import type { Hero } from "../types";
 import { fadeIn } from "../transitions";
 import type { TransitionConfig } from "react-navigation";
 import LinearGradient from "react-native-linear-gradient";
+import TouchableScale from "react-native-touchable-scale";
 
 const styles = StyleSheet.create({
   container: {
@@ -74,7 +75,7 @@ const styles = StyleSheet.create({
   },
   cardImage2: {
     borderRadius: 20,
-    height: 400,
+    height: 360,
     width: "100%",
     resizeMode: "cover",
     overflow: "hidden"
@@ -196,7 +197,7 @@ export class TilesScreen extends React.Component<PropsType> {
           <View style={styles.cardBackground} />
         </ScreenTransition>
         <ScreenTransition sharedId={`heroPhoto.${hero.id}`}>
-          <Image style={styles.cardImage} source={hero.photo} />
+          <ImageBackground style={styles.cardImage} source={hero.photo} />
         </ScreenTransition>
         <View style={styles.cardFooter}>
           <ScreenTransition
@@ -223,10 +224,13 @@ export class TilesScreen extends React.Component<PropsType> {
   renderCard2 = ({ item }: any) => {
     const hero = item;
     return (
-      <TouchableOpacity
+      <TouchableScale
         key={`Hero${hero.id}`}
         style={styles.cardContainer}
-        activeOpacity={1}
+        activeScale={0.95}
+        tension={50}
+        friction={7}
+        useNativeDriver={true}
         onPress={() => this.onPressItem(hero)}
       >
         <ScreenTransition
@@ -252,7 +256,7 @@ export class TilesScreen extends React.Component<PropsType> {
         <View style={styles.cardOverlay}>
           <ScreenTransition
             sharedId={`heroName.${hero.id}`}
-            style={styles.cardName2}
+            style={styles.cardName}
           >
             <Heading1 light>{hero.name}</Heading1>
           </ScreenTransition>
@@ -269,7 +273,7 @@ export class TilesScreen extends React.Component<PropsType> {
             )}
           </ScreenTransition>
         </View>
-      </TouchableOpacity>
+      </TouchableScale>
     );
   };
 
@@ -277,7 +281,7 @@ export class TilesScreen extends React.Component<PropsType> {
     const { animation, DetailComponent, transitionConfig, type } = this.props;
     const alternateHero = animation === "fade" ? Heroes[0] : hero;
     const sharedElements = {};
-    const props = {
+    const props: any = {
       hero: {
         ...alternateHero,
         id: hero.id
