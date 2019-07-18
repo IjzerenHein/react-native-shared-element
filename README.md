@@ -68,11 +68,11 @@ Whenever a transition between screens occurs (e.g. performed by a router/navigat
 front of the app should be rendered to host the shared element transition. The `position` prop is used to interpolate between the start- and end nodes, `0` meaning "Show the start node" and `1` meaning "Show the end node".
 
 Whenever the `<SharedElementTransition>` component is rendered, it performs the following tasks:
-- Measure the size and position of the provided nodes
-- Obtain the visual content of the nodes (e.g. an image or a view snapshot)
-- Obtain the styles of nodes
-- Render a visual copiy of the start node at its current position
-- Hide the nodes whenever the visual copies are on the screen
+- Measure the size and position of the provided element
+- Obtain the styles of the elements
+- Obtain the visual content of the elements (e.g. an image or a view snapshot)
+- Render a visual copy of the start element at its current position
+- Hide the original elements whenever the visual copy are on the screen
 - Monitor the `position` prop and render the shared element transition accordingly
 - Upon unmount, unhide the original elements
 
