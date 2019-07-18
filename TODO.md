@@ -2,7 +2,11 @@ Open issues:
 [ ] Strategy for animation-types (auto?)
 [ ] iOS clipping when content is entirely not visible
 [ ] iOS border-radius clipping (parent clipping)
+[ ] iOS Image Border-radius & contain test
 [ ] iOS Compound view "fade" issue
+[ ] iOS ImageBackground test sometimes fails
+[ ] iOS View border tests regularly fail
+[ ] iOS Compound components Fade test fails (target images are not loaded)
 [ ] Android backgroundImage support
 [ ] Android FastImage support
 [ ] Android inverted scrollview clipping
