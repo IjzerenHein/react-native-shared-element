@@ -1,6 +1,6 @@
 Open issues:
 [ ] Strategy for animation-types (auto?)
-[ ] iOS clipping when content is entirely not visible
+[X] iOS clipping when content is entirely not visible
 [ ] iOS border-radius clipping (parent clipping)
 [ ] iOS Image Border-radius & contain test
 [ ] iOS Compound view "fade" issue
