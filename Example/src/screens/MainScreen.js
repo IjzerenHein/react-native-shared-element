@@ -46,7 +46,7 @@ export class MainScreen extends React.Component<{}> {
           />
           <ListItem
             label="Card Demo"
-            description="Card reveal shared element transitions"
+            description="Card reveal with shared element transitions"
             onPress={() =>
               Router.push(
                 <TilesScreen
@@ -58,13 +58,13 @@ export class MainScreen extends React.Component<{}> {
             }
           />
           <ListItem
-            label='Gradient "scrim" Demo'
-            description='Image with gradient overlay "scrim" for better readability'
+            label="Card Demo 2"
+            description='Image with gradient overlay "scrim" and text "fade" transitions'
             onPress={() =>
               Router.push(
                 <TilesScreen
                   type="card2"
-                  title='Gradient "scrim" Demo'
+                  title="Card Demo 2"
                   transitionConfig={fadeIn(0, true)}
                   DetailComponent={CardScreen}
                 />
