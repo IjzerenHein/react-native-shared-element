@@ -5,8 +5,8 @@ import {
   View,
   Image,
   StatusBar,
-  ScrollView,
-  Dimensions
+  Dimensions,
+  Animated
 } from "react-native";
 import {
   NavBar,
@@ -14,24 +14,25 @@ import {
   Colors,
   Router,
   Heading1,
-  Body,
-  Shadows
+  Body
 } from "../components";
 import type { Hero } from "../types";
 import { fadeIn } from "../transitions";
 // import LinearGradient from "react-native-linear-gradient";
+
+const HEIGHT = Dimensions.get("window").height;
+const IMAGE_HEIGHT = Dimensions.get("window").width * 0.75;
 
 const styles = StyleSheet.create({
   flex: {
     flex: 1
   },
   scrollViewContent: {
-    minHeight: Dimensions.get("window").height
+    minHeight: HEIGHT
   },
   background: {
     flex: 1,
-    backgroundColor: Colors.back,
-    ...Shadows.elevation1
+    backgroundColor: Colors.back
   },
   content: {
     padding: 20,
@@ -44,7 +45,7 @@ const styles = StyleSheet.create({
     top: 0
   },
   image: {
-    height: Dimensions.get("window").width * 0.75,
+    height: IMAGE_HEIGHT,
     width: "100%",
     resizeMode: "cover"
   },
@@ -53,6 +54,10 @@ const styles = StyleSheet.create({
   },
   description: {
     marginTop: 4
+  },
+  bottom: {
+    height: 1,
+    backgroundColor: Colors.back
   }
 });
 
@@ -60,16 +65,40 @@ type PropsType = {
   hero: Hero,
   gradientOverlay: boolean
 };
-type StateType = {};
+type StateType = {
+  contentHeight: number,
+  scrollOffset: Animated.Value,
+  scrollEvent: any
+};
 
 export class CardScreen extends React.Component<PropsType, StateType> {
+  constructor(props: PropsType) {
+    super(props);
+    const scrollOffset = new Animated.Value(0);
+    this.state = {
+      scrollOffset,
+      scrollEvent: Animated.event(
+        [{ nativeEvent: { contentOffset: { y: scrollOffset } } }],
+        {
+          useNativeDriver: true
+        }
+      ),
+      contentHeight: 0
+    };
+  }
+
   render() {
+    const { scrollOffset, scrollEvent, contentHeight } = this.state;
     const { hero, gradientOverlay } = this.props;
     const { id, name, photo, description } = hero;
     return (
       <View style={styles.flex}>
         <StatusBar barStyle="light-content" animated />
-        <ScrollView style={styles.flex}>
+        <Animated.ScrollView
+          style={styles.flex}
+          scrollEventThrottle={16}
+          onScroll={scrollEvent}
+        >
           <View style={styles.scrollViewContent}>
             <ScreenTransition
               sharedId={`heroBackground.${id}`}
@@ -77,7 +106,24 @@ export class CardScreen extends React.Component<PropsType, StateType> {
             >
               <View style={styles.background} />
             </ScreenTransition>
-            <View>
+            <Animated.View
+              style={{
+                transform: [
+                  {
+                    translateY: scrollOffset.interpolate({
+                      inputRange: [-1, 0, 1],
+                      outputRange: [-1, 0, 0]
+                    })
+                  },
+                  {
+                    scale: scrollOffset.interpolate({
+                      inputRange: [IMAGE_HEIGHT / -2, 0, 1],
+                      outputRange: [2, 1, 1]
+                    })
+                  }
+                ]
+              }}
+            >
               <ScreenTransition sharedId={`heroPhoto.${id}`}>
                 <Image style={styles.image} source={photo} />
               </ScreenTransition>
@@ -86,7 +132,7 @@ export class CardScreen extends React.Component<PropsType, StateType> {
                   sharedId={`heroGradientOverlay.${hero.id}`}
                   style={StyleSheet.absoluteFill}
                 >
-                  <View />
+                  <View style={StyleSheet.absoluteFill} />
                   {/*<LinearGradient
                     style={StyleSheet.absoluteFill}
                     colors={["#00000000", "#00000000", "#000000FF"]}
@@ -97,8 +143,8 @@ export class CardScreen extends React.Component<PropsType, StateType> {
               ) : (
                 undefined
               )}
-            </View>
-            <View style={styles.content}>
+            </Animated.View>
+            <View style={styles.content} onLayout={this.onLayoutContent}>
               <ScreenTransition sharedId={`heroName.${id}`} style={styles.name}>
                 <Heading1>{name}</Heading1>
               </ScreenTransition>
@@ -114,7 +160,36 @@ export class CardScreen extends React.Component<PropsType, StateType> {
               )}
             </View>
           </View>
-        </ScrollView>
+          <Animated.View
+            style={[
+              styles.bottom,
+              {
+                transform: [
+                  {
+                    translateY: scrollOffset.interpolate({
+                      inputRange: [
+                        0,
+                        Math.max(IMAGE_HEIGHT + contentHeight - HEIGHT, 0),
+                        Math.max(IMAGE_HEIGHT + contentHeight - HEIGHT, 0) + 1
+                      ],
+                      outputRange: [0, 0, 0.5]
+                    })
+                  },
+                  {
+                    scaleY: scrollOffset.interpolate({
+                      inputRange: [
+                        0,
+                        Math.max(IMAGE_HEIGHT + contentHeight - HEIGHT, 0),
+                        Math.max(IMAGE_HEIGHT + contentHeight - HEIGHT, 0) + 1
+                      ],
+                      outputRange: [0, 1, 2]
+                    })
+                  }
+                ]
+              }
+            ]}
+          />
+        </Animated.ScrollView>
         <ScreenTransition
           sharedId={`heroCloseButton.${id}`}
           style={styles.navBar}
@@ -124,6 +199,13 @@ export class CardScreen extends React.Component<PropsType, StateType> {
       </View>
     );
   }
+
+  onLayoutContent = (event: any) => {
+    const { height } = event.nativeEvent.layout;
+    if (this.state.contentHeight !== height) {
+      this.setState({ contentHeight: height });
+    }
+  };
 
   onBack = () => {
     const { hero, gradientOverlay } = this.props;
