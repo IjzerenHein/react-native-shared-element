@@ -6,7 +6,8 @@ import {
   Image,
   StatusBar,
   Dimensions,
-  Animated
+  Animated,
+  Platform
 } from "react-native";
 import {
   NavBar,
@@ -160,35 +161,39 @@ export class CardScreen extends React.Component<PropsType, StateType> {
               )}
             </View>
           </View>
-          <Animated.View
-            style={[
-              styles.bottom,
-              {
-                transform: [
-                  {
-                    translateY: scrollOffset.interpolate({
-                      inputRange: [
-                        0,
-                        Math.max(IMAGE_HEIGHT + contentHeight - HEIGHT, 0),
-                        Math.max(IMAGE_HEIGHT + contentHeight - HEIGHT, 0) + 1
-                      ],
-                      outputRange: [0, 0, 0.5]
-                    })
-                  },
-                  {
-                    scaleY: scrollOffset.interpolate({
-                      inputRange: [
-                        0,
-                        Math.max(IMAGE_HEIGHT + contentHeight - HEIGHT, 0),
-                        Math.max(IMAGE_HEIGHT + contentHeight - HEIGHT, 0) + 1
-                      ],
-                      outputRange: [0, 1, 2]
-                    })
-                  }
-                ]
-              }
-            ]}
-          />
+          {Platform.OS === "ios" ? (
+            <Animated.View
+              style={[
+                styles.bottom,
+                {
+                  transform: [
+                    {
+                      translateY: scrollOffset.interpolate({
+                        inputRange: [
+                          0,
+                          Math.max(IMAGE_HEIGHT + contentHeight - HEIGHT, 0),
+                          Math.max(IMAGE_HEIGHT + contentHeight - HEIGHT, 0) + 1
+                        ],
+                        outputRange: [0, 0, 0.5]
+                      })
+                    },
+                    {
+                      scaleY: scrollOffset.interpolate({
+                        inputRange: [
+                          0,
+                          Math.max(IMAGE_HEIGHT + contentHeight - HEIGHT, 0),
+                          Math.max(IMAGE_HEIGHT + contentHeight - HEIGHT, 0) + 1
+                        ],
+                        outputRange: [0, 1, 2]
+                      })
+                    }
+                  ]
+                }
+              ]}
+            />
+          ) : (
+            undefined
+          )}
         </Animated.ScrollView>
         <ScreenTransition
           sharedId={`heroCloseButton.${id}`}
