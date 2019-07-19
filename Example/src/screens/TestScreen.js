@@ -7,8 +7,7 @@ import type { Test } from "../types";
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: Colors.back
+    flex: 1
   },
   bottomContainer: {
     flex: 1,

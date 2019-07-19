@@ -7,11 +7,11 @@ import type { Test, TestGroup } from "../types";
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: Colors.empty
+    flex: 1
   },
   content: {
-    flex: 1
+    flex: 1,
+    backgroundColor: Colors.empty
   }
 });
 
