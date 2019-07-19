@@ -5,7 +5,8 @@ import {
   View,
   Animated,
   Dimensions,
-  BackHandler
+  BackHandler,
+  Platform
 } from "react-native";
 import { SharedElementTransition } from "react-native-shared-element-transition";
 import { ScreenTransitionContext } from "./ScreenTransitionContext";
@@ -14,6 +15,11 @@ import { PanGestureHandler, State } from "react-native-gesture-handler";
 import { NavBarHeight } from "./navBar/constants";
 import { fromRight } from "../transitions";
 import type { TransitionConfig } from "react-navigation";
+import * as Screens from "react-native-screens";
+
+if (Platform.OS === "android") {
+  //Screens.useScreens();
+}
 
 const WIDTH = Dimensions.get("window").width;
 const HEIGHT = Dimensions.get("window").height;
@@ -23,8 +29,8 @@ const styles = StyleSheet.create({
     flex: 1
   },
   node: {
-    ...StyleSheet.absoluteFillObject,
-    backfaceVisibility: "hidden"
+    ...StyleSheet.absoluteFillObject
+    //backfaceVisibility: "hidden"
   },
   swipeBackOverlay: {
     position: "absolute",
@@ -80,6 +86,27 @@ type RouterConfig = {
 };
 
 let router;
+
+let AnimatedScreen: any;
+
+const MaybeScreenContainer = (props: any) => {
+  if (Screens.screensEnabled()) {
+    return <Screens.ScreenContainer {...props} />;
+  }
+  return <View {...props} />;
+};
+
+const AnimatedRouterScreen = (props: any) => {
+  const { active, ...otherProps } = props;
+  if (Screens.screensEnabled()) {
+    AnimatedScreen =
+      AnimatedScreen || Animated.createAnimatedComponent(Screens.NativeScreen);
+
+    return <AnimatedScreen active={active} {...otherProps} />;
+  }
+
+  return <Animated.View {...otherProps} />;
+};
 
 export class Router extends React.Component<RouterProps, RouterState> {
   _animValue = new Animated.Value(0);
@@ -259,46 +286,53 @@ export class Router extends React.Component<RouterProps, RouterState> {
   };
 
   render() {
-    const { stack, animValue } = this.state;
+    const { stack, animValue, nextIndex, prevIndex } = this.state;
     const transitionConfig =
       this.state.transitionConfig || this.props.transitionConfig;
     return (
       <View style={styles.container}>
-        {stack.map((node: React.Node, index: number) => (
-          <Animated.View
-            key={`screen${index}`}
-            style={[
-              styles.node,
-              transitionConfig.screenInterpolator({
-                layout: {
-                  initHeight: HEIGHT,
-                  initWidth: WIDTH
-                  //width:
-                  //height:
-                  //isMeasured
-                },
-                position: animValue,
-                // progress,
-                index,
-                scene: {
-                  index
-                  //isActive
-                  //isStale
-                  //key,
-                  //route
-                  //descriptor
-                }
-              })
-            ]}
-          >
-            <ScreenTransitionContext
-              style={StyleSheet.absoluteFill}
-              onSharedElementsUpdated={this.onSharedElementsUpdated}
-            >
-              {node}
-            </ScreenTransitionContext>
-          </Animated.View>
-        ))}
+        <MaybeScreenContainer style={StyleSheet.absoluteFill}>
+          {stack.map((node: React.Node, index: number) => {
+            const isScreenActive =
+              index === nextIndex || index === prevIndex ? 1 : 0;
+            return (
+              <AnimatedRouterScreen
+                key={`screen${index}`}
+                active={isScreenActive}
+                style={[
+                  styles.node,
+                  transitionConfig.screenInterpolator({
+                    layout: {
+                      initHeight: HEIGHT,
+                      initWidth: WIDTH
+                      //width:
+                      //height:
+                      //isMeasured
+                    },
+                    position: animValue,
+                    // progress,
+                    index,
+                    scene: {
+                      index
+                      //isActive
+                      //isStale
+                      //key,
+                      //route
+                      //descriptor
+                    }
+                  })
+                ]}
+              >
+                <ScreenTransitionContext
+                  style={StyleSheet.absoluteFill}
+                  onSharedElementsUpdated={this.onSharedElementsUpdated}
+                >
+                  {node}
+                </ScreenTransitionContext>
+              </AnimatedRouterScreen>
+            );
+          })}
+        </MaybeScreenContainer>
         {this.renderSharedElementTransitions()}
         {this.renderBackSwiper()}
       </View>

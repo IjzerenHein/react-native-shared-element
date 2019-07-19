@@ -22,6 +22,7 @@
     "react-native-iphone-x-helper": "^1.2.1",
     "react-native-linear-gradient": "^2.5.4",
     "react-native-photo-view": "https://github.com/tomtom94/react-native-photo-view",
+    "react-native-screens": "1.0.0-alpha.22",
     "react-native-shared-element-transition": "file:.yalc/react-native-shared-element-transition",
     "react-native-touchable-scale": "^2.0.0",
     "react-native-vector-icons": "^6.5.0",
