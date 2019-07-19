@@ -43,11 +43,13 @@ public class RNSharedElementTransition extends ViewGroup {
         mItems.add(new RNSharedElementTransitionItem(nodeManager, "endNode", false));
 
         mStartView = new View(context);
+        // mStartView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
         mStartDrawable = new RNSharedElementDrawable();
         mStartView.setBackground(mStartDrawable);
         addView(mStartView);
 
         mEndView = new View(context);
+        // mEndView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
         mEndDrawable = new RNSharedElementDrawable();
         mEndView.setBackground(mEndDrawable);
         addView(mEndView);
@@ -154,6 +156,31 @@ public class RNSharedElementTransition extends ViewGroup {
         }
     }
 
+    private void updateViewAndDrawable(
+        View view,
+        RNSharedElementDrawable drawable,
+        Rect layout,
+        RNSharedElementContent content,
+        RNSharedElementStyle style,
+        float alpha,
+        float position) {
+
+        // Update view
+        view.layout(
+            layout.left,
+            layout.top,
+            layout.right,
+            layout.bottom
+        );
+        view.setAlpha(alpha);
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            view.setElevation(style.elevation);
+        }
+
+        // Update drawable
+        drawable.update(content, style, position);
+    }
+
     private void updateLayout() {
         if (!mInitialLayoutPassCompleted) return;
 
@@ -214,44 +241,43 @@ public class RNSharedElementTransition extends ViewGroup {
         );
 
         // Render the start view
-        mStartView.layout(
-            interpolatedLayout.left - interpolatedClippedLayout.left,
-            interpolatedLayout.top - interpolatedClippedLayout.top,
-            (interpolatedLayout.left - interpolatedClippedLayout.left) + interpolatedLayout.width(),
-            (interpolatedLayout.top - interpolatedClippedLayout.top) + interpolatedLayout.height()
-        );
-        mStartDrawable.setContent(startContent);
-        mStartDrawable.setStyle(interpolatedStyle);
-        mStartDrawable.setPosition(mNodePosition);
-        mStartView.setAlpha(interpolatedStyle.opacity);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            mStartView.setElevation(interpolatedStyle.elevation);
-        }
-        
-        // Render the end view for "fade" animations
-        if (!mAnimation.equals("move")) {
-
-            // Fade out start view
-            float startAlpha = ((startStyle != null) ? startStyle.opacity : 1) * (1 - mNodePosition);
-            mStartView.setAlpha(startAlpha);
-
-            // Render the end view
-            mEndView.layout(
+        float startAlpha = mAnimation.equals("move")
+            ? interpolatedStyle.opacity
+            : ((startStyle != null) ? startStyle.opacity : 1) * (1 - mNodePosition);
+        updateViewAndDrawable(
+            mStartView,
+            mStartDrawable,
+            new Rect(
                 interpolatedLayout.left - interpolatedClippedLayout.left,
                 interpolatedLayout.top - interpolatedClippedLayout.top,
                 (interpolatedLayout.left - interpolatedClippedLayout.left) + interpolatedLayout.width(),
                 (interpolatedLayout.top - interpolatedClippedLayout.top) + interpolatedLayout.height()
-            );
-            mEndDrawable.setContent(endContent);
-            mEndDrawable.setStyle(interpolatedStyle);
-            mEndDrawable.setPosition(mNodePosition);
+            ),
+            startContent,
+            interpolatedStyle,
+            startAlpha,
+            mNodePosition
+        );
+        
+        // Render the end view for "fade" animations
+        if (!mAnimation.equals("move")) {
 
-            // Fade-in end view
+            // Render the end view
             float endAlpha = ((endStyle != null) ? endStyle.opacity : 1) * mNodePosition;
-            mEndView.setAlpha(endAlpha);
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-                mEndView.setElevation(interpolatedStyle.elevation);
-            }
+            updateViewAndDrawable(
+                mEndView,
+                mEndDrawable,
+                new Rect(
+                    interpolatedLayout.left - interpolatedClippedLayout.left,
+                    interpolatedLayout.top - interpolatedClippedLayout.top,
+                    (interpolatedLayout.left - interpolatedClippedLayout.left) + interpolatedLayout.width(),
+                    (interpolatedLayout.top - interpolatedClippedLayout.top) + interpolatedLayout.height()
+                ),
+                endContent,
+                interpolatedStyle,
+                endAlpha,
+                mNodePosition
+            );
 
             // Also apply a fade effect on the elevation. This reduces the shadow visibility
             // underneath the view which becomes visible when the transparency of the view
@@ -265,13 +291,7 @@ public class RNSharedElementTransition extends ViewGroup {
                     mEndView.setOutlineSpotShadowColor(Color.argb(endAlpha, 0, 0, 0));
                 }
             }
-
-            // Invalidate
-            mEndDrawable.invalidateSelf();
-        }
-
-        // Invalidate
-        mStartDrawable.invalidateSelf();
+        }        
     }
 
     private void updateNodeVisibility() {

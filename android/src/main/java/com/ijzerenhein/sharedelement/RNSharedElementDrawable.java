@@ -21,11 +21,19 @@ import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.drawable.ScalingUtils.ScaleType;
 import com.facebook.drawee.generic.RoundingParams;
 
- class RNSharedElementDrawable extends Drawable {
+class RNSharedElementDrawable extends Drawable {
+    enum ViewType {
+        NONE,
+        REACTIMAGEVIEW,
+        PLAIN,
+        GENERIC,
+    }
+
     static private String LOG_TAG = "RNSharedElementDrawable";
 
     private RNSharedElementContent mContent = null;
     private RNSharedElementStyle mStyle = null;
+    private ViewType mViewType = ViewType.NONE;
     private float mPosition = 0;
     private int mAlpha = 255;
     private Path mPathForBorderRadiusOutline = null;
@@ -38,16 +46,51 @@ import com.facebook.drawee.generic.RoundingParams;
         return mContent;
     }
 
-    void setStyle(RNSharedElementStyle style) {
+    float getPosition() {
+        return mPosition;
+    }
+
+    void update(RNSharedElementContent content, RNSharedElementStyle style, float position) {
+        boolean invalidated = false;
+
+        // Update content
+        if (mContent != content) {
+            mContent = content;
+            invalidated = true;
+        }
+
+        // Update view-type
+        ViewType viewType = (mContent != null) ? RNSharedElementDrawable.getViewType(mContent.view) : ViewType.NONE;
+        if (mViewType != viewType){
+            mViewType = viewType;
+            invalidated = true;
+        }
+
+        // Update & check style changes
+        if ((mStyle != null) && (style != null) && !invalidated) {
+            switch (viewType) {
+                case REACTIMAGEVIEW:
+                    // TODO
+                    invalidated = true;
+                    break;
+                case PLAIN:
+                    // TODO
+                    invalidated = true;
+                    break;
+                case GENERIC:
+                    // nop
+                    break;
+            }
+        }
         mStyle = style;
-    }
 
-    void setContent(RNSharedElementContent content) {
-        mContent = content;
-    }
-
-    void setPosition(float position) {
+        // Update position
         mPosition = position;
+
+        // Invalidate if neccessary
+        if (invalidated) {
+            invalidateSelf();
+        }
     }
 
     @Override
@@ -116,24 +159,34 @@ import com.facebook.drawee.generic.RoundingParams;
         outline.setConvexPath(mPathForBorderRadiusOutline);
     }
 
-    @Override
-    public void draw(Canvas canvas) {
-        //Log.d(LOG_TAG, "draw: " + mPosition);
-        if ((mContent == null) || (mStyle == null)) return;
-        View view = mContent.view;
-
+    static private ViewType getViewType(View view) {
+        if (view == null) return ViewType.NONE;
         if (view instanceof ReactImageView) {
-            drawReactImageView(canvas);
-            return;
+            return ViewType.REACTIMAGEVIEW;
         }
         else if (view instanceof ReactViewGroup) {
             ReactViewGroup viewGroup = (ReactViewGroup) view;
             if (viewGroup.getChildCount() == 0) {
-                drawViewStyles(canvas);
-                return;
+                return ViewType.PLAIN;
             }
         }
-        drawGenericView(canvas);
+        return ViewType.GENERIC;
+    }
+
+    @Override
+    public void draw(Canvas canvas) {
+        //Log.d(LOG_TAG, "draw, viewType: " + mViewType + ", position: " + mPosition);
+        switch (mViewType) {
+            case REACTIMAGEVIEW:
+                drawReactImageView(canvas);
+                break;
+            case PLAIN:
+                drawPlainView(canvas);
+                break;
+            case GENERIC:
+                drawGenericView(canvas);
+                break;
+        }
     }
 
     private void drawReactImageView(Canvas canvas) {
@@ -181,7 +234,7 @@ import com.facebook.drawee.generic.RoundingParams;
         drawable.setBounds(oldBounds);
     }
 
-    private void drawViewStyles(Canvas canvas) {
+    private void drawPlainView(Canvas canvas) {
         RNSharedElementStyle style = mStyle;
 
         // Create drawable
