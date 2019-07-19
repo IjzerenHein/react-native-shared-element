@@ -2,6 +2,7 @@ package com.ijzerenhein.sharedelement;
 
 import java.util.ArrayList;
 
+import android.annotation.SuppressLint;
 import android.os.Build;
 import android.util.Log;
 import android.graphics.Canvas;
@@ -96,12 +97,12 @@ public class RNSharedElementTransition extends ViewGroup {
         }
     }
 
-    /*@Override
-    // @SuppressLint("MissingSuperCall")
+    @Override
+    @SuppressLint("MissingSuperCall")
     public void requestLayout() {
-        // No-op, terminate `requestLayout` here, UIManagerModule handles laying out children and
-        // `layout` is called on all RN-managed views by `NativeViewHierarchyManager`
-    }*/
+        // No-op, terminate `requestLayout` here, all layout is updated in the 
+        // `updateLayout` function
+    }
 
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
@@ -183,12 +184,14 @@ public class RNSharedElementTransition extends ViewGroup {
 
             // Update view
             view.layout(
-                layout.left - parentLayout.left,
-                layout.top - parentLayout.top,
-                (layout.left - parentLayout.left) + originalLayout.width(),
-                (layout.top - parentLayout.top) + originalLayout.height()
+                0,
+                0,
+                originalLayout.width(),
+                originalLayout.height()
             );
-
+            view.setTranslationX(layout.left - parentLayout.left);
+            view.setTranslationY(layout.top - parentLayout.top);
+            
             // Update scale
             float scaleX = (float)layout.width() / (float)originalLayout.width();
             float scaleY = (float)layout.height() / (float)originalLayout.height();
@@ -201,16 +204,20 @@ public class RNSharedElementTransition extends ViewGroup {
             }
             view.setScaleX(scaleX);
             view.setScaleY(scaleY);
+            view.setPivotX(0);
+            view.setPivotY(0);
         }
         else {
 
             // Update view
             view.layout(
-                layout.left - parentLayout.left,
-                layout.top - parentLayout.top,
-                (layout.left - parentLayout.left) + layout.width(),
-                (layout.top - parentLayout.top) + layout.height()
-            );   
+                0,
+                0,
+                layout.width(),
+                layout.height()
+            );
+            view.setTranslationX(layout.left - parentLayout.left);
+            view.setTranslationY(layout.top - parentLayout.top);
         }
 
         // Update view opacity and elevation
