@@ -13,6 +13,26 @@ import com.facebook.drawee.drawable.ScalingUtils.ScaleType;
 import com.facebook.react.views.image.ImageResizeMode;
 
 public class RNSharedElementStyle {
+    static int PROP_OPACITY = 1 << 0;
+    static int PROP_ELEVATION = 1 << 1;
+    static int PROP_BACKGROUND_COLOR = 1 << 2;
+    static int PROP_BORDER_COLOR = 1 << 3;
+    static int PROP_BORDER_WIDTH = 1 << 4;
+    static int PROP_BORDER_STYLE = 1 << 5;
+    static int PROP_BORDER_TOPLEFTRADIUS = 1 << 6;
+    static int PROP_BORDER_TOPRIGHTRADIUS = 1 << 7;
+    static int PROP_BORDER_BOTTOMLEFTRADIUS = 1 << 8;
+    static int PROP_BORDER_BOTTOMRIGHT_RADIUS = 1 << 9;
+    static int PROP_BORDER =
+        PROP_BORDER_COLOR +
+        PROP_BORDER_WIDTH +
+        PROP_BORDER_STYLE +
+        PROP_BORDER_TOPLEFTRADIUS +
+        PROP_BORDER_TOPRIGHTRADIUS +
+        PROP_BORDER_BOTTOMLEFTRADIUS +
+        PROP_BORDER_BOTTOMRIGHT_RADIUS;
+    static int PROP_SCALETYPE = 1 << 10;
+
     Rect layout = new Rect(); // absolute layout on screen
     Rect frame = new Rect(); // frame rect relative to parent
     ScaleType scaleType = ScaleType.FIT_XY;
@@ -86,5 +106,21 @@ public class RNSharedElementStyle {
         if (config.hasKey("borderTopRightRadius")) borderTopRightRadius = PixelUtil.toPixelFromDIP((float) config.getDouble("borderTopRightRadius"));
         if (config.hasKey("borderBottomLeftRadius")) borderBottomLeftRadius = PixelUtil.toPixelFromDIP((float) config.getDouble("borderBottomLeftRadius"));
         if (config.hasKey("borderBottomRightRadius")) borderBottomRightRadius = PixelUtil.toPixelFromDIP((float) config.getDouble("borderBottomRightRadius"));
+    }
+
+    int compare(RNSharedElementStyle style) {
+        int res = 0;
+        if (opacity != style.opacity) res += PROP_OPACITY;
+        if (backgroundColor != style.backgroundColor) res += PROP_BACKGROUND_COLOR;
+        if (borderColor != style.borderColor) res += PROP_BORDER_COLOR;
+        if (borderWidth != style.borderWidth) res += PROP_BORDER_WIDTH;
+        if (!borderStyle.equals(style.borderStyle)) res += PROP_BORDER_STYLE;
+        if (borderTopLeftRadius != style.borderTopLeftRadius) res += PROP_BORDER_TOPLEFTRADIUS;
+        if (borderTopRightRadius != style.borderTopRightRadius) res += PROP_BORDER_TOPRIGHTRADIUS;
+        if (borderBottomLeftRadius != style.borderBottomLeftRadius) res += PROP_BORDER_BOTTOMLEFTRADIUS;
+        if (borderBottomRightRadius != style.borderBottomRightRadius) res += PROP_BORDER_BOTTOMRIGHT_RADIUS;
+        if (elevation != style.elevation) res += PROP_ELEVATION;
+        if (scaleType != style.scaleType) res += PROP_SCALETYPE;
+        return res;
     }
 }

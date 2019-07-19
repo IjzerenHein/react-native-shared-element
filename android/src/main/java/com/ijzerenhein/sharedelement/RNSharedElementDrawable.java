@@ -70,12 +70,24 @@ class RNSharedElementDrawable extends Drawable {
         if ((mStyle != null) && (style != null) && !invalidated) {
             switch (viewType) {
                 case REACTIMAGEVIEW:
-                    // TODO
-                    invalidated = true;
+                    if ((mStyle.compare(style)
+                        | RNSharedElementStyle.PROP_BORDER
+                        | RNSharedElementStyle.PROP_BACKGROUND_COLOR
+                        | RNSharedElementStyle.PROP_SCALETYPE) != 0) {
+                        invalidated = true;
+                    } else {
+                        invalidated = false;
+                    }
                     break;
                 case PLAIN:
-                    // TODO
-                    invalidated = true;
+                   if ((mStyle.compare(style)
+                        | RNSharedElementStyle.PROP_BORDER
+                        | RNSharedElementStyle.PROP_BACKGROUND_COLOR) != 0) {
+                        invalidated = true;
+                    }
+                    else {
+                        invalidated = false;
+                    }
                     break;
                 case GENERIC:
                     // nop
