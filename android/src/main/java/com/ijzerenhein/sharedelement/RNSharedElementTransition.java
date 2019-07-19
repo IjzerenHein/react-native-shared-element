@@ -250,30 +250,35 @@ public class RNSharedElementTransition extends ViewGroup {
         Rect parentLayout = new Rect(startLayout);
         parentLayout.union(endLayout);
 
-        // APPLY CLIPPING
-
-        /*Rect startClippedLayout = (startStyle != null) ? normalizeLayout(startItem.getClippedLayout(startAncestor), startAncestor) : new Rect();
+        // Get clipped areas
+        Rect startClippedLayout = (startStyle != null) ? normalizeLayout(startItem.getClippedLayout(startAncestor), startAncestor) : new Rect();
         Rect startClipInsets = getClipInsets(startLayout, startClippedLayout);
         Rect endClippedLayout = (endStyle != null) ? normalizeLayout(endItem.getClippedLayout(endAncestor), endAncestor) : new Rect();
-        Rect endClipInsets = getClipInsets(endLayout, endClippedLayout);*/
+        Rect endClipInsets = getClipInsets(endLayout, endClippedLayout);
 
         // Get interpolated layout
         Rect interpolatedLayout;
-        //Rect interpolatedClipInsets;
+        Rect interpolatedClipInsets;
         RNSharedElementStyle interpolatedStyle;
         if ((startStyle != null) && (endStyle != null)) {
             interpolatedLayout = getInterpolatedLayout(startLayout, endLayout, mNodePosition);
-            //interpolatedClipInsets = getInterpolatedClipInsets(interpolatedLayout, startClipInsets, startClippedLayout, endClipInsets, endClippedLayout, mNodePosition);
+            interpolatedClipInsets = getInterpolatedClipInsets(parentLayout, startClipInsets, startClippedLayout, endClipInsets, endClippedLayout, mNodePosition);
             interpolatedStyle = getInterpolatedStyle(startStyle, startContent, endStyle, endContent, mNodePosition);
         } else if (startStyle != null) {
             interpolatedLayout = startLayout;
-            //interpolatedClipInsets = startClipInsets;
             interpolatedStyle = startStyle;
+            interpolatedClipInsets = startClipInsets;
         } else {
             interpolatedLayout = endLayout;
-            //interpolatedClipInsets = endClipInsets;
             interpolatedStyle = endStyle;
+            interpolatedClipInsets = endClipInsets;
         }
+
+        // Apply clipping insets
+        parentLayout.left += interpolatedClipInsets.left;
+        parentLayout.top += interpolatedClipInsets.top;
+        parentLayout.right -= interpolatedClipInsets.right;
+        parentLayout.bottom -= interpolatedClipInsets.bottom;
 
         // Calculate clipped layout
         mRequiresClipping = !parentLayout.contains(interpolatedLayout);
@@ -371,13 +376,12 @@ public class RNSharedElementTransition extends ViewGroup {
 
     private Rect getClipInsets(Rect layout, Rect clippedLayout) {
         return new Rect(
-            (clippedLayout.left > layout.left) ? clippedLayout.left : 0,
-            (clippedLayout.top > layout.top) ? clippedLayout.top : 0,
-            (clippedLayout.right < layout.right) ? clippedLayout.right : 0,
-            (clippedLayout.bottom < layout.bottom) ? clippedLayout.bottom : 0
+            clippedLayout.left - layout.left,
+            clippedLayout.top - layout.top,
+            clippedLayout.right - layout.right,
+            clippedLayout.bottom - layout.bottom
         );
     }
-
 
     private Rect getInterpolatedClipInsets(
         Rect interpolatedLayout,
