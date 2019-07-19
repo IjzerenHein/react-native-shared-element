@@ -44,13 +44,15 @@ public class RNSharedElementTransition extends ViewGroup {
         mItems.add(new RNSharedElementTransitionItem(nodeManager, "endNode", false));
 
         mStartView = new View(context);
-        // mStartView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
+        //int layerType = mStartView.getLayerType();
+        mStartView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
+        //int layerType2 = mStartView.getLayerType();
         mStartDrawable = new RNSharedElementDrawable();
         mStartView.setBackground(mStartDrawable);
         addView(mStartView);
 
         mEndView = new View(context);
-        // mEndView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
+        mEndView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
         mEndDrawable = new RNSharedElementDrawable();
         mEndView.setBackground(mEndDrawable);
         addView(mEndView);
@@ -97,6 +99,13 @@ public class RNSharedElementTransition extends ViewGroup {
         }
     }
 
+    /*@Override
+    // @SuppressLint("MissingSuperCall")
+    public void requestLayout() {
+        // No-op, terminate `requestLayout` here, UIManagerModule handles laying out children and
+        // `layout` is called on all RN-managed views by `NativeViewHierarchyManager`
+    }*/
+
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         if (!mReactLayoutSet) {
@@ -118,6 +127,7 @@ public class RNSharedElementTransition extends ViewGroup {
 
     @Override
     protected void dispatchDraw(Canvas canvas) {
+        Log.d(LOG_TAG, "dispatchDraw, mRequiresClipping: " + mRequiresClipping + ", width: " + getWidth() + ", height: " + getHeight());
         if (mRequiresClipping) {
             canvas.clipRect(0, 0, getWidth(), getHeight());
         }
@@ -163,25 +173,54 @@ public class RNSharedElementTransition extends ViewGroup {
         View view,
         RNSharedElementDrawable drawable,
         Rect layout,
+        Rect parentLayout,
         RNSharedElementContent content,
+        Rect originalLayout,
         RNSharedElementStyle style,
         float alpha,
         float position) {
 
-        // Update view
-        view.layout(
-            layout.left,
-            layout.top,
-            layout.right,
-            layout.bottom
-        );
+        // Update drawable
+        boolean useScaling = drawable.update(content, style, position);
+        if (useScaling) {
+
+            // Update view
+            view.layout(
+                layout.left - parentLayout.left,
+                layout.top - parentLayout.top,
+                (layout.left - parentLayout.left) + originalLayout.width(),
+                (layout.top - parentLayout.top) + originalLayout.height()
+            );
+
+            // Update scale
+            float scaleX = (float)layout.width() / (float)originalLayout.width();
+            float scaleY = (float)layout.height() / (float)originalLayout.height();
+            if ((scaleX >= 1) && (scaleY >= 1)) {
+                scaleX = Math.min(scaleX, scaleY);
+                scaleY = scaleX;
+            } else if ((scaleX <= 1) && (scaleY <= 1)) {
+                scaleX = Math.max(scaleX, scaleY);
+                scaleY = scaleX;
+            }
+            view.setScaleX(scaleX);
+            view.setScaleY(scaleY);
+        }
+        else {
+
+            // Update view
+            view.layout(
+                layout.left - parentLayout.left,
+                layout.top - parentLayout.top,
+                (layout.left - parentLayout.left) + layout.width(),
+                (layout.top - parentLayout.top) + layout.height()
+            );   
+        }
+
+        // Update view opacity and elevation
         view.setAlpha(alpha);
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
             view.setElevation(style.elevation);
         }
-
-        // Update drawable
-        drawable.update(content, style, position);
     }
 
     private void updateLayout() {
@@ -234,57 +273,49 @@ public class RNSharedElementTransition extends ViewGroup {
             interpolatedLayout.right - interpolatedClipInsets.right,
             interpolatedLayout.bottom - interpolatedClipInsets.bottom
         );
-        mRequiresClipping = false;
-        if (!interpolatedClippedLayout.contains(interpolatedLayout)) {
-            mRequiresClipping = true;
-        } else {
-            mRequiresClipping = false;
-        }
+        mRequiresClipping = interpolatedClippedLayout.contains(interpolatedLayout);
 
         // Update outer viewgroup layout. The outer viewgroup hosts 2 inner views
         // which draw the content & elevation. The outer viewgroup performs additional
         // clipping on these views.
         super.layout(
-            interpolatedClippedLayout.left,
-            interpolatedClippedLayout.top,
-            interpolatedClippedLayout.right,
-            interpolatedClippedLayout.bottom
+            0,
+            0,
+            interpolatedClippedLayout.width(),
+            interpolatedClippedLayout.height()
         );
+        setTranslationX(interpolatedClippedLayout.left);
+        setTranslationY(interpolatedClippedLayout.top);
 
         // Render the start view
-        float startAlpha = mAnimation.equals("move")
+        boolean isCrossFade = !mAnimation.equals("move");
+        float startAlpha = !isCrossFade
             ? interpolatedStyle.opacity
             : ((startStyle != null) ? startStyle.opacity : 1) * (1 - mNodePosition);
         updateViewAndDrawable(
             mStartView,
             mStartDrawable,
-            new Rect(
-                interpolatedLayout.left - interpolatedClippedLayout.left,
-                interpolatedLayout.top - interpolatedClippedLayout.top,
-                (interpolatedLayout.left - interpolatedClippedLayout.left) + interpolatedLayout.width(),
-                (interpolatedLayout.top - interpolatedClippedLayout.top) + interpolatedLayout.height()
-            ),
+            interpolatedLayout,
+            interpolatedClippedLayout,
             startContent,
+            startLayout,
             interpolatedStyle,
             startAlpha,
             mNodePosition
         );
         
-        // Render the end view for "fade" animations
-        if (!mAnimation.equals("move")) {
+        // Render the end view as well for the "cross-fade" animations
+        if (isCrossFade) {
 
             // Render the end view
             float endAlpha = ((endStyle != null) ? endStyle.opacity : 1) * mNodePosition;
             updateViewAndDrawable(
                 mEndView,
                 mEndDrawable,
-                new Rect(
-                    interpolatedLayout.left - interpolatedClippedLayout.left,
-                    interpolatedLayout.top - interpolatedClippedLayout.top,
-                    (interpolatedLayout.left - interpolatedClippedLayout.left) + interpolatedLayout.width(),
-                    (interpolatedLayout.top - interpolatedClippedLayout.top) + interpolatedLayout.height()
-                ),
+                interpolatedLayout,
+                interpolatedClippedLayout,
                 endContent,
+                endLayout,
                 interpolatedStyle,
                 endAlpha,
                 mNodePosition
@@ -434,19 +465,6 @@ public class RNSharedElementTransition extends ViewGroup {
         );
         scaleType.setValue(position);
         result.scaleType = scaleType;
-        /*result.layout = getInterpolatedLayout(style1.frame, style2.frame, position);
-        Rect contentLayout1 = RNSharedElementContent.getLayout(
-            style1.frame,
-            (content1 != null) ? content1.size : content2.size,
-            style1.scaleType,
-            false);
-        Rect contentLayout2 = RNSharedElementContent.getLayout(
-            style2.frame,
-            (content2 != null) ? content2.size : content1.size,
-            style2.scaleType,
-            false);
-        Rect interpolatedContentLayout = getInterpolatedLayout(contentLayout1, contentLayout2, position);
-        result.frame = interpolatedContentLayout;*/
         result.opacity = style1.opacity + ((style2.opacity - style1.opacity) * position);
         result.backgroundColor = getInterpolatedColor(style1.backgroundColor, style2.backgroundColor, position);
         result.borderTopLeftRadius = style1.borderTopLeftRadius + ((style2.borderTopLeftRadius - style1.borderTopLeftRadius) * position);
@@ -455,6 +473,7 @@ public class RNSharedElementTransition extends ViewGroup {
         result.borderBottomRightRadius = style1.borderBottomRightRadius + ((style2.borderBottomRightRadius - style1.borderBottomRightRadius) * position);
         result.borderWidth = style1.borderWidth + ((style2.borderWidth - style1.borderWidth) * position);
         result.borderColor = getInterpolatedColor(style1.borderColor, style2.borderColor, position);
+        result.borderStyle = style1.borderStyle;
         result.elevation = style1.elevation + ((style2.elevation - style1.elevation) * position);
         return result;
     }

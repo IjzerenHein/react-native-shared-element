@@ -30,6 +30,7 @@ class RNSharedElementDrawable extends Drawable {
     }
 
     static private String LOG_TAG = "RNSharedElementDrawable";
+    static private boolean USE_GENERIC_SCALING = true;
 
     private RNSharedElementContent mContent = null;
     private RNSharedElementStyle mStyle = null;
@@ -50,7 +51,7 @@ class RNSharedElementDrawable extends Drawable {
         return mPosition;
     }
 
-    void update(RNSharedElementContent content, RNSharedElementStyle style, float position) {
+    boolean update(RNSharedElementContent content, RNSharedElementStyle style, float position) {
         boolean invalidated = false;
 
         // Update content
@@ -103,6 +104,8 @@ class RNSharedElementDrawable extends Drawable {
         if (invalidated) {
             invalidateSelf();
         }
+
+        return USE_GENERIC_SCALING && (viewType == ViewType.GENERIC);
     }
 
     @Override
@@ -275,6 +278,10 @@ class RNSharedElementDrawable extends Drawable {
 
     private void drawGenericView(Canvas canvas) {
         View view = mContent.view;
+        if (USE_GENERIC_SCALING) {
+            view.draw(canvas);
+            return;
+        }
 
         // Save canvas
         canvas.save();
