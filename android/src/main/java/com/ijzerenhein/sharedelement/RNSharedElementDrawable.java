@@ -61,7 +61,7 @@ class RNSharedElementDrawable extends Drawable {
         }
 
         // Update view-type
-        ViewType viewType = (mContent != null) ? RNSharedElementDrawable.getViewType(mContent.view) : ViewType.NONE;
+        ViewType viewType = (mContent != null) ? RNSharedElementDrawable.getViewType(mContent.view, style) : ViewType.NONE;
         if (mViewType != viewType){
             mViewType = viewType;
             invalidated = true;
@@ -71,19 +71,21 @@ class RNSharedElementDrawable extends Drawable {
         if ((mStyle != null) && (style != null) && !invalidated) {
             switch (viewType) {
                 case REACTIMAGEVIEW:
-                    if ((mStyle.compare(style)
-                        | RNSharedElementStyle.PROP_BORDER
+                    if ((mStyle.compare(style) &
+                        (RNSharedElementStyle.PROP_BORDER
                         | RNSharedElementStyle.PROP_BACKGROUND_COLOR
-                        | RNSharedElementStyle.PROP_SCALETYPE) != 0) {
+                        | RNSharedElementStyle.PROP_SCALETYPE)) != 0) {
+                        //Log.d(LOG_TAG, "drawableChanged, viewType: " + viewType + ", changes: " + mStyle.compare(style));
                         invalidated = true;
                     } else {
                         invalidated = false;
                     }
                     break;
                 case PLAIN:
-                   if ((mStyle.compare(style)
-                        | RNSharedElementStyle.PROP_BORDER
-                        | RNSharedElementStyle.PROP_BACKGROUND_COLOR) != 0) {
+                   if ((mStyle.compare(style) &
+                        (RNSharedElementStyle.PROP_BORDER
+                        | RNSharedElementStyle.PROP_BACKGROUND_COLOR)) != 0) {
+                        //Log.d(LOG_TAG, "drawableChanged, viewType: " + viewType + ", changes: " + mStyle.compare(style));
                         invalidated = true;
                     }
                     else {
@@ -174,7 +176,7 @@ class RNSharedElementDrawable extends Drawable {
         outline.setConvexPath(mPathForBorderRadiusOutline);
     }
 
-    static private ViewType getViewType(View view) {
+    static private ViewType getViewType(View view, RNSharedElementStyle style) {
         if (view == null) return ViewType.NONE;
         if (view instanceof ReactImageView) {
             return ViewType.REACTIMAGEVIEW;
@@ -182,7 +184,9 @@ class RNSharedElementDrawable extends Drawable {
         else if (view instanceof ReactViewGroup) {
             ReactViewGroup viewGroup = (ReactViewGroup) view;
             if (viewGroup.getChildCount() == 0) {
-                return ViewType.PLAIN;
+                if (style.isVisible()) {
+                    return ViewType.PLAIN;
+                }
             }
         }
         return ViewType.GENERIC;

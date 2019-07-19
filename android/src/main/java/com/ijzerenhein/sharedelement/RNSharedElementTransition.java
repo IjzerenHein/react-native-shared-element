@@ -14,7 +14,6 @@ import android.view.ViewGroup;
 
 import com.facebook.react.bridge.Callback;
 import com.facebook.react.uimanager.ThemedReactContext;
-import com.facebook.drawee.drawable.ScalingUtils;
 
 public class RNSharedElementTransition extends ViewGroup {
     static private String LOG_TAG = "RNSharedElementTransition";
@@ -44,9 +43,7 @@ public class RNSharedElementTransition extends ViewGroup {
         mItems.add(new RNSharedElementTransitionItem(nodeManager, "endNode", false));
 
         mStartView = new View(context);
-        //int layerType = mStartView.getLayerType();
         mStartView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
-        //int layerType2 = mStartView.getLayerType();
         mStartDrawable = new RNSharedElementDrawable();
         mStartView.setBackground(mStartDrawable);
         addView(mStartView);
@@ -127,16 +124,16 @@ public class RNSharedElementTransition extends ViewGroup {
 
     @Override
     protected void dispatchDraw(Canvas canvas) {
-        Log.d(LOG_TAG, "dispatchDraw, mRequiresClipping: " + mRequiresClipping + ", width: " + getWidth() + ", height: " + getHeight());
+        //Log.d(LOG_TAG, "dispatchDraw, mRequiresClipping: " + mRequiresClipping + ", width: " + getWidth() + ", height: " + getHeight());
         if (mRequiresClipping) {
             canvas.clipRect(0, 0, getWidth(), getHeight());
         }
         super.dispatchDraw(canvas);
 
         // Draw content
-        /*Paint backgroundPaint = new Paint();
-        backgroundPaint.setColor(Color.argb(128, 255, 0, 0));
-        canvas.drawRect(0, 0, getWidth()+300, getHeight() + 300, backgroundPaint);*/
+        //Paint backgroundPaint = new Paint();
+        //backgroundPaint.setColor(Color.argb(128, 255, 0, 0));
+        //canvas.drawRect(0, 0, getWidth(), getHeight(), backgroundPaint);
     }
 
     private void requestStylesAndContent(boolean force) {
@@ -242,38 +239,37 @@ public class RNSharedElementTransition extends ViewGroup {
         // Get layout
         getLocationOnScreen(mParentLocation);
         Rect startLayout = (startStyle != null) ? normalizeLayout(startStyle.layout, startAncestor) : new Rect();
-        Rect startClippedLayout = (startStyle != null) ? normalizeLayout(startItem.getClippedLayout(startAncestor), startAncestor) : new Rect();
-        Rect startClipInsets = getClipInsets(startLayout, startClippedLayout);
         Rect endLayout = (endStyle != null) ? normalizeLayout(endStyle.layout, endAncestor) : new Rect();
+        Rect parentLayout = new Rect(startLayout);
+        parentLayout.union(endLayout);
+
+        // APPLY CLIPPING
+
+        /*Rect startClippedLayout = (startStyle != null) ? normalizeLayout(startItem.getClippedLayout(startAncestor), startAncestor) : new Rect();
+        Rect startClipInsets = getClipInsets(startLayout, startClippedLayout);
         Rect endClippedLayout = (endStyle != null) ? normalizeLayout(endItem.getClippedLayout(endAncestor), endAncestor) : new Rect();
-        Rect endClipInsets = getClipInsets(endLayout, endClippedLayout);
+        Rect endClipInsets = getClipInsets(endLayout, endClippedLayout);*/
 
         // Get interpolated layout
         Rect interpolatedLayout;
-        Rect interpolatedClipInsets;
+        //Rect interpolatedClipInsets;
         RNSharedElementStyle interpolatedStyle;
         if ((startStyle != null) && (endStyle != null)) {
             interpolatedLayout = getInterpolatedLayout(startLayout, endLayout, mNodePosition);
-            interpolatedClipInsets = getInterpolatedClipInsets(interpolatedLayout, startClipInsets, startClippedLayout, endClipInsets, endClippedLayout, mNodePosition);
+            //interpolatedClipInsets = getInterpolatedClipInsets(interpolatedLayout, startClipInsets, startClippedLayout, endClipInsets, endClippedLayout, mNodePosition);
             interpolatedStyle = getInterpolatedStyle(startStyle, startContent, endStyle, endContent, mNodePosition);
         } else if (startStyle != null) {
             interpolatedLayout = startLayout;
-            interpolatedClipInsets = startClipInsets;
+            //interpolatedClipInsets = startClipInsets;
             interpolatedStyle = startStyle;
         } else {
             interpolatedLayout = endLayout;
-            interpolatedClipInsets = endClipInsets;
+            //interpolatedClipInsets = endClipInsets;
             interpolatedStyle = endStyle;
         }
 
         // Calculate clipped layout
-        Rect interpolatedClippedLayout = new Rect(
-            interpolatedLayout.left + interpolatedClipInsets.left,
-            interpolatedLayout.top + interpolatedClipInsets.top,
-            interpolatedLayout.right - interpolatedClipInsets.right,
-            interpolatedLayout.bottom - interpolatedClipInsets.bottom
-        );
-        mRequiresClipping = interpolatedClippedLayout.contains(interpolatedLayout);
+        mRequiresClipping = !parentLayout.contains(interpolatedLayout);
 
         // Update outer viewgroup layout. The outer viewgroup hosts 2 inner views
         // which draw the content & elevation. The outer viewgroup performs additional
@@ -281,11 +277,11 @@ public class RNSharedElementTransition extends ViewGroup {
         super.layout(
             0,
             0,
-            interpolatedClippedLayout.width(),
-            interpolatedClippedLayout.height()
+            parentLayout.width(),
+            parentLayout.height()
         );
-        setTranslationX(interpolatedClippedLayout.left);
-        setTranslationY(interpolatedClippedLayout.top);
+        setTranslationX(parentLayout.left);
+        setTranslationY(parentLayout.top);
 
         // Render the start view
         boolean isCrossFade = !mAnimation.equals("move");
@@ -296,7 +292,7 @@ public class RNSharedElementTransition extends ViewGroup {
             mStartView,
             mStartDrawable,
             interpolatedLayout,
-            interpolatedClippedLayout,
+            parentLayout,
             startContent,
             startLayout,
             interpolatedStyle,
@@ -313,7 +309,7 @@ public class RNSharedElementTransition extends ViewGroup {
                 mEndView,
                 mEndDrawable,
                 interpolatedLayout,
-                interpolatedClippedLayout,
+                parentLayout,
                 endContent,
                 endLayout,
                 interpolatedStyle,
@@ -333,7 +329,7 @@ public class RNSharedElementTransition extends ViewGroup {
                     mEndView.setOutlineSpotShadowColor(Color.argb(endAlpha, 0, 0, 0));
                 }
             }
-        }        
+        }
     }
 
     private void updateNodeVisibility() {
@@ -368,12 +364,13 @@ public class RNSharedElementTransition extends ViewGroup {
 
     private Rect getClipInsets(Rect layout, Rect clippedLayout) {
         return new Rect(
-            clippedLayout.left - layout.left,
-            clippedLayout.top - layout.top,
-            clippedLayout.right - layout.right,
-            clippedLayout.bottom - layout.bottom
+            (clippedLayout.left > layout.left) ? clippedLayout.left : 0,
+            (clippedLayout.top > layout.top) ? clippedLayout.top : 0,
+            (clippedLayout.right < layout.right) ? clippedLayout.right : 0,
+            (clippedLayout.bottom < layout.bottom) ? clippedLayout.bottom : 0
         );
     }
+
 
     private Rect getInterpolatedClipInsets(
         Rect interpolatedLayout,
@@ -457,14 +454,7 @@ public class RNSharedElementTransition extends ViewGroup {
         float position
     ) {
         RNSharedElementStyle result = new RNSharedElementStyle();
-        ScalingUtils.InterpolatingScaleType scaleType = new ScalingUtils.InterpolatingScaleType(
-            style1.scaleType,
-            style2.scaleType,
-            new Rect(0, 0, style1.layout.width(), style1.layout.height()),
-            new Rect(0, 0, style2.layout.width(), style2.layout.height())
-        );
-        scaleType.setValue(position);
-        result.scaleType = scaleType;
+        result.scaleType = RNSharedElementStyle.getInterpolatingScaleType(style1, style2, position);
         result.opacity = style1.opacity + ((style2.opacity - style1.opacity) * position);
         result.backgroundColor = getInterpolatedColor(style1.backgroundColor, style2.backgroundColor, position);
         result.borderTopLeftRadius = style1.borderTopLeftRadius + ((style2.borderTopLeftRadius - style1.borderTopLeftRadius) * position);

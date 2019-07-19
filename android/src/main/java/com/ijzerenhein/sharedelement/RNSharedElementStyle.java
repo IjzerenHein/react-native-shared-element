@@ -10,6 +10,7 @@ import android.support.v4.view.ViewCompat;
 import com.facebook.react.uimanager.PixelUtil;
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.drawee.drawable.ScalingUtils.ScaleType;
+import com.facebook.drawee.drawable.ScalingUtils.InterpolatingScaleType;
 import com.facebook.react.views.image.ImageResizeMode;
 
 public class RNSharedElementStyle {
@@ -108,6 +109,23 @@ public class RNSharedElementStyle {
         if (config.hasKey("borderBottomRightRadius")) borderBottomRightRadius = PixelUtil.toPixelFromDIP((float) config.getDouble("borderBottomRightRadius"));
     }
 
+    static boolean equalsScaleType(ScaleType scaleType1, ScaleType scaleType2) {
+        if (scaleType1 == scaleType2) return true;
+        return false;
+    }
+
+    static ScaleType getInterpolatingScaleType(RNSharedElementStyle style1, RNSharedElementStyle style2, float position) {
+        if (style1.scaleType == style2.scaleType) return style1.scaleType;
+        InterpolatingScaleType scaleType = new InterpolatingScaleType(
+            style1.scaleType,
+            style2.scaleType,
+            new Rect(0, 0, style1.layout.width(), style1.layout.height()),
+            new Rect(0, 0, style2.layout.width(), style2.layout.height())
+        );
+        scaleType.setValue(position);
+        return scaleType;
+    }
+
     int compare(RNSharedElementStyle style) {
         int res = 0;
         if (opacity != style.opacity) res += PROP_OPACITY;
@@ -120,7 +138,13 @@ public class RNSharedElementStyle {
         if (borderBottomLeftRadius != style.borderBottomLeftRadius) res += PROP_BORDER_BOTTOMLEFTRADIUS;
         if (borderBottomRightRadius != style.borderBottomRightRadius) res += PROP_BORDER_BOTTOMRIGHT_RADIUS;
         if (elevation != style.elevation) res += PROP_ELEVATION;
-        if (scaleType != style.scaleType) res += PROP_SCALETYPE;
+        if (!RNSharedElementStyle.equalsScaleType(scaleType, style.scaleType)) res += PROP_SCALETYPE;
         return res;
+    }
+
+    boolean isVisible() {
+        if (opacity <= 0) return false;
+        if (elevation > 0) return true;
+        return (Color.alpha(backgroundColor) > 0) || (Color.alpha(borderColor) > 0);
     }
 }
