@@ -30,6 +30,7 @@ public class RNSharedElementTransition extends ViewGroup {
     private boolean mInitialLayoutPassCompleted = false;
     private ArrayList<RNSharedElementTransitionItem> mItems = new ArrayList<RNSharedElementTransitionItem>();
     private int[] mParentLocation = new int[2];
+    private boolean mRequiresClipping = false;
     private View mStartView;
     private View mEndView;
     private RNSharedElementDrawable mStartDrawable;
@@ -117,7 +118,9 @@ public class RNSharedElementTransition extends ViewGroup {
 
     @Override
     protected void dispatchDraw(Canvas canvas) {
-        canvas.clipRect(0, 0, getWidth(), getHeight());
+        if (mRequiresClipping) {
+            canvas.clipRect(0, 0, getWidth(), getHeight());
+        }
         super.dispatchDraw(canvas);
 
         // Draw content
@@ -223,12 +226,20 @@ public class RNSharedElementTransition extends ViewGroup {
             interpolatedClipInsets = endClipInsets;
             interpolatedStyle = endStyle;
         }
+
+        // Calculate clipped layout
         Rect interpolatedClippedLayout = new Rect(
             interpolatedLayout.left + interpolatedClipInsets.left,
             interpolatedLayout.top + interpolatedClipInsets.top,
             interpolatedLayout.right - interpolatedClipInsets.right,
             interpolatedLayout.bottom - interpolatedClipInsets.bottom
         );
+        mRequiresClipping = false;
+        if (!interpolatedClippedLayout.contains(interpolatedLayout)) {
+            mRequiresClipping = true;
+        } else {
+            mRequiresClipping = false;
+        }
 
         // Update outer viewgroup layout. The outer viewgroup hosts 2 inner views
         // which draw the content & elevation. The outer viewgroup performs additional
