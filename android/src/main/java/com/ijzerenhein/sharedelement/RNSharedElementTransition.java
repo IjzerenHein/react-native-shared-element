@@ -15,6 +15,9 @@ import android.view.ViewGroup;
 
 import com.facebook.react.bridge.Callback;
 import com.facebook.react.uimanager.ThemedReactContext;
+import com.facebook.react.uimanager.UIBlock;
+import com.facebook.react.uimanager.UIManagerModule;
+import com.facebook.react.uimanager.NativeViewHierarchyManager;
 
 public class RNSharedElementTransition extends ViewGroup {
     static private String LOG_TAG = "RNSharedElementTransition";
@@ -101,12 +104,17 @@ public class RNSharedElementTransition extends ViewGroup {
         if (!mReactLayoutSet) {
             mReactLayoutSet = true;
 
-            // TODO - do this later after the whole layout pass
-            // has completed
-            requestStylesAndContent(true);
-            mInitialLayoutPassCompleted = true;
-            updateLayout();
-            updateNodeVisibility();
+            // Wait for the whole layout pass to have completed before
+            // requesting the layout and content
+            UIManagerModule uiManager = ((ThemedReactContext)getContext()).getNativeModule(UIManagerModule.class);
+            uiManager.addUIBlock(new UIBlock() {
+                public void execute (NativeViewHierarchyManager nvhm) {
+                    requestStylesAndContent(true);
+                    mInitialLayoutPassCompleted = true;
+                    updateLayout();
+                    updateNodeVisibility();      
+                }
+            });
         }
     }
 
