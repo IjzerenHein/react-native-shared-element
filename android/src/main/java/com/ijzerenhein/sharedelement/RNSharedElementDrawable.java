@@ -38,6 +38,7 @@ class RNSharedElementDrawable extends Drawable {
     private float mPosition = 0;
     private int mAlpha = 255;
     private Path mPathForBorderRadiusOutline = null;
+    private ReactViewBackgroundDrawable mReactViewBackgroundDrawableCache = null;
 
     RNSharedElementStyle getStyle() {
         return mStyle;
@@ -257,7 +258,11 @@ class RNSharedElementDrawable extends Drawable {
         RNSharedElementStyle style = mStyle;
 
         // Create drawable
-        ReactViewBackgroundDrawable drawable = new ReactViewBackgroundDrawable(mContent.view.getContext());
+        ReactViewBackgroundDrawable drawable = mReactViewBackgroundDrawableCache;
+        if (drawable == null) {
+            drawable = new ReactViewBackgroundDrawable(mContent.view.getContext());
+            mReactViewBackgroundDrawableCache = drawable;
+        }
         drawable.setBounds(getBounds());
 
         // Set background color
