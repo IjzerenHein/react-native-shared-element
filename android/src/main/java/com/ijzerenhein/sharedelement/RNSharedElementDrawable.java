@@ -187,6 +187,8 @@ class RNSharedElementDrawable extends Drawable {
             if (viewGroup.getChildCount() == 0) {
                 if (style.isVisible()) {
                     return ViewType.PLAIN;
+                } else {
+                    return ViewType.NONE;
                 }
             }
         }
