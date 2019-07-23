@@ -31,10 +31,8 @@ public class RNSharedElementTransition extends ViewGroup {
     private ArrayList<RNSharedElementTransitionItem> mItems = new ArrayList<RNSharedElementTransitionItem>();
     private int[] mParentLocation = new int[2];
     private boolean mRequiresClipping = false;
-    private View mStartView;
-    private View mEndView;
-    private RNSharedElementDrawable mStartDrawable;
-    private RNSharedElementDrawable mEndDrawable;
+    private RNSharedElementView mStartView;
+    private RNSharedElementView mEndView;
 
     public RNSharedElementTransition(ThemedReactContext context, RNSharedElementNodeManager nodeManager) {
         super(context);
@@ -43,16 +41,10 @@ public class RNSharedElementTransition extends ViewGroup {
         mItems.add(new RNSharedElementTransitionItem(nodeManager, "startNode", false));
         mItems.add(new RNSharedElementTransitionItem(nodeManager, "endNode", false));
 
-        mStartView = new View(context);
-        mStartView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
-        mStartDrawable = new RNSharedElementDrawable();
-        mStartView.setBackground(mStartDrawable);
+        mStartView = new RNSharedElementView(context);
         addView(mStartView);
 
-        mEndView = new View(context);
-        mEndView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
-        mEndDrawable = new RNSharedElementDrawable();
-        mEndView.setBackground(mEndDrawable);
+        mEndView = new RNSharedElementView(context);
         addView(mEndView);
     }
 
@@ -167,66 +159,6 @@ public class RNSharedElementTransition extends ViewGroup {
         }
     }
 
-    private void updateViewAndDrawable(
-        View view,
-        RNSharedElementDrawable drawable,
-        Rect layout,
-        Rect parentLayout,
-        RNSharedElementContent content,
-        Rect originalLayout,
-        RNSharedElementStyle style,
-        float alpha,
-        float position) {
-
-        // Update drawable
-        boolean useScaling = drawable.update(content, style, position);
-        if (useScaling) {
-
-            // Update view
-            view.layout(
-                0,
-                0,
-                originalLayout.width(),
-                originalLayout.height()
-            );
-            view.setTranslationX(layout.left - parentLayout.left);
-            view.setTranslationY(layout.top - parentLayout.top);
-            
-            // Update scale
-            float scaleX = (float)layout.width() / (float)originalLayout.width();
-            float scaleY = (float)layout.height() / (float)originalLayout.height();
-            if ((scaleX >= 1) && (scaleY >= 1)) {
-                scaleX = Math.min(scaleX, scaleY);
-                scaleY = scaleX;
-            } else if ((scaleX <= 1) && (scaleY <= 1)) {
-                scaleX = Math.max(scaleX, scaleY);
-                scaleY = scaleX;
-            }
-            view.setScaleX(scaleX);
-            view.setScaleY(scaleY);
-            view.setPivotX(0);
-            view.setPivotY(0);
-        }
-        else {
-
-            // Update view
-            view.layout(
-                0,
-                0,
-                layout.width(),
-                layout.height()
-            );
-            view.setTranslationX(layout.left - parentLayout.left);
-            view.setTranslationY(layout.top - parentLayout.top);
-        }
-
-        // Update view opacity and elevation
-        view.setAlpha(alpha);
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-            view.setElevation(style.elevation);
-        }
-    }
-
     private void updateLayout() {
         if (!mInitialLayoutPassCompleted) return;
 
@@ -300,9 +232,7 @@ public class RNSharedElementTransition extends ViewGroup {
         float startAlpha = !isCrossFade
             ? interpolatedStyle.opacity
             : ((startStyle != null) ? startStyle.opacity : 1) * (1 - mNodePosition);
-        updateViewAndDrawable(
-            mStartView,
-            mStartDrawable,
+        mStartView.updateViewAndDrawable(
             interpolatedLayout,
             parentLayout,
             startContent,
@@ -317,9 +247,7 @@ public class RNSharedElementTransition extends ViewGroup {
 
             // Render the end view
             float endAlpha = ((endStyle != null) ? endStyle.opacity : 1) * mNodePosition;
-            updateViewAndDrawable(
-                mEndView,
-                mEndDrawable,
+            mEndView.updateViewAndDrawable(
                 interpolatedLayout,
                 parentLayout,
                 endContent,
