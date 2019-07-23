@@ -10,17 +10,18 @@ class RNSharedElementView extends View {
     static private String LOG_TAG = "RNSharedElementView";
     
     private RNSharedElementDrawable mDrawable;
+    private RNSharedElementDrawable.ViewType mViewType;
 
     RNSharedElementView(ThemedReactContext context) {
         super(context);
-        setLayerType(View.LAYER_TYPE_HARDWARE, null);
+        mViewType = RNSharedElementDrawable.ViewType.NONE;
         mDrawable = new RNSharedElementDrawable();
         setBackground(mDrawable);
     }
     
     @Override
     public boolean hasOverlappingRendering () {
-        return false;
+        return mViewType == RNSharedElementDrawable.ViewType.GENERIC;
     }
 
     void updateViewAndDrawable(
@@ -33,8 +34,17 @@ class RNSharedElementView extends View {
         float position) {
 
         // Update drawable
-        boolean useScaling = mDrawable.update(content, style, position);
-        if (useScaling) {
+        RNSharedElementDrawable.ViewType viewType = mDrawable.update(content, style, position); 
+        boolean useGPUScaling = (viewType == RNSharedElementDrawable.ViewType.GENERIC) || (viewType == RNSharedElementDrawable.ViewType.PLAIN);
+
+        // Update layer type
+        if (mViewType != viewType) {
+            mViewType = viewType;
+            setLayerType(useGPUScaling ? View.LAYER_TYPE_HARDWARE : View.LAYER_TYPE_NONE, null);
+        }
+
+        // Update view size/position/scale
+        if (useGPUScaling) {
 
             // Update view
             layout(
@@ -49,13 +59,13 @@ class RNSharedElementView extends View {
             // Update scale
             float scaleX = (float)layout.width() / (float)originalLayout.width();
             float scaleY = (float)layout.height() / (float)originalLayout.height();
-            if ((scaleX >= 1) && (scaleY >= 1)) {
+            /*if ((scaleX >= 1) && (scaleY >= 1)) {
                 scaleX = Math.min(scaleX, scaleY);
                 scaleY = scaleX;
             } else if ((scaleX <= 1) && (scaleY <= 1)) {
                 scaleX = Math.max(scaleX, scaleY);
                 scaleY = scaleX;
-            }
+            }*/
             setScaleX(scaleX);
             setScaleY(scaleY);
             setPivotX(0);

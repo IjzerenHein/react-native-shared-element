@@ -27,10 +27,10 @@ class RNSharedElementDrawable extends Drawable {
         REACTIMAGEVIEW,
         PLAIN,
         GENERIC,
+        GENERIC_SCALEDCANVAS
     }
 
     static private String LOG_TAG = "RNSharedElementDrawable";
-    static private boolean USE_GENERIC_SCALING = true;
 
     private RNSharedElementContent mContent = null;
     private RNSharedElementStyle mStyle = null;
@@ -52,7 +52,7 @@ class RNSharedElementDrawable extends Drawable {
         return mPosition;
     }
 
-    boolean update(RNSharedElementContent content, RNSharedElementStyle style, float position) {
+    ViewType update(RNSharedElementContent content, RNSharedElementStyle style, float position) {
         boolean invalidated = false;
 
         // Update content
@@ -87,7 +87,7 @@ class RNSharedElementDrawable extends Drawable {
                         (RNSharedElementStyle.PROP_BORDER
                         | RNSharedElementStyle.PROP_BACKGROUND_COLOR)) != 0) {
                         //Log.d(LOG_TAG, "drawableChanged, viewType: " + viewType + ", changes: " + mStyle.compare(style));
-                        invalidated = true;
+                        //invalidated = true;
                     }
                     else {
                         invalidated = false;
@@ -108,7 +108,7 @@ class RNSharedElementDrawable extends Drawable {
             invalidateSelf();
         }
 
-        return USE_GENERIC_SCALING && (viewType == ViewType.GENERIC);
+        return viewType;
     }
 
     @Override
@@ -208,6 +208,9 @@ class RNSharedElementDrawable extends Drawable {
             case GENERIC:
                 drawGenericView(canvas);
                 break;
+            case GENERIC_SCALEDCANVAS:
+                drawGenericScaledCanvas(canvas);
+                break;
         }
     }
 
@@ -288,11 +291,11 @@ class RNSharedElementDrawable extends Drawable {
     }
 
     private void drawGenericView(Canvas canvas) {
+        mContent.view.draw(canvas);
+    }
+
+    private void drawGenericScaledCanvas(Canvas canvas) {
         View view = mContent.view;
-        if (USE_GENERIC_SCALING) {
-            view.draw(canvas);
-            return;
-        }
 
         // Save canvas
         canvas.save();
