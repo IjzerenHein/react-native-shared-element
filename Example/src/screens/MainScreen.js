@@ -59,7 +59,7 @@ export class MainScreen extends React.Component<{}> {
           />
           <ListItem
             label="Card Demo 2"
-            description='Image with gradient overlay "scrim" and text "fade" transitions'
+            description="Heavier card demo with fading gradient overlay and texts"
             onPress={() =>
               Router.push(
                 <TilesScreen
