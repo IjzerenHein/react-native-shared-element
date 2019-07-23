@@ -299,6 +299,7 @@ export class Router extends React.Component<RouterProps, RouterState> {
               <AnimatedRouterScreen
                 key={`screen${index}`}
                 active={isScreenActive}
+                pointerEvents={index === nextIndex ? "auto" : "none"}
                 style={[
                   styles.node,
                   transitionConfig.screenInterpolator({
