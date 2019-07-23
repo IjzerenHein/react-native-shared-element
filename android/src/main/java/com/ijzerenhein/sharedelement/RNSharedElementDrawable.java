@@ -87,7 +87,7 @@ class RNSharedElementDrawable extends Drawable {
                         (RNSharedElementStyle.PROP_BORDER
                         | RNSharedElementStyle.PROP_BACKGROUND_COLOR)) != 0) {
                         //Log.d(LOG_TAG, "drawableChanged, viewType: " + viewType + ", changes: " + mStyle.compare(style));
-                        //invalidated = true;
+                        invalidated = true;
                     }
                     else {
                         invalidated = false;
