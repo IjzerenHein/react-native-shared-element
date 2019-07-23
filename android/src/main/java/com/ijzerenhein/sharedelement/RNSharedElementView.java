@@ -59,13 +59,15 @@ class RNSharedElementView extends View {
             // Update scale
             float scaleX = (float)layout.width() / (float)originalLayout.width();
             float scaleY = (float)layout.height() / (float)originalLayout.height();
-            /*if ((scaleX >= 1) && (scaleY >= 1)) {
-                scaleX = Math.min(scaleX, scaleY);
-                scaleY = scaleX;
-            } else if ((scaleX <= 1) && (scaleY <= 1)) {
-                scaleX = Math.max(scaleX, scaleY);
-                scaleY = scaleX;
-            }*/
+            if (viewType == RNSharedElementDrawable.ViewType.GENERIC) {
+                if ((scaleX >= 1) && (scaleY >= 1)) {
+                    scaleX = Math.min(scaleX, scaleY);
+                    scaleY = scaleX;
+                } else if ((scaleX <= 1) && (scaleY <= 1)) {
+                    scaleX = Math.max(scaleX, scaleY);
+                    scaleY = scaleX;
+                }
+            }
             setScaleX(scaleX);
             setScaleY(scaleY);
             setPivotX(0);
