@@ -1,6 +1,6 @@
 // @flow
 import * as React from "react";
-import { StyleSheet, ScrollView, View } from "react-native";
+import { StyleSheet, ScrollView, View, Platform } from "react-native";
 import { Router, NavBar, ListItem, Colors } from "../components";
 import { TestScreen } from "./TestScreen";
 import type { Test, TestGroup } from "../types";
@@ -9,10 +9,15 @@ const styles = StyleSheet.create({
   container: {
     flex: 1
   },
-  content: {
-    flex: 1,
-    backgroundColor: Colors.empty
-  }
+  content: Platform.select({
+    ios: {
+      flex: 1,
+      backgroundColor: Colors.empty
+    },
+    android: {
+      flex: 1
+    }
+  })
 });
 
 type PropsType = {
@@ -27,7 +32,7 @@ export class TestsScreen extends React.Component<PropsType> {
     return (
       <View style={styles.container}>
         <NavBar title={title || "Tests"} zIndex={100} />
-        <ScrollView style={styles.content}>
+        <ScrollView style={styles.content} endFillColor={Colors.empty}>
           {tests.map((test, index) => (
             <ListItem
               key={`item${index}`}

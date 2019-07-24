@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   Dimensions,
   Image,
+  Platform,
   ImageBackground
 } from "react-native";
 import {
@@ -30,6 +31,18 @@ import TouchableScale from "react-native-touchable-scale";
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1
+  },
+  cardContent: Platform.select({
+    ios: {
+      flex: 1,
+      backgroundColor: Colors.empty
+    },
+    android: {
+      flex: 1
+    }
+  }),
+  tileContent: {
     flex: 1,
     backgroundColor: Colors.empty
   },
@@ -127,7 +140,7 @@ export class TilesScreen extends React.Component<PropsType> {
       <View style={styles.container}>
         <NavBar title={title} />
         <FlatList
-          style={styles.content}
+          style={type === "tile" ? styles.tileContent : styles.cardContent}
           numColumns={type === "tile" ? 2 : 1}
           contentContainerStyle={
             type === "card" ? styles.cardContentContainer : undefined
@@ -136,6 +149,7 @@ export class TilesScreen extends React.Component<PropsType> {
           data={Heroes}
           renderItem={this.renderItem}
           keyExtractor={this.keyExtractor}
+          endFillColor={Colors.empty} // android
         />
       </View>
     );

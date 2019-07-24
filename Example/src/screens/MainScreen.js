@@ -1,6 +1,12 @@
 // @flow
 import * as React from "react";
-import { StyleSheet, ScrollView, View, StatusBar } from "react-native";
+import {
+  StyleSheet,
+  ScrollView,
+  View,
+  StatusBar,
+  Platform
+} from "react-native";
 import { Router, NavBar, ListItem, Colors } from "../components";
 import { TilesScreen } from "./TilesScreen";
 import { TestsScreen } from "./TestsScreen";
@@ -13,10 +19,15 @@ const styles = StyleSheet.create({
   container: {
     flex: 1
   },
-  content: {
-    flex: 1,
-    backgroundColor: Colors.empty
-  }
+  content: Platform.select({
+    ios: {
+      flex: 1,
+      backgroundColor: Colors.empty
+    },
+    android: {
+      flex: 1
+    }
+  })
 });
 
 export class MainScreen extends React.Component<{}> {
@@ -25,7 +36,7 @@ export class MainScreen extends React.Component<{}> {
       <View style={styles.container}>
         <StatusBar barStyle="dark-content" animated />
         <NavBar title="Shared Element Demo" back="none" />
-        <ScrollView style={styles.content}>
+        <ScrollView style={styles.content} endFillColor={Colors.empty}>
           <ListItem
             label="Test Cases"
             description="Test cases for development and diagnosing problems"
