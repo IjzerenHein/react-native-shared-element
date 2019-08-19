@@ -1,6 +1,6 @@
 //
 //  RNSharedElementNode.m
-//  react-native-shared-element-transition
+//  react-native-shared-element
 //
 
 #import <UIKit/UIKit.h>

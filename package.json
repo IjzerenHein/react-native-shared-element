@@ -1,17 +1,18 @@
 {
-  "name": "react-native-shared-element-transition",
+  "name": "react-native-shared-element",
   "version": "0.1.0",
   "description": "Shared element transition component that runs entirely natively for fast and perfect transitions without any flickering 💫",
   "author": "IjzerenHein <hrutjes@gmail.com>",
   "keywords": [
-    "react-native-shared-element-transition",
+    "react-native-shared-element",
     "react-native",
     "magic move",
     "shared element",
-    "shared element transition"
+    "shared element transition",
+    "visual clone"
   ],
-  "repository": "https://github.com/IjzerenHein/react-native-shared-element-transition",
-  "bugs": "https://github.com/IjzerenHein/react-native-shared-element-transition",
+  "repository": "https://github.com/IjzerenHein/react-native-shared-element",
+  "bugs": "https://github.com/IjzerenHein/react-native-shared-element",
   "license": "MIT",
   "main": "lib/commonjs/index.js",
   "module": "lib/module/index.js",

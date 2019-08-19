@@ -1,8 +1,8 @@
 // @flow
 import React, { createContext } from "react";
 import { View } from "react-native";
-import { nodeFromRef } from "react-native-shared-element-transition";
-import type { SharedElementNode } from "react-native-shared-element-transition";
+import { nodeFromRef } from "react-native-shared-element";
+import type { SharedElementNode } from "react-native-shared-element";
 
 export type ScreenTransitionContextOnSharedElementsUpdatedEvent = {
   children: any,

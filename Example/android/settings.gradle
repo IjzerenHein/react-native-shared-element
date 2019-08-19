@@ -15,7 +15,7 @@ include ':react-native-photo-view'
 project(':react-native-photo-view').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-photo-view/android')
 include ':react-native-gesture-handler'
 project(':react-native-gesture-handler').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-gesture-handler/android')
-include ':react-native-shared-element-transition'
-project(':react-native-shared-element-transition').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-shared-element-transition/android')
+include ':react-native-shared-element'
+project(':react-native-shared-element').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-shared-element/android')
 
 include ':app'

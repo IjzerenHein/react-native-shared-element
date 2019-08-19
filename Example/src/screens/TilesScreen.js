@@ -20,7 +20,7 @@ import {
   Heading2,
   Body
 } from "../components";
-import type { SharedElementAnimation } from "react-native-shared-element-transition";
+import type { SharedElementAnimation } from "react-native-shared-element";
 import { Heroes } from "../assets";
 import { DetailScreen } from "./DetailScreen";
 import type { Hero } from "../types";

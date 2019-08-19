@@ -8,7 +8,7 @@ import {
   BackHandler,
   Platform
 } from "react-native";
-import { SharedElementTransition } from "react-native-shared-element-transition";
+import { SharedElementTransition } from "react-native-shared-element";
 import { ScreenTransitionContext } from "./ScreenTransitionContext";
 import type { ScreenTransitionContextOnSharedElementsUpdatedEvent } from "./ScreenTransitionContext";
 import { PanGestureHandler, State } from "react-native-gesture-handler";

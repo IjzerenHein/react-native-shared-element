@@ -1,7 +1,6 @@
-# react-native-shared-element-transition
+# react-native-shared-element
 
-Shared element transition component that runs entirely natively for fast and perfect transitions without any flickering 💫
-
+Native shared element transition primitives for react-native 💫
 
 ## [0.1.0] - 2019-05-29
 

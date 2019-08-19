@@ -1,7 +1,7 @@
 // @flow
 import * as React from "react";
-import { SharedElement } from "react-native-shared-element-transition";
-import type { SharedElementNode } from "react-native-shared-element-transition";
+import { SharedElement } from "react-native-shared-element";
+import type { SharedElementNode } from "react-native-shared-element";
 import {
   ScreenTransitionContext,
   withScreenTransitionContext

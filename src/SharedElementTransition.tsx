@@ -154,7 +154,7 @@ export class SharedElementTransition extends React.Component<
     super(props);
     if (!props.SharedElementComponent) {
       throw new Error(
-        "RNSharedElementTransition is not available, did you forget to use `react-native link react-native-shared-element-transition`?"
+        "RNSharedElementTransition is not available, did you forget to link `react-native-shared-element` into your project?"
       );
     }
   }

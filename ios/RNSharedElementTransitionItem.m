@@ -1,6 +1,6 @@
 //
 //  RNSharedElementTransitionItem.m
-//  react-native-shared-element-transition
+//  react-native-shared-element
 //
 
 #import <Foundation/Foundation.h>

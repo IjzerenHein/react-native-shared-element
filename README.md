@@ -1,5 +1,5 @@
 
-# react-native-shared-element-transition
+# react-native-shared-element
 
 Native shared element transition primitives for react-native 💫
 
@@ -7,25 +7,36 @@ Native shared element transition primitives for react-native 💫
 
 ## Index
 
-- [Installation](#installation)
-- [Basic usage](#basic-usage)
-- [How it works](#how-it-works)
-- [API Documentation](#api-documentation)
-- [Example app](#example-app)
+- [react-native-shared-element](#react-native-shared-element)
+- [WORK IN PROGRESS](#work-in-progress)
+  - [Index](#index)
+  - [Installation](#installation)
+  - [Basic usage](#basic-usage)
+  - [How it works](#how-it-works)
+  - [API Documentation](#api-documentation)
+    - [SharedElement](#sharedelement)
+      - [Props](#props)
+    - [SharedElementTransition](#sharedelementtransition)
+      - [Props](#props-1)
+    - [Animations](#animations)
+  - [Example app](#example-app)
+  - [Todo](#todo)
+  - [License](#license)
+  - [Credits](#credits)
 
 
 ## Installation
 
-`yarn add react-native-shared-element-transition`
+`yarn add react-native-shared-element`
 
-Link the native code
+Link the native code (TODO: Update for auto-linking)
 
-`react-native link react-native-shared-element-transition`
+`react-native link react-native-shared-element`
 
 ## Basic usage
 
 ```js
-import { SharedElement, SharedElementTransition } from 'react-native-shared-element-transition';
+import { SharedElement, SharedElementTransition } from 'react-native-shared-element';
 
 
 // Scene 1
@@ -61,7 +72,7 @@ const position = new Animated.Value(0);
 
 ## How it works
 
-react-native-shared-element-transition is a *"primitive"* that runs shared element transitions
+react-native-shared-element is a *"primitive"* that runs shared element transitions
 entirely native without requiring any passes over the JavaScript bridge. It works by taking in a start- and end node, which are obtained using the `<SharedElement>` component.
 
 Whenever a transition between screens occurs (e.g. performed by a router/navigator), a view in

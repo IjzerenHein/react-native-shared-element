@@ -1,6 +1,6 @@
 //
 //  RNSharedElementStyle_h
-//  react-native-shared-element-transition
+//  react-native-shared-element
 //
 
 #ifndef RNSharedElementStyle_h

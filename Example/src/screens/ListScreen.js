@@ -15,7 +15,7 @@ import {
   Heading2,
   Caption
 } from "../components";
-import type { SharedElementAnimation } from "react-native-shared-element-transition";
+import type { SharedElementAnimation } from "react-native-shared-element";
 import { Heroes } from "../assets";
 import type { Hero } from "../types";
 import { fadeIn } from "../transitions";

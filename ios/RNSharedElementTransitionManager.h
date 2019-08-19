@@ -1,6 +1,6 @@
 //
 //  RNSharedElementTransitionManager.h
-//  react-native-shared-element-transition
+//  react-native-shared-element
 //
 
 #ifndef RNSharedElementTransitionManager_h

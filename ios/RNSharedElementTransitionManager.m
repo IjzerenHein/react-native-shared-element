@@ -1,6 +1,6 @@
 //
 //  RNSharedElementTransitionManager.m
-//  react-native-shared-element-transition
+//  react-native-shared-element
 //
 
 #import <React/RCTBridge.h>

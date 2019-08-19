@@ -31,7 +31,7 @@ Probably not:
 
 ## Motivation
 
-react-native-shared-element-transition is a *"primitive"* that runs all essential steps (measure, hide, clone, interpolate, clip, etc..) of a shared element transition natively, for the best possible results. By doing so, it solves a range of problems which are impossible or very hard to solve in just JavaScript and the react-native APIs.
+react-native-shared-element is a *"primitive"* that runs all essential steps (measure, hide, clone, interpolate, clip, etc..) of a shared element transition natively, for the best possible results. By doing so, it solves a range of problems which are impossible or very hard to solve in just JavaScript and the react-native APIs.
 
 One of the these problems is transitioning between images with different aspect-ratios and resize-modes. Using just the react-native API you are limited to performing scale-transforms on images, which will cause stretching arfefacts when your source and target image don't have the same aspect-ratio. Also when scaling images, some blurring will occur, which is noticable depending on the size change.
 
