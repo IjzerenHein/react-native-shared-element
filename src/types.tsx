@@ -1,5 +1,3 @@
-// @flow
-
 export type SharedElementNode = {
   ref: any,
   nodeHandle: number,

@@ -1,18 +1,17 @@
-// @flow
 import * as React from "react";
-import { View, findNodeHandle } from "react-native";
-import type { SharedElementNode } from "./types";
+import { View, findNodeHandle, ViewStyle } from "react-native";
+import { SharedElementNode } from "./types";
 
-export interface SharedElementProps extends View.propTypes.style {
-  children: React.Node;
-  onNode: (node: ?SharedElementNode) => void;
-}
+export type SharedElementProps = ViewStyle & {
+  children: React.ReactNode;
+  onNode: (node: SharedElementNode | null) => void;
+};
 
 export function nodeFromRef(
   ref: any,
   isParent?: boolean,
   parentInstance?: any
-): ?SharedElementNode {
+): SharedElementNode | null {
   const nodeHandle = ref ? findNodeHandle(ref) : undefined;
   return nodeHandle
     ? {
@@ -21,18 +20,18 @@ export function nodeFromRef(
         isParent: isParent || false,
         parentInstance
       }
-    : undefined;
+    : null;
 }
 
 export class SharedElement extends React.Component<SharedElementProps> {
-  _node = undefined;
+  private _node: SharedElementNode | null = null;
 
   render() {
     const { onNode, ...otherProps } = this.props;
     return <View ref={this.onSetRef} collapsable={false} {...otherProps} />;
   }
 
-  onSetRef = (ref: any) => {
+  private onSetRef = (ref: any) => {
     this._node = nodeFromRef(ref, true, this);
     if (this.props.onNode) {
       this.props.onNode(this._node);

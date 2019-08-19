@@ -15,8 +15,9 @@
   "license": "MIT",
   "main": "lib/commonjs/index.js",
   "module": "lib/module/index.js",
-  "react-native": "src/index.js",
-  "types": "lib/typescript/src/index.d.ts",
+  "react-native": "lib/module/index.js",
+  "types": "lib/typescript/index.d.ts",
+  "sideEffects": false,
   "files": [
     "src/",
     "lib/",
@@ -28,8 +29,8 @@
   ],
   "scripts": {
     "test": "yarn lint && yarn flow && yarn jest",
-    "flow": "flow check",
-    "lint": "./node_modules/.bin/eslint './src' 'Example/src'",
+    "lint": "eslint --ext .js,.ts,.tsx .",
+    "typescript": "tsc --noEmit",
     "jest": "jest src/",
     "prepare": "bob build",
     "yalc": "bob build && yalc push"
@@ -41,6 +42,8 @@
   "devDependencies": {
     "@react-native-community/bob": "^0.6.1",
     "@react-native-community/eslint-config": "^0.0.5",
+    "@types/react": "^16.9.2",
+    "@types/react-native": "^0.60.6",
     "eslint": "^5.16.0",
     "eslint-config-prettier": "^6.0.0",
     "eslint-plugin-prettier": "^3.1.0",
@@ -59,12 +62,7 @@
     "source": "src",
     "output": "lib",
     "targets": [
-      [
-        "commonjs",
-        {
-          "flow": true
-        }
-      ],
+      "commonjs",
       "module",
       "typescript"
     ]

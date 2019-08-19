@@ -1,4 +1,3 @@
-// @flow
 import * as React from "react";
 import {
   View,
@@ -10,7 +9,7 @@ import {
   NativeModules,
   processColor
 } from "react-native";
-import type {
+import {
   SharedElementNode,
   SharedElementAnimation,
   SharedElementNodeType,
@@ -18,46 +17,46 @@ import type {
 } from "./types";
 
 export type SharedElementMeasureData = {
-  node: SharedElementNodeType,
+  node: SharedElementNodeType;
   layout: {
-    x: number,
-    y: number,
-    width: number,
-    height: number,
-    visibleX: number,
-    visibleY: number,
-    visibleWidth: number,
-    visibleHeight: number,
-    contentX: number,
-    contentY: number,
-    contentWidth: number,
-    contentHeight: number
-  },
-  contentType: SharedElementContentType,
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+    visibleX: number;
+    visibleY: number;
+    visibleWidth: number;
+    visibleHeight: number;
+    contentX: number;
+    contentY: number;
+    contentWidth: number;
+    contentHeight: number;
+  };
+  contentType: SharedElementContentType;
   style: {
-    borderRadius: number
-  }
+    borderRadius: number;
+  };
 };
 
 export type SharedElementOnMeasureEvent = {
-  nativeEvent: SharedElementMeasureData
+  nativeEvent: SharedElementMeasureData;
 };
 
 export type SharedElementTransitionProps = {
   start: {
-    node: ?SharedElementNode,
-    ancestor?: ?SharedElementNode
-  },
+    node?: SharedElementNode;
+    ancestor?: SharedElementNode;
+  };
   end: {
-    node: ?SharedElementNode,
-    ancestor?: ?SharedElementNode
-  },
-  position: number | Animated.Node | void,
-  animation?: SharedElementAnimation,
-  debug?: boolean,
-  style?: any,
-  onMeasure?: (event: SharedElementOnMeasureEvent) => void,
-  SharedElementComponent: any
+    node?: SharedElementNode;
+    ancestor?: SharedElementNode;
+  };
+  position: number | any | void;
+  animation?: SharedElementAnimation;
+  debug?: boolean;
+  style?: any;
+  onMeasure?: (event: SharedElementOnMeasureEvent) => void;
+  SharedElementComponent: any;
 };
 
 export const isAvailable = NativeModules.RNSharedElementTransition
@@ -100,10 +99,10 @@ const debugStyles = StyleSheet.create({
 });
 
 type StateType = {
-  startNode?: SharedElementMeasureData,
-  endNode?: SharedElementMeasureData,
-  startAncestor?: SharedElementMeasureData,
-  endAncestor?: SharedElementMeasureData
+  startNode?: SharedElementMeasureData;
+  endNode?: SharedElementMeasureData;
+  startAncestor?: SharedElementMeasureData;
+  endAncestor?: SharedElementMeasureData;
 };
 
 export const RNSharedElementTransition = isAvailable
@@ -124,9 +123,9 @@ export class SharedElementTransition extends React.Component<
     SharedElementComponent: RNAnimatedSharedElementTransition
   };
 
-  state = {};
+  state: StateType = {};
 
-  static prepareNode(node: ?SharedElementNode): any {
+  static prepareNode(node: SharedElementNode | undefined): any {
     let nodeStyle: any = {};
     if (node && node.parentInstance) {
       const child = React.Children.only(node.parentInstance.props.children);
