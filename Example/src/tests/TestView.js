@@ -1,7 +1,7 @@
 // @flow
 import * as React from "react";
 import { StyleSheet, View, Dimensions } from "react-native";
-import { Colors, ScreenTransition } from "../components";
+import { Colors, SharedElement } from "../components";
 import type { Size, Position } from "../types";
 
 const SIZES = {
@@ -60,7 +60,8 @@ type PropsType = {
   end?: boolean,
   size: Size,
   position: Position,
-  round?: boolean
+  round?: boolean,
+  navigation?: any
 };
 
 export class TestView extends React.Component<PropsType> {
@@ -73,7 +74,7 @@ export class TestView extends React.Component<PropsType> {
   };
 
   render() {
-    const { style, color, end, size, position, round } = this.props;
+    const { style, color, end, size, position, round, navigation } = this.props;
     const sizePx = SIZES[size === "default" ? "regular" : size];
     const resolvedPosition =
       position === "default" ? (end ? "right" : "left") : position;
@@ -84,9 +85,10 @@ export class TestView extends React.Component<PropsType> {
           size !== "max" ? styles[resolvedPosition] : undefined
         ]}
       >
-        <ScreenTransition
-          sharedId="testContent"
+        <SharedElement
+          id="testContent"
           style={size === "max" ? { flex: 1 } : undefined}
+          navigation={navigation}
         >
           <View
             style={[
@@ -99,7 +101,7 @@ export class TestView extends React.Component<PropsType> {
               style
             ]}
           />
-        </ScreenTransition>
+        </SharedElement>
       </View>
     );
   }

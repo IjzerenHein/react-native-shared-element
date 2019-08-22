@@ -1,7 +1,7 @@
 // @flow
 import * as React from "react";
 import { StyleSheet, View, FlatList, Image, Dimensions } from "react-native";
-import { Colors, ScreenTransition } from "../components";
+import { Colors, SharedElement } from "../components";
 import type { Hero, Size } from "../types";
 import { Heroes } from "../assets";
 
@@ -32,7 +32,8 @@ type PropsType = {
   size: Size,
   round?: boolean,
   ImageComponent: any,
-  heroes: Hero[]
+  heroes: Hero[],
+  navigation?: any
 };
 
 const heroes2 = [...Heroes];
@@ -77,7 +78,7 @@ export class TestScrollView extends React.Component<PropsType> {
 
   renderItem = ({ item, index }: any) => {
     const hero = item;
-    const { size, ImageComponent, round, horizontal } = this.props;
+    const { size, ImageComponent, round, horizontal, navigation } = this.props;
     const sizePx = SIZES[size === "default" ? "regular" : size];
     const isMax = size === "max";
     const sizeStyle = {
@@ -102,9 +103,13 @@ export class TestScrollView extends React.Component<PropsType> {
 
     if (index === 1) {
       return (
-        <ScreenTransition sharedId="testContent" style={sizeStyle}>
+        <SharedElement
+          id="testContent"
+          style={sizeStyle}
+          navigation={navigation}
+        >
           {content}
-        </ScreenTransition>
+        </SharedElement>
       );
     } else {
       return content;

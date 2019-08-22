@@ -23,38 +23,65 @@ const styles = StyleSheet.create({
 type PropsType = {
   tests: (Test | TestGroup)[],
   title?: string,
-  description?: string
+  description?: string,
+  navigation?: any
 };
 
 export class TestsScreen extends React.Component<PropsType> {
   render() {
-    const { tests, title, description } = this.props;
+    const { title, navigation } = this.props;
+    const tests = navigation ? navigation.getParam("tests") : this.props.tests;
     return (
       <View style={styles.container}>
-        <NavBar title={title || "Tests"} zIndex={100} />
+        {!navigation ? (
+          <NavBar title={title || "Tests"} zIndex={100} />
+        ) : (
+          undefined
+        )}
         <ScrollView style={styles.content} endFillColor={Colors.empty}>
           {tests.map((test, index) => (
             <ListItem
               key={`item${index}`}
               label={test.name}
-              onPress={() =>
-                Router.push(
-                  test.tests ? (
-                    // $FlowFixMe
-                    <TestsScreen
-                      tests={test.tests}
-                      title={test.name}
-                      description={test.description}
-                    />
-                  ) : (
-                    <TestScreen test={test} description={description || ""} />
-                  )
-                )
-              }
+              onPress={() => this.onPressItem(test)}
             />
           ))}
         </ScrollView>
       </View>
     );
   }
+
+  onPressItem = (test: Test | TestGroup) => {
+    const { navigation } = this.props;
+    const description = navigation
+      ? navigation.getParam("description")
+      : this.props.description;
+    if (navigation) {
+      if (test.tests) {
+        navigation.push("Tests", {
+          title: test.name,
+          description: test.description,
+          tests: test.tests
+        });
+      } else {
+        navigation.push("Test", {
+          test: test,
+          description: description || ""
+        });
+      }
+    } else {
+      Router.push(
+        test.tests ? (
+          // $FlowFixMe
+          <TestsScreen
+            tests={test.tests}
+            title={test.name}
+            description={test.description}
+          />
+        ) : (
+          <TestScreen test={test} description={description || ""} />
+        )
+      );
+    }
+  };
 }

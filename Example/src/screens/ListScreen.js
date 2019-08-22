@@ -10,7 +10,7 @@ import {
 import {
   Router,
   NavBar,
-  ScreenTransition,
+  SharedElement,
   Colors,
   Heading2,
   Caption
@@ -19,7 +19,6 @@ import type { SharedElementAnimation } from "react-native-shared-element";
 import { Heroes } from "../assets";
 import type { Hero } from "../types";
 import { fadeIn } from "../transitions";
-import type { TransitionConfig } from "react-navigation";
 
 const styles = StyleSheet.create({
   container: {
@@ -60,7 +59,8 @@ type PropsType = {
   title: string,
   animation: SharedElementAnimation,
   DetailComponent: any,
-  transitionConfig: TransitionConfig
+  transitionConfig: any,
+  navigation?: any
 };
 
 export class ListScreen extends React.Component<PropsType> {
@@ -71,6 +71,7 @@ export class ListScreen extends React.Component<PropsType> {
   };
 
   renderItem(hero: Hero) {
+    const { navigation } = this.props;
     const { id, name, photo, quote } = hero;
     return (
       <TouchableOpacity
@@ -80,24 +81,25 @@ export class ListScreen extends React.Component<PropsType> {
         onPress={() => this.onPressItem(hero)}
       >
         <View style={styles.image}>
-          <ScreenTransition sharedId={`heroPhoto.${id}`}>
+          <SharedElement id={`heroPhoto.${id}`} navigation={navigation}>
             <Image style={styles.image} source={photo} resizeMode="cover" />
-          </ScreenTransition>
-          <ScreenTransition
-            sharedId={`heroPhotoOverlay.${id}`}
+          </SharedElement>
+          <SharedElement
+            id={`heroPhotoOverlay.${id}`}
             style={StyleSheet.absoluteFill}
+            navigation={navigation}
           >
             <View
               style={[StyleSheet.absoluteFill, styles.overlay]}
               collapsable={false}
             />
-          </ScreenTransition>
+          </SharedElement>
         </View>
         <View style={styles.content}>
           <View style={styles.name}>
-            <ScreenTransition sharedId={`heroName.${id}`}>
+            <SharedElement id={`heroName.${id}`} navigation={navigation}>
               <Heading2>{name}</Heading2>
-            </ScreenTransition>
+            </SharedElement>
           </View>
           <Caption>{quote || ""}</Caption>
         </View>

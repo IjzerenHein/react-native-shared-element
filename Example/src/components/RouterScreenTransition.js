@@ -5,7 +5,7 @@ import type { SharedElementNode } from "react-native-shared-element";
 import {
   ScreenTransitionContext,
   withScreenTransitionContext
-} from "./ScreenTransitionContext";
+} from "./RouterScreenTransitionContext";
 
 export interface ScreenTransitionProps {
   sharedId?: string;
@@ -13,8 +13,8 @@ export interface ScreenTransitionProps {
   screenTransitionContext: ScreenTransitionContext;
 }
 
-export const ScreenTransition = withScreenTransitionContext(
-  class ScreenTransition extends React.Component<ScreenTransitionProps> {
+export const RouterScreenTransition = withScreenTransitionContext(
+  class RouterScreenTransition extends React.Component<ScreenTransitionProps> {
     _node: ?SharedElementNode;
     _sharedId = "";
 
@@ -65,3 +65,5 @@ export const ScreenTransition = withScreenTransitionContext(
     };
   }
 );
+
+export const ScreenTransition = RouterScreenTransition;

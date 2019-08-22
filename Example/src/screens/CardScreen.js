@@ -11,7 +11,7 @@ import {
 } from "react-native";
 import {
   NavBar,
-  ScreenTransition,
+  SharedElement,
   Colors,
   Router,
   Heading1,
@@ -64,7 +64,8 @@ const styles = StyleSheet.create({
 
 type PropsType = {
   hero: Hero,
-  gradientOverlay: boolean
+  gradientOverlay: boolean,
+  navigation?: any
 };
 type StateType = {
   contentHeight: number,
@@ -73,6 +74,10 @@ type StateType = {
 };
 
 export class CardScreen extends React.Component<PropsType, StateType> {
+  static navigationOptions = {
+    header: null
+  };
+
   constructor(props: PropsType) {
     super(props);
     const scrollOffset = new Animated.Value(0);
@@ -90,23 +95,29 @@ export class CardScreen extends React.Component<PropsType, StateType> {
 
   render() {
     const { scrollOffset, scrollEvent, contentHeight } = this.state;
-    const { hero, gradientOverlay } = this.props;
+    const { gradientOverlay, navigation } = this.props;
+    const hero = navigation ? navigation.getParam("hero") : this.props.hero;
     const { id, name, photo, description } = hero;
     return (
       <View style={styles.flex}>
-        <StatusBar barStyle="light-content" animated />
+        {!navigation ? (
+          <StatusBar barStyle="light-content" animated />
+        ) : (
+          undefined
+        )}
         <Animated.ScrollView
           style={styles.flex}
           scrollEventThrottle={16}
           onScroll={scrollEvent}
         >
           <View style={styles.scrollViewContent}>
-            <ScreenTransition
-              sharedId={`heroBackground.${id}`}
+            <SharedElement
+              id={`heroBackground.${id}`}
               style={StyleSheet.absoluteFill}
+              navigation={navigation}
             >
               <View style={styles.background} />
-            </ScreenTransition>
+            </SharedElement>
             <Animated.View
               style={
                 Platform.OS === "ios"
@@ -129,13 +140,14 @@ export class CardScreen extends React.Component<PropsType, StateType> {
                   : undefined
               }
             >
-              <ScreenTransition sharedId={`heroPhoto.${id}`}>
+              <SharedElement id={`heroPhoto.${id}`} navigation={navigation}>
                 <Image style={styles.image} source={photo} />
-              </ScreenTransition>
+              </SharedElement>
               {gradientOverlay ? (
-                <ScreenTransition
-                  sharedId={`heroGradientOverlay.${hero.id}`}
+                <SharedElement
+                  id={`heroGradientOverlay.${hero.id}`}
                   style={StyleSheet.absoluteFill}
+                  navigation={navigation}
                 >
                   <View style={StyleSheet.absoluteFill} />
                   {/*<LinearGradient
@@ -144,22 +156,27 @@ export class CardScreen extends React.Component<PropsType, StateType> {
                     start={{ x: 0, y: 0 }}
                     end={{ x: 0, y: 1 }}
                   />*/}
-                </ScreenTransition>
+                </SharedElement>
               ) : (
                 undefined
               )}
             </Animated.View>
             <View style={styles.content} onLayout={this.onLayoutContent}>
-              <ScreenTransition sharedId={`heroName.${id}`} style={styles.name}>
+              <SharedElement
+                id={`heroName.${id}`}
+                style={styles.name}
+                navigation={navigation}
+              >
                 <Heading1>{name}</Heading1>
-              </ScreenTransition>
+              </SharedElement>
               {description ? (
-                <ScreenTransition
-                  sharedId={`heroDescription.${id}`}
+                <SharedElement
+                  id={`heroDescription.${id}`}
                   style={styles.description}
+                  navigation={navigation}
                 >
                   <Body>{description}</Body>
-                </ScreenTransition>
+                </SharedElement>
               ) : (
                 undefined
               )}
@@ -199,12 +216,13 @@ export class CardScreen extends React.Component<PropsType, StateType> {
             undefined
           )}
         </Animated.ScrollView>
-        <ScreenTransition
-          sharedId={`heroCloseButton.${id}`}
+        <SharedElement
+          id={`heroCloseButton.${id}`}
           style={styles.navBar}
+          navigation={navigation}
         >
           <NavBar light back="close" onBack={this.onBack} />
-        </ScreenTransition>
+        </SharedElement>
       </View>
     );
   }
@@ -217,7 +235,8 @@ export class CardScreen extends React.Component<PropsType, StateType> {
   };
 
   onBack = () => {
-    const { hero, gradientOverlay } = this.props;
+    const { gradientOverlay, navigation } = this.props;
+    const hero = navigation ? navigation.getParam("hero") : this.props.hero;
     const sharedElements = {
       [`heroBackground.${hero.id}`]: "move",
       [`heroPhoto.${hero.id}`]: "move"
@@ -228,9 +247,13 @@ export class CardScreen extends React.Component<PropsType, StateType> {
     sharedElements[`heroCloseButton.${hero.id}`] = "fade";
     sharedElements[`heroName.${hero.id}`] = "move";
     sharedElements[`heroDescription.${hero.id}`] = "fade-top";
-    Router.pop({
-      sharedElements,
-      transitionConfig: fadeIn()
-    });
+    if (navigation) {
+      navigation.goBack();
+    } else {
+      Router.pop({
+        sharedElements,
+        transitionConfig: fadeIn()
+      });
+    }
   };
 }

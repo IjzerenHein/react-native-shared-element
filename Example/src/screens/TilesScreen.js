@@ -13,7 +13,7 @@ import {
 import {
   Router,
   NavBar,
-  ScreenTransition,
+  SharedElement,
   Colors,
   Shadows,
   Heading1,
@@ -25,7 +25,6 @@ import { Heroes } from "../assets";
 import { DetailScreen } from "./DetailScreen";
 import type { Hero } from "../types";
 import { fadeIn } from "../transitions";
-import type { TransitionConfig } from "react-navigation";
 import LinearGradient from "react-native-linear-gradient";
 import TouchableScale from "react-native-touchable-scale";
 
@@ -120,8 +119,8 @@ type PropsType = {
   title: string,
   animation: SharedElementAnimation,
   DetailComponent: any,
-  transitionConfig: TransitionConfig,
-  resizeMode?: "cover" | "contain" | "stretch" | "center" | "repeat"
+  transitionConfig: any,
+  navigation?: any
 };
 
 export class TilesScreen extends React.Component<PropsType> {
@@ -130,15 +129,15 @@ export class TilesScreen extends React.Component<PropsType> {
     title: "Tiles",
     animation: "move",
     DetailComponent: DetailScreen,
-    transitionConfig: fadeIn(),
-    resizeMode: "cover"
+    transitionConfig: fadeIn()
   };
 
   render() {
-    const { type, title } = this.props;
+    const { title, navigation } = this.props;
+    const type = navigation ? navigation.getParam("type") : this.props.type;
     return (
       <View style={styles.container}>
-        <NavBar title={title} />
+        {!navigation ? <NavBar title={title} /> : undefined}
         <FlatList
           style={type === "tile" ? styles.tileContent : styles.cardContent}
           numColumns={type === "tile" ? 2 : 1}
@@ -158,7 +157,9 @@ export class TilesScreen extends React.Component<PropsType> {
   keyExtractor = (item: any) => item.id;
 
   renderItem = (data: any) => {
-    switch (this.props.type) {
+    const { navigation } = this.props;
+    const type = navigation ? navigation.getParam("type") : this.props.type;
+    switch (type) {
       case "tile":
         return this.renderTile(data);
       case "card":
@@ -169,8 +170,8 @@ export class TilesScreen extends React.Component<PropsType> {
   };
 
   renderTile = ({ item, index }: any) => {
+    const { navigation } = this.props;
     const hero = item;
-    const { resizeMode } = this.props;
     return (
       <TouchableOpacity
         key={`Hero${hero.id}`}
@@ -178,24 +179,26 @@ export class TilesScreen extends React.Component<PropsType> {
         activeOpacity={1}
         onPress={() => this.onPressItem(hero)}
       >
-        <ScreenTransition sharedId={`heroPhoto.${hero.id}`}>
+        <SharedElement id={`heroPhoto.${hero.id}`} navigation={navigation}>
           <Image
             style={styles.image}
             source={hero.photo}
-            resizeMode={resizeMode}
+            resizeMode={"cover"}
           />
-        </ScreenTransition>
-        <ScreenTransition
-          sharedId={`heroPhotoOverlay.${hero.id}`}
+        </SharedElement>
+        <SharedElement
+          id={`heroPhotoOverlay.${hero.id}`}
           style={StyleSheet.absoluteFill}
+          navigation={navigation}
         >
           <View style={StyleSheet.absoluteFill} collapsable={false} />
-        </ScreenTransition>
+        </SharedElement>
       </TouchableOpacity>
     );
   };
 
   renderCard = ({ item }: any) => {
+    const { navigation } = this.props;
     const hero = item;
     return (
       <TouchableOpacity
@@ -204,29 +207,32 @@ export class TilesScreen extends React.Component<PropsType> {
         activeOpacity={1}
         onPress={() => this.onPressItem(hero)}
       >
-        <ScreenTransition
-          sharedId={`heroBackground.${hero.id}`}
+        <SharedElement
+          id={`heroBackground.${hero.id}`}
           style={StyleSheet.absoluteFill}
+          navigation={navigation}
         >
           <View style={styles.cardBackground} />
-        </ScreenTransition>
-        <ScreenTransition sharedId={`heroPhoto.${hero.id}`}>
+        </SharedElement>
+        <SharedElement id={`heroPhoto.${hero.id}`} navigation={navigation}>
           <ImageBackground style={styles.cardImage} source={hero.photo} />
-        </ScreenTransition>
+        </SharedElement>
         <View style={styles.cardFooter}>
-          <ScreenTransition
-            sharedId={`heroName.${hero.id}`}
+          <SharedElement
+            id={`heroName.${hero.id}`}
             style={styles.cardName}
+            navigation={navigation}
           >
             <Heading2>{hero.name}</Heading2>
-          </ScreenTransition>
+          </SharedElement>
           {hero.description ? (
-            <ScreenTransition
-              sharedId={`heroDescription.${hero.id}`}
+            <SharedElement
+              id={`heroDescription.${hero.id}`}
               style={styles.cardDescription}
+              navigation={navigation}
             >
               <Body numberOfLines={3}>{hero.description}</Body>
-            </ScreenTransition>
+            </SharedElement>
           ) : (
             undefined
           )}
@@ -236,6 +242,7 @@ export class TilesScreen extends React.Component<PropsType> {
   };
 
   renderCard2 = ({ item }: any) => {
+    const { navigation } = this.props;
     const hero = item;
     return (
       <TouchableScale
@@ -247,18 +254,20 @@ export class TilesScreen extends React.Component<PropsType> {
         useNativeDriver={true}
         onPress={() => this.onPressItem(hero)}
       >
-        <ScreenTransition
-          sharedId={`heroBackground.${hero.id}`}
+        <SharedElement
+          id={`heroBackground.${hero.id}`}
           style={StyleSheet.absoluteFill}
+          navigation={navigation}
         >
           <View style={styles.cardBackground} />
-        </ScreenTransition>
-        <ScreenTransition sharedId={`heroPhoto.${hero.id}`}>
+        </SharedElement>
+        <SharedElement id={`heroPhoto.${hero.id}`} navigation={navigation}>
           <Image style={styles.cardImage2} source={hero.photo} />
-        </ScreenTransition>
-        <ScreenTransition
-          sharedId={`heroGradientOverlay.${hero.id}`}
+        </SharedElement>
+        <SharedElement
+          id={`heroGradientOverlay.${hero.id}`}
           style={StyleSheet.absoluteFill}
+          navigation={navigation}
         >
           <LinearGradient
             style={styles.cardGradientOverlay}
@@ -266,17 +275,19 @@ export class TilesScreen extends React.Component<PropsType> {
             start={{ x: 0, y: 0.5 }}
             end={{ x: 0, y: 1 }}
           />
-        </ScreenTransition>
+        </SharedElement>
         <View style={styles.cardOverlay}>
-          <ScreenTransition
-            sharedId={`heroName.${hero.id}`}
+          <SharedElement
+            id={`heroName.${hero.id}`}
             style={styles.cardName}
+            navigation={navigation}
           >
             <Heading1 light>{hero.name}</Heading1>
-          </ScreenTransition>
-          <ScreenTransition
-            sharedId={`heroDescription.${hero.id}`}
+          </SharedElement>
+          <SharedElement
+            id={`heroDescription.${hero.id}`}
             style={styles.cardQuote}
+            navigation={navigation}
           >
             {hero.quote ? (
               <Body numberOfLines={1} light>
@@ -285,14 +296,20 @@ export class TilesScreen extends React.Component<PropsType> {
             ) : (
               <View />
             )}
-          </ScreenTransition>
+          </SharedElement>
         </View>
       </TouchableScale>
     );
   };
 
   onPressItem = (hero: Hero) => {
-    const { animation, DetailComponent, transitionConfig, type } = this.props;
+    const {
+      navigation,
+      animation,
+      DetailComponent,
+      transitionConfig
+    } = this.props;
+    const type = navigation ? navigation.getParam("type") : this.props.type;
     const alternateHero = animation === "fade" ? Heroes[0] : hero;
     const sharedElements = {};
     const props: any = {
@@ -301,9 +318,11 @@ export class TilesScreen extends React.Component<PropsType> {
         id: hero.id
       }
     };
+    let routeName = "Detail";
     switch (type) {
       case "tile":
         sharedElements[`heroPhoto.${hero.id}`] = animation;
+        routeName = "Pager";
         break;
       case "card":
         sharedElements[`heroBackground.${hero.id}`] = "move";
@@ -311,6 +330,7 @@ export class TilesScreen extends React.Component<PropsType> {
         sharedElements[`heroCloseButton.${hero.id}`] = "fade";
         sharedElements[`heroName.${hero.id}`] = "move";
         sharedElements[`heroDescription.${hero.id}`] = "fade-top";
+        routeName = "Card";
         break;
       case "card2":
         sharedElements[`heroBackground.${hero.id}`] = "move";
@@ -319,12 +339,20 @@ export class TilesScreen extends React.Component<PropsType> {
         sharedElements[`heroCloseButton.${hero.id}`] = "fade";
         sharedElements[`heroName.${hero.id}`] = "fade";
         sharedElements[`heroDescription.${hero.id}`] = "fade-top";
+        routeName = "Card";
         props.gradientOverlay = true;
         break;
     }
-    Router.push(<DetailComponent {...props} />, {
-      sharedElements,
-      transitionConfig
-    });
+    if (navigation) {
+      navigation.push(routeName, {
+        hero: props.hero,
+        sharedElements
+      });
+    } else {
+      Router.push(<DetailComponent {...props} />, {
+        sharedElements,
+        transitionConfig
+      });
+    }
   };
 }

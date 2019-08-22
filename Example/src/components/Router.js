@@ -9,12 +9,11 @@ import {
   Platform
 } from "react-native";
 import { SharedElementTransition } from "react-native-shared-element";
-import { ScreenTransitionContext } from "./ScreenTransitionContext";
-import type { ScreenTransitionContextOnSharedElementsUpdatedEvent } from "./ScreenTransitionContext";
+import { ScreenTransitionContext } from "./RouterScreenTransitionContext";
+import type { ScreenTransitionContextOnSharedElementsUpdatedEvent } from "./RouterScreenTransitionContext";
 import { PanGestureHandler, State } from "react-native-gesture-handler";
 import { NavBarHeight } from "./navBar/constants";
 import { fromRight } from "../transitions";
-import type { TransitionConfig } from "react-navigation";
 import * as Screens from "react-native-screens";
 
 if (Platform.OS === "android") {
@@ -48,13 +47,14 @@ const styles = StyleSheet.create({
 });
 
 type RouterTransitionConfig = {
-  ...TransitionConfig,
+  screenInterpolator: any,
+  transitionSpec: any,
   debug?: boolean
 };
 
 interface RouterProps {
   initialNode: React.Node;
-  transitionConfig: TransitionConfig;
+  transitionConfig: any;
 }
 
 type RouterSharedElementConfig =

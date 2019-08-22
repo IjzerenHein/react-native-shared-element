@@ -2,7 +2,6 @@
 import * as React from "react";
 import { StyleSheet, View, Image, TouchableOpacity } from "react-native";
 import { Heading3, Caption } from "./Text";
-import { ScreenTransition } from "./ScreenTransition";
 import { Colors } from "./Colors";
 
 const styles = StyleSheet.create({
@@ -47,26 +46,17 @@ export interface ListItemProps {
   label: string;
   description?: string;
   image?: any;
-  imageSharedId?: string;
   data?: any;
   onPress?: (data: any) => void;
 }
 
 export class ListItem extends React.Component<ListItemProps> {
   renderImage() {
-    const { image, imageSharedId } = this.props;
-    if (!image && !imageSharedId) {
+    const { image } = this.props;
+    if (!image) {
       return;
     }
-    if (imageSharedId) {
-      return (
-        <ScreenTransition sharedId={imageSharedId}>
-          <Image style={styles.image} source={image} />
-        </ScreenTransition>
-      );
-    } else {
-      return <Image style={styles.image} source={image} />;
-    }
+    return <Image style={styles.image} source={image} />;
   }
 
   render() {

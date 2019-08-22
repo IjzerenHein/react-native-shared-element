@@ -1,7 +1,7 @@
 // @flow
 import * as React from "react";
 import { StyleSheet, View, Image } from "react-native";
-import { NavBar, ScreenTransition, Colors } from "../components";
+import { NavBar, SharedElement, Colors } from "../components";
 import type { Hero } from "../types";
 
 const styles = StyleSheet.create({
@@ -25,21 +25,32 @@ const styles = StyleSheet.create({
   }
 });
 
-interface DetailScreenProps {
-  hero: Hero;
-}
+type PropsType = {
+  hero: Hero,
+  navigation?: any
+};
 
-export class DetailScreen extends React.Component<DetailScreenProps> {
+export class DetailScreen extends React.Component<PropsType> {
   render() {
-    const { photo, id } = this.props.hero;
+    const { navigation } = this.props;
+    const hero = navigation ? navigation.getParam("hero") : this.props.hero;
+    const { photo, id } = hero;
     return (
       <View style={styles.container}>
         <View style={styles.content}>
-          <ScreenTransition sharedId={`heroPhoto.${id}`} style={styles.content}>
+          <SharedElement
+            navigation={navigation}
+            id={`heroPhoto.${id}`}
+            style={styles.content}
+          >
             <Image style={styles.image} source={photo} />
-          </ScreenTransition>
+          </SharedElement>
         </View>
-        <NavBar back="close" light style={styles.navBar} />
+        {!navigation ? (
+          <NavBar back="close" light style={styles.navBar} />
+        ) : (
+          undefined
+        )}
       </View>
     );
   }

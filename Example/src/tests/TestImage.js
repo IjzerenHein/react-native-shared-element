@@ -1,7 +1,7 @@
 // @flow
 import * as React from "react";
 import { StyleSheet, View, Image, Dimensions } from "react-native";
-import { Colors, ScreenTransition } from "../components";
+import { Colors, SharedElement } from "../components";
 import type { Hero, Size, Position, ResizeMode } from "../types";
 import { Heroes } from "../assets";
 import ImageZoom from "react-native-image-pan-zoom";
@@ -65,7 +65,8 @@ type PropsType = {
   resizeMode: ResizeMode,
   round?: boolean,
   ImageComponent: any,
-  panZoom?: boolean
+  panZoom?: boolean,
+  navigation?: any
 };
 
 export class TestImage extends React.Component<PropsType> {
@@ -90,15 +91,17 @@ export class TestImage extends React.Component<PropsType> {
       resizeMode,
       round,
       ImageComponent,
-      panZoom
+      panZoom,
+      navigation
     } = this.props;
     const sizePx = SIZES[size === "default" ? "regular" : size];
     const resolvedPosition =
       position === "default" ? (end ? "right" : "left") : position;
     const imageContent = (
-      <ScreenTransition
-        sharedId="testContent"
+      <SharedElement
+        id="testContent"
         style={size === "max" ? { flex: 1 } : undefined}
+        navigation={navigation}
       >
         <ImageComponent
           style={[
@@ -113,7 +116,7 @@ export class TestImage extends React.Component<PropsType> {
           resizeMode={resizeMode}
           source={hero.photo}
         />
-      </ScreenTransition>
+      </SharedElement>
     );
     const content = panZoom ? (
       <ImageZoom

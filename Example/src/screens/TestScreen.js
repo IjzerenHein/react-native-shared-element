@@ -35,32 +35,48 @@ interface PropsType {
   test: Test;
   end?: boolean;
   description?: string;
+  navigation?: any;
 }
 
 export class TestScreen extends React.Component<PropsType> {
   render() {
-    const { test, end, description } = this.props;
+    const { navigation } = this.props;
+    const test = navigation ? navigation.getParam("test") : this.props.test;
+    const description = navigation
+      ? navigation.getParam("description")
+      : this.props.description;
+    const end = navigation ? navigation.getParam("end") : this.props.end;
     return (
       <View style={styles.container}>
-        <NavBar title={test.name} />
-        {end ? test.end : test.start}
+        {!navigation ? <NavBar title={test.name} /> : undefined}
+        {React.cloneElement(end ? test.end : test.start, {
+          navigation
+        })}
         <View style={styles.bottomContainer}>
           <View style={styles.buttonContainer}>
             <Button
               style={styles.button}
-              label={"Fast"}
+              label={navigation ? "Animate" : "Fast"}
               onPress={this.onPressButton}
             />
-            <Button
-              style={styles.button}
-              label={"Slow"}
-              onPress={this.onPressSlowButton}
-            />
-            <Button
-              style={styles.debugButton}
-              label={"Debug"}
-              onPress={this.onPressDebugButton}
-            />
+            {!navigation ? (
+              <Button
+                style={styles.button}
+                label={"Slow"}
+                onPress={this.onPressSlowButton}
+              />
+            ) : (
+              undefined
+            )}
+            {!navigation ? (
+              <Button
+                style={styles.debugButton}
+                label={"Debug"}
+                onPress={this.onPressDebugButton}
+              />
+            ) : (
+              undefined
+            )}
           </View>
           <Body style={styles.body}>{test.description || description}</Body>
         </View>
@@ -84,7 +100,12 @@ export class TestScreen extends React.Component<PropsType> {
   };
 
   transition(transitionConfig: any) {
-    const { test, end, description } = this.props;
+    const { navigation } = this.props;
+    const test = navigation ? navigation.getParam("test") : this.props.test;
+    const description = navigation
+      ? navigation.getParam("description")
+      : this.props.description;
+    const end = navigation ? navigation.getParam("end") : this.props.end;
     const config = test.multi
       ? {
           transitionConfig,
@@ -101,14 +122,29 @@ export class TestScreen extends React.Component<PropsType> {
             testContent: test.animation || "move"
           }
         };
+
     if (end) {
-      // $FlowFixMe
-      Router.pop(config);
+      if (navigation) {
+        // TODO elements?
+        navigation.goBack();
+      } else {
+        // $FlowFixMe
+        Router.pop(config);
+      }
     } else {
-      Router.push(
-        <TestScreen test={test} end description={description || ""} />,
-        config
-      );
+      if (navigation) {
+        navigation.push("Test", {
+          test,
+          description: description || "",
+          end: true,
+          sharedElements: config.sharedElements
+        });
+      } else {
+        Router.push(
+          <TestScreen test={test} end description={description || ""} />,
+          config
+        );
+      }
     }
   }
 }

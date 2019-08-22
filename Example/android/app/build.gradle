@@ -139,6 +139,8 @@ android {
 }
 
 dependencies {
+    implementation project(':@react-native-community_masked-view')
+    implementation project(':react-native-reanimated')
     implementation project(':react-native-screens')
     implementation project(':@react-native-community_viewpager')
     implementation project(':react-native-vector-icons')

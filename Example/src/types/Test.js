@@ -15,8 +15,8 @@ export type ResizeMode = "cover" | "contain" | "stretch" | "center";
 export type Test = {
   name: string,
   description?: string,
-  start: React.Node,
-  end: React.Node,
+  start: React.Element<any>,
+  end: React.Element<any>,
   animation?: SharedElementAnimation,
   multi?: boolean
 };

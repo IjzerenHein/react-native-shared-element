@@ -9,7 +9,7 @@ import {
   StatusBar,
   Platform
 } from "react-native";
-import { NavBar, ScreenTransition, Colors, Router } from "../components";
+import { NavBar, SharedElement, Colors, Router } from "../components";
 import type { Hero } from "../types";
 import { Heroes } from "../assets";
 import { fadeIn } from "../transitions";
@@ -53,7 +53,8 @@ const styles = StyleSheet.create({
 });
 
 type PropsType = {
-  hero: Hero
+  hero: Hero,
+  navigation: any
 };
 type StateType = {
   selectedHero: Hero
@@ -65,6 +66,10 @@ const VIEWABILITY_CONFIG = {
 };
 
 export class PagerScreen extends React.Component<PropsType, StateType> {
+  static navigationOptions = {
+    header: null
+  };
+
   _dismissAnimValue = new Animated.Value(0);
   _onDismissGestureEvent = Animated.event(
     [{ nativeEvent: { translationY: this._dismissAnimValue } }],
@@ -73,8 +78,11 @@ export class PagerScreen extends React.Component<PropsType, StateType> {
 
   constructor(props: PropsType) {
     super(props);
+    const hero = props.navigation
+      ? props.navigation.getParam("hero")
+      : props.hero;
     this.state = {
-      selectedHero: props.hero
+      selectedHero: hero
     };
   }
 
@@ -113,13 +121,18 @@ export class PagerScreen extends React.Component<PropsType, StateType> {
   }
 
   render() {
-    const { hero } = this.props;
+    const { navigation } = this.props;
+    const hero = navigation ? navigation.getParam("hero") : this.props.hero;
     const { selectedHero } = this.state;
     const dismissAnimValue = this._dismissAnimValue;
     const initialIndex = Heroes.findIndex(({ id }) => id === hero.id);
     return (
       <View style={styles.container}>
-        <StatusBar barStyle="light-content" animated />
+        {!navigation ? (
+          <StatusBar barStyle="light-content" animated />
+        ) : (
+          undefined
+        )}
         <Animated.View
           style={[
             styles.background,
@@ -172,9 +185,13 @@ export class PagerScreen extends React.Component<PropsType, StateType> {
     const { id, photo } = hero;
     return (
       <View style={styles.itemContainer} key={`item.${item.id}`}>
-        <ScreenTransition sharedId={`heroPhoto.${id}`} style={styles.flex}>
+        <SharedElement
+          id={`heroPhoto.${id}`}
+          style={styles.flex}
+          navigation={this.props.navigation}
+        >
           <Image style={styles.image} source={photo} />
-        </ScreenTransition>
+        </SharedElement>
       </View>
     );
   };
@@ -200,14 +217,19 @@ export class PagerScreen extends React.Component<PropsType, StateType> {
   };
 
   onBack = () => {
+    const { navigation } = this.props;
     const hero = this.state.selectedHero;
     const sharedElements = {
       [`heroPhoto.${hero.id}`]: "move"
     };
-    Router.pop({
-      sharedElements,
-      transitionConfig: fadeIn()
-    });
+    if (navigation) {
+      navigation.goBack();
+    } else {
+      Router.pop({
+        sharedElements,
+        transitionConfig: fadeIn()
+      });
+    }
   };
 
   _onDismissGestureStateChange = (event: any) => {

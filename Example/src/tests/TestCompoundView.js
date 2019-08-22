@@ -1,7 +1,7 @@
 // @flow
 import * as React from "react";
 import { StyleSheet, View, Image, Dimensions, Text } from "react-native";
-import { Colors, Shadows, ScreenTransition } from "../components";
+import { Colors, Shadows, SharedElement } from "../components";
 import type { Hero, Size, Position } from "../types";
 import { Heroes } from "../assets";
 import LinearGradient from "react-native-linear-gradient";
@@ -75,7 +75,8 @@ type PropsType = {
   end?: boolean,
   size: Size,
   position: Position,
-  vertical: boolean
+  vertical: boolean,
+  navigation?: any
 };
 
 export class TestCompoundView extends React.Component<PropsType> {
@@ -88,7 +89,15 @@ export class TestCompoundView extends React.Component<PropsType> {
   };
 
   render() {
-    const { style, hero, end, size, position, vertical } = this.props;
+    const {
+      style,
+      hero,
+      end,
+      size,
+      position,
+      vertical,
+      navigation
+    } = this.props;
     const isMax = size === "max";
     const resolvedPosition =
       position === "default"
@@ -106,7 +115,7 @@ export class TestCompoundView extends React.Component<PropsType> {
           !isMax ? styles[resolvedPosition] : undefined
         ]}
       >
-        <ScreenTransition sharedId="testContent">
+        <SharedElement id="testContent" navigation={navigation}>
           <View
             style={[
               styles.content,
@@ -120,7 +129,7 @@ export class TestCompoundView extends React.Component<PropsType> {
             ]}
           >
             <View>
-              <ScreenTransition sharedId="testImage">
+              <SharedElement id="testImage" navigation={navigation}>
                 <Image
                   style={[
                     styles.image,
@@ -138,10 +147,11 @@ export class TestCompoundView extends React.Component<PropsType> {
                   ]}
                   source={hero.photo}
                 />
-              </ScreenTransition>
-              <ScreenTransition
-                sharedId="testOverlay"
+              </SharedElement>
+              <SharedElement
+                id="testOverlay"
                 style={StyleSheet.absoluteFill}
+                navigation={navigation}
               >
                 {isMax ? (
                   <LinearGradient
@@ -160,10 +170,10 @@ export class TestCompoundView extends React.Component<PropsType> {
                     }}
                   />
                 )}
-              </ScreenTransition>
+              </SharedElement>
             </View>
-            <ScreenTransition
-              sharedId="testTitle"
+            <SharedElement
+              id="testTitle"
               style={
                 isMax
                   ? {
@@ -176,6 +186,7 @@ export class TestCompoundView extends React.Component<PropsType> {
                     }
                   : undefined
               }
+              navigation={navigation}
             >
               <Text
                 style={[
@@ -193,10 +204,11 @@ export class TestCompoundView extends React.Component<PropsType> {
               >
                 {hero.name}
               </Text>
-            </ScreenTransition>
-            <ScreenTransition
-              sharedId="testLogo"
+            </SharedElement>
+            <SharedElement
+              id="testLogo"
               style={isMax ? StyleSheet.absoluteFill : undefined}
+              navigation={navigation}
             >
               <Image
                 style={[
@@ -218,9 +230,9 @@ export class TestCompoundView extends React.Component<PropsType> {
                 ]}
                 source={require("../assets/fist.png")}
               />
-            </ScreenTransition>
+            </SharedElement>
           </View>
-        </ScreenTransition>
+        </SharedElement>
       </View>
     );
   }
