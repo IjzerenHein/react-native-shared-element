@@ -56,7 +56,7 @@ export type SharedElementTransitionProps = {
   debug?: boolean;
   style?: any;
   onMeasure?: (event: SharedElementOnMeasureEvent) => void;
-  SharedElementComponent: any;
+  SharedElementComponent?: any;
 };
 
 export const isAvailable = NativeModules.RNSharedElementTransition
