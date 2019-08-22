@@ -149,7 +149,7 @@
     for (RNSharedElementTransitionItem* item in _items) {
         if (_initialLayoutPassCompleted && item.needsLayout) {
             item.needsLayout = NO;
-            [item.node requestStyle:self useCache:YES];
+            [item.node requestStyle:self];
         }
     }
     [self updateNodeVisibility];
@@ -213,8 +213,8 @@
     if (style == nil) return [self.superview convertRect:layout fromView:nil];
     
     // Determine origin relative to the left-top of the ancestor
-    layout.origin.x -= style.layout.origin.x;
-    layout.origin.y -= style.layout.origin.y;
+    layout.origin.x -= style.transform.m41;
+    layout.origin.y -= style.transform.m42;
     
     // Undo any scaling in case the screen is scaled
     if (!CGSizeEqualToSize(style.layout.size, style.size)) {
