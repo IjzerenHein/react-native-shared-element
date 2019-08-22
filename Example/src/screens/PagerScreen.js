@@ -128,11 +128,7 @@ export class PagerScreen extends React.Component<PropsType, StateType> {
     const initialIndex = Heroes.findIndex(({ id }) => id === hero.id);
     return (
       <View style={styles.container}>
-        {!navigation ? (
-          <StatusBar barStyle="light-content" animated />
-        ) : (
-          undefined
-        )}
+        <StatusBar barStyle="light-content" animated />
         <Animated.View
           style={[
             styles.background,

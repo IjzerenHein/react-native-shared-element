@@ -54,11 +54,7 @@ export class MainScreen extends React.Component<PropsType> {
     const { footer, navigation } = this.props;
     return (
       <View style={styles.container}>
-        {!navigation ? (
-          <StatusBar barStyle="dark-content" animated />
-        ) : (
-          undefined
-        )}
+        <StatusBar barStyle="dark-content" animated />
         {!navigation ? (
           <NavBar title="Shared Element Demo" back="none" />
         ) : (
@@ -137,7 +133,10 @@ export class MainScreen extends React.Component<PropsType> {
   onPressCardDemo2 = () => {
     const { navigation } = this.props;
     if (navigation) {
-      navigation.push("Tiles", { type: "card2" });
+      navigation.push("Tiles", {
+        type: "card2",
+        transitionConfig: fadeIn(0, true)
+      });
     } else {
       Router.push(
         <TilesScreen

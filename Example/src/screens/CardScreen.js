@@ -103,11 +103,7 @@ export class CardScreen extends React.Component<PropsType, StateType> {
     const { id, name, photo, description } = hero;
     return (
       <View style={styles.flex}>
-        {!navigation ? (
-          <StatusBar barStyle="light-content" animated />
-        ) : (
-          undefined
-        )}
+        <StatusBar barStyle="light-content" animated />
         <Animated.ScrollView
           style={styles.flex}
           scrollEventThrottle={16}

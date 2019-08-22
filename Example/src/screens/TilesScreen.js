@@ -290,13 +290,11 @@ export class TilesScreen extends React.Component<PropsType> {
   };
 
   onPressItem = (hero: Hero) => {
-    const {
-      navigation,
-      animation,
-      DetailComponent,
-      transitionConfig
-    } = this.props;
+    const { navigation, animation, DetailComponent } = this.props;
     const type = navigation ? navigation.getParam("type") : this.props.type;
+    const transitionConfig =
+      (navigation ? navigation.getParam("transitionConfig") : undefined) ||
+      this.props.transitionConfig;
     const alternateHero = animation === "fade" ? Heroes[0] : hero;
     const sharedElements = {};
     const props: any = {
