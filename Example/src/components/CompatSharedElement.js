@@ -3,11 +3,12 @@ import * as React from "react";
 import { RouterScreenTransition } from "./RouterScreenTransition";
 import { SharedElement as ReactNavigationCoreSharedElement } from "react-navigation-sharedelement";
 
-type PropsType = {
+type PropsType = {|
   id?: string,
-  navigation?: any,
+  style?: any,
+  navigation: any,
   children: any
-};
+|};
 
 export class CompatSharedElement extends React.Component<PropsType> {
   render() {

@@ -345,7 +345,7 @@ export class TilesScreen extends React.Component<PropsType> {
     }
     if (navigation) {
       navigation.push(routeName, {
-        hero: props.hero,
+        ...props,
         sharedElements
       });
     } else {

@@ -95,8 +95,11 @@ export class CardScreen extends React.Component<PropsType, StateType> {
 
   render() {
     const { scrollOffset, scrollEvent, contentHeight } = this.state;
-    const { gradientOverlay, navigation } = this.props;
+    const { navigation } = this.props;
     const hero = navigation ? navigation.getParam("hero") : this.props.hero;
+    const gradientOverlay = navigation
+      ? navigation.getParam("gradientOverlay")
+      : this.props.gradientOverlay;
     const { id, name, photo, description } = hero;
     return (
       <View style={styles.flex}>
