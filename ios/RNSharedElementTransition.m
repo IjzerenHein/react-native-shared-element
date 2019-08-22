@@ -533,11 +533,11 @@
             for (RNSharedElementTransitionItem* item in _items) {
                 if (item.needsLayout) {
                     item.needsLayout = NO;
-                    [item.node requestStyle:self useCache:YES];
+                    [item.node requestStyle:self];
                 }
                 if (item.needsContent) {
                     item.needsContent = NO;
-                    [item.node requestContent:self useCache:YES];
+                    [item.node requestContent:self];
                 }
             }
             _initialLayoutPassCompleted = YES;

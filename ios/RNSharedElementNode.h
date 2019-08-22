@@ -17,8 +17,8 @@
 
 - (instancetype)init:(NSNumber *)reactTag view:(UIView*) view isParent:(BOOL)isParent;
 
-- (void) requestContent:(id <RNSharedElementDelegate>) delegate useCache:(BOOL)useCache;
-- (void) requestStyle:(id <RNSharedElementDelegate>) delegate useCache:(BOOL)useCache;
+- (void) requestContent:(id <RNSharedElementDelegate>) delegate;
+- (void) requestStyle:(id <RNSharedElementDelegate>) delegate;
 - (void) cancelRequests:(id <RNSharedElementDelegate>) delegate;
 
 + (void) setImageResolvers:(NSArray*) imageResolvers;

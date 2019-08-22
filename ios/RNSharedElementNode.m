@@ -171,9 +171,9 @@ NSArray* _imageResolvers;
     return _hideRefCount;
 }
 
-- (void) requestContent:(__weak id <RNSharedElementDelegate>) delegate useCache:(BOOL)useCache
+- (void) requestContent:(__weak id <RNSharedElementDelegate>) delegate
 {
-    if (useCache && _contentCache != nil) {
+    if (_contentCache != nil) {
         [delegate didLoadContent:_contentCache contentType:_contentTypeCache node:self];
         return;
     }
@@ -256,9 +256,9 @@ NSArray* _imageResolvers;
     [self updateContent];
 }
 
-- (void) requestStyle:(__weak id <RNSharedElementDelegate>) delegate useCache:(BOOL)useCache
+- (void) requestStyle:(__weak id <RNSharedElementDelegate>) delegate
 {
-    if (useCache && _styleCache != nil) {
+    if (_styleCache != nil) {
         [delegate didLoadStyle:_styleCache node:self];
         return;
     }
