@@ -32,21 +32,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1
   },
-  cardContent: Platform.select({
-    ios: {
-      flex: 1,
-      backgroundColor: Colors.empty
-    },
-    android: {
-      flex: 1
-    }
-  }),
-  tileContent: {
+  list: {
     flex: 1,
     backgroundColor: Colors.empty
-  },
-  content: {
-    flex: 1
   },
   item: {
     height: 160,
@@ -62,14 +50,13 @@ const styles = StyleSheet.create({
     height: "100%",
     width: "100%"
   },
-  cardContentContainer: {
+  cardListContentContainer: {
     marginTop: 10,
     marginBottom: 10
   },
   cardContainer: {
     marginHorizontal: 20,
-    marginVertical: 10,
-    flexDirection: "column"
+    marginVertical: 20
   },
   cardBackground: {
     ...StyleSheet.absoluteFillObject,
@@ -139,10 +126,10 @@ export class TilesScreen extends React.Component<PropsType> {
       <View style={styles.container}>
         {!navigation ? <NavBar title={title} /> : undefined}
         <FlatList
-          style={type === "tile" ? styles.tileContent : styles.cardContent}
+          style={styles.list}
           numColumns={type === "tile" ? 2 : 1}
           contentContainerStyle={
-            type === "card" ? styles.cardContentContainer : undefined
+            type === "card" ? styles.cardListContentContainer : undefined
           }
           horizontal={false}
           data={Heroes}
