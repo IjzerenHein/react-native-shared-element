@@ -5,8 +5,7 @@ import {
   View,
   Animated,
   Dimensions,
-  BackHandler,
-  Platform
+  BackHandler
 } from "react-native";
 import { SharedElementTransition } from "react-native-shared-element";
 import { ScreenTransitionContext } from "./RouterScreenTransitionContext";
@@ -16,9 +15,7 @@ import { NavBarHeight } from "./navBar/constants";
 import { fromRight } from "../transitions";
 import * as Screens from "react-native-screens";
 
-if (Platform.OS === "android") {
-  //Screens.useScreens();
-}
+Screens.useScreens();
 
 const WIDTH = Dimensions.get("window").width;
 const HEIGHT = Dimensions.get("window").height;
@@ -199,7 +196,6 @@ export class Router extends React.Component<RouterProps, RouterState> {
     return (
       <View style={styles.sharedElements} pointerEvents="none">
         {Object.keys(nodes).map(sharedId => (
-          // $FlowFixMe
           <SharedElementTransition
             key={`SharedElementTransition.${sharedId}`}
             start={nodes[sharedId].start}
