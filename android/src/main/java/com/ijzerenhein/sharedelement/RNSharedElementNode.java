@@ -6,7 +6,6 @@ import javax.annotation.Nullable;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewParent;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.Matrix;
@@ -135,26 +134,6 @@ class RNSharedElementNode {
         fetchInitialStyle();
     }
 
-    private static Matrix getViewTransformMatrix(View view) {
-        Matrix matrix = view.getMatrix();
-        ViewParent parentView = view.getParent();
-        if (parentView instanceof View) {
-            Matrix parentMatrix = RNSharedElementNode.getViewTransformMatrix((View)parentView);
-
-            // Multipy
-            float[] vals1 = new float[9];
-            float[] vals2 = new float[9];
-            matrix.getValues(vals1);
-            parentMatrix.getValues(vals2);
-            for (int i = 0; i < 9; i++) {
-                vals1[i] *= vals2[i];
-            }
-            matrix = new Matrix();
-            matrix.setValues(vals1);
-        }
-        return matrix;
-    }
-
     private void fetchInitialStyle() {
         View view = mResolvedView;
         if (view == null || mStyleCallbacks == null) return;
@@ -170,9 +149,9 @@ class RNSharedElementNode {
         // Get absolute layout
         int[] location = new int[2]; 
         view.getLocationOnScreen(location);
-        Matrix matrix = RNSharedElementNode.getViewTransformMatrix(view);
+        Matrix transform = RNSharedElementStyle.getAbsoluteViewTransform(view);
         float[] f = new float[9];
-        matrix.getValues(f);
+        transform.getValues(f);
         float scaleX = f[Matrix.MSCALE_X];
         float scaleY = f[Matrix.MSCALE_Y];
         Rect layout = new Rect(
@@ -185,6 +164,7 @@ class RNSharedElementNode {
         RNSharedElementStyle style = new RNSharedElementStyle(mStyleConfig);
         style.layout = layout;
         style.frame = frame;
+        style.transform = transform;
         
         // Get opacity
         style.opacity = view.getAlpha();

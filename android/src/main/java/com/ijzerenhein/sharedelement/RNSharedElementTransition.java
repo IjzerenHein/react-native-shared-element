@@ -10,6 +10,7 @@ import android.graphics.Rect;
 import android.graphics.Point;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Matrix;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -301,12 +302,17 @@ public class RNSharedElementTransition extends ViewGroup {
             );
         }
 
+        float[] vals = new float[9];
+        style.transform.getValues(vals);
+        int translateX = (int) vals[Matrix.MTRANS_X];
+        int translateY = (int) vals[Matrix.MTRANS_Y];
+
         Rect ancestorLayout = style.layout;
         return new Rect(
-            layout.left - ancestorLayout.left,
-            layout.top - ancestorLayout.top,
-            layout.right - ancestorLayout.left,
-            layout.bottom - ancestorLayout.top
+            layout.left - translateX,
+            layout.top - translateY,
+            layout.right - translateX,
+            layout.bottom - translateY
         );
     }
 

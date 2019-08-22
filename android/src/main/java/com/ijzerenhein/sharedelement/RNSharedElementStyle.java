@@ -4,8 +4,11 @@ import java.util.Locale;
 
 import android.graphics.Rect;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.support.v4.text.TextUtilsCompat;
 import android.support.v4.view.ViewCompat;
+import android.view.View;
+import android.view.ViewParent;
 
 import com.facebook.react.uimanager.PixelUtil;
 import com.facebook.react.bridge.ReadableMap;
@@ -36,6 +39,7 @@ public class RNSharedElementStyle {
 
     Rect layout = new Rect(); // absolute layout on screen
     Rect frame = new Rect(); // frame rect relative to parent
+    Matrix transform = new Matrix();
     ScaleType scaleType = ScaleType.FIT_XY;
     int backgroundColor = Color.TRANSPARENT;
     float opacity = 1;
@@ -124,6 +128,33 @@ public class RNSharedElementStyle {
         );
         scaleType.setValue(position);
         return scaleType;
+    }
+
+    static Matrix getAbsoluteViewTransform(View view) {
+        Matrix matrix = new Matrix(view.getMatrix());
+        float[] vals = new float[9];
+        matrix.getValues(vals);
+
+        float[] vals2 = new float[9];
+        ViewParent parentView = view.getParent();
+        while (parentView != null && parentView instanceof View) {
+            Matrix parentMatrix = ((View)parentView).getMatrix();
+            parentMatrix.getValues(vals2);
+
+            //vals[Matrix.MPERSP_0] *= vals2[Matrix.MPERSP_0];
+            //vals[Matrix.MPERSP_1] *= vals2[Matrix.MPERSP_1];
+            //vals[Matrix.MPERSP_2] *= vals2[Matrix.MPERSP_3];
+            vals[Matrix.MSCALE_X] *= vals2[Matrix.MSCALE_X];
+            vals[Matrix.MSCALE_Y] *= vals2[Matrix.MSCALE_Y];
+            vals[Matrix.MSKEW_X] += vals2[Matrix.MSKEW_X];
+            vals[Matrix.MSKEW_Y] += vals2[Matrix.MSKEW_Y];
+            vals[Matrix.MTRANS_X] += vals2[Matrix.MTRANS_X];
+            vals[Matrix.MTRANS_Y] += vals2[Matrix.MTRANS_Y];
+
+            parentView = parentView.getParent();
+        }
+        matrix.setValues(vals);
+        return matrix;
     }
 
     int compare(RNSharedElementStyle style) {
