@@ -1,8 +1,8 @@
 export type SharedElementNode = {
-  ref: any,
-  nodeHandle: number,
-  isParent: boolean,
-  parentInstance: any
+  ref: any;
+  nodeHandle: number;
+  isParent: boolean;
+  parentInstance: any;
 };
 
 export type SharedElementAnimation =
