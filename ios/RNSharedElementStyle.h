@@ -12,6 +12,7 @@
 @property (nonatomic, assign) UIView* view;
 @property (nonatomic, assign) CGRect layout;
 @property (nonatomic, assign) CGSize size;
+@property (nonatomic, assign) CATransform3D transform;
 @property (nonatomic, assign) UIViewContentMode contentMode;
 @property (nonatomic, assign) CGFloat opacity;
 @property (nonatomic, assign) UIColor* backgroundColor;
@@ -23,6 +24,10 @@
 @property (nonatomic, assign) CGSize shadowOffset;
 @property (nonatomic, assign) UIColor* shadowColor;
 - (instancetype)init;
+
++ (NSString*) stringFromTransform:(CATransform3D) transform;
++ (CATransform3D) getAbsoluteViewTransform:(UIView*) view;
+
 @end
 
 #endif

@@ -285,6 +285,7 @@ NSArray* _imageResolvers;
     style.view = view;
     style.layout = layout;
     style.size = view.bounds.size;
+    style.transform = [RNSharedElementStyle getAbsoluteViewTransform:view];
     style.contentMode = view.contentMode;
     style.opacity = layer.opacity;
     style.cornerRadius = layer.cornerRadius;
@@ -296,7 +297,7 @@ NSArray* _imageResolvers;
     style.shadowRadius = layer.shadowRadius;
     style.shadowOpacity = layer.shadowOpacity;
     
-    //NSLog(@"Style fetched: %@, realSize: %@, opacity: %lf", NSStringFromCGRect(layout), NSStringFromCGSize(view.bounds.size), style.opacity);
+    /*NSLog(@"Style fetched: %@, realSize: %@, opacity: %lf, transform: %@", NSStringFromCGRect(layout), NSStringFromCGSize(view.bounds.size), style.opacity, [RNSharedElementStyle stringFromTransform:style.transform]);*/
     
     _styleCache = style;
     
