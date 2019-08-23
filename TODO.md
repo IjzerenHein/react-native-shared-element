@@ -1,5 +1,5 @@
 Open issues:
-[ ] Strategy for animation-types (auto?)
+[X] Strategy for animation-types (auto?)
 [X] iOS clipping when content is entirely not visible
 [ ] iOS border-radius clipping (parent clipping)
 [ ] iOS Image Border-radius & contain test

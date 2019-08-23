@@ -114,16 +114,16 @@ The `<SharedElementTransition>` component executes a shared element transition n
 
 #### Props
 
-| Property     | Type                                                                  | Description                                                                                                |
-| ------------ | --------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
-| `start`      | `{ node: SharedElementNode, ancestor: SharedElementNode }`            | Start node- and ancestor                                                                                   |
-| `end`        | `{ node: SharedElementNode, ancestor: SharedElementNode }`            | End node- and ancestor                                                                                     |
-| `position`   | `number | Animated.Value`                                             | Interpolated position (0..1), between the start- and end nodes                                             |
-| `animation`  | [SharedElementTransitionAnimation](#SharedElementTransitionAnimation) | Type of animation, e.g move start element or cross-fade between start- and end elements (default = `move`) |
-| `resizeMode` | [SharedElementTransitionResize](#SharedElementTransitionResize)       | Resize-mode transition (default = `stretch`)                                                               |
-| `alignment`  | [SharedElementTransitionAlign](#SharedElementTransitionAlign)         | Alignment (default = `center-center`)                                                                      |
-| `debug`      | `boolean`                                                             | Renders debug overlays for diagnosing measuring and animations                                             |
-| `onMeasure`  | `function`                                                            | Event handler that is called when nodes have been measured and snapshotted                                 |
+| Property    | Type                                                                  | Description                                                                                                |
+| ----------- | --------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| `start`     | `{ node: SharedElementNode, ancestor: SharedElementNode }`            | Start node- and ancestor                                                                                   |
+| `end`       | `{ node: SharedElementNode, ancestor: SharedElementNode }`            | End node- and ancestor                                                                                     |
+| `position`  | `number | Animated.Value`                                             | Interpolated position (0..1), between the start- and end nodes                                             |
+| `animation` | [SharedElementTransitionAnimation](#SharedElementTransitionAnimation) | Type of animation, e.g move start element or cross-fade between start- and end elements (default = `move`) |
+| `resize`    | [SharedElementTransitionResize](#SharedElementTransitionResize)       | Resize behavior (default = `stretch`)                                                                      |
+| `align`     | [SharedElementTransitionAlign](#SharedElementTransitionAlign)         | Alignment behavior (default = `center-center`)                                                             |
+| `debug`     | `boolean`                                                             | Renders debug overlays for diagnosing measuring and animations                                             |
+| `onMeasure` | `function`                                                            | Event handler that is called when nodes have been measured and snapshotted                                 |
 
 ### Animations
 
@@ -139,26 +139,26 @@ The following animation-types are available.
 
 #### SharedElementTransitionResize
 
-| Resize-mode | Description |
-| ----------- | ----------- |
-| `stretch`   |             |
-| `cover`     |             |
-| `contain`   |             |
-| `none`      |             |
+| Resize-mode | Description                                                                                                                                                                                      |
+| ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `stretch`   | Stretches the element to the same shape and size of the other element. If the aspect-ratio of the content differs, you may see stretched. In that case consider one of the other resize options. |
+| `cover`     | Resizes the content to complete cover the other content, while keeping the original aspect-ratio.                                                                                                |
+| `contain`   | Resizes the content to be contained in the other content, while keeping the original aspect-ratio.                                                                                               |
+| `none`      | Do not resize the content. This option is for instance useful in combination with `<Text>` components, where you want to reveal more text.                                                       |
 
 #### SharedElementTransitionAlign
 
-| Alignment       | Description |
-| --------------- | ----------- |
-| `left-center`   |             |
-| `left-top`      |             |
-| `left-right`    |             |
-| `right-center`  |             |
-| `right-top`     |             |
-| `right-right`   |             |
-| `center-top`    |             |
-| `center-center` |             |
-| `center-bottom` |             |
+| Alignment       | 
+| --------------- | 
+| `left-center`   | 
+| `left-top`      | 
+| `left-right`    | 
+| `right-center`  | 
+| `right-top`     | 
+| `right-right`   | 
+| `center-top`    | 
+| `center-center` | 
+| `center-bottom` | 
 
 
 
