@@ -438,10 +438,10 @@
     CGFloat clipBottom = interpolatedClipInsets.bottom != 0.0f ? parentBounds.size.height - (interpolatedLayout.origin.y + interpolatedLayout.size.height) + interpolatedClipInsets.bottom : 0.0f;
     CGFloat clipRight = interpolatedClipInsets.right != 0.0f ? parentBounds.size.width - (interpolatedLayout.origin.x + interpolatedLayout.size.width) + interpolatedClipInsets.right : 0.0f;
     CGRect clipFrame = CGRectMake(
-                                 clipLeft,
-                                 clipTop,
-                                 parentBounds.size.width - clipLeft - clipRight,
-                                 parentBounds.size.height - clipTop - clipBottom);
+                                  clipLeft,
+                                  clipTop,
+                                  parentBounds.size.width - clipLeft - clipRight,
+                                  parentBounds.size.height - clipTop - clipBottom);
     CALayer *maskLayer = [[CALayer alloc] init];
     maskLayer.backgroundColor = [UIColor whiteColor].CGColor;
     maskLayer.frame = clipFrame;
@@ -487,35 +487,97 @@
         // Calculate interpolated layout
         CGRect startInterpolatedContentLayout = [self getInterpolatedLayout:startContentLayout layout2:startContentLayout2 position:_nodePosition];
         CGRect endInterpolatedContentLayout = [self getInterpolatedLayout:endContentLayout1 layout2:endContentLayout position:_nodePosition];
-        /*if ([_animation isEqualToString:@"fade-top"]) {
-            startInterpolatedContentLayout.size.height = startContentLayout.size.height;
-            endInterpolatedContentLayout.size.height = endContentLayout.size.height;
-        } else if ([_animation isEqualToString:@"fade-bottom"]) {
-            startInterpolatedContentLayout.origin.y -= startContentLayout.size.height - startInterpolatedContentLayout.size.height;
-            endInterpolatedContentLayout.origin.y -= endContentLayout.size.height - endInterpolatedContentLayout.size.height;
-        } else if ([_animation isEqualToString:@"fade-left"]) {
-            startInterpolatedContentLayout.size.width = startContentLayout.size.width;
-            endInterpolatedContentLayout.size.width = endContentLayout.size.width;
-        } else if ([_animation isEqualToString:@"fade-right"]) {
-            startInterpolatedContentLayout.origin.x -= startContentLayout.size.width - startInterpolatedContentLayout.size.width;
-            endInterpolatedContentLayout.origin.x -= endContentLayout.size.width - endInterpolatedContentLayout.size.width;
-        }*/
+        
+        // Calculate new size
+        switch (_resize) {
+            case RNSharedElementTransitionResizeStretch:
+                // Nothing to do
+                break;
+            case RNSharedElementTransitionResizeCover:
+                // TODO
+                break;
+            case RNSharedElementTransitionResizeContain:
+                // TODO
+                break;
+            case RNSharedElementTransitionResizeNone:
+                startInterpolatedContentLayout.size = startContentLayout.size;
+                endInterpolatedContentLayout.size = endContentLayout.size;
+                break;
+        }
+        
+        // Calculate new origin
+        /*startInterpolatedContentLayout.origin.x -= interpolatedLayout.origin.x;
+         startInterpolatedContentLayout.origin.y -= interpolatedLayout.origin.y;
+         endInterpolatedContentLayout.origin.x -= interpolatedLayout.origin.x;
+         endInterpolatedContentLayout.origin.y -= interpolatedLayout.origin.y;*/
+        switch (_align) {
+            case RNSharedElementTransitionAlignLeftTop:
+                startInterpolatedContentLayout.origin.x = 0;
+                startInterpolatedContentLayout.origin.y = 0;
+                endInterpolatedContentLayout.origin.x = 0;
+                endInterpolatedContentLayout.origin.y = 0;
+                break;
+            case RNSharedElementTransitionAlignLeftCenter:
+                startInterpolatedContentLayout.origin.x = 0;
+                startInterpolatedContentLayout.origin.y = (interpolatedLayout.size.height - startInterpolatedContentLayout.size.height) / 2;
+                endInterpolatedContentLayout.origin.x = 0;
+                endInterpolatedContentLayout.origin.y = (interpolatedLayout.size.height - endInterpolatedContentLayout.size.height) / 2;
+                break;
+            case RNSharedElementTransitionAlignLeftBottom:
+                startInterpolatedContentLayout.origin.x = 0;
+                startInterpolatedContentLayout.origin.y = interpolatedLayout.size.height - startInterpolatedContentLayout.size.height;
+                endInterpolatedContentLayout.origin.x = 0;
+                endInterpolatedContentLayout.origin.y = interpolatedLayout.size.height - endInterpolatedContentLayout.size.height;
+                break;
+            case RNSharedElementTransitionAlignRightTop:
+                startInterpolatedContentLayout.origin.x = interpolatedLayout.size.width - startInterpolatedContentLayout.size.width;
+                startInterpolatedContentLayout.origin.y = 0;
+                endInterpolatedContentLayout.origin.x = interpolatedLayout.size.width - endInterpolatedContentLayout.size.width;
+                endInterpolatedContentLayout.origin.y = 0;
+                break;
+            case RNSharedElementTransitionAlignRightCenter:
+                startInterpolatedContentLayout.origin.x = interpolatedLayout.size.width - startInterpolatedContentLayout.size.width;
+                startInterpolatedContentLayout.origin.y = (interpolatedLayout.size.height - startInterpolatedContentLayout.size.height) / 2;
+                endInterpolatedContentLayout.origin.x = interpolatedLayout.size.width - endInterpolatedContentLayout.size.width;
+                endInterpolatedContentLayout.origin.y = (interpolatedLayout.size.height - endInterpolatedContentLayout.size.height) / 2;
+                break;
+            case RNSharedElementTransitionAlignRightBottom:
+                startInterpolatedContentLayout.origin.x = interpolatedLayout.size.width - startInterpolatedContentLayout.size.width;
+                startInterpolatedContentLayout.origin.y = interpolatedLayout.size.height - startInterpolatedContentLayout.size.height;
+                endInterpolatedContentLayout.origin.x = interpolatedLayout.size.width - endInterpolatedContentLayout.size.width;
+                endInterpolatedContentLayout.origin.y = interpolatedLayout.size.height - endInterpolatedContentLayout.size.height;
+                break;
+            case RNSharedElementTransitionAlignCenterTop:
+                startInterpolatedContentLayout.origin.x = (interpolatedLayout.size.width - startInterpolatedContentLayout.size.width) / 2;
+                startInterpolatedContentLayout.origin.y = 0;
+                endInterpolatedContentLayout.origin.x = (interpolatedLayout.size.width - endInterpolatedContentLayout.size.width) / 2;
+                endInterpolatedContentLayout.origin.y = 0;
+                break;
+            case RNSharedElementTransitionAlignCenterCenter:
+                startInterpolatedContentLayout.origin.x = (interpolatedLayout.size.width - startInterpolatedContentLayout.size.width) / 2;
+                startInterpolatedContentLayout.origin.y = (interpolatedLayout.size.height - startInterpolatedContentLayout.size.height) / 2;
+                endInterpolatedContentLayout.origin.x = (interpolatedLayout.size.width - endInterpolatedContentLayout.size.width) / 2;
+                endInterpolatedContentLayout.origin.y = (interpolatedLayout.size.height - endInterpolatedContentLayout.size.height) / 2;
+                break;
+            case RNSharedElementTransitionAlignCenterBottom:
+                startInterpolatedContentLayout.origin.x = (interpolatedLayout.size.width - startInterpolatedContentLayout.size.width) / 2;
+                startInterpolatedContentLayout.origin.y = interpolatedLayout.size.height - startInterpolatedContentLayout.size.height;
+                endInterpolatedContentLayout.origin.x = (interpolatedLayout.size.width - endInterpolatedContentLayout.size.width) / 2;
+                endInterpolatedContentLayout.origin.y = interpolatedLayout.size.height - endInterpolatedContentLayout.size.height;
+                break;
+        }
         
         // Update start node
-        startInterpolatedContentLayout.origin.x -= interpolatedLayout.origin.x;
-        startInterpolatedContentLayout.origin.y -= interpolatedLayout.origin.y;
         contentView1.frame = startInterpolatedContentLayout;
         
         // Update end node
-        endInterpolatedContentLayout.origin.x -= interpolatedLayout.origin.x;
-        endInterpolatedContentLayout.origin.y -= interpolatedLayout.origin.y;
         contentView2.frame = endInterpolatedContentLayout;
         
         // Cross-fade
         contentView1.layer.opacity = 1.0f - MIN(MAX(_nodePosition, 0.0f), 1.0f);
         contentView2.layer.opacity = MIN(MAX(_nodePosition, 0.0f), 1.0f);
     }
-
+    
     // Fire events
     if ((startAncestor.style != nil) && !startAncestor.hasCalledOnMeasure) {
         startAncestor.hasCalledOnMeasure = YES;
