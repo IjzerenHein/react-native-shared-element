@@ -1,2 +1,17 @@
 // @flow
-export * from "./tests";
+import type { Test, TestGroup } from "../types";
+import { ImageTests } from "./image";
+import { TextTests } from "./text";
+import { ViewTests } from "./view";
+import { CompoundTests } from "./compound";
+import { MultipleTests } from "./multiple";
+import { ScrollViewTests } from "./scrollView";
+
+export const Tests: (Test | TestGroup)[] = [
+  ImageTests,
+  TextTests,
+  ViewTests,
+  CompoundTests,
+  MultipleTests,
+  ScrollViewTests
+];

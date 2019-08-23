@@ -1,9 +1,9 @@
 // @flow
 import * as React from "react";
 import { StyleSheet, View, Image, Dimensions } from "react-native";
-import { Colors, SharedElement } from "../components";
-import type { Hero, Size, Position, ResizeMode } from "../types";
-import { Heroes } from "../assets";
+import { Colors, SharedElement } from "../../components";
+import type { Hero, Size, Position, ResizeMode } from "../../types";
+import { Heroes } from "../../assets";
 import ImageZoom from "react-native-image-pan-zoom";
 
 const SIZES = {

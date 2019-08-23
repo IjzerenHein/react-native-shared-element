@@ -1,9 +1,9 @@
 // @flow
 import * as React from "react";
 import { StyleSheet, View, FlatList, Image, Dimensions } from "react-native";
-import { Colors, SharedElement } from "../components";
-import type { Hero, Size } from "../types";
-import { Heroes } from "../assets";
+import { Colors, SharedElement } from "../../components";
+import type { Hero, Size } from "../../types";
+import { Heroes } from "../../assets";
 
 const SIZES = {
   max: Dimensions.get("window").width,

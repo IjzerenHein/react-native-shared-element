@@ -1,8 +1,8 @@
 // @flow
 import * as React from "react";
 import { StyleSheet, View, Dimensions } from "react-native";
-import { Colors, SharedElement } from "../components";
-import type { Size, Position } from "../types";
+import { Colors, SharedElement } from "../../components";
+import type { Size, Position } from "../../types";
 
 const SIZES = {
   max: Dimensions.get("window").width,

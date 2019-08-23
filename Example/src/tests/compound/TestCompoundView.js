@@ -1,9 +1,9 @@
 // @flow
 import * as React from "react";
 import { StyleSheet, View, Image, Dimensions, Text } from "react-native";
-import { Colors, Shadows, SharedElement } from "../components";
-import type { Hero, Size, Position } from "../types";
-import { Heroes } from "../assets";
+import { Colors, Shadows, SharedElement } from "../../components";
+import type { Hero, Size, Position } from "../../types";
+import { Heroes } from "../../assets";
 import LinearGradient from "react-native-linear-gradient";
 
 const SIZES = {
@@ -228,7 +228,7 @@ export class TestCompoundView extends React.Component<PropsType> {
                         margin: sizePx / 5
                       }
                 ]}
-                source={require("../assets/fist.png")}
+                source={require("../../assets/fist.png")}
               />
             </SharedElement>
           </View>
