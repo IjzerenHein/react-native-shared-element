@@ -13,30 +13,35 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "flex-start",
     alignItems: "center",
-    paddingLeft: 20
+    paddingLeft: 20,
+    paddingVertical: 20
   },
   top: {
     flexDirection: "column",
     justifyContent: "flex-start",
     alignItems: "center",
-    paddingTop: 20
+    paddingTop: 20,
+    paddingHorizontal: 20
   },
   right: {
     flexDirection: "row",
     justifyContent: "flex-end",
     alignItems: "center",
-    paddingRight: 20
+    paddingRight: 20,
+    paddingVertical: 20
   },
   bottom: {
     flexDirection: "column",
     justifyContent: "flex-end",
     alignItems: "center",
-    paddingBottom: 20
+    paddingBottom: 20,
+    paddingHorizontal: 20
   },
   center: {
     flexDirection: "column",
     justifyContent: "center",
-    alignItems: "center"
+    alignItems: "center",
+    padding: 20
   },
   text: {
     fontWeight: "500"
@@ -50,15 +55,16 @@ const FontSizes = {
   large: 30
 };
 
-type TextLength = "short" | "medium" | "long";
+type TextLength = "word" | "words" | "sentence" | "paragraph";
 
 const TextContent =
   "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.";
 
 const TextLengths: { [key: string]: number } = {
-  short: 11,
-  medium: TextContent.indexOf(".") + 1,
-  long: TextContent.length
+  word: 5,
+  words: 11,
+  sentence: TextContent.indexOf(".") + 1,
+  paragraph: TextContent.length
 };
 
 type PropsType = {
@@ -77,7 +83,7 @@ export class TestText extends React.Component<PropsType> {
     color: Colors.blue,
     position: "default",
     size: "default",
-    length: "short"
+    length: "words"
   };
 
   render() {
@@ -96,7 +102,9 @@ export class TestText extends React.Component<PropsType> {
     const textLength =
       typeof length === "number" ? length : TextLengths[length];
     const width =
-      length === "medium" ? Dimensions.get("window").width / 2 : undefined;
+      textLength > 20 && (position === "left" || position === "right")
+        ? Dimensions.get("window").width / 2
+        : undefined;
     return (
       <View
         style={[

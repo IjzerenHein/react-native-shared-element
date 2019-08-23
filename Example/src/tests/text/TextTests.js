@@ -27,6 +27,22 @@ export const TextTests: TestGroup = {
       start: <TestText position="left" size="large" />,
       end: <TestText position="right" size="large" color={Colors.yellow} />,
       animation: "fade"
+    },
+    {
+      name: "Expand",
+      description: "TODO",
+      start: <TestText length="sentence" position="center" />,
+      end: <TestText length="paragraph" position="center" />,
+      animation: "fade",
+      resize: "none",
+      align: "center-top"
+    },
+    {
+      name: "Expand & Move",
+      description: "TODO",
+      start: <TestText length="sentence" />,
+      end: <TestText end length="paragraph" />,
+      animation: "fade"
     }
   ]
 };
