@@ -9,6 +9,8 @@
     "lint": "./node_modules/.bin/eslint ./src",
     "apk": "cd android && ./gradlew assembleRelease && cd ..",
     "apk-install": "adb install -r android/app/build/outputs/apk/release/app-release.apk",
+    "android": "react-native run-android",
+    "ios": "react-native run-ios",
     "android-clean": "cd android && ./gradlew clean && cd .."
   },
   "dependencies": {
