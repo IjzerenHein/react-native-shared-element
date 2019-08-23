@@ -7,7 +7,6 @@ import {
   TouchableOpacity,
   Dimensions,
   Image,
-  Platform,
   ImageBackground
 } from "react-native";
 import {
@@ -20,10 +19,14 @@ import {
   Heading2,
   Body
 } from "../components";
-import type { SharedElementAnimation } from "react-native-shared-element";
+import type { SharedElementTransitionAnimation } from "react-native-shared-element";
 import { Heroes } from "../assets";
 import { DetailScreen } from "./DetailScreen";
-import type { Hero } from "../types";
+import type {
+  Hero,
+  SharedElementTransitionConfig,
+  SharedElementsConfig
+} from "../types";
 import { fadeIn } from "../transitions";
 import LinearGradient from "react-native-linear-gradient";
 import TouchableScale from "react-native-touchable-scale";
@@ -104,7 +107,7 @@ const styles = StyleSheet.create({
 type PropsType = {
   type: "tile" | "card" | "card2",
   title: string,
-  animation: SharedElementAnimation,
+  animation: SharedElementTransitionAnimation | SharedElementTransitionConfig,
   DetailComponent: any,
   transitionConfig: any,
   navigation?: any
@@ -296,7 +299,9 @@ export class TilesScreen extends React.Component<PropsType> {
       (navigation ? navigation.getParam("transitionConfig") : undefined) ||
       this.props.transitionConfig;
     const alternateHero = animation === "fade" ? Heroes[0] : hero;
-    const sharedElements = {};
+    const sharedElements: SharedElementsConfig = {
+      bla: "da"
+    };
     const props: any = {
       hero: {
         ...alternateHero,
@@ -314,7 +319,11 @@ export class TilesScreen extends React.Component<PropsType> {
         sharedElements[`heroPhoto.${hero.id}`] = "move";
         sharedElements[`heroCloseButton.${hero.id}`] = "fade";
         sharedElements[`heroName.${hero.id}`] = "move";
-        sharedElements[`heroDescription.${hero.id}`] = "fade-top";
+        sharedElements[`heroDescription.${hero.id}`] = {
+          animation: "fade",
+          resize: "none",
+          align: "left-top"
+        };
         routeName = "Card";
         break;
       case "card2":
@@ -323,7 +332,11 @@ export class TilesScreen extends React.Component<PropsType> {
         sharedElements[`heroGradientOverlay.${hero.id}`] = "fade";
         sharedElements[`heroCloseButton.${hero.id}`] = "fade";
         sharedElements[`heroName.${hero.id}`] = "fade";
-        sharedElements[`heroDescription.${hero.id}`] = "fade-top";
+        sharedElements[`heroDescription.${hero.id}`] = {
+          animation: "fade",
+          resize: "none",
+          align: "left-top"
+        };
         routeName = "Card";
         props.gradientOverlay = true;
         break;

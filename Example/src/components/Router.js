@@ -14,6 +14,7 @@ import { PanGestureHandler, State } from "react-native-gesture-handler";
 import { NavBarHeight } from "./navBar/constants";
 import { fromRight } from "../transitions";
 import * as Screens from "react-native-screens";
+import type { SharedElementsConfig } from "../types";
 
 Screens.useScreens();
 
@@ -54,12 +55,6 @@ interface RouterProps {
   transitionConfig: any;
 }
 
-type RouterSharedElementConfig =
-  //| "auto"
-  {
-    [key: string]: boolean
-  };
-
 type RouterAction = {
   action: "push" | "pop",
   config?: RouterConfig,
@@ -72,13 +67,13 @@ interface RouterState {
   nextIndex: number;
   animValue: Animated.Node;
   transitionConfig: ?RouterTransitionConfig;
-  sharedElementConfig: ?RouterSharedElementConfig;
+  sharedElementConfig: ?SharedElementsConfig;
   sharedElementScreens: Array<?ScreenTransitionContextOnSharedElementsUpdatedEvent>;
   actionsQueue: Array<RouterAction>;
 }
 
 type RouterConfig = {
-  sharedElements?: RouterSharedElementConfig,
+  sharedElements?: SharedElementsConfig,
   transitionConfig?: RouterTransitionConfig
 };
 
@@ -184,12 +179,18 @@ export class Router extends React.Component<RouterProps, RouterState> {
         end: {
           node: endScreen ? endScreen.nodes[sharedId] : undefined,
           ancestor: endScreen ? endScreen.ancestor : undefined
-        },
-        animation:
-          (sharedElementConfig[sharedId] === true
-            ? "move"
-            : sharedElementConfig[sharedId]) || "move"
+        }
       };
+      if (sharedElementConfig[sharedId] === true) {
+        nodes[sharedId].animation = "move";
+      } else if (typeof sharedElementConfig[sharedId] === "string") {
+        nodes[sharedId].animation = sharedElementConfig[sharedId];
+      } else if (sharedElementConfig[sharedId]) {
+        nodes[sharedId] = {
+          ...nodes[sharedId],
+          ...sharedElementConfig[sharedId]
+        };
+      }
     }
     // console.log('renderSharedElementTransitions: ', nodes);
     const position = Animated.subtract(animValue, startIndex);
@@ -198,9 +199,7 @@ export class Router extends React.Component<RouterProps, RouterState> {
         {Object.keys(nodes).map(sharedId => (
           <SharedElementTransition
             key={`SharedElementTransition.${sharedId}`}
-            start={nodes[sharedId].start}
-            end={nodes[sharedId].end}
-            animation={nodes[sharedId].animation}
+            {...nodes[sharedId]}
             position={position}
             debug={debug}
           />

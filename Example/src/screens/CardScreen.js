@@ -17,7 +17,7 @@ import {
   Heading1,
   Body
 } from "../components";
-import type { Hero } from "../types";
+import type { Hero, SharedElementsConfig } from "../types";
 import { fadeIn } from "../transitions";
 // import LinearGradient from "react-native-linear-gradient";
 
@@ -236,7 +236,7 @@ export class CardScreen extends React.Component<PropsType, StateType> {
   onBack = () => {
     const { gradientOverlay, navigation } = this.props;
     const hero = navigation ? navigation.getParam("hero") : this.props.hero;
-    const sharedElements = {
+    const sharedElements: SharedElementsConfig = {
       [`heroBackground.${hero.id}`]: "move",
       [`heroPhoto.${hero.id}`]: "move"
     };
@@ -245,7 +245,11 @@ export class CardScreen extends React.Component<PropsType, StateType> {
     }
     sharedElements[`heroCloseButton.${hero.id}`] = "fade";
     sharedElements[`heroName.${hero.id}`] = "move";
-    sharedElements[`heroDescription.${hero.id}`] = "fade-top";
+    sharedElements[`heroDescription.${hero.id}`] = {
+      animation: "fade",
+      resize: "none",
+      align: "left-top"
+    };
     if (navigation) {
       navigation.goBack();
     } else {

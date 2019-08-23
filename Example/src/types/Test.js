@@ -1,6 +1,7 @@
 // @flow
 import * as React from "react";
-import type { SharedElementAnimation } from "react-native-shared-element";
+import type { SharedElementTransitionAnimation } from "react-native-shared-element";
+import type { SharedElementTransitionConfig } from "./SharedElement";
 
 export type Position =
   | "default"
@@ -12,14 +13,14 @@ export type Position =
 export type Size = "default" | "small" | "regular" | "large" | "max";
 export type ResizeMode = "cover" | "contain" | "stretch" | "center";
 
-export type Test = {
+export type Test = {|
   name: string,
   description?: string,
   start: React.Element<any>,
   end: React.Element<any>,
-  animation?: SharedElementAnimation,
+  animation?: SharedElementTransitionAnimation | SharedElementTransitionConfig,
   multi?: boolean
-};
+|};
 
 export type TestGroup = {
   name: string,

@@ -15,9 +15,13 @@ import {
   Heading2,
   Caption
 } from "../components";
-import type { SharedElementAnimation } from "react-native-shared-element";
+import type { SharedElementTransitionAnimation } from "react-native-shared-element";
 import { Heroes } from "../assets";
-import type { Hero } from "../types";
+import type {
+  Hero,
+  SharedElementTransitionConfig,
+  SharedElementsConfig
+} from "../types";
 import { fadeIn } from "../transitions";
 
 const styles = StyleSheet.create({
@@ -57,7 +61,7 @@ const styles = StyleSheet.create({
 
 type PropsType = {
   title: string,
-  animation: SharedElementAnimation,
+  animation: SharedElementTransitionAnimation | SharedElementTransitionConfig,
   DetailComponent: any,
   transitionConfig: any,
   navigation?: any
@@ -121,7 +125,7 @@ export class ListScreen extends React.Component<PropsType> {
 
   onPressItem = (hero: Hero) => {
     const { animation, DetailComponent, transitionConfig } = this.props;
-    const sharedElements = {
+    const sharedElements: SharedElementsConfig = {
       [`heroPhoto.${hero.id}`]: animation,
       [`heroPhotoOverlay.${hero.id}`]: "fade",
       [`heroName.${hero.id}`]: animation

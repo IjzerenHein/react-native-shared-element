@@ -33,16 +33,22 @@ export const TextTests: TestGroup = {
       description: "TODO",
       start: <TestText length="sentence" position="center" />,
       end: <TestText length="paragraph" position="center" />,
-      animation: "fade",
-      resize: "none",
-      align: "center-top"
+      animation: {
+        animation: "fade",
+        resize: "none",
+        align: "center-top"
+      }
     },
     {
       name: "Expand & Move",
       description: "TODO",
       start: <TestText length="sentence" />,
       end: <TestText end length="paragraph" />,
-      animation: "fade"
+      animation: {
+        animation: "fade",
+        resize: "none",
+        align: "center-top"
+      }
     }
   ]
 };
