@@ -6,6 +6,7 @@ import { ViewTests } from "./view";
 import { CompoundTests } from "./compound";
 import { MultipleTests } from "./multiple";
 import { ScrollViewTests } from "./scrollView";
+import { ResizeAlignTests } from "./resizeAlign";
 
 export const Tests: (Test | TestGroup)[] = [
   ImageTests,
@@ -13,5 +14,6 @@ export const Tests: (Test | TestGroup)[] = [
   ViewTests,
   CompoundTests,
   MultipleTests,
-  ScrollViewTests
+  ScrollViewTests,
+  ResizeAlignTests
 ];
