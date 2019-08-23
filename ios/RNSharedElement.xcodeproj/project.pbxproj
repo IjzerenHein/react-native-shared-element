@@ -34,7 +34,7 @@
 		214D6B5622B01BD900227ED9 /* RNSharedElementNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RNSharedElementNode.m; sourceTree = "<group>"; };
 		214D6B5722B01BD900227ED9 /* RNSharedElementNodeManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RNSharedElementNodeManager.h; sourceTree = "<group>"; };
 		214D6B5822B01BD900227ED9 /* RNSharedElementStyle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RNSharedElementStyle.h; sourceTree = "<group>"; };
-		214D6B5922B01BD900227ED9 /* RNSharedElementContentType.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RNSharedElementContentType.h; sourceTree = "<group>"; };
+		214D6B5922B01BD900227ED9 /* RNSharedElementTypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RNSharedElementTypes.h; sourceTree = "<group>"; };
 		214D6B5A22B01BD900227ED9 /* RNSharedElementTransitionManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RNSharedElementTransitionManager.m; sourceTree = "<group>"; };
 		214D6B5B22B01BD900227ED9 /* RNSharedElementTransition.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RNSharedElementTransition.h; sourceTree = "<group>"; };
 		214D6B5C22B01BD900227ED9 /* RNSharedElementTransition.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RNSharedElementTransition.m; sourceTree = "<group>"; };
@@ -77,7 +77,7 @@
 				214D6B5622B01BD900227ED9 /* RNSharedElementNode.m */,
 				214D6B5722B01BD900227ED9 /* RNSharedElementNodeManager.h */,
 				214D6B5522B01BD900227ED9 /* RNSharedElementNodeManager.m */,
-				214D6B5922B01BD900227ED9 /* RNSharedElementContentType.h */,
+				214D6B5922B01BD900227ED9 /* RNSharedElementTypes.h */,
 				214D6B5D22B01BD900227ED9 /* RNSharedElementDelegate.h */,
 				214D6B5822B01BD900227ED9 /* RNSharedElementStyle.h */,
 				214D6B6322B01C5800227ED9 /* RNSharedElementStyle.m */,

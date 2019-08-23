@@ -19,6 +19,9 @@ Native shared element transition primitives for react-native 💫
     - [SharedElementTransition](#sharedelementtransition)
       - [Props](#props-1)
     - [Animations](#animations)
+      - [SharedElementTransitionAnimation](#sharedelementtransitionanimation)
+      - [SharedElementTransitionResize](#sharedelementtransitionresize)
+      - [SharedElementTransitionAlign](#sharedelementtransitionalign)
   - [Example app](#example-app)
   - [Todo](#todo)
   - [License](#license)
@@ -95,7 +98,7 @@ shared element transitions.
 
 ### SharedElement
 
-The `<SharedElement>` component accepts a single child and returns a `node` to it through the `onNode` event handler. The child must be a "real" view which exists in the native view hierarchy.
+The `<SharedElement>` component accepts a single child and returns a `node` to it through the `onNode` event handler. The child must be a "real" `View` which exists in the native view hierarchy.
 
 #### Props
 
@@ -111,31 +114,55 @@ The `<SharedElementTransition>` component executes a shared element transition n
 
 #### Props
 
-| Property    | Type                                                       | Description                                                                |
-| ----------- | ---------------------------------------------------------- | -------------------------------------------------------------------------- |
-| `start`     | `{ node: SharedElementNode, ancestor: SharedElementNode }` | Start node- and ancestor                                                   |
-| `end`       | `{ node: SharedElementNode, ancestor: SharedElementNode }` | End node- and ancestor                                                     |
-| `animation` | SharedElementAnimation                                     | See Animations                                                             |
-| `position`  | `number | Animated.Value`                                  | Interpolated position (0..1), between the start- and end nodes             |
-| `debug`     | `boolean`                                                  | Renders debug overlays for diagnosing measuring and animations             |
-| `onMeasure` | `function`                                                 | Event handler that is called when nodes have been measured and snapshotted |
+| Property     | Type                                                                  | Description                                                                                                |
+| ------------ | --------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| `start`      | `{ node: SharedElementNode, ancestor: SharedElementNode }`            | Start node- and ancestor                                                                                   |
+| `end`        | `{ node: SharedElementNode, ancestor: SharedElementNode }`            | End node- and ancestor                                                                                     |
+| `position`   | `number | Animated.Value`                                             | Interpolated position (0..1), between the start- and end nodes                                             |
+| `animation`  | [SharedElementTransitionAnimation](#SharedElementTransitionAnimation) | Type of animation, e.g move start element or cross-fade between start- and end elements (default = `move`) |
+| `resizeMode` | [SharedElementTransitionResize](#SharedElementTransitionResize)       | Resize-mode transition (default = `stretch`)                                                               |
+| `alignment`  | [SharedElementTransitionAlign](#SharedElementTransitionAlign)         | Alignment (default = `center-center`)                                                                      |
+| `debug`      | `boolean`                                                             | Renders debug overlays for diagnosing measuring and animations                                             |
+| `onMeasure`  | `function`                                                            | Event handler that is called when nodes have been measured and snapshotted                                 |
 
 ### Animations
 
 The following animation-types are available.
 
-| Animation           | Description                                     |
-| ------------------- | ----------------------------------------------- |
-| `move`              |                                                 |
-| `fade`              | Cross-fades between the start- and end elements |
-| `fade-left`         |                                                 |
-| `fade-top`          |                                                 |
-| `fade-right`        |                                                 |
-| `fade-bottom`       |                                                 |
-| `fade-top-left`     |                                                 |
-| `fade-top-right`    |                                                 |
-| `fade-bottom-right` |                                                 |
-| `fade-bottom-left`  |                                                 |
+
+#### SharedElementTransitionAnimation
+
+| Animation | Description                                     |
+| --------- | ----------------------------------------------- |
+| `move`    | Moves the start- element to the end position    |
+| `fade`    | Cross-fades between the start- and end elements |
+
+#### SharedElementTransitionResize
+
+| Resize-mode | Description |
+| ----------- | ----------- |
+| `stretch`   |             |
+| `cover`     |             |
+| `contain`   |             |
+| `none`      |             |
+
+#### SharedElementTransitionAlign
+
+| Alignment       | Description |
+| --------------- | ----------- |
+| `left-center`   |             |
+| `left-top`      |             |
+| `left-right`    |             |
+| `right-center`  |             |
+| `right-top`     |             |
+| `right-right`   |             |
+| `center-top`    |             |
+| `center-center` |             |
+| `center-bottom` |             |
+
+
+
+
 
 ## Example app
 

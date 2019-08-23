@@ -11,7 +11,9 @@ import {
 } from "react-native";
 import {
   SharedElementNode,
-  SharedElementAnimation,
+  SharedElementTransitionAnimation,
+  SharedElementTransitionResize,
+  SharedElementTransitionAlign,
   SharedElementNodeType,
   SharedElementContentType
 } from "./types";
@@ -52,7 +54,9 @@ export type SharedElementTransitionProps = {
     ancestor?: SharedElementNode;
   };
   position: number | any | void;
-  animation?: SharedElementAnimation;
+  animation: SharedElementTransitionAnimation;
+  resize: SharedElementTransitionResize;
+  align: SharedElementTransitionAlign;
   debug?: boolean;
   style?: any;
   onMeasure?: (event: SharedElementOnMeasureEvent) => void;
@@ -71,6 +75,30 @@ if (isAvailable) {
     ].map(path => path.split("."))
   });
 }
+
+const NativeAnimationType = new Map<SharedElementTransitionAnimation, number>([
+  ["move", 0],
+  ["fade", 1]
+]);
+
+const NativeResizeType = new Map<SharedElementTransitionResize, number>([
+  ["stretch", 0],
+  ["cover", 1],
+  ["contain", 2],
+  ["none", 3]
+]);
+
+const NativeAlignType = new Map<SharedElementTransitionAlign, number>([
+  ["left-top", 0],
+  ["left-center", 1],
+  ["left-bottom", 2],
+  ["right-top", 3],
+  ["right-center", 4],
+  ["right-bottom", 5],
+  ["center-top", 6],
+  ["center-center", 7],
+  ["center-bottom", 8]
+]);
 
 const debugColors = {
   startNode: "#82B2E8",
@@ -120,7 +148,10 @@ export class SharedElementTransition extends React.Component<
   static defaultProps = {
     start: {},
     end: {},
-    SharedElementComponent: RNAnimatedSharedElementTransition
+    SharedElementComponent: RNAnimatedSharedElementTransition,
+    animation: "move",
+    resize: "stretch",
+    align: "center center"
   };
 
   state: StateType = {};
@@ -261,6 +292,9 @@ export class SharedElementTransition extends React.Component<
       start,
       end,
       position,
+      animation,
+      resize,
+      align,
       onMeasure,
       debug,
       // style,
@@ -281,6 +315,9 @@ export class SharedElementTransition extends React.Component<
             ancestor: SharedElementTransition.prepareNode(end.ancestor)
           }}
           nodePosition={position}
+          animation={NativeAnimationType.get(animation)}
+          resize={NativeResizeType.get(resize)}
+          align={NativeAlignType.get(align)}
           onMeasureNode={debug ? this.onMeasureNode : onMeasure}
           // style={debug && style ? [debugStyles.content, style] : style}
           {...otherProps}

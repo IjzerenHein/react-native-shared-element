@@ -14,7 +14,9 @@
 @interface RNSharedElementTransition : UIView <RNSharedElementDelegate>
 
 @property (nonatomic, assign) CGFloat nodePosition;
-@property (nonatomic, assign) NSString* animation;
+@property (nonatomic, assign) RNSharedElementTransitionAnimation animation;
+@property (nonatomic, assign) RNSharedElementTransitionResize resize;
+@property (nonatomic, assign) RNSharedElementTransitionAlign align;
 @property (nonatomic, assign) RNSharedElementNode* startNode;
 @property (nonatomic, assign) RNSharedElementNode* startAncestor;
 @property (nonatomic, copy) RCTDirectEventBlock onMeasureNode;

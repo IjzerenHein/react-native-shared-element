@@ -43,7 +43,9 @@
                    [[RNSharedElementTransitionItem alloc]initWithNodeManager:nodeManager name:@"endNode" isAncestor:NO]
                    ];
         _nodePosition = 0.0f;
-        _animation = @"move";
+        _animation = RNSharedElementTransitionAnimationMove;
+        _resize = RNSharedElementTransitionResizeStretch;
+        _align = RNSharedElementTransitionAlignCenterCenter;
         _reactFrameSet = NO;
         _initialLayoutPassCompleted = NO;
         self.userInteractionEnabled = NO;
@@ -129,10 +131,26 @@
     }
 }
 
-- (void) setAnimation:(NSString *)animation
+- (void) setAnimation:(RNSharedElementTransitionAnimation)animation
 {
-    if (![_animation isEqualToString:animation]) {
+    if (_animation != animation) {
         _animation = animation;
+        [self updateStyle];
+    }
+}
+
+- (void) setResize:(RNSharedElementTransitionResize)resize
+{
+    if (_resize != resize) {
+        _resize = resize;
+        [self updateStyle];
+    }
+}
+
+- (void) setAlign:(RNSharedElementTransitionAlign)align
+{
+    if (_align != align) {
+        _align = align;
         [self updateStyle];
     }
 }
@@ -179,7 +197,7 @@
     item.contentType = contentType;
     if ((contentType == RNSharedElementContentTypeSnapshotImage) || (contentType == RNSharedElementContentTypeRawImage)) {
         UIImage* image = content;
-        if ([_animation isEqualToString:@"move"]) {
+        if (_animation == RNSharedElementTransitionAnimationMove) {
             if (_primaryImageView.image == nil) {
                 [self updateViewWithImage:_primaryImageView image:image];
             } else if ((image.size.width * image.size.height) > (_primaryImageView.image.size.width * _primaryImageView.image.size.height)) {
@@ -446,7 +464,7 @@
     // Update content
     UIView* contentView1 = (startItem.contentType == RNSharedElementContentTypeSnapshotView) ? startItem.content : _primaryImageView;
     if (contentView1.superview != _innerClipView) [_innerClipView addSubview:contentView1];
-    if ([_animation isEqualToString:@"move"]) {
+    if (_animation == RNSharedElementTransitionAnimationMove) {
         
         // In case of move, we correctly calculate the content-frame
         // and interpolate between the start- and end-state, assuming
@@ -469,7 +487,7 @@
         // Calculate interpolated layout
         CGRect startInterpolatedContentLayout = [self getInterpolatedLayout:startContentLayout layout2:startContentLayout2 position:_nodePosition];
         CGRect endInterpolatedContentLayout = [self getInterpolatedLayout:endContentLayout1 layout2:endContentLayout position:_nodePosition];
-        if ([_animation isEqualToString:@"fade-top"]) {
+        /*if ([_animation isEqualToString:@"fade-top"]) {
             startInterpolatedContentLayout.size.height = startContentLayout.size.height;
             endInterpolatedContentLayout.size.height = endContentLayout.size.height;
         } else if ([_animation isEqualToString:@"fade-bottom"]) {
@@ -481,7 +499,7 @@
         } else if ([_animation isEqualToString:@"fade-right"]) {
             startInterpolatedContentLayout.origin.x -= startContentLayout.size.width - startInterpolatedContentLayout.size.width;
             endInterpolatedContentLayout.origin.x -= endContentLayout.size.width - endInterpolatedContentLayout.size.width;
-        }
+        }*/
         
         // Update start node
         startInterpolatedContentLayout.origin.x -= interpolatedLayout.origin.x;

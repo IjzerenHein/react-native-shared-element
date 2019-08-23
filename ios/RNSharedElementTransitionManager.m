@@ -8,6 +8,7 @@
 #import "RNSharedElementTransitionManager.h"
 #import "RNSharedElementTransition.h"
 #import "RNSharedElementNodeManager.h"
+#import "RNSharedElementTypes.h"
 
 @implementation RNSharedElementTransitionManager
 {
@@ -47,7 +48,9 @@ RCT_EXPORT_MODULE(RNSharedElementTransition);
 }
 
 RCT_EXPORT_VIEW_PROPERTY(nodePosition, CGFloat);
-RCT_EXPORT_VIEW_PROPERTY(animation, NSString);
+RCT_EXPORT_VIEW_PROPERTY(animation, NSInteger);
+RCT_EXPORT_VIEW_PROPERTY(resize, NSInteger);
+RCT_EXPORT_VIEW_PROPERTY(align, NSInteger);
 RCT_CUSTOM_VIEW_PROPERTY(startNode, NSObject, RNSharedElementTransition)
 {
     view.startNode = [self nodeFromJson:[json valueForKey:@"node"]];

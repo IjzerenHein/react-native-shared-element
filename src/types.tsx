@@ -5,14 +5,24 @@ export type SharedElementNode = {
   parentInstance: any;
 };
 
-export type SharedElementAnimation =
-  | "move"
-  | "fade"
-  | "fade-stretch"
-  | "fade-top"
-  | "fade-bottom"
-  | "fade-left"
-  | "fade-right";
+export type SharedElementTransitionAnimation = "move" | "fade";
+
+export type SharedElementTransitionResize =
+  | "stretch"
+  | "cover"
+  | "contain"
+  | "none";
+
+export type SharedElementTransitionAlign =
+  | "left-top"
+  | "left-center"
+  | "left-bottom"
+  | "right-top"
+  | "right-center"
+  | "right-bottom"
+  | "center-top"
+  | "center-center"
+  | "center-bottom";
 
 export type SharedElementNodeType =
   | "startNode"
