@@ -55,8 +55,8 @@ export type SharedElementTransitionProps = {
   };
   position: number | any | void;
   animation: SharedElementTransitionAnimation;
-  resize: SharedElementTransitionResize;
-  align: SharedElementTransitionAlign;
+  resize?: SharedElementTransitionResize;
+  align?: SharedElementTransitionAlign;
   debug?: boolean;
   style?: any;
   onMeasure?: (event: SharedElementOnMeasureEvent) => void;
@@ -150,7 +150,7 @@ export class SharedElementTransition extends React.Component<
     SharedElementComponent: RNAnimatedSharedElementTransition,
     animation: "move",
     resize: "stretch",
-    align: "center center"
+    align: "center-center"
   };
 
   state: StateType = {};
@@ -315,7 +315,9 @@ export class SharedElementTransition extends React.Component<
           }}
           nodePosition={position}
           animation={NativeAnimationType.get(animation)}
+          // @ts-ignore
           resize={NativeResizeType.get(resize)}
+          // @ts-ignore
           align={NativeAlignType.get(align)}
           onMeasureNode={debug ? this.onMeasureNode : onMeasure}
           // style={debug && style ? [debugStyles.content, style] : style}
