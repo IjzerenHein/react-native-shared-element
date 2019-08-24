@@ -33,10 +33,37 @@ export const CompoundTests: TestGroup = {
       animation: "fade"
     },
     {
+      name: "Fade (resize = clip)",
+      start: (
+        <TestCompoundView size="regular" position="top" hero={Heroes[2]} />
+      ),
+      end: (
+        <TestCompoundView
+          end
+          size="regular"
+          position="bottom"
+          hero={Heroes[6]}
+        />
+      ),
+      animation: {
+        animation: "fade",
+        resize: "clip"
+      }
+    },
+    {
       name: "Fade & change aspect-ratio",
       start: <TestCompoundView size="regular" position="top" />,
       end: <TestCompoundView end size="regular" position="bottom" vertical />,
       animation: "fade"
+    },
+    {
+      name: "Fade & change aspect-ratio (clip)",
+      start: <TestCompoundView size="regular" position="top" vertical />,
+      end: <TestCompoundView end size="regular" position="bottom" />,
+      animation: {
+        animation: "fade",
+        resize: "clip"
+      }
     }
   ]
 };
