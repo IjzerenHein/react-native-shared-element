@@ -83,10 +83,8 @@ const NativeAnimationType = new Map<SharedElementTransitionAnimation, number>([
 
 const NativeResizeType = new Map<SharedElementTransitionResize, number>([
   ["stretch", 0],
-  ["cover", 1],
-  ["contain", 2],
-  ["clip", 3],
-  ["none", 4]
+  ["clip", 1],
+  ["none", 2]
 ]);
 
 const NativeAlignType = new Map<SharedElementTransitionAlign, number>([

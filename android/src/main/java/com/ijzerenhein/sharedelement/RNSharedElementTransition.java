@@ -39,10 +39,8 @@ public class RNSharedElementTransition extends ViewGroup {
 
     enum Resize {
         STRETCH(0),
-        COVER(1),
-        CONTAIN(2),
-        CLIP(3),
-        NONE(4);
+        CLIP(1),
+        NONE(2);
 
         private final int value;
         Resize(final int newValue) {value = newValue;}

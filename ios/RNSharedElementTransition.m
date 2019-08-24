@@ -490,53 +490,9 @@
         CGRect endInterpolatedContentLayout = [self getInterpolatedLayout:endContentLayout1 layout2:endContentLayout position:_nodePosition];
         
         // Calculate new size
-        float aspectRatio;
-        float contentAspectRatio;
         switch (_resize) {
             case RNSharedElementTransitionResizeStretch:
                 // Nothing to do
-                break;
-            case RNSharedElementTransitionResizeCover:
-                aspectRatio = interpolatedLayout.size.width / interpolatedLayout.size.height;
-                // Start
-                contentAspectRatio = startContentLayout.size.width / startContentLayout.size.height;
-                if (contentAspectRatio > aspectRatio) {
-                    startInterpolatedContentLayout.size.height = interpolatedLayout.size.height;
-                    startInterpolatedContentLayout.size.width = interpolatedLayout.size.height * contentAspectRatio;
-                } else {
-                    startInterpolatedContentLayout.size.width = interpolatedLayout.size.width;
-                    startInterpolatedContentLayout.size.height = interpolatedLayout.size.width / contentAspectRatio;
-                }
-                // End
-                contentAspectRatio = endContentLayout.size.width / endContentLayout.size.height;
-                if (contentAspectRatio > aspectRatio) {
-                    endInterpolatedContentLayout.size.height = interpolatedLayout.size.height;
-                    endInterpolatedContentLayout.size.width = interpolatedLayout.size.height * contentAspectRatio;
-                } else {
-                    endInterpolatedContentLayout.size.width = interpolatedLayout.size.width;
-                    endInterpolatedContentLayout.size.height = interpolatedLayout.size.width / contentAspectRatio;
-                }
-                break;
-            case RNSharedElementTransitionResizeContain:
-                aspectRatio = interpolatedLayout.size.width / interpolatedLayout.size.height;
-                // Start
-                contentAspectRatio = startContentLayout.size.width / startContentLayout.size.height;
-                if (contentAspectRatio > aspectRatio) {
-                    startInterpolatedContentLayout.size.width = interpolatedLayout.size.width;
-                    startInterpolatedContentLayout.size.height = interpolatedLayout.size.width / contentAspectRatio;
-                } else {
-                    startInterpolatedContentLayout.size.height = interpolatedLayout.size.height;
-                    startInterpolatedContentLayout.size.width = interpolatedLayout.size.height * contentAspectRatio;
-                }
-                // End
-                contentAspectRatio = endContentLayout.size.width / endContentLayout.size.height;
-                if (contentAspectRatio > aspectRatio) {
-                    endInterpolatedContentLayout.size.width = interpolatedLayout.size.width;
-                    endInterpolatedContentLayout.size.height = interpolatedLayout.size.width / contentAspectRatio;
-                } else {
-                    endInterpolatedContentLayout.size.height = interpolatedLayout.size.height;
-                    endInterpolatedContentLayout.size.width = interpolatedLayout.size.height * contentAspectRatio;
-                }
                 break;
             case RNSharedElementTransitionResizeClip:
                 startInterpolatedContentLayout.size = startContentLayout.size;

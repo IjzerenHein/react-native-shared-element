@@ -7,12 +7,7 @@ export type SharedElementNode = {
 
 export type SharedElementTransitionAnimation = "move" | "fade";
 
-export type SharedElementTransitionResize =
-  | "stretch"
-  | "cover"
-  | "contain"
-  | "clip"
-  | "none";
+export type SharedElementTransitionResize = "stretch" | "clip" | "none";
 
 export type SharedElementTransitionAlign =
   | "left-top"

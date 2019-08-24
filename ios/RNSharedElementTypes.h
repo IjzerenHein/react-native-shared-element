@@ -20,10 +20,8 @@ typedef NS_ENUM(NSInteger, RNSharedElementTransitionAnimation) {
 
 typedef NS_ENUM(NSInteger, RNSharedElementTransitionResize) {
     RNSharedElementTransitionResizeStretch = 0,
-    RNSharedElementTransitionResizeCover = 1,
-    RNSharedElementTransitionResizeContain = 2,
-    RNSharedElementTransitionResizeClip = 3,
-    RNSharedElementTransitionResizeNone = 4
+    RNSharedElementTransitionResizeClip = 1,
+    RNSharedElementTransitionResizeNone = 2
 };
 
 typedef NS_ENUM(NSInteger, RNSharedElementTransitionAlign) {

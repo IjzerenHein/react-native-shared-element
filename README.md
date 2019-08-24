@@ -142,8 +142,6 @@ The following animation-types are available.
 | Resize-mode | Description                                                                                                                                                                                      |
 | ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `stretch`   | Stretches the element to the same shape and size of the other element. If the aspect-ratio of the content differs, you may see stretched. In that case consider one of the other resize options. |
-| `cover`     | Resizes the content to complete cover the other content, while keeping the original aspect-ratio.                                                                                                |
-| `contain`   | Resizes the content to be contained in the other content, while keeping the original aspect-ratio.                                                                                               |
 | `clip`      | Do not resize, but clip the content to the size of the other content. This option is for instance useful in combination with `<Text>` components, where you want to reveal more text.            |
 | `none`      | Do not resize the content. When combined with `fade`, this creates a plain cross-fade effect without any resizing or clipping                                                                    |
 
