@@ -11,6 +11,7 @@ export type SharedElementTransitionResize =
   | "stretch"
   | "cover"
   | "contain"
+  | "clip"
   | "none";
 
 export type SharedElementTransitionAlign =

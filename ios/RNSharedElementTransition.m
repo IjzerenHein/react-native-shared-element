@@ -460,6 +460,7 @@
     innerClipFrame.origin.y = 0;
     _innerClipView.layer.cornerRadius = interpolatedStyle.cornerRadius;
     _innerClipView.frame = innerClipFrame;
+    _innerClipView.layer.masksToBounds = _resize != RNSharedElementTransitionResizeNone;
     
     // Update content
     UIView* contentView1 = (startItem.contentType == RNSharedElementContentTypeSnapshotView) ? startItem.content : _primaryImageView;
@@ -499,9 +500,12 @@
             case RNSharedElementTransitionResizeContain:
                 // TODO
                 break;
-            case RNSharedElementTransitionResizeNone:
+            case RNSharedElementTransitionResizeClip:
                 startInterpolatedContentLayout.size = startContentLayout.size;
                 endInterpolatedContentLayout.size = endContentLayout.size;
+                break;
+            case RNSharedElementTransitionResizeNone:
+                // TODO
                 break;
         }
         

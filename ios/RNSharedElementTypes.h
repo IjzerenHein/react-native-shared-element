@@ -22,7 +22,8 @@ typedef NS_ENUM(NSInteger, RNSharedElementTransitionResize) {
     RNSharedElementTransitionResizeStretch = 0,
     RNSharedElementTransitionResizeCover = 1,
     RNSharedElementTransitionResizeContain = 2,
-    RNSharedElementTransitionResizeNone = 3
+    RNSharedElementTransitionResizeClip = 3,
+    RNSharedElementTransitionResizeNone = 4
 };
 
 typedef NS_ENUM(NSInteger, RNSharedElementTransitionAlign) {
