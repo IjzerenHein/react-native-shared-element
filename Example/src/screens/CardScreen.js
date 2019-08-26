@@ -78,6 +78,43 @@ export class CardScreen extends React.Component<PropsType, StateType> {
     header: null
   };
 
+  /*static sharedElements = (navigation: any) => {
+    const type = navigation.getParam("type") || "card2";
+    const hero = navigation.getParam("hero");
+    console.log("CardScreen.sharedElements: ", type, hero);
+    const sharedElements: SharedElementsConfig = {};
+
+    switch (type) {
+      case "tile":
+        sharedElements[`heroPhoto.${hero.id}`] = "move";
+        break;
+      case "card":
+        sharedElements[`heroBackground.${hero.id}`] = "move";
+        sharedElements[`heroPhoto.${hero.id}`] = "move";
+        sharedElements[`heroCloseButton.${hero.id}`] = "fade";
+        sharedElements[`heroName.${hero.id}`] = "move";
+        sharedElements[`heroDescription.${hero.id}`] = {
+          animation: "fade",
+          resize: "none",
+          align: "left-top"
+        };
+        break;
+      case "card2":
+        sharedElements[`heroBackground.${hero.id}`] = "move";
+        sharedElements[`heroPhoto.${hero.id}`] = "move";
+        sharedElements[`heroGradientOverlay.${hero.id}`] = "fade";
+        sharedElements[`heroCloseButton.${hero.id}`] = "fade";
+        sharedElements[`heroName.${hero.id}`] = "fade";
+        sharedElements[`heroDescription.${hero.id}`] = {
+          animation: "fade",
+          resize: "none",
+          align: "left-top"
+        };
+        break;
+    }
+    return sharedElements;
+  };*/
+
   constructor(props: PropsType) {
     super(props);
     const scrollOffset = new Animated.Value(0);
