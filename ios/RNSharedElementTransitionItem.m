@@ -131,33 +131,35 @@
 {
     if (!CGRectIsNull(_visibleLayoutCache) || !_style) return _visibleLayoutCache;
     if (!ancestor.style) return _style.layout;
-
+    
     // Get visible area (some parts may be clipped in a scrollview or something)
     CGRect visibleLayout = _style.layout;
     UIView* superview = _style.view.superview;
     while (superview != nil) {
-        CGRect superLayout = [superview convertRect:superview.bounds toView:nil];
-        CGRect intersectedLayout = CGRectIntersection(visibleLayout, superLayout);
-        if (isinf(intersectedLayout.origin.x) || isinf(intersectedLayout.origin.y) || CGRectIsEmpty(intersectedLayout)) {
-            if ((visibleLayout.origin.y + visibleLayout.size.height) < superLayout.origin.y) {
-                visibleLayout.origin.y = superLayout.origin.y;
-                visibleLayout.size.height = 0;
+        if (superview.layer.masksToBounds || (superview.layer.mask != nil)) {
+            CGRect superLayout = [superview convertRect:superview.bounds toView:nil];
+            CGRect intersectedLayout = CGRectIntersection(visibleLayout, superLayout);
+            if (isinf(intersectedLayout.origin.x) || isinf(intersectedLayout.origin.y) || CGRectIsEmpty(intersectedLayout)) {
+                if ((visibleLayout.origin.y + visibleLayout.size.height) < superLayout.origin.y) {
+                    visibleLayout.origin.y = superLayout.origin.y;
+                    visibleLayout.size.height = 0;
+                }
+                if (visibleLayout.origin.y > (superLayout.origin.y + superLayout.size.height)) {
+                    visibleLayout.origin.y = superLayout.origin.y + superLayout.size.height;
+                    visibleLayout.size.height = 0;
+                }
+                if ((visibleLayout.origin.x + visibleLayout.size.width) < superLayout.origin.x) {
+                    visibleLayout.origin.x = superLayout.origin.x;
+                    visibleLayout.size.width = 0;
+                }
+                if (visibleLayout.origin.x > (superLayout.origin.x + superLayout.size.width)) {
+                    visibleLayout.origin.x = superLayout.origin.x + superLayout.size.width;
+                    visibleLayout.size.width = 0;
+                }
+                break;
             }
-            if (visibleLayout.origin.y > (superLayout.origin.y + superLayout.size.height)) {
-                visibleLayout.origin.y = superLayout.origin.y + superLayout.size.height;
-                visibleLayout.size.height = 0;
-            }
-            if ((visibleLayout.origin.x + visibleLayout.size.width) < superLayout.origin.x) {
-                visibleLayout.origin.x = superLayout.origin.x;
-                visibleLayout.size.width = 0;
-            }
-            if (visibleLayout.origin.x > (superLayout.origin.x + superLayout.size.width)) {
-                visibleLayout.origin.x = superLayout.origin.x + superLayout.size.width;
-                visibleLayout.size.width = 0;
-            }
-            break;
+            visibleLayout = intersectedLayout;
         }
-        visibleLayout = intersectedLayout;
         if (superview == ancestor.style.view) break;
         superview = superview.superview;
     }
