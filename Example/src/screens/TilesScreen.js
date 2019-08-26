@@ -299,9 +299,7 @@ export class TilesScreen extends React.Component<PropsType> {
       (navigation ? navigation.getParam("transitionConfig") : undefined) ||
       this.props.transitionConfig;
     const alternateHero = animation === "fade" ? Heroes[0] : hero;
-    const sharedElements: SharedElementsConfig = {
-      bla: "da"
-    };
+    const sharedElements: SharedElementsConfig = {};
     const props: any = {
       hero: {
         ...alternateHero,
