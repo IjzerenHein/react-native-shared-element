@@ -1,10 +1,7 @@
 // @flow
 import * as React from "react";
 import { Icon } from "../components";
-import {
-  createSharedElementRenderer,
-  createSharedElementScene
-} from "react-navigation-sharedelement";
+import { createSharedElementTransitioner } from "react-navigation-sharedelement";
 import { createAppContainer } from "@react-navigation/native";
 import { createStackNavigator } from "react-navigation-stack";
 import { createBottomTabNavigator } from "react-navigation-tabs";
@@ -19,12 +16,12 @@ import { TestScreen } from "./TestScreen";
 import { fadeIn } from "../transitions";
 
 const screens = {
-  Tiles: createSharedElementScene(TilesScreen),
-  Detail: createSharedElementScene(DetailScreen),
-  Pager: createSharedElementScene(PagerScreen),
-  Card: createSharedElementScene(CardScreen),
+  Tiles: TilesScreen,
+  Detail: DetailScreen,
+  Pager: PagerScreen,
+  Card: CardScreen,
   Tests: TestsScreen,
-  Test: createSharedElementScene(TestScreen)
+  Test: TestScreen
 };
 
 function isTabBarVisible(navigation: any): boolean {
@@ -40,13 +37,27 @@ function isTabBarVisible(navigation: any): boolean {
   }
 }
 
-const stackNavigator = createStackNavigator(
+const stackNavigator = createSharedElementTransitioner(
+  createStackNavigator,
   {
-    Stack: createSharedElementScene(MainScreen),
+    Stack: MainScreen,
     ...screens
   },
   {
     initialRouteName: "Stack",
+    /*transitionConfig: (
+      transitionProps: any,
+      prevTransitionProps: any,
+      isModal: boolean
+    ) => {
+      console.log(
+        "stackNavigator.transitionConfig: ",
+        transitionProps,
+        prevTransitionProps,
+        isModal
+      );
+      return {};
+    },*/
     navigationOptions: ({ navigation }) => ({
       tabBarLabel: "Stack",
       tabBarIcon: ({ tintColor }) => (
@@ -57,9 +68,10 @@ const stackNavigator = createStackNavigator(
   }
 );
 
-const modalNavigator = createStackNavigator(
+const modalNavigator = createSharedElementTransitioner(
+  createStackNavigator,
   {
-    Modal: createSharedElementScene(MainScreen),
+    Modal: MainScreen,
     ...screens
   },
   {
@@ -75,9 +87,10 @@ const modalNavigator = createStackNavigator(
   }
 );
 
-const fadeNavigator = createStackNavigator(
+const fadeNavigator = createSharedElementTransitioner(
+  createStackNavigator,
   {
-    Fade: createSharedElementScene(MainScreen),
+    Fade: MainScreen,
     ...screens
   },
   {
@@ -99,9 +112,7 @@ export const tabNavigator = createBottomTabNavigator({
   fade: fadeNavigator
 });
 
-const AppContainer = createAppContainer(
-  createSharedElementRenderer(tabNavigator)
-);
+const AppContainer = createAppContainer(tabNavigator);
 
 type PropsType = {};
 
