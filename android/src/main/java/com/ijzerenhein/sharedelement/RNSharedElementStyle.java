@@ -153,6 +153,7 @@ public class RNSharedElementStyle {
 
             parentView = parentView.getParent();
         }
+        if (parentView == null) return null;
         matrix.setValues(vals);
         return matrix;
     }

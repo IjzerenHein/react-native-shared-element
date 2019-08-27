@@ -1,8 +1,10 @@
 package com.ijzerenhein.sharedelement;
 
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 import javax.annotation.Nullable;
 
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +23,10 @@ import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.controller.BaseControllerListener;
 import com.facebook.drawee.backends.pipeline.PipelineDraweeController;
 
+abstract class RetryRunnable implements Runnable {
+    int numRetries = 0;
+}
+
 class RNSharedElementNode {
     static private String LOG_TAG = "RNSharedElementNode";
 
@@ -37,6 +43,7 @@ class RNSharedElementNode {
     private RNSharedElementContent mContentCache;
     private ArrayList<Callback> mContentCallbacks;
     private BaseControllerListener<ImageInfo> mDraweeControllerListener;
+    private Handler mRetryHandler;
 
     RNSharedElementNode(int reactTag, View view, boolean isParent, ReadableMap styleConfig) {
         mReactTag = reactTag;
@@ -52,6 +59,7 @@ class RNSharedElementNode {
         mContentCallbacks = null;
         mResolvedView = null;
         mDraweeControllerListener = null;
+        mRetryHandler = null;
         updateView();
     }
 
@@ -67,6 +75,7 @@ class RNSharedElementNode {
         mRefCount = refCount;
         if (mRefCount == 0) {
             removeDraweeControllerListener();
+            stopRetryLoop();
         }
     }
 
@@ -131,27 +140,32 @@ class RNSharedElementNode {
         }
         if (mStyleCallbacks == null) mStyleCallbacks = new ArrayList<Callback>();
         mStyleCallbacks.add(callback);
-        fetchInitialStyle();
+        if (!fetchInitialStyle()) {
+            startRetryLoop();
+        }
     }
 
-    private void fetchInitialStyle() {
+    private boolean fetchInitialStyle() {
         View view = mResolvedView;
-        if (view == null || mStyleCallbacks == null) return;
+        if (view == null || mStyleCallbacks == null) return true;
 
         // Get relative size and position within parent
         int left = view.getLeft();
         int top = view.getTop();
         int width = view.getWidth();
         int height = view.getHeight();
-        if (width == 0 && height == 0) return;
+        if (width == 0 && height == 0) return false;
+        Matrix transform = RNSharedElementStyle.getAbsoluteViewTransform(view);
+        if (transform == null) return false;
         Rect frame = new Rect(left, top, left + width, top + height);
 
         // Get absolute layout
         int[] location = new int[2]; 
         view.getLocationOnScreen(location);
-        Matrix transform = RNSharedElementStyle.getAbsoluteViewTransform(view);
         float[] f = new float[9];
         transform.getValues(f);
+        float translateX = f[Matrix.MTRANS_X];
+        float translateY = f[Matrix.MTRANS_Y];
         float scaleX = f[Matrix.MSCALE_X];
         float scaleY = f[Matrix.MSCALE_Y];
         Rect layout = new Rect(
@@ -183,6 +197,7 @@ class RNSharedElementNode {
         for (Callback callback : callbacks) { 
             callback.invoke(style, this);
         }
+        return true;
     }
 
     void requestContent(Callback callback) {
@@ -192,24 +207,26 @@ class RNSharedElementNode {
         }
         if (mContentCallbacks == null) mContentCallbacks = new ArrayList<Callback>();
         mContentCallbacks.add(callback);
-        fetchInitialContent();
+        if (!fetchInitialContent()) {
+            startRetryLoop();
+        }
     }
 
-    private void fetchInitialContent() {
+    private boolean fetchInitialContent() {
         View view = mResolvedView;
-        if (view == null || mContentCallbacks == null) return;
+        if (view == null || mContentCallbacks == null) return true;
 
         // Verify view size
         int width = view.getWidth();
         int height = view.getHeight();
-        if (width == 0 && height == 0) return;
+        if (width == 0 && height == 0) return false;
 
         // Get content size (e.g. the size of the underlying image of an image-view)
         RectF contentSize = RNSharedElementContent.getSize(view);
         if (contentSize == null) {
-            // Image has not yet been fetches, listen for it
+            // Image has not yet been fetched, listen for it
             addDraweeControllerListener();
-            return;
+            return false;
         }
 
         // Create content
@@ -225,6 +242,43 @@ class RNSharedElementNode {
         mContentCallbacks = null;
         for (Callback callback : callbacks) { 
             callback.invoke(content, this);
+        }
+        return true;
+    }
+
+    private void startRetryLoop() {
+        if (mRetryHandler != null) return;
+
+        //Log.d(LOG_TAG, "Starting retry loop...");
+
+        mRetryHandler = new Handler();
+        final long startTime = System.nanoTime();
+        mRetryHandler.postDelayed(new RetryRunnable() {
+
+            @Override
+            public void run() {
+                if (mRetryHandler == null) return;
+                final RetryRunnable runnable = this;
+
+                runnable.numRetries++;
+                //Log.d(LOG_TAG, "Retry loop #" + runnable.numRetries + " ...");
+                boolean isContentFetched = fetchInitialContent();
+                boolean isStyleFetched = fetchInitialStyle();
+                if (!isContentFetched || !isStyleFetched) {
+                    mRetryHandler.postDelayed(runnable, 8);
+                }
+                else {
+                    //Log.d(LOG_TAG, "Style/content fetch completed after #" + runnable.numRetries + " ...");
+                    mRetryHandler = null;
+                }
+            }
+        }, 4);
+    }
+
+    private void stopRetryLoop() {
+        if (mRetryHandler != null) {
+            //Log.d(LOG_TAG, "Stopping retry loop...");
+            mRetryHandler = null;
         }
     }
 
