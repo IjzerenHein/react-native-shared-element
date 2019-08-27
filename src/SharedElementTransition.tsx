@@ -47,12 +47,12 @@ export type SharedElementOnMeasureEvent = {
 
 export type SharedElementTransitionProps = {
   start: {
-    node?: SharedElementNode;
-    ancestor?: SharedElementNode;
+    node: SharedElementNode | null;
+    ancestor: SharedElementNode | null;
   };
   end: {
-    node?: SharedElementNode;
-    ancestor?: SharedElementNode;
+    node: SharedElementNode | null;
+    ancestor: SharedElementNode | null;
   };
   position: number | any | void;
   animation: SharedElementTransitionAnimation;
@@ -157,7 +157,7 @@ export class SharedElementTransition extends React.Component<
 
   state: StateType = {};
 
-  static prepareNode(node: SharedElementNode | undefined): any {
+  static prepareNode(node: SharedElementNode | null): any {
     let nodeStyle: any = {};
     if (node && node.parentInstance) {
       const child = React.Children.only(node.parentInstance.props.children);
