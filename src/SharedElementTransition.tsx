@@ -7,7 +7,8 @@ import {
   StyleSheet,
   requireNativeComponent,
   NativeModules,
-  processColor
+  processColor,
+  Platform
 } from "react-native";
 import {
   SharedElementNode,
@@ -152,6 +153,7 @@ export class SharedElementTransition extends React.Component<
     resize: "stretch",
     align: "center-center"
   };
+  private static isNotAvailableWarningShown = false;
 
   state: StateType = {};
 
@@ -182,10 +184,20 @@ export class SharedElementTransition extends React.Component<
 
   constructor(props: SharedElementTransitionProps) {
     super(props);
-    if (!props.SharedElementComponent) {
-      throw new Error(
-        "RNSharedElementTransition is not available, did you forget to link `react-native-shared-element` into your project?"
-      );
+    if (
+      !props.SharedElementComponent &&
+      !SharedElementTransition.isNotAvailableWarningShown
+    ) {
+      SharedElementTransition.isNotAvailableWarningShown = true;
+      if (Platform.OS === "android" || Platform.OS === "ios") {
+        console.warn(
+          "RNSharedElementTransition is not available, did you forget to link `react-native-shared-element` into your project?"
+        );
+      } else {
+        console.warn(
+          "RNSharedElementTransition is not available on this platform"
+        );
+      }
     }
   }
 
