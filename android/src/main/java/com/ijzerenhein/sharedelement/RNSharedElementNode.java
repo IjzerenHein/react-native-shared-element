@@ -1,7 +1,6 @@
 package com.ijzerenhein.sharedelement;
 
 import java.util.ArrayList;
-import java.util.concurrent.TimeUnit;
 import javax.annotation.Nullable;
 
 import android.os.Handler;
@@ -32,6 +31,7 @@ class RNSharedElementNode {
 
     private int mReactTag;
     private View mView;
+    private View mAncestorView;
     private boolean mIsParent;
     private ReadableMap mStyleConfig;
     private View mResolvedView;
@@ -45,9 +45,10 @@ class RNSharedElementNode {
     private BaseControllerListener<ImageInfo> mDraweeControllerListener;
     private Handler mRetryHandler;
 
-    RNSharedElementNode(int reactTag, View view, boolean isParent, ReadableMap styleConfig) {
+    RNSharedElementNode(int reactTag, View view, boolean isParent, View ancestorView, ReadableMap styleConfig) {
         mReactTag = reactTag;
         mView = view;
+        mAncestorView = ancestorView;
         mIsParent = isParent;
         mStyleConfig = styleConfig;
         mRefCount = 1;
@@ -129,6 +130,10 @@ class RNSharedElementNode {
         mResolvedView = view;
     }
 
+    View getAncestorView() {
+        return mAncestorView;
+    }
+
     View getResolvedView() {
         return mResolvedView;
     }
@@ -156,23 +161,35 @@ class RNSharedElementNode {
         int height = view.getHeight();
         if (width == 0 && height == 0) return false;
         Matrix transform = RNSharedElementStyle.getAbsoluteViewTransform(view);
-        if (transform == null) return false;
+        Matrix ancestorTransform = RNSharedElementStyle.getAbsoluteViewTransform(mAncestorView);
+        if ((transform == null) || (ancestorTransform == null)) return false;
         Rect frame = new Rect(left, top, left + width, top + height);
 
-        // Get absolute layout
+        // Get absolute position on screen (left/top)
         int[] location = new int[2]; 
         view.getLocationOnScreen(location);
+
+        // Calculate the optional translation that was performed on the ancestor.
+        // This corrects for any scene translation that was performed by the navigator.
+        // E.g. when the incoming scene starts to the right and moves to the left
+        // to enter the screen
         float[] f = new float[9];
+        ancestorTransform.getValues(f);
+        int ancestorTranslateX = (int) f[Matrix.MTRANS_X];
+        int ancestorTranslateY = (int) f[Matrix.MTRANS_Y];
+        left = location[0] - ancestorTranslateX;
+        top = location[1] - ancestorTranslateY;
+
+        // In case the view has a scale transform applied, the calculate
+        // the correct visual width & height of the view
         transform.getValues(f);
-        float translateX = f[Matrix.MTRANS_X];
-        float translateY = f[Matrix.MTRANS_Y];
         float scaleX = f[Matrix.MSCALE_X];
         float scaleY = f[Matrix.MSCALE_Y];
-        Rect layout = new Rect(
-            location[0],
-            location[1],
-            location[0] + (int) (width * scaleX),
-            location[1] + (int) (height * scaleY));
+        width = (int) ((float)width * scaleX);
+        height = (int) ((float)height * scaleY);
+
+        // Create absolute layout rect
+        Rect layout = new Rect(left, top, left + width, top + height);
 
         // Create style
         RNSharedElementStyle style = new RNSharedElementStyle(mStyleConfig);

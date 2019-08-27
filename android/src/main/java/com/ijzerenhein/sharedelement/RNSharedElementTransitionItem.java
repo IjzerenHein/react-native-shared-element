@@ -1,14 +1,16 @@
 package com.ijzerenhein.sharedelement;
 
+import android.util.Log;
 import android.view.View;
 import android.view.ViewParent;
 import android.view.ViewGroup;
 import android.graphics.Rect;
 
 class RNSharedElementTransitionItem {
+    static private String LOG_TAG = "RNSharedElementTransitionItem";
+
     private RNSharedElementNodeManager mNodeManager;
     private String mName;
-    private boolean mIsAncestor;
     private RNSharedElementNode mNode;
     private boolean mHidden;
     private boolean mNeedsStyle;
@@ -17,11 +19,10 @@ class RNSharedElementTransitionItem {
     private RNSharedElementContent mContent;
     private Rect mClippedLayoutCache;
 
-    RNSharedElementTransitionItem(RNSharedElementNodeManager nodeManager, String name, boolean isAncestor) {
+    RNSharedElementTransitionItem(RNSharedElementNodeManager nodeManager, String name) {
         mNodeManager = nodeManager;
         mNode = null;
         mName = name;
-        mIsAncestor = isAncestor;
         mHidden = false;
         mNeedsStyle = false;
         mStyle = null;
@@ -32,10 +33,6 @@ class RNSharedElementTransitionItem {
 
     String getName() {
         return mName;
-    }
-
-    boolean isAncestor() {
-        return mIsAncestor;
     }
 
     void setHidden(boolean hidden) {
@@ -69,7 +66,7 @@ class RNSharedElementTransitionItem {
         mHidden = false;
         mNeedsStyle = node != null;
         mStyle = null;
-        mNeedsContent = !mIsAncestor && (node != null);
+        mNeedsContent = (node != null);
         mContent = null;
     }
 
@@ -109,35 +106,31 @@ class RNSharedElementTransitionItem {
         return (mNode != null) ? mNode.getResolvedView() : null;
     }
 
-    Rect getClippedLayout(RNSharedElementTransitionItem ancestor) {
+    Rect getClippedLayout() {
         if (mClippedLayoutCache != null) return mClippedLayoutCache;
-        if ((mStyle == null) || (ancestor == null)) return null;
+        if (mStyle == null) return null;
         View view = getView();
-        View ancestorView = ancestor.getView();
+        View ancestorView = mNode.getAncestorView();
+        int[] ancestorLocation = new int[2];
+        ancestorView.getLocationOnScreen(ancestorLocation);
         
         // Get visible area (some parts may be clipped in a scrollview or something)
         Rect clippedLayout = new Rect(mStyle.layout);
         ViewParent parentView = view.getParent();
-        int[] location = new int[2]; 
+        int[] location = new int[2];
+        Rect bounds = new Rect();
         while (parentView != null) {
             if (!(parentView instanceof ViewGroup)) break;
             ViewGroup viewGroup = (ViewGroup) parentView;
             viewGroup.getLocationOnScreen(location);
-            /*int left = viewGroup.getLeft();
-            int top = viewGroup.getTop();
-            int right = viewGroup.getRight();
-            int bottom = viewGroup.getBottom();
-            int width = viewGroup.getWidth();
-            int height = viewGroup.getHeight();*/
-            //Rect globalVisibilityRect = new Rect();
-            //viewGroup.getGlobalVisibleRect(globalVisibilityRect);
+            location[0] -= ancestorLocation[0];
+            location[1] -= ancestorLocation[1];
 
-            Rect bounds = new Rect(
-                location[0],
-                location[1],
-                location[0] + (viewGroup.getWidth()), 
-                location[1] + (viewGroup.getHeight())
-            );
+            bounds.left = location[0];
+            bounds.top = location[1];
+            bounds.right = location[0] + (viewGroup.getWidth());
+            bounds.bottom = location[1] + (viewGroup.getHeight());
+
             if (!clippedLayout.intersect(bounds)) {
                 if (clippedLayout.bottom < bounds.top) {
                     clippedLayout.top = bounds.top;
@@ -157,7 +150,9 @@ class RNSharedElementTransitionItem {
                 }
                 break;
             }
-            if (parentView == ancestorView) break;
+            if (parentView == ancestorView) {
+                break;
+            }
             parentView = parentView.getParent();
         }
 

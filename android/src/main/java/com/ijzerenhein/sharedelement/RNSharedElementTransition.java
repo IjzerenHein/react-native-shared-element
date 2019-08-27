@@ -7,10 +7,7 @@ import android.os.Build;
 import android.util.Log;
 import android.graphics.Canvas;
 import android.graphics.Rect;
-import android.graphics.Point;
 import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.Matrix;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -23,10 +20,14 @@ import com.facebook.react.uimanager.NativeViewHierarchyManager;
 public class RNSharedElementTransition extends ViewGroup {
     static private String LOG_TAG = "RNSharedElementTransition";
 
-    static private int ITEM_START_ANCESTOR = 0;
-    static private int ITEM_END_ANCESTOR = 1;
-    static private int ITEM_START = 2;
-    static private int ITEM_END = 3;
+    enum Item {
+        START(0),
+        END(1);
+
+        private final int value;
+        Item(final int newValue) {value = newValue;}
+        public int getValue() { return value; }
+    }
 
     enum Animation {
         MOVE(0),
@@ -70,17 +71,15 @@ public class RNSharedElementTransition extends ViewGroup {
     private boolean mReactLayoutSet = false;
     private boolean mInitialLayoutPassCompleted = false;
     private ArrayList<RNSharedElementTransitionItem> mItems = new ArrayList<RNSharedElementTransitionItem>();
-    private int[] mParentLocation = new int[2];
+    private int[] mParentOffset = new int[2];
     private boolean mRequiresClipping = false;
     private RNSharedElementView mStartView;
     private RNSharedElementView mEndView;
 
     public RNSharedElementTransition(ThemedReactContext context, RNSharedElementNodeManager nodeManager) {
         super(context);
-        mItems.add(new RNSharedElementTransitionItem(nodeManager, "startAncestor", true));
-        mItems.add(new RNSharedElementTransitionItem(nodeManager, "endAncestor", true));
-        mItems.add(new RNSharedElementTransitionItem(nodeManager, "startNode", false));
-        mItems.add(new RNSharedElementTransitionItem(nodeManager, "endNode", false));
+        mItems.add(new RNSharedElementTransitionItem(nodeManager, "start"));
+        mItems.add(new RNSharedElementTransitionItem(nodeManager, "end"));
 
         mStartView = new RNSharedElementView(context);
         addView(mStartView);
@@ -95,23 +94,8 @@ public class RNSharedElementTransition extends ViewGroup {
         }
     }
 
-    public void setStartNode(RNSharedElementNode node) {
-        mItems.get(ITEM_START).setNode(node);
-        requestStylesAndContent(false);
-    }
-
-    public void setEndNode(RNSharedElementNode node) {
-        mItems.get(ITEM_END).setNode(node);
-        requestStylesAndContent(false);
-    }
-
-    public void setStartAncestor(RNSharedElementNode node) {
-        mItems.get(ITEM_START_ANCESTOR).setNode(node);
-        requestStylesAndContent(false);
-    }
-
-    public void setEndAncestor(RNSharedElementNode node) {
-        mItems.get(ITEM_END_ANCESTOR).setNode(node);
+    public void setItemNode(Item item, RNSharedElementNode node) {
+        mItems.get(item.getValue()).setNode(node);
         requestStylesAndContent(false);
     }
 
@@ -223,10 +207,8 @@ public class RNSharedElementTransition extends ViewGroup {
         if (!mInitialLayoutPassCompleted) return;
 
         // Local data
-        RNSharedElementTransitionItem startItem = mItems.get(ITEM_START);
-        RNSharedElementTransitionItem startAncestor = mItems.get(ITEM_START_ANCESTOR);
-        RNSharedElementTransitionItem endItem = mItems.get(ITEM_END);
-        RNSharedElementTransitionItem endAncestor = mItems.get(ITEM_END_ANCESTOR);
+        RNSharedElementTransitionItem startItem = mItems.get(Item.START.getValue());
+        RNSharedElementTransitionItem endItem = mItems.get(Item.END.getValue());
 
         // Get styles & content
         RNSharedElementStyle startStyle = startItem.getStyle();
@@ -236,16 +218,15 @@ public class RNSharedElementTransition extends ViewGroup {
         RNSharedElementContent endContent = endItem.getContent();
 
         // Get layout
-        getLocationOnScreen(mParentLocation);
-        Rect startLayout = (startStyle != null) ? normalizeLayout(startStyle.layout, startAncestor) : new Rect();
-        Rect endLayout = (endStyle != null) ? normalizeLayout(endStyle.layout, endAncestor) : new Rect();
+        Rect startLayout = (startStyle != null) ? startStyle.layout : new Rect();
+        Rect endLayout = (endStyle != null) ? endStyle.layout : new Rect();
         Rect parentLayout = new Rect(startLayout);
         parentLayout.union(endLayout);
 
         // Get clipped areas
-        Rect startClippedLayout = (startStyle != null) ? normalizeLayout(startItem.getClippedLayout(startAncestor), startAncestor) : new Rect();
+        Rect startClippedLayout = (startStyle != null) ? startItem.getClippedLayout() : new Rect();
         Rect startClipInsets = getClipInsets(startLayout, startClippedLayout);
-        Rect endClippedLayout = (endStyle != null) ? normalizeLayout(endItem.getClippedLayout(endAncestor), endAncestor) : new Rect();
+        Rect endClippedLayout = (endStyle != null) ? endItem.getClippedLayout() : new Rect();
         Rect endClipInsets = getClipInsets(endLayout, endClippedLayout);
 
         // Get interpolated layout
@@ -275,14 +256,17 @@ public class RNSharedElementTransition extends ViewGroup {
         // Calculate clipped layout
         mRequiresClipping = !parentLayout.contains(interpolatedLayout);
 
+        //Log.d(LOG_TAG, "mRequiresClipping: " +mRequiresClipping + ", " + endClippedLayout + ", " + endClipInsets);
+
         // Update outer viewgroup layout. The outer viewgroup hosts 2 inner views
         // which draw the content & elevation. The outer viewgroup performs additional
         // clipping on these views.
+        ((View)getParent()).getLocationOnScreen(mParentOffset);
         super.layout(
-            0,
-            0,
-            parentLayout.width(),
-            parentLayout.height()
+                -mParentOffset[0],
+                -mParentOffset[1],
+            parentLayout.width() - mParentOffset[0],
+            parentLayout.height() - mParentOffset[1]
         );
         setTranslationX(parentLayout.left);
         setTranslationY(parentLayout.top);
@@ -336,35 +320,9 @@ public class RNSharedElementTransition extends ViewGroup {
         for (RNSharedElementTransitionItem item : mItems) {
             boolean hidden = mInitialLayoutPassCompleted &&
                 (item.getStyle() != null) &&
-                (item.getContent() != null) &&
-                !item.isAncestor();
+                (item.getContent() != null);
             item.setHidden(hidden);
         }
-    }
-
-    private Rect normalizeLayout(Rect layout, RNSharedElementTransitionItem ancestor) {
-        RNSharedElementStyle style = ancestor.getStyle();
-        if (style == null) {
-            return new Rect(
-                layout.left - mParentLocation[0],
-                layout.top - mParentLocation[1],
-                layout.right - mParentLocation[0],
-                layout.bottom - mParentLocation[1]
-            );
-        }
-
-        float[] vals = new float[9];
-        style.transform.getValues(vals);
-        int translateX = (int) vals[Matrix.MTRANS_X];
-        int translateY = (int) vals[Matrix.MTRANS_Y];
-
-        Rect ancestorLayout = style.layout;
-        return new Rect(
-            layout.left - translateX,
-            layout.top - translateY,
-            layout.right - translateX,
-            layout.bottom - translateY
-        );
     }
 
     private Rect getClipInsets(Rect layout, Rect clippedLayout) {

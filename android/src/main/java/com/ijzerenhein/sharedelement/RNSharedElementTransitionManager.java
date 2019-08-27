@@ -56,26 +56,28 @@ public class RNSharedElementTransitionManager extends SimpleViewManager<RNShared
         view.setAlign(RNSharedElementTransition.Align.values()[align]);
     }
 
-    private RNSharedElementNode nodeFromMap(final ReadableMap map, final String name) {
-        if (map == null) return null;
-        if (!map.hasKey(name)) return null;
-        final ReadableMap mapItem = map.getMap(name);
-        int nodeHandle = mapItem.getInt("nodeHandle");
-        boolean isParent = mapItem.getBoolean("isParent");
-        ReadableMap styleConfig = mapItem.getMap("nodeStyle");
-        View view = mNodeManager.getNativeViewHierarchyManager().resolveView(nodeHandle);
-        return mNodeManager.acquire(nodeHandle, view, isParent, styleConfig);
+    private void setViewItem(final RNSharedElementTransition view, RNSharedElementTransition.Item item, final ReadableMap map) {
+        if (map == null) return;
+        if (!map.hasKey("node") || !map.hasKey("ancestor")) return;
+        final ReadableMap nodeMap = map.getMap("node");
+        final ReadableMap ancestorMap = map.getMap("ancestor");
+        int nodeHandle = nodeMap.getInt("nodeHandle");
+        int ancestorHandle = ancestorMap.getInt("nodeHandle");
+        boolean isParent = nodeMap.getBoolean("isParent");
+        ReadableMap styleConfig = nodeMap.getMap("nodeStyle");
+        View nodeView = mNodeManager.getNativeViewHierarchyManager().resolveView(nodeHandle);
+        View ancestorView = mNodeManager.getNativeViewHierarchyManager().resolveView(ancestorHandle);
+        RNSharedElementNode node = mNodeManager.acquire(nodeHandle, nodeView, isParent, ancestorView, styleConfig);
+        view.setItemNode(item, node);
     }
 
     @ReactProp(name = "startNode")
     public void setStartNode(final RNSharedElementTransition view, final ReadableMap startNode) {
-        view.setStartNode(nodeFromMap(startNode, "node"));
-        view.setStartAncestor(nodeFromMap(startNode, "ancestor"));
+        setViewItem(view, RNSharedElementTransition.Item.START, startNode);
     }
 
     @ReactProp(name = "endNode")
     public void setEndNode(final RNSharedElementTransition view, final ReadableMap endNode) {
-        view.setEndNode(nodeFromMap(endNode, "node"));
-        view.setEndAncestor(nodeFromMap(endNode, "ancestor"));
+        setViewItem(view, RNSharedElementTransition.Item.END, endNode);
     }
 }

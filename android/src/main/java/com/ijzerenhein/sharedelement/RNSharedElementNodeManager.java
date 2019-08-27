@@ -20,14 +20,14 @@ class RNSharedElementNodeManager {
         return mNativeViewHierarchyManager;
     }
 
-    RNSharedElementNode acquire(int reactTag, View view, boolean isParent, ReadableMap styleConfig) {
+    RNSharedElementNode acquire(int reactTag, View view, boolean isParent, View ancestor, ReadableMap styleConfig) {
         synchronized (mNodes) {
             RNSharedElementNode node = mNodes.get(reactTag);
             if (node != null) {
                 node.setRefCount(node.getRefCount() + 1);
                 return node;
             }
-            node = new RNSharedElementNode(reactTag, view, isParent, styleConfig);
+            node = new RNSharedElementNode(reactTag, view, isParent, ancestor, styleConfig);
             mNodes.put(reactTag, node);
             return node;
         }
