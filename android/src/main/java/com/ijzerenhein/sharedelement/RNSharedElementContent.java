@@ -4,6 +4,7 @@ import android.view.View;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
+import android.widget.ImageView;
 
 import com.facebook.drawee.view.GenericDraweeView;
 import com.facebook.drawee.generic.GenericDraweeHierarchy;
@@ -27,6 +28,14 @@ class RNSharedElementContent {
             RectF imageBounds = new RectF();
             hierarchy.getActualImageBounds(imageBounds);
             return imageBounds;
+        }
+        else if (view instanceof ImageView) {
+            ImageView imageView = (ImageView) view;
+            Drawable drawable = imageView.getDrawable();
+            if (drawable == null) return null;
+            int width = drawable.getIntrinsicWidth();
+            int height = drawable.getIntrinsicHeight();
+            return new RectF(0, 0, width, height);
         }
         return new RectF(0, 0, view.getWidth(), view.getHeight());
     }

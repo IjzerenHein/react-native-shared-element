@@ -7,10 +7,11 @@ Open issues:
 [ ] iOS ImageBackground test sometimes fails
 [ ] iOS View border tests regularly fail
 [ ] iOS Compound components Fade test fails (target images are not loaded)
+[X] Android RN-screens layout issues
+[X] Android FastImage & FirebaseUI support
 [ ] Android `resize` and `alignment` prop support
 [X] Android backgroundImage support
 [X] Android scale transform support
-[ ] Android FastImage support
 [ ] Android inverted scrollview clipping
 [ ] Android image resizeMode mode & border-radius drawing artefact
 [ ] Android elevation-shadow & clip artefact
