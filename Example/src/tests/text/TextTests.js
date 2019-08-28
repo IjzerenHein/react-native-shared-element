@@ -51,6 +51,17 @@ export const TextTests: TestGroup = {
       }
     },
     {
+      name: "Resize (stretch)",
+      description: "TODO",
+      start: <TestText length="sentence" position="center" />,
+      end: <TestText length="paragraph" position="center" />,
+      animation: {
+        animation: "fade",
+        resize: "stretch",
+        align: "left-top"
+      }
+    },
+    {
       name: "Resize & Move (clip)",
       description: "TODO",
       start: <TestText length="words" />,

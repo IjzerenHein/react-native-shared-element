@@ -332,7 +332,7 @@ export class TilesScreen extends React.Component<PropsType> {
         sharedElements[`heroName.${hero.id}`] = "fade";
         sharedElements[`heroDescription.${hero.id}`] = {
           animation: "fade",
-          resize: "none",
+          resize: "clip",
           align: "left-top"
         };
         routeName = "Card";
