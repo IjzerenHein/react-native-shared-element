@@ -22,9 +22,9 @@ Native shared element transition primitives for react-native 💫
     - [SharedElementTransition](#sharedelementtransition)
       - [Props](#props-1)
     - [Animations](#animations)
-      - [SharedElementTransitionAnimation](#sharedelementtransitionanimation)
-      - [SharedElementTransitionResize](#sharedelementtransitionresize)
-      - [SharedElementTransitionAlign](#sharedelementtransitionalign)
+      - [SharedElementAnimation](#sharedelementanimation)
+      - [SharedElementResize](#sharedelementresize)
+      - [SharedElementAlign](#sharedelementalign)
   - [Example app](#example-app)
   - [Todo](#todo)
   - [License](#license)
@@ -72,7 +72,11 @@ const position = new Animated.Value(0);
   <SharedElementTransition
     start={{node: startNode}}
     end={{node: endNode}}
-    position={position} />
+    position={position}
+    animation='move'
+    resize='auto'
+    align='auto'
+     />
 </View>
 ```
 
@@ -117,30 +121,30 @@ The `<SharedElementTransition>` component executes a shared element transition n
 
 #### Props
 
-| Property    | Type                                                                  | Description                                                                                                |
-| ----------- | --------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
-| `start`     | `{ node: SharedElementNode, ancestor: SharedElementNode }`            | Start node- and ancestor                                                                                   |
-| `end`       | `{ node: SharedElementNode, ancestor: SharedElementNode }`            | End node- and ancestor                                                                                     |
-| `position`  | `number | Animated.Value`                                             | Interpolated position (0..1), between the start- and end nodes                                             |
-| `animation` | [SharedElementTransitionAnimation](#SharedElementTransitionAnimation) | Type of animation, e.g move start element or cross-fade between start- and end elements (default = `move`) |
-| `resize`    | [SharedElementTransitionResize](#SharedElementTransitionResize)       | Resize behavior (default = `auto`)                                                                         |
-| `align`     | [SharedElementTransitionAlign](#SharedElementTransitionAlign)         | Alignment behavior (default = `auto`)                                                                      |
-| `debug`     | `boolean`                                                             | Renders debug overlays for diagnosing measuring and animations                                             |
-| `onMeasure` | `function`                                                            | Event handler that is called when nodes have been measured and snapshotted                                 |
+| Property    | Type                                                       | Description                                                                                                |
+| ----------- | ---------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| `start`     | `{ node: SharedElementNode, ancestor: SharedElementNode }` | Start node- and ancestor                                                                                   |
+| `end`       | `{ node: SharedElementNode, ancestor: SharedElementNode }` | End node- and ancestor                                                                                     |
+| `position`  | `number | Animated.Value`                                  | Interpolated position (0..1), between the start- and end nodes                                             |
+| `animation` | [SharedElementAnimation](#SharedElementAnimation)          | Type of animation, e.g move start element or cross-fade between start- and end elements (default = `move`) |
+| `resize`    | [SharedElementResize](#SharedElementResize)                | Resize behavior (default = `auto`)                                                                         |
+| `align`     | [SharedElementAlign](#SharedElementAlign)                  | Alignment behavior (default = `auto`)                                                                      |
+| `debug`     | `boolean`                                                  | Renders debug overlays for diagnosing measuring and animations                                             |
+| `onMeasure` | `function`                                                 | Event handler that is called when nodes have been measured and snapshotted                                 |
 
 ### Animations
 
 The following animation-types are available.
 
 
-#### SharedElementTransitionAnimation
+#### SharedElementAnimation
 
 | Animation | Description                                     |
 | --------- | ----------------------------------------------- |
 | `move`    | Moves the start- element to the end position    |
 | `fade`    | Cross-fades between the start- and end elements |
 
-#### SharedElementTransitionResize
+#### SharedElementResize
 
 | Resize-mode | Description                                                                                                                                                                                      |
 | ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
@@ -149,7 +153,7 @@ The following animation-types are available.
 | `clip`      | Do not resize, but clip the content to the size of the other content. This option is for instance useful in combination with `<Text>` components, where you want to reveal more text.            |
 | `none`      | Do not resize the content. When combined with `fade`, this creates a plain cross-fade effect without any resizing or clipping                                                                    |
 
-#### SharedElementTransitionAlign
+#### SharedElementAlign
 
 The following alignment options are available
 

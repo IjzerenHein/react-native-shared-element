@@ -5,15 +5,11 @@ export type SharedElementNode = {
   parentInstance: any;
 };
 
-export type SharedElementTransitionAnimation = "move" | "fade";
+export type SharedElementAnimation = "move" | "fade";
 
-export type SharedElementTransitionResize =
-  | "auto"
-  | "stretch"
-  | "clip"
-  | "none";
+export type SharedElementResize = "auto" | "stretch" | "clip" | "none";
 
-export type SharedElementTransitionAlign =
+export type SharedElementAlign =
   | "auto"
   | "left-top"
   | "left-center"

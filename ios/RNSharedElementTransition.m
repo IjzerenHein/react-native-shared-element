@@ -43,9 +43,9 @@
                    [[RNSharedElementTransitionItem alloc]initWithNodeManager:nodeManager name:@"endNode" isAncestor:NO]
                    ];
         _nodePosition = 0.0f;
-        _animation = RNSharedElementTransitionAnimationMove;
-        _resize = RNSharedElementTransitionResizeStretch;
-        _align = RNSharedElementTransitionAlignCenterCenter;
+        _animation = RNSharedElementAnimationMove;
+        _resize = RNSharedElementResizeStretch;
+        _align = RNSharedElementAlignCenterCenter;
         _reactFrameSet = NO;
         _initialLayoutPassCompleted = NO;
         self.userInteractionEnabled = NO;
@@ -131,7 +131,7 @@
     }
 }
 
-- (void) setAnimation:(RNSharedElementTransitionAnimation)animation
+- (void) setAnimation:(RNSharedElementAnimation)animation
 {
     if (_animation != animation) {
         _animation = animation;
@@ -139,7 +139,7 @@
     }
 }
 
-- (void) setResize:(RNSharedElementTransitionResize)resize
+- (void) setResize:(RNSharedElementResize)resize
 {
     if (_resize != resize) {
         _resize = resize;
@@ -147,7 +147,7 @@
     }
 }
 
-- (void) setAlign:(RNSharedElementTransitionAlign)align
+- (void) setAlign:(RNSharedElementAlign)align
 {
     if (_align != align) {
         _align = align;
@@ -197,7 +197,7 @@
     item.contentType = contentType;
     if ((contentType == RNSharedElementContentTypeSnapshotImage) || (contentType == RNSharedElementContentTypeRawImage)) {
         UIImage* image = content;
-        if (_animation == RNSharedElementTransitionAnimationMove) {
+        if (_animation == RNSharedElementAnimationMove) {
             if (_primaryImageView.image == nil) {
                 [self updateViewWithImage:_primaryImageView image:image];
             } else if ((image.size.width * image.size.height) > (_primaryImageView.image.size.width * _primaryImageView.image.size.height)) {
@@ -460,12 +460,12 @@
     innerClipFrame.origin.y = 0;
     _innerClipView.layer.cornerRadius = interpolatedStyle.cornerRadius;
     _innerClipView.frame = innerClipFrame;
-    _innerClipView.layer.masksToBounds = _resize != RNSharedElementTransitionResizeNone;
+    _innerClipView.layer.masksToBounds = _resize != RNSharedElementResizeNone;
     
     // Update content
     UIView* contentView1 = (startItem.contentType == RNSharedElementContentTypeSnapshotView) ? startItem.content : _primaryImageView;
     if (contentView1.superview != _innerClipView) [_innerClipView addSubview:contentView1];
-    if (_animation == RNSharedElementTransitionAnimationMove) {
+    if (_animation == RNSharedElementAnimationMove) {
         
         // In case of move, we correctly calculate the content-frame
         // and interpolate between the start- and end-state, assuming
@@ -491,14 +491,14 @@
         
         // Calculate new size
         switch (_resize) {
-            case RNSharedElementTransitionResizeAuto:
+            case RNSharedElementResizeAuto:
                 // Nothing to do
                 break;
-            case RNSharedElementTransitionResizeStretch:
+            case RNSharedElementResizeStretch:
                 // TODO
                 break;
-            case RNSharedElementTransitionResizeClip:
-            case RNSharedElementTransitionResizeNone:
+            case RNSharedElementResizeClip:
+            case RNSharedElementResizeNone:
                 startInterpolatedContentLayout.size = startContentLayout.size;
                 endInterpolatedContentLayout.size = endContentLayout.size;
                 break;
@@ -506,56 +506,56 @@
         
         // Calculate new origin
         switch (_align) {
-            case RNSharedElementTransitionAlignLeftTop:
+            case RNSharedElementAlignLeftTop:
                 startInterpolatedContentLayout.origin.x = 0;
                 startInterpolatedContentLayout.origin.y = 0;
                 endInterpolatedContentLayout.origin.x = 0;
                 endInterpolatedContentLayout.origin.y = 0;
                 break;
-            case RNSharedElementTransitionAlignLeftCenter:
+            case RNSharedElementAlignLeftCenter:
                 startInterpolatedContentLayout.origin.x = 0;
                 startInterpolatedContentLayout.origin.y = (interpolatedLayout.size.height - startInterpolatedContentLayout.size.height) / 2;
                 endInterpolatedContentLayout.origin.x = 0;
                 endInterpolatedContentLayout.origin.y = (interpolatedLayout.size.height - endInterpolatedContentLayout.size.height) / 2;
                 break;
-            case RNSharedElementTransitionAlignLeftBottom:
+            case RNSharedElementAlignLeftBottom:
                 startInterpolatedContentLayout.origin.x = 0;
                 startInterpolatedContentLayout.origin.y = interpolatedLayout.size.height - startInterpolatedContentLayout.size.height;
                 endInterpolatedContentLayout.origin.x = 0;
                 endInterpolatedContentLayout.origin.y = interpolatedLayout.size.height - endInterpolatedContentLayout.size.height;
                 break;
-            case RNSharedElementTransitionAlignRightTop:
+            case RNSharedElementAlignRightTop:
                 startInterpolatedContentLayout.origin.x = interpolatedLayout.size.width - startInterpolatedContentLayout.size.width;
                 startInterpolatedContentLayout.origin.y = 0;
                 endInterpolatedContentLayout.origin.x = interpolatedLayout.size.width - endInterpolatedContentLayout.size.width;
                 endInterpolatedContentLayout.origin.y = 0;
                 break;
-            case RNSharedElementTransitionAlignRightCenter:
+            case RNSharedElementAlignRightCenter:
                 startInterpolatedContentLayout.origin.x = interpolatedLayout.size.width - startInterpolatedContentLayout.size.width;
                 startInterpolatedContentLayout.origin.y = (interpolatedLayout.size.height - startInterpolatedContentLayout.size.height) / 2;
                 endInterpolatedContentLayout.origin.x = interpolatedLayout.size.width - endInterpolatedContentLayout.size.width;
                 endInterpolatedContentLayout.origin.y = (interpolatedLayout.size.height - endInterpolatedContentLayout.size.height) / 2;
                 break;
-            case RNSharedElementTransitionAlignRightBottom:
+            case RNSharedElementAlignRightBottom:
                 startInterpolatedContentLayout.origin.x = interpolatedLayout.size.width - startInterpolatedContentLayout.size.width;
                 startInterpolatedContentLayout.origin.y = interpolatedLayout.size.height - startInterpolatedContentLayout.size.height;
                 endInterpolatedContentLayout.origin.x = interpolatedLayout.size.width - endInterpolatedContentLayout.size.width;
                 endInterpolatedContentLayout.origin.y = interpolatedLayout.size.height - endInterpolatedContentLayout.size.height;
                 break;
-            case RNSharedElementTransitionAlignCenterTop:
+            case RNSharedElementAlignCenterTop:
                 startInterpolatedContentLayout.origin.x = (interpolatedLayout.size.width - startInterpolatedContentLayout.size.width) / 2;
                 startInterpolatedContentLayout.origin.y = 0;
                 endInterpolatedContentLayout.origin.x = (interpolatedLayout.size.width - endInterpolatedContentLayout.size.width) / 2;
                 endInterpolatedContentLayout.origin.y = 0;
                 break;
-            case RNSharedElementTransitionAlignAuto:
-            case RNSharedElementTransitionAlignCenterCenter:
+            case RNSharedElementAlignAuto:
+            case RNSharedElementAlignCenterCenter:
                 startInterpolatedContentLayout.origin.x = (interpolatedLayout.size.width - startInterpolatedContentLayout.size.width) / 2;
                 startInterpolatedContentLayout.origin.y = (interpolatedLayout.size.height - startInterpolatedContentLayout.size.height) / 2;
                 endInterpolatedContentLayout.origin.x = (interpolatedLayout.size.width - endInterpolatedContentLayout.size.width) / 2;
                 endInterpolatedContentLayout.origin.y = (interpolatedLayout.size.height - endInterpolatedContentLayout.size.height) / 2;
                 break;
-            case RNSharedElementTransitionAlignCenterBottom:
+            case RNSharedElementAlignCenterBottom:
                 startInterpolatedContentLayout.origin.x = (interpolatedLayout.size.width - startInterpolatedContentLayout.size.width) / 2;
                 startInterpolatedContentLayout.origin.y = interpolatedLayout.size.height - startInterpolatedContentLayout.size.height;
                 endInterpolatedContentLayout.origin.x = (interpolatedLayout.size.width - endInterpolatedContentLayout.size.width) / 2;

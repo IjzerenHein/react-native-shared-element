@@ -12,9 +12,9 @@ import {
 } from "react-native";
 import {
   SharedElementNode,
-  SharedElementTransitionAnimation,
-  SharedElementTransitionResize,
-  SharedElementTransitionAlign,
+  SharedElementAnimation,
+  SharedElementResize,
+  SharedElementAlign,
   SharedElementNodeType,
   SharedElementContentType
 } from "./types";
@@ -55,9 +55,9 @@ export type SharedElementTransitionProps = {
     ancestor: SharedElementNode | null;
   };
   position: number | any | void;
-  animation: SharedElementTransitionAnimation;
-  resize?: SharedElementTransitionResize;
-  align?: SharedElementTransitionAlign;
+  animation: SharedElementAnimation;
+  resize?: SharedElementResize;
+  align?: SharedElementAlign;
   debug?: boolean;
   style?: any;
   onMeasure?: (event: SharedElementOnMeasureEvent) => void;
@@ -77,19 +77,19 @@ if (isAvailable) {
   });
 }
 
-const NativeAnimationType = new Map<SharedElementTransitionAnimation, number>([
+const NativeAnimationType = new Map<SharedElementAnimation, number>([
   ["move", 0],
   ["fade", 1]
 ]);
 
-const NativeResizeType = new Map<SharedElementTransitionResize, number>([
+const NativeResizeType = new Map<SharedElementResize, number>([
   ["auto", 0],
   ["stretch", 1],
   ["clip", 2],
   ["none", 3]
 ]);
 
-const NativeAlignType = new Map<SharedElementTransitionAlign, number>([
+const NativeAlignType = new Map<SharedElementAlign, number>([
   ["auto", 0],
   ["left-top", 1],
   ["left-center", 2],
