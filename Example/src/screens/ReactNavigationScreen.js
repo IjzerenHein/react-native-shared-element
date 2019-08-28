@@ -1,5 +1,6 @@
 // @flow
 import * as React from "react";
+import { View } from "react-native";
 import { Icon } from "../components";
 import { createSharedElementTransitioner } from "react-navigation-sharedelement";
 import { createAppContainer } from "@react-navigation/native";
@@ -45,19 +46,7 @@ const stackNavigator = createSharedElementTransitioner(
   },
   {
     initialRouteName: "Stack",
-    /*transitionConfig: (
-      transitionProps: any,
-      prevTransitionProps: any,
-      isModal: boolean
-    ) => {
-      console.log(
-        "stackNavigator.transitionConfig: ",
-        transitionProps,
-        prevTransitionProps,
-        isModal
-      );
-      return {};
-    },*/
+    //transitionConfig: () => fadeIn(5000),
     navigationOptions: ({ navigation }) => ({
       tabBarLabel: "Stack",
       tabBarIcon: ({ tintColor }) => (
@@ -118,6 +107,12 @@ type PropsType = {};
 
 export class ReactNavigationScreen extends React.Component<PropsType> {
   render() {
-    return <AppContainer />;
+    return (
+      <View
+        style={{ position: "absolute", left: 0, top: 0, right: 0, bottom: 0 }}
+      >
+        <AppContainer />
+      </View>
+    );
   }
 }
