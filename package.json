@@ -1,6 +1,6 @@
 {
   "name": "react-native-shared-element",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "Shared element transition component that runs entirely natively for fast and perfect transitions without any flickering 💫",
   "author": "IjzerenHein <hrutjes@gmail.com>",
   "keywords": [
