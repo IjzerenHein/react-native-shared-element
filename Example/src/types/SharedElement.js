@@ -1,19 +1,19 @@
 // @flow
 import type {
-  SharedElementTransitionAnimation,
-  SharedElementTransitionResize,
-  SharedElementTransitionAlign
+  SharedElementAnimation,
+  SharedElementResize,
+  SharedElementAlign
 } from "react-native-shared-element";
 
 export type SharedElementTransitionConfig = {|
-  animation: SharedElementTransitionAnimation,
-  resize?: SharedElementTransitionResize,
-  align?: SharedElementTransitionAlign
+  animation: SharedElementAnimation,
+  resize?: SharedElementResize,
+  align?: SharedElementAlign
 |};
 
 export type SharedElementsConfig = {
   [key: string]:
     | SharedElementTransitionConfig
-    | SharedElementTransitionAnimation
+    | SharedElementAnimation
     | boolean
 };

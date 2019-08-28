@@ -19,7 +19,7 @@ import {
   Heading2,
   Body
 } from "../components";
-import type { SharedElementTransitionAnimation } from "react-native-shared-element";
+import type { SharedElementAnimation } from "react-native-shared-element";
 import { Heroes } from "../assets";
 import { DetailScreen } from "./DetailScreen";
 import type {
@@ -107,7 +107,7 @@ const styles = StyleSheet.create({
 type PropsType = {
   type: "tile" | "card" | "card2",
   title: string,
-  animation: SharedElementTransitionAnimation | SharedElementTransitionConfig,
+  animation: SharedElementAnimation | SharedElementTransitionConfig,
   DetailComponent: any,
   transitionConfig: any,
   navigation?: any

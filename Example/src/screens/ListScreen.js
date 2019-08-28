@@ -15,7 +15,7 @@ import {
   Heading2,
   Caption
 } from "../components";
-import type { SharedElementTransitionAnimation } from "react-native-shared-element";
+import type { SharedElementAnimation } from "react-native-shared-element";
 import { Heroes } from "../assets";
 import type {
   Hero,
@@ -61,7 +61,7 @@ const styles = StyleSheet.create({
 
 type PropsType = {
   title: string,
-  animation: SharedElementTransitionAnimation | SharedElementTransitionConfig,
+  animation: SharedElementAnimation | SharedElementTransitionConfig,
   DetailComponent: any,
   transitionConfig: any,
   navigation?: any

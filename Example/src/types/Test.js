@@ -1,6 +1,6 @@
 // @flow
 import * as React from "react";
-import type { SharedElementTransitionAnimation } from "react-native-shared-element";
+import type { SharedElementAnimation } from "react-native-shared-element";
 import type { SharedElementTransitionConfig } from "./SharedElement";
 
 export type Position =
@@ -18,7 +18,7 @@ export type Test = {|
   description?: string,
   start: React.Element<any>,
   end: React.Element<any>,
-  animation?: SharedElementTransitionAnimation | SharedElementTransitionConfig,
+  animation?: SharedElementAnimation | SharedElementTransitionConfig,
   multi?: boolean
 |};
 
