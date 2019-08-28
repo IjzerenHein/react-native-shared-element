@@ -29,44 +29,9 @@ public class RNSharedElementTransition extends ViewGroup {
         public int getValue() { return value; }
     }
 
-    enum Animation {
-        MOVE(0),
-        FADE(1);
-
-        private final int value;
-        Animation(final int newValue) {value = newValue;}
-        public int getValue() { return value; }
-    }
-
-    enum Resize {
-        STRETCH(0),
-        CLIP(1),
-        NONE(2);
-
-        private final int value;
-        Resize(final int newValue) {value = newValue;}
-        public int getValue() { return value; }
-    }
-
-    enum Align {
-        LEFT_TOP(0),
-        LEFT_CENTER(1),
-        LEFT_BOTTOM(2),
-        RIGHT_TOP(3),
-        RIGHT_CENTER(4),
-        RIGHT_BOTTOM(5),
-        CENTER_TOP(6),
-        CENTER_CENTER(7),
-        CENTER_BOTTOM(8);
-
-        private final int value;
-        Align(final int newValue) {value = newValue;}
-        public int getValue() { return value; }
-    }
-
-    private Animation mAnimation = Animation.MOVE;
-    private Resize mResize = Resize.STRETCH;
-    private Align mAlign = Align.CENTER_CENTER;
+    private RNSharedElementAnimation mAnimation = RNSharedElementAnimation.MOVE;
+    private RNSharedElementResize mResize = RNSharedElementResize.STRETCH;
+    private RNSharedElementAlign mAlign = RNSharedElementAlign.CENTER_CENTER;
     private float mNodePosition = 0.0f;
     private boolean mReactLayoutSet = false;
     private boolean mInitialLayoutPassCompleted = false;
@@ -99,21 +64,21 @@ public class RNSharedElementTransition extends ViewGroup {
         requestStylesAndContent(false);
     }
 
-    public void setAnimation(final Animation animation) {
+    public void setAnimation(final RNSharedElementAnimation animation) {
         if (mAnimation != animation) {
             mAnimation = animation;
             updateLayout();
         }
     }
 
-    public void setResize(final Resize resize) {
+    public void setResize(final RNSharedElementResize resize) {
         if (mResize != resize) {
             mResize = resize;
             updateLayout();
         }
     }
 
-    public void setAlign(final Align align) {
+    public void setAlign(final RNSharedElementAlign align) {
         if (mAlign != align) {
             mAlign = align;
             updateLayout();
@@ -272,7 +237,7 @@ public class RNSharedElementTransition extends ViewGroup {
         setTranslationY(parentLayout.top);
 
         // Render the start view
-        boolean isCrossFade = mAnimation != Animation.MOVE;
+        boolean isCrossFade = mAnimation != RNSharedElementAnimation.MOVE;
         float startAlpha = !isCrossFade
             ? interpolatedStyle.opacity
             : ((startStyle != null) ? startStyle.opacity : 1) * (1 - mNodePosition);

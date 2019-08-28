@@ -491,8 +491,11 @@
         
         // Calculate new size
         switch (_resize) {
-            case RNSharedElementTransitionResizeStretch:
+            case RNSharedElementTransitionResizeAuto:
                 // Nothing to do
+                break;
+            case RNSharedElementTransitionResizeStretch:
+                // TODO
                 break;
             case RNSharedElementTransitionResizeClip:
                 startInterpolatedContentLayout.size = startContentLayout.size;
@@ -548,6 +551,7 @@
                 endInterpolatedContentLayout.origin.x = (interpolatedLayout.size.width - endInterpolatedContentLayout.size.width) / 2;
                 endInterpolatedContentLayout.origin.y = 0;
                 break;
+            case RNSharedElementTransitionAlignAuto:
             case RNSharedElementTransitionAlignCenterCenter:
                 startInterpolatedContentLayout.origin.x = (interpolatedLayout.size.width - startInterpolatedContentLayout.size.width) / 2;
                 startInterpolatedContentLayout.origin.y = (interpolatedLayout.size.height - startInterpolatedContentLayout.size.height) / 2;

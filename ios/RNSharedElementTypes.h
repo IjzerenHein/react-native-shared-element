@@ -19,21 +19,23 @@ typedef NS_ENUM(NSInteger, RNSharedElementTransitionAnimation) {
 };
 
 typedef NS_ENUM(NSInteger, RNSharedElementTransitionResize) {
-    RNSharedElementTransitionResizeStretch = 0,
-    RNSharedElementTransitionResizeClip = 1,
-    RNSharedElementTransitionResizeNone = 2
+    RNSharedElementTransitionResizeAuto = 0,
+    RNSharedElementTransitionResizeStretch = 1,
+    RNSharedElementTransitionResizeClip = 2,
+    RNSharedElementTransitionResizeNone = 3
 };
 
 typedef NS_ENUM(NSInteger, RNSharedElementTransitionAlign) {
-    RNSharedElementTransitionAlignLeftTop = 0,
-    RNSharedElementTransitionAlignLeftCenter = 1,
-    RNSharedElementTransitionAlignLeftBottom = 2,
-    RNSharedElementTransitionAlignRightTop = 3,
-    RNSharedElementTransitionAlignRightCenter = 4,
-    RNSharedElementTransitionAlignRightBottom = 5,
-    RNSharedElementTransitionAlignCenterTop = 6,
-    RNSharedElementTransitionAlignCenterCenter = 7,
-    RNSharedElementTransitionAlignCenterBottom = 8
+    RNSharedElementTransitionAlignAuto = 0,
+    RNSharedElementTransitionAlignLeftTop = 1,
+    RNSharedElementTransitionAlignLeftCenter = 2,
+    RNSharedElementTransitionAlignLeftBottom = 3,
+    RNSharedElementTransitionAlignRightTop = 4,
+    RNSharedElementTransitionAlignRightCenter = 5,
+    RNSharedElementTransitionAlignRightBottom = 6,
+    RNSharedElementTransitionAlignCenterTop = 7,
+    RNSharedElementTransitionAlignCenterCenter = 8,
+    RNSharedElementTransitionAlignCenterBottom = 9
 };
 
 

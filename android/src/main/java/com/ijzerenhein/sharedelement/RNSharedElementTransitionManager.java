@@ -43,17 +43,17 @@ public class RNSharedElementTransitionManager extends SimpleViewManager<RNShared
 
     @ReactProp(name = "animation")
     public void setAnimation(final RNSharedElementTransition view, final int animation) {
-        view.setAnimation(RNSharedElementTransition.Animation.values()[animation]);
+        view.setAnimation(RNSharedElementAnimation.values()[animation]);
     }
 
     @ReactProp(name = "resize")
     public void setResize(final RNSharedElementTransition view, final int resize) {
-        view.setResize(RNSharedElementTransition.Resize.values()[resize]);
+        view.setResize(RNSharedElementResize.values()[resize]);
     }
 
     @ReactProp(name = "align")
     public void setAlign(final RNSharedElementTransition view, final int align) {
-        view.setAlign(RNSharedElementTransition.Align.values()[align]);
+        view.setAlign(RNSharedElementAlign.values()[align]);
     }
 
     private void setViewItem(final RNSharedElementTransition view, RNSharedElementTransition.Item item, final ReadableMap map) {

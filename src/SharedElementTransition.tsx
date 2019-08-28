@@ -83,21 +83,23 @@ const NativeAnimationType = new Map<SharedElementTransitionAnimation, number>([
 ]);
 
 const NativeResizeType = new Map<SharedElementTransitionResize, number>([
-  ["stretch", 0],
-  ["clip", 1],
-  ["none", 2]
+  ["auto", 0],
+  ["stretch", 1],
+  ["clip", 2],
+  ["none", 3]
 ]);
 
 const NativeAlignType = new Map<SharedElementTransitionAlign, number>([
-  ["left-top", 0],
-  ["left-center", 1],
-  ["left-bottom", 2],
-  ["right-top", 3],
-  ["right-center", 4],
-  ["right-bottom", 5],
-  ["center-top", 6],
-  ["center-center", 7],
-  ["center-bottom", 8]
+  ["auto", 0],
+  ["left-top", 1],
+  ["left-center", 2],
+  ["left-bottom", 3],
+  ["right-top", 4],
+  ["right-center", 5],
+  ["right-bottom", 6],
+  ["center-top", 7],
+  ["center-center", 8],
+  ["center-bottom", 9]
 ]);
 
 const debugColors = {
@@ -150,8 +152,8 @@ export class SharedElementTransition extends React.Component<
     end: {},
     SharedElementComponent: RNAnimatedSharedElementTransition,
     animation: "move",
-    resize: "stretch",
-    align: "center-center"
+    resize: "auto",
+    align: "auto"
   };
   private static isNotAvailableWarningShown = false;
 

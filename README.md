@@ -120,8 +120,8 @@ The `<SharedElementTransition>` component executes a shared element transition n
 | `end`       | `{ node: SharedElementNode, ancestor: SharedElementNode }`            | End node- and ancestor                                                                                     |
 | `position`  | `number | Animated.Value`                                             | Interpolated position (0..1), between the start- and end nodes                                             |
 | `animation` | [SharedElementTransitionAnimation](#SharedElementTransitionAnimation) | Type of animation, e.g move start element or cross-fade between start- and end elements (default = `move`) |
-| `resize`    | [SharedElementTransitionResize](#SharedElementTransitionResize)       | Resize behavior (default = `stretch`)                                                                      |
-| `align`     | [SharedElementTransitionAlign](#SharedElementTransitionAlign)         | Alignment behavior (default = `center-center`)                                                             |
+| `resize`    | [SharedElementTransitionResize](#SharedElementTransitionResize)       | Resize behavior (default = `auto`)                                                                         |
+| `align`     | [SharedElementTransitionAlign](#SharedElementTransitionAlign)         | Alignment behavior (default = `auto`)                                                                      |
 | `debug`     | `boolean`                                                             | Renders debug overlays for diagnosing measuring and animations                                             |
 | `onMeasure` | `function`                                                            | Event handler that is called when nodes have been measured and snapshotted                                 |
 
@@ -141,6 +141,7 @@ The following animation-types are available.
 
 | Resize-mode | Description                                                                                                                                                                                      |
 | ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `auto`      | TODO.                                                                                                                                                                                            |
 | `stretch`   | Stretches the element to the same shape and size of the other element. If the aspect-ratio of the content differs, you may see stretched. In that case consider one of the other resize options. |
 | `clip`      | Do not resize, but clip the content to the size of the other content. This option is for instance useful in combination with `<Text>` components, where you want to reveal more text.            |
 | `none`      | Do not resize the content. When combined with `fade`, this creates a plain cross-fade effect without any resizing or clipping                                                                    |
@@ -149,7 +150,7 @@ The following animation-types are available.
 
 The following alignment options are available
 
-`left-center`, `left-top`, `left-right`, `right-center`, `right-top`, `right-right`, `center-top` `center-center`, `center-bottom`
+`auto`, `left-center`, `left-top`, `left-right`, `right-center`, `right-top`, `right-right`, `center-top` `center-center`, `center-bottom`
 
 
 ## Example app
