@@ -498,9 +498,6 @@
                 // TODO
                 break;
             case RNSharedElementTransitionResizeClip:
-                startInterpolatedContentLayout.size = startContentLayout.size;
-                endInterpolatedContentLayout.size = endContentLayout.size;
-                break;
             case RNSharedElementTransitionResizeNone:
                 startInterpolatedContentLayout.size = startContentLayout.size;
                 endInterpolatedContentLayout.size = endContentLayout.size;
