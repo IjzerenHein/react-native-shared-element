@@ -8,7 +8,7 @@ import com.facebook.react.uimanager.ThemedReactContext;
 
 class RNSharedElementView extends View {
     static private String LOG_TAG = "RNSharedElementView";
-    
+
     private RNSharedElementDrawable mDrawable;
     private RNSharedElementDrawable.ViewType mViewType;
 
@@ -18,26 +18,28 @@ class RNSharedElementView extends View {
         mDrawable = new RNSharedElementDrawable();
         setBackground(mDrawable);
     }
-    
+
     @Override
-    public boolean hasOverlappingRendering () {
+    public boolean hasOverlappingRendering() {
         return mViewType == RNSharedElementDrawable.ViewType.GENERIC;
     }
 
     void updateViewAndDrawable(
-        Rect layout,
-        Rect parentLayout,
-        RNSharedElementContent content,
-        Rect originalLayout,
-        RNSharedElementStyle style,
-        float alpha,
-        RNSharedElementResize resize,
-        RNSharedElementAlign align,
-        float position) {
+            Rect layout,
+            Rect parentLayout,
+            RNSharedElementContent content,
+            Rect originalLayout,
+            RNSharedElementStyle style,
+            float alpha,
+            RNSharedElementResize resize,
+            RNSharedElementAlign align,
+            float position) {
 
         // Update drawable
-        RNSharedElementDrawable.ViewType viewType = mDrawable.update(content, style, resize, align, position); 
-        boolean useGPUScaling = (viewType == RNSharedElementDrawable.ViewType.GENERIC) || (viewType == RNSharedElementDrawable.ViewType.PLAIN);
+        RNSharedElementDrawable.ViewType viewType = mDrawable.update(content, style, position);
+        boolean useGPUScaling = (resize != RNSharedElementResize.CLIP) &&
+                ((viewType == RNSharedElementDrawable.ViewType.GENERIC) ||
+                        (viewType == RNSharedElementDrawable.ViewType.PLAIN));
 
         // Update layer type
         if (mViewType != viewType) {
@@ -50,39 +52,66 @@ class RNSharedElementView extends View {
 
             // Update view
             layout(
-                0,
-                0,
-                originalLayout.width(),
-                originalLayout.height()
+                    0,
+                    0,
+                    originalLayout.width(),
+                    originalLayout.height()
             );
             setTranslationX(layout.left - parentLayout.left);
             setTranslationY(layout.top - parentLayout.top);
-            
+
             // Update scale
-            float scaleX = (float)layout.width() / (float)originalLayout.width();
-            float scaleY = (float)layout.height() / (float)originalLayout.height();
-            if (viewType == RNSharedElementDrawable.ViewType.GENERIC) {
-                if ((scaleX >= 1) && (scaleY >= 1)) {
-                    scaleX = Math.min(scaleX, scaleY);
-                    scaleY = scaleX;
-                } else if ((scaleX <= 1) && (scaleY <= 1)) {
-                    scaleX = Math.max(scaleX, scaleY);
-                    scaleY = scaleX;
+            float scaleX = (float) layout.width() / (float) originalLayout.width();
+            float scaleY = (float) layout.height() / (float) originalLayout.height();
+            if (!Float.isInfinite(scaleX) && !Float.isNaN(scaleX) && !Float.isInfinite(scaleY) && !Float.isNaN(scaleY)) {
+
+                // Determine si
+                switch (resize) {
+                    case AUTO:
+                    case STRETCH:
+                        break;
+                    case CLIP:
+                    case NONE:
+                        scaleX = 1.0f;
+                        scaleY = 1.0f;
+                        break;
                 }
+
+
+                /*switch (align) {
+                    case LEFT_TOP:
+                        break;
+                    case LEFT_CENTER:
+                        break;
+                    case LEFT_BOTTOM:
+                        break;
+                    case RIGHT_TOP:
+                        break;
+                    case RIGHT_CENTER:
+                        break;
+                    case RIGHT_BOTTOM:
+                        break;
+                    case CENTER_TOP:
+                        break;
+                    case CENTER_CENTER:
+                        break;
+                    case CENTER_BOTTOM:
+                        break;
+                }*/
+
+                setScaleX(scaleX);
+                setScaleY(scaleY);
             }
-            setScaleX(scaleX);
-            setScaleY(scaleY);
             setPivotX(0);
             setPivotY(0);
-        }
-        else {
+        } else {
 
             // Update view
             layout(
-                0,
-                0,
-                layout.width(),
-                layout.height()
+                    0,
+                    0,
+                    layout.width(),
+                    layout.height()
             );
             setTranslationX(layout.left - parentLayout.left);
             setTranslationY(layout.top - parentLayout.top);
