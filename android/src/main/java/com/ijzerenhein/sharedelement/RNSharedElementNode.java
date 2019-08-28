@@ -61,7 +61,6 @@ class RNSharedElementNode {
         mResolvedView = null;
         mDraweeControllerListener = null;
         mRetryHandler = null;
-        updateView();
     }
 
     int getReactTag() {
@@ -75,7 +74,7 @@ class RNSharedElementNode {
     void setRefCount(int refCount) {
         mRefCount = refCount;
         if (mRefCount == 0) {
-            removeDraweeControllerListener();
+            removeDraweeControllerListener(mResolvedView);
             stopRetryLoop();
         }
     }
@@ -95,7 +94,7 @@ class RNSharedElementNode {
         }
     }
 
-    private View resolveView(View view) {
+    private static View resolveView(View view) {
         if (view == null) return null;
 
         // If the view is a ViewGroup and it contains exactly one
@@ -117,24 +116,23 @@ class RNSharedElementNode {
         return view;
     }
 
-    private void updateView() {
-        View view = mView;
-        if (mIsParent) {
-            if (((ViewGroup)mView).getChildCount() >= 1) {
-                view = ((ViewGroup)mView).getChildAt(0);
-            }
-        }
-        view = resolveView(view);
-        if (mResolvedView == view) return;
-        removeDraweeControllerListener();
-        mResolvedView = view;
-    }
-
     View getAncestorView() {
         return mAncestorView;
     }
 
     View getResolvedView() {
+        if (mResolvedView != null) return mResolvedView;
+
+        View view = mView;
+        if (mIsParent) {
+            if (((ViewGroup)mView).getChildCount() >= 1) {
+                view = ((ViewGroup)mView).getChildAt(0);
+            } else {
+                Log.d(LOG_TAG, "Child for parent doesnt exist");
+                return null;
+            }
+        }
+        mResolvedView = RNSharedElementNode.resolveView(view);
         return mResolvedView;
     }
 
@@ -151,8 +149,9 @@ class RNSharedElementNode {
     }
 
     private boolean fetchInitialStyle() {
-        View view = mResolvedView;
-        if (view == null || mStyleCallbacks == null) return true;
+        View view = getResolvedView();
+        if (view == null) return false;
+        if (mStyleCallbacks == null) return true;
 
         // Get relative size and position within parent
         int left = view.getLeft();
@@ -230,8 +229,9 @@ class RNSharedElementNode {
     }
 
     private boolean fetchInitialContent() {
-        View view = mResolvedView;
-        if (view == null || mContentCallbacks == null) return true;
+        View view = getResolvedView();
+        if (view == null) return false;
+        if (mContentCallbacks == null) return true;
 
         // Verify view size
         int width = view.getWidth();
@@ -242,7 +242,7 @@ class RNSharedElementNode {
         RectF contentSize = RNSharedElementContent.getSize(view);
         if (contentSize == null) {
             // Image has not yet been fetched, listen for it
-            addDraweeControllerListener();
+            addDraweeControllerListener(view);
             return false;
         }
 
@@ -299,11 +299,11 @@ class RNSharedElementNode {
         }
     }
 
-    private void addDraweeControllerListener() {
+    private void addDraweeControllerListener(final View view) {
         if (mDraweeControllerListener != null) return;
 
-        if (!(mResolvedView instanceof GenericDraweeView)) return;
-        GenericDraweeView imageView = (GenericDraweeView) mResolvedView;
+        if (!(view instanceof GenericDraweeView)) return;
+        GenericDraweeView imageView = (GenericDraweeView) view;
         DraweeController controller = imageView.getController();
         if (!(controller instanceof PipelineDraweeController)) return;
         PipelineDraweeController pipelineController = (PipelineDraweeController) controller;
@@ -311,7 +311,7 @@ class RNSharedElementNode {
         mDraweeControllerListener = new BaseControllerListener<ImageInfo>() {
             @Override
             public void onSubmit(String id, Object callerContext) {
-                Log.d(LOG_TAG, "mDraweeControllerListener.onSubmit: " + id + ", callerContext: " + callerContext);
+                //Log.d(LOG_TAG, "mDraweeControllerListener.onSubmit: " + id + ", callerContext: " + callerContext);
             }
     
             @Override
@@ -319,8 +319,8 @@ class RNSharedElementNode {
               String id,
               @Nullable final ImageInfo imageInfo,
               @Nullable Animatable animatable) {
-                Log.d(LOG_TAG, "mDraweeControllerListener.onFinalImageSet: " + id + ", imageInfo: " + imageInfo);
-                removeDraweeControllerListener();
+                //Log.d(LOG_TAG, "mDraweeControllerListener.onFinalImageSet: " + id + ", imageInfo: " + imageInfo);
+                removeDraweeControllerListener(view);
                 fetchInitialContent();
             }
     
@@ -333,9 +333,9 @@ class RNSharedElementNode {
         pipelineController.addControllerListener(mDraweeControllerListener);
     }
 
-    private void removeDraweeControllerListener() {
+    private void removeDraweeControllerListener(final View view) {
         if (mDraweeControllerListener == null) return;
-        GenericDraweeView imageView = (GenericDraweeView) mResolvedView;
+        GenericDraweeView imageView = (GenericDraweeView) view;
         DraweeController controller = imageView.getController();
         if (!(controller instanceof PipelineDraweeController)) return;
         PipelineDraweeController pipelineController = (PipelineDraweeController) controller;
