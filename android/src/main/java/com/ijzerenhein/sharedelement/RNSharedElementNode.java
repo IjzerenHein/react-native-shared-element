@@ -122,12 +122,12 @@ class RNSharedElementNode {
 
     View getResolvedView() {
         if (mResolvedView != null) return mResolvedView;
-
         View view = mView;
         if (mIsParent) {
-            if (((ViewGroup)mView).getChildCount() >= 1) {
+            int childCount = ((ViewGroup)mView).getChildCount();
+            if (childCount == 1) {
                 view = ((ViewGroup)mView).getChildAt(0);
-            } else {
+            } else if (childCount <= 0) {
                 Log.d(LOG_TAG, "Child for parent doesnt exist");
                 return null;
             }
