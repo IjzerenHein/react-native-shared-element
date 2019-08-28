@@ -48,21 +48,20 @@ class RNSharedElementView extends View {
         }
 
         // Update view size/position/scale
+        int width = layout.width();
+        int height = layout.height();
         if (useGPUScaling) {
+            int originalWidth = originalLayout.width();
+            int originalHeight = originalLayout.height();
 
             // Update view
-            layout(
-                    0,
-                    0,
-                    originalLayout.width(),
-                    originalLayout.height()
-            );
+            layout(0, 0, originalWidth, originalHeight);
             setTranslationX(layout.left - parentLayout.left);
             setTranslationY(layout.top - parentLayout.top);
 
             // Update scale
-            float scaleX = (float) layout.width() / (float) originalLayout.width();
-            float scaleY = (float) layout.height() / (float) originalLayout.height();
+            float scaleX = (float) width / (float) originalWidth;
+            float scaleY = (float) height / (float) originalHeight;
             if (!Float.isInfinite(scaleX) && !Float.isNaN(scaleX) && !Float.isInfinite(scaleY) && !Float.isNaN(scaleY)) {
 
                 // Determine si
@@ -107,12 +106,7 @@ class RNSharedElementView extends View {
         } else {
 
             // Update view
-            layout(
-                    0,
-                    0,
-                    layout.width(),
-                    layout.height()
-            );
+            layout(0, 0, width, height);
             setTranslationX(layout.left - parentLayout.left);
             setTranslationY(layout.top - parentLayout.top);
         }
