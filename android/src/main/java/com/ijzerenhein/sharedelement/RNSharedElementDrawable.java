@@ -77,19 +77,11 @@ class RNSharedElementDrawable extends Drawable {
     if ((mStyle != null) && (style != null) && !invalidated) {
       switch (viewType) {
         case REACTIMAGEVIEW:
+        case IMAGEVIEW:
           if ((mStyle.compare(style) &
             (RNSharedElementStyle.PROP_BORDER
               | RNSharedElementStyle.PROP_BACKGROUND_COLOR
               | RNSharedElementStyle.PROP_SCALETYPE)) != 0) {
-            //Log.d(LOG_TAG, "drawableChanged, viewType: " + viewType + ", changes: " + mStyle.compare(style));
-            invalidated = true;
-          } else {
-            invalidated = false;
-          }
-          break;
-        case IMAGEVIEW:
-          if ((mStyle.compare(style) &
-            (RNSharedElementStyle.PROP_BORDER | RNSharedElementStyle.PROP_BACKGROUND_COLOR)) != 0) {
             //Log.d(LOG_TAG, "drawableChanged, viewType: " + viewType + ", changes: " + mStyle.compare(style));
             invalidated = true;
           } else {

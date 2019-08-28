@@ -1,7 +1,6 @@
 package com.ijzerenhein.sharedelement;
 
 import android.view.View;
-import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.widget.ImageView;
@@ -9,7 +8,6 @@ import android.widget.ImageView;
 import com.facebook.drawee.view.GenericDraweeView;
 import com.facebook.drawee.generic.GenericDraweeHierarchy;
 import com.facebook.drawee.interfaces.DraweeController;
-import com.facebook.drawee.drawable.ScalingUtils.ScaleType;
 
 class RNSharedElementContent {
     View view;
@@ -35,6 +33,9 @@ class RNSharedElementContent {
             if (drawable == null) return null;
             int width = drawable.getIntrinsicWidth();
             int height = drawable.getIntrinsicHeight();
+            if ((width <= 0) || (height <= 0)) {
+              return null;
+            }
             return new RectF(0, 0, width, height);
         }
         return new RectF(0, 0, view.getWidth(), view.getHeight());
