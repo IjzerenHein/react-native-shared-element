@@ -1,34 +1,52 @@
 
-# react-native-shared-element
+# react-native-shared-element <!-- omit in toc -->
 
-Native shared element transition primitives for react-native 💫
+Native shared element transition *"primitives"* for react-native 💫
 
-# WORK IN PROGRESS - not ready yet
+This library in itself is not a Navigation- or Router library. Instead, it provides a set of comprehensive full native building blocks for performing shared element transitions in Router- or Transition libraries. If you are looking [for the React Navigation binding, you can find it here](https://github.com/IjzerenHein/react-navigation-sharedelement).
+
+# WORK IN PROGRESS - not ready yet <!-- omit in toc -->
 
 ![MagicMoveGif](set-ios.gif)
 ![MagicMoveGif](set-android.gif)
 
+## Motivation
+
+Shared-element transitions add **shine** to your app but can be hard to do in practise.
+It's possible to achieve some nice transitions by building custom modals and using the the core `react-native API`, But this also brings with it many restrictions. Things like resizing an image or making sure no *"flicker"* occurs even an older Android devices can be a real challenge.
+
+This library solves that problem through an all native implementation which is very close to the metal of the OS. It solves the problem by providing a set of *"primitives"*, which don't require any back and forth passes over the react-native bridge. This way, the best possible performance is achieved and better image transitions can be accomplished. The following list is an impression of the kinds of problems that are solved through the native implementation.
+
+- [X] No flickering
+- [X] CPU & GPU friendly
+- [X] Image resizeMode transitions
+- [X] Scrollview clipping
+- [X] Border (radius, color, width) transitions
+- [X] Background color transitions
+- [X] Shadow transitions
+- [X] Cross-fade transitions
+- [X] Clipping reveal transitions
+
 ## Index
 
-- [react-native-shared-element](#react-native-shared-element)
-- [WORK IN PROGRESS - not ready yet](#work-in-progress---not-ready-yet)
-  - [Index](#index)
-  - [Installation](#installation)
-  - [Basic usage](#basic-usage)
-  - [How it works](#how-it-works)
-  - [API Documentation](#api-documentation)
-    - [SharedElement](#sharedelement)
-      - [Props](#props)
-    - [SharedElementTransition](#sharedelementtransition)
-      - [Props](#props-1)
-    - [Animations](#animations)
-      - [SharedElementAnimation](#sharedelementanimation)
-      - [SharedElementResize](#sharedelementresize)
-      - [SharedElementAlign](#sharedelementalign)
-  - [Example app](#example-app)
-  - [Todo](#todo)
-  - [License](#license)
-  - [Credits](#credits)
+- [Motivation](#motivation)
+- [Index](#index)
+- [Installation](#installation)
+- [Basic usage](#basic-usage)
+- [How it works](#how-it-works)
+- [API Documentation](#api-documentation)
+  - [SharedElement](#sharedelement)
+    - [Props](#props)
+  - [SharedElementTransition](#sharedelementtransition)
+    - [Props](#props-1)
+  - [Animations](#animations)
+    - [SharedElementAnimation](#sharedelementanimation)
+    - [SharedElementResize](#sharedelementresize)
+    - [SharedElementAlign](#sharedelementalign)
+- [Example app](#example-app)
+- [Todo](#todo)
+- [License](#license)
+- [Credits](#credits)
 
 
 ## Installation
@@ -42,12 +60,16 @@ Link the native code (TODO: Update for auto-linking)
 ## Basic usage
 
 ```js
-import { SharedElement, SharedElementTransition } from 'react-native-shared-element';
-
+import {
+  SharedElement,
+  SharedElementTransition,
+  nodeFromRef
+} from 'react-native-shared-element';
 
 // Scene 1
+let startAncestor;
 let startNode;
-<View>
+<View ref={ref => startAncestor = nodeFromRef(ref)}>
   ...
   <SharedElement onNode={node => startNode = node}>
     <Image style={styles.image} source={...} />
@@ -57,8 +79,9 @@ let startNode;
 
 
 // Scene2
+let endAncestor;
 let endNode;
-<View>
+<View ref={ref => endAncestor = nodeFromRef(ref)}>
   ...
   <SharedElement onNode={node => endNode = node}>
     <Image style={styles.image} source={...} />
@@ -70,8 +93,14 @@ let endNode;
 const position = new Animated.Value(0);
 <View style={StyleSheet.absoluteFill}>
   <SharedElementTransition
-    start={{node: startNode}}
-    end={{node: endNode}}
+    start={{
+      node: startNode,
+      ancestor: startAncestor
+    }}
+    end={{
+      node: endNode,
+      ancestor: endAncestor
+    }}
     position={position}
     animation='move'
     resize='auto'
@@ -105,7 +134,7 @@ shared element transitions.
 
 ### SharedElement
 
-The `<SharedElement>` component accepts a single child and returns a `node` to it through the `onNode` event handler. The child must be a "real" `View` which exists in the native view hierarchy.
+The `<SharedElement>` component accepts a single child and returns a `node` to it through the `onNode` event handler. The child must correspond to a "real" `View` which exists in the native view hierarchy.
 
 #### Props
 
@@ -125,7 +154,7 @@ The `<SharedElementTransition>` component executes a shared element transition n
 | ----------- | ---------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
 | `start`     | `{ node: SharedElementNode, ancestor: SharedElementNode }` | Start node- and ancestor                                                                                   |
 | `end`       | `{ node: SharedElementNode, ancestor: SharedElementNode }` | End node- and ancestor                                                                                     |
-| `position`  | `number | Animated.Value`                                  | Interpolated position (0..1), between the start- and end nodes                                             |
+| `position`  | `number | Animated.Value | Reanimated.Value`               | Interpolated position (0..1), between the start- and end nodes                                             |
 | `animation` | [SharedElementAnimation](#SharedElementAnimation)          | Type of animation, e.g move start element or cross-fade between start- and end elements (default = `move`) |
 | `resize`    | [SharedElementResize](#SharedElementResize)                | Resize behavior (default = `auto`)                                                                         |
 | `align`     | [SharedElementAlign](#SharedElementAlign)                  | Alignment behavior (default = `auto`)                                                                      |
@@ -146,18 +175,20 @@ The following animation-types are available.
 
 #### SharedElementResize
 
-| Resize-mode | Description                                                                                                                                                                                      |
-| ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `auto`      | TODO.                                                                                                                                                                                            |
-| `stretch`   | Stretches the element to the same shape and size of the other element. If the aspect-ratio of the content differs, you may see stretched. In that case consider one of the other resize options. |
-| `clip`      | Do not resize, but clip the content to the size of the other content. This option is for instance useful in combination with `<Text>` components, where you want to reveal more text.            |
-| `none`      | Do not resize the content. When combined with `fade`, this creates a plain cross-fade effect without any resizing or clipping                                                                    |
+| Resize    | Description                                                                                                                                                                                                                    |
+| --------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `auto`    | Automatically selects the default resize behavior. For images this will create a best possible transition based on the `resizeMode` that is configured on the image. For other kinds of views, this will default to `stretch`. |
+| `stretch` | Stretches the element to the same shape and size of the other element. If the aspect-ratio of the content differs, you may see stretched. In that case consider one of the other resize options.                               |
+| `clip`    | Do not resize, but clip the content to the size of the other content. This option is for instance useful in combination with `<Text>` components, where you want to reveal more text.                                          |
+| `none`    | Do not resize the content. When combined with `fade`, this creates a plain cross-fade effect without any resizing or clipping                                                                                                  |
 
 #### SharedElementAlign
 
-The following alignment options are available
+The following alignment options are available.
 
 `auto`, `left-center`, `left-top`, `left-right`, `right-center`, `right-top`, `right-right`, `center-top` `center-center`, `center-bottom`
+
+When `auto` is selected, the default alignment strategy is used, which is `center-center`.
 
 
 ## Example app
