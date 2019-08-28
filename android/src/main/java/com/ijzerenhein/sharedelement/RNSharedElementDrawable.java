@@ -28,14 +28,15 @@ class RNSharedElementDrawable extends Drawable {
     REACTIMAGEVIEW,
     IMAGEVIEW,
     PLAIN,
-    GENERIC,
-    GENERIC_SCALEDCANVAS
+    GENERIC
   }
 
   static private String LOG_TAG = "RNSharedElementDrawable";
 
   private RNSharedElementContent mContent = null;
   private RNSharedElementStyle mStyle = null;
+  private RNSharedElementResize mResize = RNSharedElementResize.AUTO;
+  private RNSharedElementAlign mAlign = RNSharedElementAlign.AUTO;
   private ViewType mViewType = ViewType.NONE;
   private float mPosition = 0;
   private int mAlpha = 255;
@@ -54,7 +55,13 @@ class RNSharedElementDrawable extends Drawable {
     return mPosition;
   }
 
-  ViewType update(RNSharedElementContent content, RNSharedElementStyle style, float position) {
+  ViewType update(
+    RNSharedElementContent content,
+    RNSharedElementStyle style,
+    RNSharedElementResize resize,
+    RNSharedElementAlign align,
+    float position
+    ) {
     boolean invalidated = false;
 
     // Update content
@@ -109,6 +116,18 @@ class RNSharedElementDrawable extends Drawable {
       }
     }
     mStyle = style;
+
+    // Update resize
+    if (mResize != resize) {
+      mResize = resize;
+      invalidated = true;
+    } 
+
+    // Update align
+    if (mAlign != align) {
+      mAlign = align;
+      invalidated = true;
+    } 
 
     // Update position
     mPosition = position;
@@ -222,9 +241,6 @@ class RNSharedElementDrawable extends Drawable {
       case GENERIC:
         drawGenericView(canvas);
         break;
-      case GENERIC_SCALEDCANVAS:
-        drawGenericScaledCanvas(canvas);
-        break;
     }
   }
 
@@ -330,14 +346,46 @@ class RNSharedElementDrawable extends Drawable {
   }
 
   private void drawGenericView(Canvas canvas) {
+
+    switch (mResize) {
+      case AUTO:
+      case STRETCH:
+        break;
+      case CLIP:
+        break;
+      case NONE:
+        break;
+    }
+
+    switch (mAlign) {
+      case LEFT_TOP:
+        break;
+      case LEFT_CENTER:
+        break;
+      case LEFT_BOTTOM:
+        break;
+      case RIGHT_TOP:
+        break;
+      case RIGHT_CENTER:
+        break;
+      case RIGHT_BOTTOM:
+        break;
+      case CENTER_TOP:
+        break;
+      case CENTER_CENTER:
+        break;
+      case CENTER_BOTTOM:
+        break;
+    }
+
     mContent.view.draw(canvas);
   }
 
-  private void drawGenericScaledCanvas(Canvas canvas) {
+  /*private void drawGenericScaledCanvas(Canvas canvas) {
     View view = mContent.view;
 
     // Save canvas
-    canvas.save();
+    int saveCount = canvas.save();
 
     // Adjust scale
     Rect bounds = getBounds();
@@ -357,6 +405,6 @@ class RNSharedElementDrawable extends Drawable {
     view.draw(canvas);
 
     // Restore canvas
-    canvas.save();
-  }
+    canvas.restoreToCount(saveCount);
+  }*/
 }

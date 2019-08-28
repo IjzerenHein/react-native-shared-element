@@ -248,6 +248,8 @@ public class RNSharedElementTransition extends ViewGroup {
             startLayout,
             interpolatedStyle,
             startAlpha,
+            mResize,
+            mAlign,
             mNodePosition
         );
         
@@ -263,6 +265,8 @@ public class RNSharedElementTransition extends ViewGroup {
                 endLayout,
                 interpolatedStyle,
                 endAlpha,
+                mResize,
+                mAlign,
                 mNodePosition
             );
 

@@ -31,10 +31,12 @@ class RNSharedElementView extends View {
         Rect originalLayout,
         RNSharedElementStyle style,
         float alpha,
+        RNSharedElementResize resize,
+        RNSharedElementAlign align,
         float position) {
 
         // Update drawable
-        RNSharedElementDrawable.ViewType viewType = mDrawable.update(content, style, position); 
+        RNSharedElementDrawable.ViewType viewType = mDrawable.update(content, style, resize, align, position); 
         boolean useGPUScaling = (viewType == RNSharedElementDrawable.ViewType.GENERIC) || (viewType == RNSharedElementDrawable.ViewType.PLAIN);
 
         // Update layer type
