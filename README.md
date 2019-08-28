@@ -3,12 +3,15 @@
 
 Native shared element transition primitives for react-native 💫
 
-# WORK IN PROGRESS
+# WORK IN PROGRESS - not ready yet
+
+![MagicMoveGif](set-ios.gif)
+![MagicMoveGif](set-android.gif)
 
 ## Index
 
 - [react-native-shared-element](#react-native-shared-element)
-- [WORK IN PROGRESS](#work-in-progress)
+- [WORK IN PROGRESS - not ready yet](#work-in-progress---not-ready-yet)
   - [Index](#index)
   - [Installation](#installation)
   - [Basic usage](#basic-usage)
