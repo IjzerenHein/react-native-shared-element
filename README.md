@@ -5,10 +5,9 @@ Native shared element transition *"primitives"* for react-native 💫
 
 This library in itself is not a Navigation- or Router library. Instead, it provides a set of comprehensive full native building blocks for performing shared element transitions in Router- or Transition libraries. If you are looking [for the React Navigation binding, you can find it here](https://github.com/IjzerenHein/react-navigation-sharedelement).
 
-# WORK IN PROGRESS - not ready yet <!-- omit in toc -->
-
 ![MagicMoveGif](set-ios.gif)
 ![MagicMoveGif](set-android.gif)
+
 
 ## Motivation
 
@@ -27,9 +26,17 @@ This library solves that problem through an all native implementation which is v
 - [X] Cross-fade transitions
 - [X] Clipping reveal transitions
 
+
+## Under development
+
+This library is under active development. The iOS and Android implementations are mostly done, which exception of some edge cases.
+The library also aims to support the `web` platform with an optimized DOM implementation. That development hasn't started yet.
+
+
 ## Index <!-- omit in toc -->
 
 - [Motivation](#motivation)
+- [Under development](#under-development)
 - [Installation](#installation)
 - [Basic usage](#basic-usage)
 - [How it works](#how-it-works)
@@ -43,7 +50,6 @@ This library solves that problem through an all native implementation which is v
     - [SharedElementResize](#sharedelementresize)
     - [SharedElementAlign](#sharedelementalign)
 - [Example app](#example-app)
-- [Todo](#todo)
 - [License](#license)
 - [Credits](#credits)
 
@@ -52,7 +58,7 @@ This library solves that problem through an all native implementation which is v
 
 `yarn add react-native-shared-element`
 
-Link the native code (TODO: Update for auto-linking)
+Link the native code (TODO: Support for auto-linking)
 
 `react-native link react-native-shared-element`
 
@@ -172,6 +178,7 @@ The following animation-types are available.
 | `move`    | Moves the start- element to the end position    |
 | `fade`    | Cross-fades between the start- and end elements |
 
+
 #### SharedElementResize
 
 | Resize    | Description                                                                                                                                                                                                                    |
@@ -180,6 +187,7 @@ The following animation-types are available.
 | `stretch` | Stretches the element to the same shape and size of the other element. If the aspect-ratio of the content differs, you may see stretched. In that case consider one of the other resize options.                               |
 | `clip`    | Do not resize, but clip the content to the size of the other content. This option is for instance useful in combination with `<Text>` components, where you want to reveal more text.                                          |
 | `none`    | Do not resize the content. When combined with `fade`, this creates a plain cross-fade effect without any resizing or clipping                                                                                                  |
+
 
 #### SharedElementAlign
 
@@ -194,12 +202,11 @@ When `auto` is selected, the default alignment strategy is used, which is `cente
 
 The example app is located in [`./Example`](./Example) and serves as an exploration and testing tool. It features a simple stack router which implements the shared element primitives.
 
-## Todo
-
 
 ## License
 
 Shared element transition library is licensed under [The MIT License](./LICENSE.txt).
+
 
 ## Credits
 
