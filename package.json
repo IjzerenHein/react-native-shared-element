@@ -35,7 +35,7 @@
     "jest": "jest src/",
     "prepare": "bob build",
     "yalc": "bob build && yalc push",
-    "version": "conventional-changelog -i CHANGELOG.md -s && git add CHANGELOG.md"
+    "version": "conventional-changelog -p angular -i CHANGELOG.md -s && git add CHANGELOG.md"
   },
   "publishConfig": {
     "registry": "https://registry.npmjs.org/"
