@@ -45,7 +45,7 @@ The library also aims to support the `web` platform with an optimized DOM implem
     - [Props](#props)
   - [SharedElementTransition](#sharedelementtransition)
     - [Props](#props-1)
-  - [Animations](#animations)
+  - [Transitions effects](#transitions-effects)
     - [SharedElementAnimation](#sharedelementanimation)
     - [SharedElementResize](#sharedelementresize)
     - [SharedElementAlign](#sharedelementalign)
@@ -166,9 +166,20 @@ The `<SharedElementTransition>` component executes a shared element transition n
 | `debug`     | `boolean`                                                  | Renders debug overlays for diagnosing measuring and animations                                             |
 | `onMeasure` | `function`                                                 | Event handler that is called when nodes have been measured and snapshotted                                 |
 
-### Animations
+### Transitions effects
 
-The following animation-types are available.
+The transition effect can be controlled using the `animation`, `resize` and `align` props.
+In most cases you should leave these to their default values for the best possible results.
+
+If however the start- element and end elements are visually different, then it can make 
+sense to choose different values. For instance, if you are transitioning from a `<Text>`
+with a `white` color to a `<Text>` with a `black` color, then using `animation="fade"` will
+create a cross-fade between them.
+
+Another case is when you have a single-line of `<Text>` in the start- view and a full
+description in the end- view. A `stretch` effect would in this case not look good, because
+the end- element is much larger in size compared the start- element.
+In this case you can use `resize="clip"` and `align="left-top"` to create a text reveal effect.
 
 
 #### SharedElementAnimation
@@ -181,17 +192,15 @@ The following animation-types are available.
 
 #### SharedElementResize
 
-| Resize    | Description                                                                                                                                                                                                                    |
-| --------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `auto`    | Automatically selects the default resize behavior. For images this will create a best possible transition based on the `resizeMode` that is configured on the image. For other kinds of views, this will default to `stretch`. |
-| `stretch` | Stretches the element to the same shape and size of the other element. If the aspect-ratio of the content differs, you may see stretched. In that case consider one of the other resize options.                               |
-| `clip`    | Do not resize, but clip the content to the size of the other content. This option is for instance useful in combination with `<Text>` components, where you want to reveal more text.                                          |
-| `none`    | Do not resize the content. When combined with `fade`, this creates a plain cross-fade effect without any resizing or clipping                                                                                                  |
+| Resize    | Description                                                                                                                                                                                                    |
+| --------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `auto`    | Automatically selects the default resize behavior. For images this will perform the best possible transition based on the `resizeMode` of the image. For other kinds of views, this will default to `stretch`. |
+| `stretch` | Stretches the element to the same shape and size of the other element. If the aspect-ratio of the content differs, you may see stretching. In that case consider the `clip` or `none` resize options.          |
+| `clip`    | Do not resize, but clip the content to the size of the other content. This option is for instance useful in combination with `<Text>` components, where you want to reveal more text.                          |
+| `none`    | Do not resize the content. When combined with `fade`, this creates a plain cross-fade effect without any resizing or clipping                                                                                  |
 
 
 #### SharedElementAlign
-
-The following alignment options are available.
 
 `auto`, `left-center`, `left-top`, `left-right`, `right-center`, `right-top`, `right-right`, `center-top` `center-center`, `center-bottom`
 
