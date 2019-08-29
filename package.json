@@ -1,6 +1,6 @@
 {
   "name": "react-native-shared-element",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "description": "Native shared element transition primitives for react-native 💫",
   "author": "IjzerenHein <hrutjes@gmail.com>",
   "keywords": [
