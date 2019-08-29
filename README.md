@@ -27,10 +27,9 @@ This library solves that problem through an all native implementation which is v
 - [X] Cross-fade transitions
 - [X] Clipping reveal transitions
 
-## Index
+## Index <!-- omit in toc -->
 
 - [Motivation](#motivation)
-- [Index](#index)
 - [Installation](#installation)
 - [Basic usage](#basic-usage)
 - [How it works](#how-it-works)
