@@ -34,7 +34,11 @@
     "typescript": "tsc --noEmit",
     "jest": "jest src/",
     "prepare": "bob build",
-    "yalc": "bob build && yalc push"
+    "yalc": "bob build && yalc push",
+    "version": "conventional-changelog -i CHANGELOG.md -s && git add CHANGELOG.md"
+  },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/"
   },
   "peerDependencies": {
     "react": "*",
@@ -43,13 +47,17 @@
   "devDependencies": {
     "@react-native-community/bob": "^0.7.0",
     "@react-native-community/eslint-config": "^0.0.5",
+    "@commitlint/config-conventional": "^8.1.0",
     "@types/react": "^16.9.2",
     "@types/react-native": "^0.60.6",
+    "commitlint": "^8.1.0",
+    "conventional-changelog-cli": "^2.0.23",
     "eslint": "^6.2.2",
     "eslint-config-prettier": "^6.0.0",
     "eslint-plugin-prettier": "^3.1.0",
     "eslint-plugin-react": "^7.14.2",
     "eslint-plugin-react-native": "^3.7.0",
+    "husky": "^3.0.4",
     "jest": "^24.7.0",
     "metro-react-native-babel-preset": "0.56.0",
     "prettier": "^1.17.0",
@@ -66,5 +74,11 @@
       "module",
       "typescript"
     ]
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit2": "yarn typescript && yarn lint && yarn test",
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
+    }
   }
 }
