@@ -1,9 +1,4 @@
-# react-native-shared-element
+# [0.4.0](https://github.com/IjzerenHein/react-native-shared-element/compare/v0.3.0...v0.4.0) (2019-08-28)
 
-Native shared element transition primitives for react-native 💫
 
-## [0.1.0] - 2019-05-29
-
-### Added
-
-- Initial release
+### Initial release
