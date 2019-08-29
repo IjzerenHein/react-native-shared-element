@@ -19,6 +19,7 @@
     "@react-native-community/viewpager": "^1.1.7",
     "@react-navigation/core": "^3.4.2",
     "@react-navigation/native": "^3.5.0",
+    "flow-bin": "^0.106.2",
     "react": "16.8.3",
     "react-native": "0.59.9",
     "react-native-fast-image": "^6.0.3",
