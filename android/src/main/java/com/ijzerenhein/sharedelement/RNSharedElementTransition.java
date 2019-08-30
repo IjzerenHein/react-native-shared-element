@@ -107,15 +107,10 @@ public class RNSharedElementTransition extends ViewGroup {
 
             // Wait for the whole layout pass to have completed before
             // requesting the layout and content
-            UIManagerModule uiManager = ((ThemedReactContext)getContext()).getNativeModule(UIManagerModule.class);
-            uiManager.addUIBlock(new UIBlock() {
-                public void execute (NativeViewHierarchyManager nvhm) {
-                    requestStylesAndContent(true);
-                    mInitialLayoutPassCompleted = true;
-                    updateLayout();
-                    updateNodeVisibility();      
-                }
-            });
+            requestStylesAndContent(true);
+            mInitialLayoutPassCompleted = true;
+            updateLayout();
+            updateNodeVisibility();      
         }
     }
 
