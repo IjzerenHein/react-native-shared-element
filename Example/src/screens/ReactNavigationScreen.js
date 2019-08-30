@@ -2,7 +2,7 @@
 import * as React from "react";
 import { View } from "react-native";
 import { Icon } from "../components";
-import { createSharedElementTransitioner } from "react-navigation-sharedelement";
+import { createSharedElementStackNavigator } from "react-navigation-sharedelement";
 import { createAppContainer } from "@react-navigation/native";
 import { createStackNavigator } from "react-navigation-stack";
 import { createBottomTabNavigator } from "react-navigation-tabs";
@@ -38,7 +38,7 @@ function isTabBarVisible(navigation: any): boolean {
   }
 }
 
-const stackNavigator = createSharedElementTransitioner(
+const stackNavigator = createSharedElementStackNavigator(
   createStackNavigator,
   {
     Stack: MainScreen,
@@ -57,7 +57,7 @@ const stackNavigator = createSharedElementTransitioner(
   }
 );
 
-const modalNavigator = createSharedElementTransitioner(
+const modalNavigator = createSharedElementStackNavigator(
   createStackNavigator,
   {
     Modal: MainScreen,
@@ -76,7 +76,7 @@ const modalNavigator = createSharedElementTransitioner(
   }
 );
 
-const fadeNavigator = createSharedElementTransitioner(
+const fadeNavigator = createSharedElementStackNavigator(
   createStackNavigator,
   {
     Fade: MainScreen,
