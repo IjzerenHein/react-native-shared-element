@@ -58,7 +58,7 @@ The library also aims to support the `web` platform with an optimized DOM implem
 
 `yarn add react-native-shared-element`
 
-Link the native code (TODO: Support for auto-linking)
+And optionally link when needed
 
 `react-native link react-native-shared-element`
 
@@ -159,7 +159,7 @@ The `<SharedElementTransition>` component executes a shared element transition n
 | ----------- | ---------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
 | `start`     | `{ node: SharedElementNode, ancestor: SharedElementNode }` | Start node- and ancestor                                                                                   |
 | `end`       | `{ node: SharedElementNode, ancestor: SharedElementNode }` | End node- and ancestor                                                                                     |
-| `position`  | `number | Animated.Value | Reanimated.Value`               | Interpolated position (0..1), between the start- and end nodes                                             |
+| `position`  | `number` \| `Animated.Value` \| `Reanimated.Value`         | Interpolated position (0..1), between the start- and end nodes                                             |
 | `animation` | [SharedElementAnimation](#SharedElementAnimation)          | Type of animation, e.g move start element or cross-fade between start- and end elements (default = `move`) |
 | `resize`    | [SharedElementResize](#SharedElementResize)                | Resize behavior (default = `auto`)                                                                         |
 | `align`     | [SharedElementAlign](#SharedElementAlign)                  | Alignment behavior (default = `auto`)                                                                      |
