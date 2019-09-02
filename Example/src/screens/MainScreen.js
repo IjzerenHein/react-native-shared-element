@@ -81,6 +81,11 @@ export class MainScreen extends React.Component<PropsType> {
             description="Heavier card demo with fading gradient overlay and cross-fading texts"
             onPress={this.onPressCardDemo2}
           />
+          {/*<ListItem
+            label="Avatar Demo"
+            description="Reveal multiple elements from a single source"
+            onPress={this.onPressAvatarDemo}
+          />*/}
           {footer}
         </ScrollView>
       </View>
@@ -141,6 +146,24 @@ export class MainScreen extends React.Component<PropsType> {
         <TilesScreen
           type="card2"
           title="Card Demo 2"
+          transitionConfig={fadeIn(0, true)}
+          DetailComponent={CardScreen}
+        />
+      );
+    }
+  };
+
+  onPressAvatarDemo = () => {
+    const { navigation } = this.props;
+    if (navigation) {
+      navigation.push("Tiles", {
+        type: "avatar"
+      });
+    } else {
+      Router.push(
+        <TilesScreen
+          type="avatar"
+          title="Avatar Demo"
           transitionConfig={fadeIn(0, true)}
           DetailComponent={CardScreen}
         />

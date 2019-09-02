@@ -62,9 +62,11 @@ const styles = StyleSheet.create({
   }
 });
 
+type Type = "tile" | "card" | "card2" | "avatar";
+
 type PropsType = {
   hero: Hero,
-  gradientOverlay: boolean,
+  type: Type,
   navigation?: any
 };
 type StateType = {
@@ -78,16 +80,34 @@ export class CardScreen extends React.Component<PropsType, StateType> {
     header: null
   };
 
-  static sharedElements = (
-    navigation: any,
-    otherNavigation: any,
+  static getSharedElements(
+    hero: Hero,
+    type: Type,
     showing: boolean
-  ): ?SharedElementsConfig => {
-    const type = navigation.getParam("type") || "card2";
-    const hero = navigation.getParam("hero");
+  ): ?SharedElementsConfig {
     switch (type) {
       case "tile":
         return [`heroPhoto.${hero.id}`];
+      case "avatar":
+        return [
+          {
+            id: `heroBackground.${hero.id}`,
+            otherId: `heroPhoto.${hero.id}`,
+            animation: showing ? "fade-in" : "fade-out"
+          },
+          `heroPhoto.${hero.id}`,
+          {
+            id: `heroName.${hero.id}`,
+            otherId: `heroPhoto.${hero.id}`,
+            animation: showing ? "fade-in" : "fade-out"
+          },
+          {
+            id: `heroDescription.${hero.id}`,
+            otherId: `heroPhoto.${hero.id}`,
+            animation: showing ? "fade-in" : "fade-out"
+          },
+          { id: `heroCloseButton.${hero.id}`, animation: "fade" }
+        ];
       case "card":
         return [
           `heroBackground.${hero.id}`,
@@ -116,6 +136,16 @@ export class CardScreen extends React.Component<PropsType, StateType> {
           }
         ];
     }
+  }
+
+  static sharedElements = (
+    navigation: any,
+    otherNavigation: any,
+    showing: boolean
+  ): ?SharedElementsConfig => {
+    const type = navigation.getParam("type") || "card2";
+    const hero = navigation.getParam("hero");
+    return CardScreen.getSharedElements(hero, type, showing);
   };
 
   constructor(props: PropsType) {
@@ -137,9 +167,8 @@ export class CardScreen extends React.Component<PropsType, StateType> {
     const { scrollOffset, scrollEvent, contentHeight } = this.state;
     const { navigation } = this.props;
     const hero = navigation ? navigation.getParam("hero") : this.props.hero;
-    const gradientOverlay = navigation
-      ? navigation.getParam("gradientOverlay")
-      : this.props.gradientOverlay;
+    const type = navigation ? navigation.getParam("type") : this.props.type;
+    const gradientOverlay = type === "card2";
     const { id, name, photo, description } = hero;
     return (
       <View style={styles.flex}>
@@ -274,34 +303,14 @@ export class CardScreen extends React.Component<PropsType, StateType> {
   };
 
   onBack = () => {
-    const { gradientOverlay, navigation } = this.props;
+    const { navigation } = this.props;
     const hero = navigation ? navigation.getParam("hero") : this.props.hero;
-    const sharedElements: SharedElementsConfig = [
-      `heroBackground.${hero.id}`,
-      `heroPhoto.${hero.id}`
-    ];
-    if (gradientOverlay) {
-      sharedElements.push({
-        id: `heroGradientOverlay.${hero.id}`,
-        animation: "fade"
-      });
-    }
-    sharedElements.push({
-      id: `heroCloseButton.${hero.id}`,
-      animation: "fade"
-    });
-    sharedElements.push(`heroName.${hero.id}`);
-    sharedElements.push({
-      id: `heroDescription.${hero.id}`,
-      animation: "fade",
-      resize: "none",
-      align: "left-top"
-    });
+    const type = navigation ? navigation.getParam("type") : this.props.type;
     if (navigation) {
       navigation.goBack();
     } else {
       Router.pop({
-        sharedElements,
+        sharedElements: CardScreen.getSharedElements(hero, type, false) || [],
         transitionConfig: fadeIn()
       });
     }

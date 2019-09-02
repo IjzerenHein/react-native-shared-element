@@ -34,6 +34,10 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: Colors.empty
   },
+  avatarList: {
+    flex: 1,
+    backgroundColor: Colors.empty
+  },
   item: {
     height: 160,
     width: Dimensions.get("window").width / 2,
@@ -47,6 +51,17 @@ const styles = StyleSheet.create({
   image: {
     height: "100%",
     width: "100%"
+  },
+  avatar: {
+    width: Dimensions.get("window").width / 3,
+    height: 140,
+    justifyContent: "center",
+    alignItems: "center"
+  },
+  avatarImage: {
+    width: 100,
+    height: 100,
+    borderRadius: 50
   },
   cardListContentContainer: {
     marginTop: 10,
@@ -100,7 +115,7 @@ const styles = StyleSheet.create({
 });
 
 type PropsType = {
-  type: "tile" | "card" | "card2",
+  type: "tile" | "card" | "card2" | "avatar",
   title: string,
   DetailComponent: any,
   transitionConfig: any,
@@ -122,8 +137,8 @@ export class TilesScreen extends React.Component<PropsType> {
       <View style={styles.container}>
         {!navigation ? <NavBar title={title} /> : undefined}
         <FlatList
-          style={styles.list}
-          numColumns={type === "tile" ? 2 : 1}
+          style={type === "avatar" ? styles.avatarList : styles.list}
+          numColumns={type === "tile" ? 2 : type === "avatar" ? 3 : 1}
           contentContainerStyle={
             type === "card" ? styles.cardListContentContainer : undefined
           }
@@ -145,6 +160,8 @@ export class TilesScreen extends React.Component<PropsType> {
     switch (type) {
       case "tile":
         return this.renderTile(data);
+      case "avatar":
+        return this.renderAvatar(data);
       case "card":
         return this.renderCard(data);
       case "card2":
@@ -175,6 +192,27 @@ export class TilesScreen extends React.Component<PropsType> {
           navigation={navigation}
         >
           <View style={StyleSheet.absoluteFill} collapsable={false} />
+        </SharedElement>
+      </TouchableOpacity>
+    );
+  };
+
+  renderAvatar = ({ item, index }: any) => {
+    const { navigation } = this.props;
+    const hero = item;
+    return (
+      <TouchableOpacity
+        key={`Hero${hero.id}`}
+        style={[styles.avatar]}
+        activeOpacity={1}
+        onPress={() => this.onPressItem(hero)}
+      >
+        <SharedElement id={`heroPhoto.${hero.id}`} navigation={navigation}>
+          <Image
+            style={styles.avatarImage}
+            source={hero.photo}
+            resizeMode={"cover"}
+          />
         </SharedElement>
       </TouchableOpacity>
     );
@@ -293,13 +331,36 @@ export class TilesScreen extends React.Component<PropsType> {
       this.props.transitionConfig;
     let sharedElements: SharedElementsConfig = [];
     const props: any = {
-      hero
+      hero,
+      type
     };
     let routeName = "Detail";
     switch (type) {
       case "tile":
         sharedElements = [`heroPhoto.${hero.id}`];
         routeName = "Pager";
+        break;
+      case "avatar":
+        sharedElements = [
+          {
+            otherId: `heroBackground.${hero.id}`,
+            id: `heroPhoto.${hero.id}`,
+            animation: "fade-in"
+          },
+          `heroPhoto.${hero.id}`,
+          {
+            otherId: `heroName.${hero.id}`,
+            id: `heroPhoto.${hero.id}`,
+            animation: "fade-in"
+          },
+          {
+            otherId: `heroDescription.${hero.id}`,
+            id: `heroPhoto.${hero.id}`,
+            animation: "fade-in"
+          },
+          { id: `heroCloseButton.${hero.id}`, animation: "fade" }
+        ];
+        routeName = "Card";
         break;
       case "card":
         sharedElements = [
@@ -334,6 +395,7 @@ export class TilesScreen extends React.Component<PropsType> {
         props.gradientOverlay = true;
         break;
     }
+
     if (navigation) {
       navigation.push(routeName, {
         ...props
