@@ -10,10 +10,11 @@ Open issues:
 [X] Android RN-screens layout issues
 [X] Android FastImage & FirebaseUI support
 [X] Android `resize` prop support
-[ ] Android `align` prop support
 [X] Android backgroundImage support
 [X] Android scale transform support
 [ ] Android `debug` prop support (fix measurement event)
+[ ] Android `align` prop support
+[ ] Android FirebaseUI rounded corners
 [ ] Android inverted scrollview clipping
 [ ] Android image resizeMode mode & border-radius drawing artefact
 [ ] Android elevation-shadow & clip artefact
