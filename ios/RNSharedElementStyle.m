@@ -75,4 +75,44 @@
     return transform;
 }
 
++ (UIColor*) getInterpolatedColor:(UIColor*)color1 color2:(UIColor*)color2 position:(CGFloat)position
+{
+    CGFloat red1, green1, blue1, alpha1;
+    CGFloat red2, green2, blue2, alpha2;
+    [color1 getRed:&red1 green:&green1 blue:&blue1 alpha:&alpha1];
+    [color2 getRed:&red2 green:&green2 blue:&blue2 alpha:&alpha2];
+    CGFloat alpha = alpha1 + ((alpha2 - alpha1) * position);
+    CGFloat red = red1 + ((red2 - red1) * position);
+    CGFloat green = green1 + ((green2 - green1) * position);
+    CGFloat blue = blue1 + ((blue2 - blue1) * position);
+    if ((alpha1 == 0.0f) && (alpha2 != 0.0f)) {
+        red = red2;
+        green = green2;
+        blue = blue2;
+    } else if ((alpha2 == 0.0f) && (alpha1 != 0.0f)) {
+        red = red1;
+        green = green1;
+        blue = blue1;
+    }
+    return [UIColor colorWithRed:red green:green blue:blue alpha:alpha];
+}
+
++ (RNSharedElementStyle*) getInterpolatedStyle:(RNSharedElementStyle*)style1 style2:(RNSharedElementStyle*)style2 position:(CGFloat) position
+{
+    RNSharedElementStyle* style = [[RNSharedElementStyle alloc]init];
+    style.opacity = style1.opacity + ((style2.opacity - style1.opacity) * position);
+    style.cornerRadius = style1.cornerRadius + ((style2.cornerRadius - style1.cornerRadius) * position);
+    style.borderWidth = style1.borderWidth + ((style2.borderWidth - style1.borderWidth) * position);
+    style.borderColor = [RNSharedElementStyle getInterpolatedColor:style1.borderColor color2:style2.borderColor position:position];
+    style.backgroundColor = [RNSharedElementStyle getInterpolatedColor:style1.backgroundColor color2:style2.backgroundColor position:position];
+    style.shadowOpacity = style1.shadowOpacity + ((style2.shadowOpacity - style1.shadowOpacity) * position);
+    style.shadowRadius = style1.shadowRadius + ((style2.shadowRadius - style1.shadowRadius) * position);
+    style.shadowOffset = CGSizeMake(
+                                    style1.shadowOffset.width + ((style2.shadowOffset.width - style1.shadowOffset.width) * position),
+                                    style1.shadowOffset.height + ((style2.shadowOffset.height - style1.shadowOffset.height) * position)
+                                    );
+    style.shadowColor = [RNSharedElementStyle getInterpolatedColor:style1.shadowColor color2:style2.shadowColor position:position];
+    return style;
+}
+
 @end

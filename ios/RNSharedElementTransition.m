@@ -247,18 +247,6 @@
     return [self.superview convertRect:layout fromView:nil];
 }
 
-- (UIColor*) getInterpolatedColor:(UIColor*)color1 color2:(UIColor*)color2 position:(CGFloat)position
-{
-    CGFloat red1, green1, blue1, alpha1;
-    CGFloat red2, green2, blue2, alpha2;
-    [color1 getRed:&red1 green:&green1 blue:&blue1 alpha:&alpha1];
-    [color2 getRed:&red2 green:&green2 blue:&blue2 alpha:&alpha2];
-    return [UIColor colorWithRed:red1 + ((red2 - red1) * position)
-                           green:green1 + ((green2 - green1) * position)
-                            blue:blue1 + ((blue2 - blue1) * position)
-                           alpha:alpha1 + ((alpha2 - alpha1) * position)];
-}
-
 - (CGRect) getInterpolatedLayout:(CGRect)layout1 layout2:(CGRect)layout2 position:(CGFloat) position
 {
     return CGRectMake(
@@ -320,24 +308,6 @@
     }
     
     return clipInsets;
-}
-
-- (RNSharedElementStyle*) getInterpolatedStyle:(RNSharedElementStyle*)style1 style2:(RNSharedElementStyle*)style2 position:(CGFloat) position
-{
-    RNSharedElementStyle* style = [[RNSharedElementStyle alloc]init];
-    style.opacity = style1.opacity + ((style2.opacity - style1.opacity) * position);
-    style.cornerRadius = style1.cornerRadius + ((style2.cornerRadius - style1.cornerRadius) * position);
-    style.borderWidth = style1.borderWidth + ((style2.borderWidth - style1.borderWidth) * position);
-    style.borderColor = [self getInterpolatedColor:style1.borderColor color2:style2.borderColor position:position];
-    style.backgroundColor = [self getInterpolatedColor:style1.backgroundColor color2:style2.backgroundColor position:position];
-    style.shadowOpacity = style1.shadowOpacity + ((style2.shadowOpacity - style1.shadowOpacity) * position);
-    style.shadowRadius = style1.shadowRadius + ((style2.shadowRadius - style1.shadowRadius) * position);
-    style.shadowOffset = CGSizeMake(
-                                    style1.shadowOffset.width + ((style2.shadowOffset.width - style1.shadowOffset.width) * position),
-                                    style1.shadowOffset.height + ((style2.shadowOffset.height - style1.shadowOffset.height) * position)
-                                    );
-    style.shadowColor = [self getInterpolatedColor:style1.shadowColor color2:style2.shadowColor position:position];
-    return style;
 }
 
 - (void) applyStyle:(RNSharedElementStyle*)style layer:(CALayer*)layer
@@ -411,7 +381,7 @@
     UIEdgeInsets interpolatedClipInsets;
     if (!startStyle && !endStyle) return;
     if (startStyle && endStyle) {
-        interpolatedStyle = [self getInterpolatedStyle:startStyle style2:endStyle position:_nodePosition];
+        interpolatedStyle = [RNSharedElementStyle getInterpolatedStyle:startStyle style2:endStyle position:_nodePosition];
         interpolatedLayout = [self getInterpolatedLayout:startLayout layout2:endLayout position:_nodePosition];
         interpolatedClipInsets = [self getInterpolatedClipInsets:interpolatedLayout startClipInsets:startClipInsets startVisibleLayout:startVisibleLayout endClipInsets:endClipInsets endVisibleLayout:endVisibleLayout];
         interpolatedContentLayout = [self getInterpolatedLayout:startContentLayout layout2:endContentLayout position:_nodePosition];

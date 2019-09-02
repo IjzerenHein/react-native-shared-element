@@ -27,6 +27,8 @@
 
 + (NSString*) stringFromTransform:(CATransform3D) transform;
 + (CATransform3D) getAbsoluteViewTransform:(UIView*) view;
++ (UIColor*) getInterpolatedColor:(UIColor*)color1 color2:(UIColor*)color2 position:(CGFloat)position;
++ (RNSharedElementStyle*) getInterpolatedStyle:(RNSharedElementStyle*)style1 style2:(RNSharedElementStyle*)style2 position:(CGFloat) position;
 
 @end
 
