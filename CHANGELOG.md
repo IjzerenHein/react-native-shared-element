@@ -1,3 +1,12 @@
+## [0.4.3](https://github.com/IjzerenHein/react-native-shared-element/compare/v0.4.2...v0.4.3) (2019-09-02)
+
+
+### Bug Fixes
+
+* **ios:** fixed homepage missing from podfile ([e1649bd](https://github.com/IjzerenHein/react-native-shared-element/commit/e1649bd))
+
+
+
 ## [0.4.2](https://github.com/IjzerenHein/react-native-shared-element/compare/v0.4.1...v0.4.2) (2019-08-30)
 
 
