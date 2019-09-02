@@ -78,42 +78,45 @@ export class CardScreen extends React.Component<PropsType, StateType> {
     header: null
   };
 
-  /*static sharedElements = (navigation: any) => {
+  static sharedElements = (
+    navigation: any,
+    otherNavigation: any,
+    showing: boolean
+  ): ?SharedElementsConfig => {
     const type = navigation.getParam("type") || "card2";
     const hero = navigation.getParam("hero");
-    console.log("CardScreen.sharedElements: ", type, hero);
-    const sharedElements: SharedElementsConfig = {};
-
     switch (type) {
       case "tile":
-        sharedElements[`heroPhoto.${hero.id}`] = "move";
-        break;
+        return [`heroPhoto.${hero.id}`];
       case "card":
-        sharedElements[`heroBackground.${hero.id}`] = "move";
-        sharedElements[`heroPhoto.${hero.id}`] = "move";
-        sharedElements[`heroCloseButton.${hero.id}`] = "fade";
-        sharedElements[`heroName.${hero.id}`] = "move";
-        sharedElements[`heroDescription.${hero.id}`] = {
-          animation: "fade",
-          resize: "none",
-          align: "left-top"
-        };
-        break;
+        return [
+          `heroBackground.${hero.id}`,
+          `heroPhoto.${hero.id}`,
+          { id: `heroCloseButton.${hero.id}`, animation: "fade" },
+          `heroName.${hero.id}`,
+          {
+            id: `heroDescription.${hero.id}`,
+            animation: "fade",
+            resize: "clip",
+            align: "left-top"
+          }
+        ];
       case "card2":
-        sharedElements[`heroBackground.${hero.id}`] = "move";
-        sharedElements[`heroPhoto.${hero.id}`] = "move";
-        sharedElements[`heroGradientOverlay.${hero.id}`] = "fade";
-        sharedElements[`heroCloseButton.${hero.id}`] = "fade";
-        sharedElements[`heroName.${hero.id}`] = "fade";
-        sharedElements[`heroDescription.${hero.id}`] = {
-          animation: "fade",
-          resize: "none",
-          align: "left-top"
-        };
-        break;
+        return [
+          `heroBackground.${hero.id}`,
+          `heroPhoto.${hero.id}`,
+          { id: `heroGradientOverlay.${hero.id}`, animation: "fade" },
+          { id: `heroCloseButton.${hero.id}`, animation: "fade" },
+          { id: `heroName.${hero.id}`, animation: "fade" },
+          {
+            id: `heroDescription.${hero.id}`,
+            animation: "fade",
+            resize: "clip",
+            align: "left-top"
+          }
+        ];
     }
-    return sharedElements;
-  };*/
+  };
 
   constructor(props: PropsType) {
     super(props);
@@ -273,20 +276,27 @@ export class CardScreen extends React.Component<PropsType, StateType> {
   onBack = () => {
     const { gradientOverlay, navigation } = this.props;
     const hero = navigation ? navigation.getParam("hero") : this.props.hero;
-    const sharedElements: SharedElementsConfig = {
-      [`heroBackground.${hero.id}`]: "move",
-      [`heroPhoto.${hero.id}`]: "move"
-    };
+    const sharedElements: SharedElementsConfig = [
+      `heroBackground.${hero.id}`,
+      `heroPhoto.${hero.id}`
+    ];
     if (gradientOverlay) {
-      sharedElements[`heroGradientOverlay.${hero.id}`] = "fade";
+      sharedElements.push({
+        id: `heroGradientOverlay.${hero.id}`,
+        animation: "fade"
+      });
     }
-    sharedElements[`heroCloseButton.${hero.id}`] = "fade";
-    sharedElements[`heroName.${hero.id}`] = "move";
-    sharedElements[`heroDescription.${hero.id}`] = {
+    sharedElements.push({
+      id: `heroCloseButton.${hero.id}`,
+      animation: "fade"
+    });
+    sharedElements.push(`heroName.${hero.id}`);
+    sharedElements.push({
+      id: `heroDescription.${hero.id}`,
       animation: "fade",
       resize: "none",
       align: "left-top"
-    };
+    });
     if (navigation) {
       navigation.goBack();
     } else {

@@ -19,14 +19,9 @@ import {
   Heading2,
   Body
 } from "../components";
-import type { SharedElementAnimation } from "react-native-shared-element";
 import { Heroes } from "../assets";
 import { DetailScreen } from "./DetailScreen";
-import type {
-  Hero,
-  SharedElementTransitionConfig,
-  SharedElementsConfig
-} from "../types";
+import type { Hero, SharedElementsConfig } from "../types";
 import { fadeIn } from "../transitions";
 import LinearGradient from "react-native-linear-gradient";
 import TouchableScale from "react-native-touchable-scale";
@@ -107,7 +102,6 @@ const styles = StyleSheet.create({
 type PropsType = {
   type: "tile" | "card" | "card2",
   title: string,
-  animation: SharedElementAnimation | SharedElementTransitionConfig,
   DetailComponent: any,
   transitionConfig: any,
   navigation?: any
@@ -117,7 +111,6 @@ export class TilesScreen extends React.Component<PropsType> {
   static defaultProps = {
     type: "tile",
     title: "Tiles",
-    animation: "move",
     DetailComponent: DetailScreen,
     transitionConfig: fadeIn()
   };
@@ -293,56 +286,57 @@ export class TilesScreen extends React.Component<PropsType> {
   };
 
   onPressItem = (hero: Hero) => {
-    const { navigation, animation, DetailComponent } = this.props;
+    const { navigation, DetailComponent } = this.props;
     const type = navigation ? navigation.getParam("type") : this.props.type;
     const transitionConfig =
       (navigation ? navigation.getParam("transitionConfig") : undefined) ||
       this.props.transitionConfig;
-    const alternateHero = animation === "fade" ? Heroes[0] : hero;
-    const sharedElements: SharedElementsConfig = {};
+    let sharedElements: SharedElementsConfig = [];
     const props: any = {
-      hero: {
-        ...alternateHero,
-        id: hero.id
-      }
+      hero
     };
     let routeName = "Detail";
     switch (type) {
       case "tile":
-        sharedElements[`heroPhoto.${hero.id}`] = animation;
+        sharedElements = [`heroPhoto.${hero.id}`];
         routeName = "Pager";
         break;
       case "card":
-        sharedElements[`heroBackground.${hero.id}`] = "move";
-        sharedElements[`heroPhoto.${hero.id}`] = "move";
-        sharedElements[`heroCloseButton.${hero.id}`] = "fade";
-        sharedElements[`heroName.${hero.id}`] = "move";
-        sharedElements[`heroDescription.${hero.id}`] = {
-          animation: "fade",
-          resize: "none",
-          align: "left-top"
-        };
+        sharedElements = [
+          `heroBackground.${hero.id}`,
+          `heroPhoto.${hero.id}`,
+          { id: `heroCloseButton.${hero.id}`, animation: "fade" },
+          `heroName.${hero.id}`,
+          {
+            id: `heroDescription.${hero.id}`,
+            animation: "fade",
+            resize: "none",
+            align: "left-top"
+          }
+        ];
         routeName = "Card";
         break;
       case "card2":
-        sharedElements[`heroBackground.${hero.id}`] = "move";
-        sharedElements[`heroPhoto.${hero.id}`] = "move";
-        sharedElements[`heroGradientOverlay.${hero.id}`] = "fade";
-        sharedElements[`heroCloseButton.${hero.id}`] = "fade";
-        sharedElements[`heroName.${hero.id}`] = "fade";
-        sharedElements[`heroDescription.${hero.id}`] = {
-          animation: "fade",
-          resize: "clip",
-          align: "left-top"
-        };
+        sharedElements = [
+          `heroBackground.${hero.id}`,
+          `heroPhoto.${hero.id}`,
+          { id: `heroGradientOverlay.${hero.id}`, animation: "fade" },
+          { id: `heroCloseButton.${hero.id}`, animation: "fade" },
+          { id: `heroName.${hero.id}`, animation: "fade" },
+          {
+            id: `heroDescription.${hero.id}`,
+            animation: "fade",
+            resize: "clip",
+            align: "left-top"
+          }
+        ];
         routeName = "Card";
         props.gradientOverlay = true;
         break;
     }
     if (navigation) {
       navigation.push(routeName, {
-        ...props,
-        sharedElements
+        ...props
       });
     } else {
       Router.push(<DetailComponent {...props} />, {

@@ -134,8 +134,7 @@ export class MainScreen extends React.Component<PropsType> {
     const { navigation } = this.props;
     if (navigation) {
       navigation.push("Tiles", {
-        type: "card2",
-        transitionConfig: fadeIn(0, true)
+        type: "card2"
       });
     } else {
       Router.push(

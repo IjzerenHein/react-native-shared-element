@@ -33,55 +33,45 @@ export const TextTests: TestGroup = {
       description: "TODO",
       start: <TestText length="sentence" position="center" />,
       end: <TestText length="paragraph" position="center" />,
-      animation: {
-        animation: "fade",
-        resize: "clip",
-        align: "left-top"
-      }
+      animation: "fade",
+      resize: "clip",
+      align: "left-top"
     },
     {
       name: "Resize (none)",
       description: "TODO",
       start: <TestText length="sentence" position="center" />,
       end: <TestText length="paragraph" position="center" />,
-      animation: {
-        animation: "fade",
-        resize: "none",
-        align: "left-top"
-      }
+      animation: "fade",
+      resize: "none",
+      align: "left-top"
     },
     {
       name: "Resize (stretch)",
       description: "TODO",
       start: <TestText length="sentence" position="center" />,
       end: <TestText length="paragraph" position="center" />,
-      animation: {
-        animation: "fade",
-        resize: "stretch",
-        align: "left-top"
-      }
+      animation: "fade",
+      resize: "stretch",
+      align: "left-top"
     },
     {
       name: "Resize & Move (clip)",
       description: "TODO",
       start: <TestText length="words" />,
       end: <TestText end length="paragraph" />,
-      animation: {
-        animation: "fade",
-        resize: "clip",
-        align: "left-top"
-      }
+      animation: "fade",
+      resize: "clip",
+      align: "left-top"
     },
     {
       name: "Resize & Move (none)",
       description: "TODO",
       start: <TestText length="sentence" />,
       end: <TestText end length="paragraph" />,
-      animation: {
-        animation: "fade",
-        resize: "none",
-        align: "left-top"
-      }
+      animation: "fade",
+      resize: "none",
+      align: "left-top"
     }
   ]
 };

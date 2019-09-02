@@ -14,7 +14,11 @@ import { PanGestureHandler, State } from "react-native-gesture-handler";
 import { NavBarHeight } from "./navBar/constants";
 import { fromRight } from "../transitions";
 import * as Screens from "react-native-screens";
-import type { SharedElementsConfig } from "../types";
+import type {
+  SharedElementsConfig,
+  SharedElementsStrictConfig
+} from "../types";
+import { normalizeSharedElementsConfig } from "../types/SharedElement";
 
 Screens.useScreens();
 
@@ -67,7 +71,7 @@ interface RouterState {
   nextIndex: number;
   animValue: Animated.Node;
   transitionConfig: ?RouterTransitionConfig;
-  sharedElementConfig: ?SharedElementsConfig;
+  sharedElementsConfig: ?SharedElementsStrictConfig;
   sharedElementScreens: Array<?ScreenTransitionContextOnSharedElementsUpdatedEvent>;
   actionsQueue: Array<RouterAction>;
 }
@@ -130,7 +134,7 @@ export class Router extends React.Component<RouterProps, RouterState> {
         })
       ),
       sharedElementScreens: [],
-      sharedElementConfig: undefined,
+      sharedElementsConfig: undefined,
       transitionConfig: undefined
     };
   }
@@ -152,7 +156,7 @@ export class Router extends React.Component<RouterProps, RouterState> {
       nextIndex,
       stack,
       sharedElementScreens,
-      sharedElementConfig,
+      sharedElementsConfig,
       transitionConfig,
       animValue
     } = this.state;
@@ -163,45 +167,38 @@ export class Router extends React.Component<RouterProps, RouterState> {
     }
     const startIndex = Math.min(prevIndex, nextIndex);
     const endIndex = startIndex + 1;
-    if (!sharedElementConfig || !transitionConfig) {
+    if (!sharedElementsConfig || !transitionConfig) {
       return;
     }
     const { debug } = transitionConfig;
-    const nodes = {};
     const startScreen = sharedElementScreens[startIndex];
     const endScreen = sharedElementScreens[endIndex];
-    for (let sharedId in sharedElementConfig) {
-      nodes[sharedId] = {
+    const nodes = sharedElementsConfig.map(sharedElementConfig => {
+      const { id, otherId, ...other } = sharedElementConfig;
+      const node: any = {
+        id,
         start: {
-          node: startScreen ? startScreen.nodes[sharedId] : undefined,
+          node: startScreen ? startScreen.nodes[id] : undefined,
           ancestor: startScreen ? startScreen.ancestor : undefined
         },
         end: {
-          node: endScreen ? endScreen.nodes[sharedId] : undefined,
+          node: endScreen ? endScreen.nodes[id] : undefined,
           ancestor: endScreen ? endScreen.ancestor : undefined
-        }
+        },
+        ...other,
+        debug: sharedElementConfig.debug || debug
       };
-      if (sharedElementConfig[sharedId] === true) {
-        nodes[sharedId].animation = "move";
-      } else if (typeof sharedElementConfig[sharedId] === "string") {
-        nodes[sharedId].animation = sharedElementConfig[sharedId];
-      } else if (sharedElementConfig[sharedId]) {
-        nodes[sharedId] = {
-          ...nodes[sharedId],
-          ...sharedElementConfig[sharedId]
-        };
-      }
-    }
+      return node;
+    });
     // console.log('renderSharedElementTransitions: ', nodes);
     const position = Animated.subtract(animValue, startIndex);
     return (
       <View style={styles.sharedElements} pointerEvents="none">
-        {Object.keys(nodes).map(sharedId => (
+        {nodes.map(({ id, ...other }) => (
           <SharedElementTransition
-            key={`SharedElementTransition.${sharedId}`}
-            {...nodes[sharedId]}
+            key={`SharedElementTransition.${id}`}
+            {...other}
             position={position}
-            debug={debug}
           />
         ))}
       </View>
@@ -395,15 +392,17 @@ export class Router extends React.Component<RouterProps, RouterState> {
       config && config.transitionConfig
         ? config.transitionConfig
         : this.props.transitionConfig;
-    const sharedElementConfig =
-      config && config.sharedElements ? config.sharedElements : undefined;
+
+    const sharedElementsConfig = normalizeSharedElementsConfig(
+      config ? config.sharedElements : undefined
+    );
     if (action === "push") {
       this.setState({
         // $FlowFixMe
         stack: [...stack, node],
         nextIndex: nextIndex + 1,
         sharedElementScreens: [...sharedElementScreens, undefined],
-        sharedElementConfig,
+        sharedElementsConfig,
         transitionConfig
       });
       const { transitionSpec } = transitionConfig;
@@ -424,7 +423,7 @@ export class Router extends React.Component<RouterProps, RouterState> {
       this.setState({
         nextIndex: nextIndex - 1,
         transitionConfig,
-        sharedElementConfig
+        sharedElementsConfig
       });
       const { transitionSpec } = transitionConfig;
       const { timing, ...spec } = transitionSpec;

@@ -72,7 +72,6 @@ export class TestsScreen extends React.Component<PropsType> {
     } else {
       Router.push(
         test.tests ? (
-          // $FlowFixMe
           <TestsScreen
             tests={test.tests}
             title={test.name}

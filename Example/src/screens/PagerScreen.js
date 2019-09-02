@@ -10,7 +10,7 @@ import {
   Platform
 } from "react-native";
 import { NavBar, SharedElement, Colors, Router } from "../components";
-import type { Hero } from "../types";
+import type { Hero, SharedElementsConfig } from "../types";
 import { Heroes } from "../assets";
 import { fadeIn } from "../transitions";
 import {
@@ -68,6 +68,15 @@ const VIEWABILITY_CONFIG = {
 export class PagerScreen extends React.Component<PropsType, StateType> {
   static navigationOptions = {
     header: null
+  };
+
+  static sharedElements = (
+    navigation: any,
+    otherNavigation: any,
+    showing: boolean
+  ): ?SharedElementsConfig => {
+    const hero = navigation.getParam("hero");
+    return [`heroPhoto.${hero.id}`];
   };
 
   _dismissAnimValue = new Animated.Value(0);
@@ -195,34 +204,30 @@ export class PagerScreen extends React.Component<PropsType, StateType> {
   onViewableItemsChanged = (event: any) => {
     const { viewableItems } = event;
     if (!viewableItems.length) return;
-    const selectedHero = viewableItems[0].item;
-    if (this.state.selectedHero !== selectedHero) {
-      this.setState({
-        selectedHero
-      });
-    }
+    this.updateHero(viewableItems[0].item);
   };
 
   onPageSelected = ({ nativeEvent }: any) => {
-    const selectedHero = Heroes[nativeEvent.position];
-    if (this.state.selectedHero !== selectedHero) {
-      this.setState({
-        selectedHero
-      });
-    }
+    this.updateHero(Heroes[nativeEvent.position]);
   };
+
+  updateHero(hero: Hero) {
+    const { navigation } = this.props;
+    if (this.state.selectedHero === hero) return;
+    this.setState({
+      selectedHero: hero
+    });
+    if (navigation) navigation.setParams({ hero });
+  }
 
   onBack = () => {
     const { navigation } = this.props;
     const hero = this.state.selectedHero;
-    const sharedElements = {
-      [`heroPhoto.${hero.id}`]: "move"
-    };
     if (navigation) {
       navigation.goBack();
     } else {
       Router.pop({
-        sharedElements,
+        sharedElements: [`heroPhoto.${hero.id}`],
         transitionConfig: fadeIn()
       });
     }

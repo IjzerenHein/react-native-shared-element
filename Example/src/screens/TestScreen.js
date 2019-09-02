@@ -3,7 +3,7 @@ import * as React from "react";
 import { StyleSheet, View } from "react-native";
 import { NavBar, Colors, Button, Body, Router } from "../components";
 import { fromRight } from "../transitions";
-import type { Test } from "../types";
+import type { Test, SharedElementsConfig } from "../types";
 
 const styles = StyleSheet.create({
   container: {
@@ -38,7 +38,33 @@ interface PropsType {
   navigation?: any;
 }
 
+function getSharedElements(test: Test): SharedElementsConfig {
+  const props = {
+    animation: test.animation,
+    resize: test.resize,
+    align: test.align
+  };
+  return test.multi
+    ? [
+        { id: "testImage", ...props },
+        { id: "testOverlay", ...props, animation: test.animation || "fade" },
+        { id: "testLogo", ...props },
+        { id: "testTitle", ...props, animation: test.animation || "fade" }
+      ]
+    : [{ id: "testContent", ...props }];
+}
+
 export class TestScreen extends React.Component<PropsType> {
+  static sharedElements = (
+    navigation: any,
+    otherNavigation: any,
+    showing: boolean
+  ): ?SharedElementsConfig => {
+    if (otherNavigation.state.routeName !== "Test") return;
+    const test = navigation.getParam("test");
+    return getSharedElements(test);
+  };
+
   render() {
     const { navigation } = this.props;
     const test = navigation ? navigation.getParam("test") : this.props.test;
@@ -106,43 +132,27 @@ export class TestScreen extends React.Component<PropsType> {
       ? navigation.getParam("description")
       : this.props.description;
     const end = navigation ? navigation.getParam("end") : this.props.end;
-    const config = test.multi
-      ? {
-          transitionConfig,
-          sharedElements: {
-            testImage: test.animation || "move",
-            testOverlay: test.animation || "fade",
-            testLogo: test.animation || "move",
-            testTitle: test.animation || "fade"
-          }
-        }
-      : {
-          transitionConfig,
-          sharedElements: {
-            testContent: test.animation || "move"
-          }
-        };
-
+    const sharedElements = getSharedElements(test);
     if (end) {
       if (navigation) {
-        // TODO elements?
         navigation.goBack();
       } else {
-        // $FlowFixMe
-        Router.pop(config);
+        Router.pop({
+          transitionConfig,
+          sharedElements
+        });
       }
     } else {
       if (navigation) {
         navigation.push("Test", {
           test,
           description: description || "",
-          end: true,
-          sharedElements: config.sharedElements
+          end: true
         });
       } else {
         Router.push(
           <TestScreen test={test} end description={description || ""} />,
-          config
+          { transitionConfig, sharedElements }
         );
       }
     }

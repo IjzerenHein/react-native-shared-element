@@ -11,20 +11,16 @@ export const ResizeAlignTests: TestGroup = {
       description: "TODO",
       start: <TestCompoundView />,
       end: <TestCompoundView end vertical />,
-      animation: {
-        animation: "fade",
-        resize: "stretch"
-      }
+      animation: "fade",
+      resize: "stretch"
     },
     {
       name: "No resize",
       description: "TODO",
       start: <TestCompoundView />,
       end: <TestCompoundView end vertical />,
-      animation: {
-        animation: "fade",
-        resize: "none"
-      }
+      animation: "fade",
+      resize: "none"
     }
   ]
 };
