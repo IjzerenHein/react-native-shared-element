@@ -79,7 +79,9 @@ if (isAvailable) {
 
 const NativeAnimationType = new Map<SharedElementAnimation, number>([
   ["move", 0],
-  ["fade", 1]
+  ["fade", 1],
+  ["fade-in", 2],
+  ["fade-out", 3]
 ]);
 
 const NativeResizeType = new Map<SharedElementResize, number>([

@@ -15,7 +15,9 @@ typedef NS_ENUM(NSInteger, RNSharedElementContentType) {
 
 typedef NS_ENUM(NSInteger, RNSharedElementAnimation) {
     RNSharedElementAnimationMove = 0,
-    RNSharedElementAnimationFade = 1
+    RNSharedElementAnimationFade = 1,
+    RNSharedElementAnimationFadeIn = 2,
+    RNSharedElementAnimationFadeOut = 3
 };
 
 typedef NS_ENUM(NSInteger, RNSharedElementResize) {

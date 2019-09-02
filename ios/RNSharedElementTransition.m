@@ -158,7 +158,10 @@
 - (void)updateNodeVisibility
 {
     for (RNSharedElementTransitionItem* item in _items) {
-        item.hidden = _initialLayoutPassCompleted && item.style != nil && item.content != nil;
+        BOOL hidden = _initialLayoutPassCompleted && item.style != nil && item.content != nil;
+        if (hidden && (_animation == RNSharedElementAnimationFadeIn) && [item.name isEqualToString:@"startNode"]) hidden = NO;
+        if (hidden && (_animation == RNSharedElementAnimationFadeOut) && [item.name isEqualToString:@"endNode"]) hidden = NO;
+        item.hidden = hidden;
     }
 }
 
@@ -539,9 +542,22 @@
         // Update end node
         contentView2.frame = endInterpolatedContentLayout;
         
-        // Cross-fade
-        contentView1.layer.opacity = 1.0f - MIN(MAX(_nodePosition, 0.0f), 1.0f);
-        contentView2.layer.opacity = MIN(MAX(_nodePosition, 0.0f), 1.0f);
+        // Fade
+        if (_animation == RNSharedElementAnimationFadeIn) {
+            // Fade-in
+            contentView1.layer.opacity = 0.0f;
+            contentView2.layer.opacity = MIN(MAX(_nodePosition, 0.0f), 1.0f);
+        }
+        else if (_animation == RNSharedElementAnimationFadeOut) {
+            // Fade-out
+            contentView1.layer.opacity = 1.0f - MIN(MAX(_nodePosition, 0.0f), 1.0f);
+            contentView2.layer.opacity = 0.0f;
+        }
+        else {
+            // Cross-fade
+            contentView1.layer.opacity = 1.0f - MIN(MAX(_nodePosition, 0.0f), 1.0f);
+            contentView2.layer.opacity = MIN(MAX(_nodePosition, 0.0f), 1.0f);
+        }
     }
     
     // Fire events

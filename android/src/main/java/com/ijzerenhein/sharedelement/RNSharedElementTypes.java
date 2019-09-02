@@ -2,7 +2,9 @@ package com.ijzerenhein.sharedelement;
 
 enum RNSharedElementAnimation {
     MOVE(0),
-    FADE(1);
+    FADE(1),
+    FADE_IN(2),
+    FADE_OUT(3);
 
     private final int value;
     RNSharedElementAnimation(final int newValue) {value = newValue;}

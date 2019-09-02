@@ -5,7 +5,7 @@ export type SharedElementNode = {
   parentInstance: any;
 };
 
-export type SharedElementAnimation = "move" | "fade";
+export type SharedElementAnimation = "move" | "fade" | "fade-in" | "fade-out";
 
 export type SharedElementResize = "auto" | "stretch" | "clip" | "none";
 

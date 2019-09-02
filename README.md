@@ -184,10 +184,12 @@ In this case you can use `resize="clip"` and `align="left-top"` to create a text
 
 #### SharedElementAnimation
 
-| Animation | Description                                     |
-| --------- | ----------------------------------------------- |
-| `move`    | Moves the start- element to the end position    |
-| `fade`    | Cross-fades between the start- and end elements |
+| Animation  | Description                                                                           |
+| ---------- | ------------------------------------------------------------------------------------- |
+| `move`     | Moves the start- element to the end position                                          |
+| `fade`     | Cross-fades between the start- and end elements                                       |
+| `fade-in`  | Fade-in the end element coming from the start position (start-element is not visible) |
+| `fade-out` | Fade-out the start element to the end position (end-element is not visible)           |
 
 
 #### SharedElementResize

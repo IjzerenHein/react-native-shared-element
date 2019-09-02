@@ -231,28 +231,44 @@ public class RNSharedElementTransition extends ViewGroup {
         setTranslationX(parentLayout.left);
         setTranslationY(parentLayout.top);
 
+        // Determine opacity
+        float startAlpha = 1.0f;
+        float endAlpha = 1.0f;
+        switch (mAnimation) {
+        case MOVE:
+            startAlpha = interpolatedStyle.opacity;
+            endAlpha = 0.0f;
+            break;
+        case FADE:
+            startAlpha = ((startStyle != null) ? startStyle.opacity : 1) * (1 - mNodePosition);
+            endAlpha = ((endStyle != null) ? endStyle.opacity : 1) * mNodePosition;
+        case FADE_IN:
+            startAlpha = 0.0f;
+            endAlpha = ((endStyle != null) ? endStyle.opacity : 1) * mNodePosition;
+            break;
+        case FADE_OUT:
+            startAlpha = ((startStyle != null) ? startStyle.opacity : 1) * (1 - mNodePosition);
+            endAlpha = 0.0f;
+            break;
+        }
+
         // Render the start view
-        boolean isCrossFade = mAnimation != RNSharedElementAnimation.MOVE;
-        float startAlpha = !isCrossFade
-            ? interpolatedStyle.opacity
-            : ((startStyle != null) ? startStyle.opacity : 1) * (1 - mNodePosition);
-        mStartView.updateViewAndDrawable(
-            interpolatedLayout,
-            parentLayout,
-            startContent,
-            startLayout,
-            interpolatedStyle,
-            startAlpha,
-            mResize,
-            mAlign,
-            mNodePosition
-        );
+        if (mAnimation != RNSharedElementAnimation.FADE_IN) {
+            mStartView.updateViewAndDrawable(
+                interpolatedLayout,
+                parentLayout,
+                startContent,
+                startLayout,
+                interpolatedStyle,
+                startAlpha,
+                mResize,
+                mAlign,
+                mNodePosition
+            );
+        }
         
         // Render the end view as well for the "cross-fade" animations
-        if (isCrossFade) {
-
-            // Render the end view
-            float endAlpha = ((endStyle != null) ? endStyle.opacity : 1) * mNodePosition;
+        if ((mAnimation == RNSharedElementAnimation.FADE) || (mAnimation == RNSharedElementAnimation.FADE_IN)) {
             mEndView.updateViewAndDrawable(
                 interpolatedLayout,
                 parentLayout,
@@ -285,6 +301,8 @@ public class RNSharedElementTransition extends ViewGroup {
             boolean hidden = mInitialLayoutPassCompleted &&
                 (item.getStyle() != null) &&
                 (item.getContent() != null);
+            if (hidden && (mAnimation == RNSharedElementAnimation.FADE_IN) && item.getName().equals("start")) hidden = false;
+            if (hidden && (mAnimation == RNSharedElementAnimation.FADE_OUT) && item.getName().equals("end")) hidden = false;
             item.setHidden(hidden);
         }
     }
