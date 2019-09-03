@@ -59,7 +59,6 @@
     "eslint-plugin-react-native": "^3.7.0",
     "husky": "^3.0.4",
     "jest": "^24.7.0",
-    "metro-react-native-babel-preset": "0.56.0",
     "prettier": "^1.18.2",
     "react": "16.9.0",
     "react-native": "0.60.5",
