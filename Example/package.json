@@ -30,10 +30,10 @@
     "react-native-photo-view": "https://github.com/tomtom94/react-native-photo-view",
     "react-native-reanimated": "^1.2.0",
     "react-native-screens": "1.0.0-alpha.22",
-    "react-native-shared-element": "file:.yalc/react-native-shared-element",
+    "react-native-shared-element": "^0.4.3",
     "react-native-touchable-scale": "^2.0.0",
     "react-native-vector-icons": "^6.5.0",
-    "react-navigation-sharedelement": "file:.yalc/react-navigation-sharedelement",
+    "react-navigation-sharedelement": "^0.4.3",
     "react-navigation-stack": "1.4.0",
     "react-navigation-tabs": "^2.3.0",
     "react-navigation-transitions": "^1.0.12"
