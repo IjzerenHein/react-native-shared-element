@@ -56,11 +56,15 @@ The library also aims to support the `web` platform with an optimized DOM implem
 
 ## Installation
 
-`yarn add react-native-shared-element`
+```bash
+yarn add react-native-shared-element
+```
 
 And optionally link when needed
 
-`react-native link react-native-shared-element`
+```bash
+react-native link react-native-shared-element
+```
 
 ## Basic usage
 
@@ -213,6 +217,20 @@ When `auto` is selected, the default alignment strategy is used, which is `cente
 
 The example app is located in [`./Example`](./Example) and serves as an exploration and testing tool. It features a simple stack router which implements the shared element primitives.
 
+**Usage**
+
+```bash
+# Installation
+yarn # in the root directory
+cd Example
+yarn
+
+# Run for ios
+react-native run-ios
+
+# Run for android
+react-native run-android
+```
 
 ## License
 
