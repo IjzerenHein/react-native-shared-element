@@ -25,6 +25,7 @@
 		140ED2AC1D01E1AD002B40FF /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 146834041AC3E56700842450 /* libReact.a */; };
 		146834051AC3E58100842450 /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 146834041AC3E56700842450 /* libReact.a */; };
 		18F0CF2C27A8430D8D7617F0 /* AntDesign.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 7CDF4D314D044F3191911AE6 /* AntDesign.ttf */; };
+		2139DDBA231E738D00E495B6 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2139DDB9231E738D00E495B6 /* Assets.xcassets */; };
 		21692B186DCA472F9AEF3D62 /* libRNBlur.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AF4C4D22C6A44BF7A4075594 /* libRNBlur.a */; };
 		2522CEC599E9408F97D865F3 /* MaterialIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = EFAB3348A09F4442A2835CE5 /* MaterialIcons.ttf */; };
 		2D02E4BC1E0B4A80006451C7 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
@@ -495,6 +496,7 @@
 		193E2E61C1AD4BE5AF1E8905 /* libRNScreens.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNScreens.a; sourceTree = "<group>"; };
 		203FB401CBE343E8B8F4C4CC /* libRNGestureHandler-tvOS.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = "libRNGestureHandler-tvOS.a"; sourceTree = "<group>"; };
 		2139DDB0231E50AF00E495B6 /* RNSharedElement.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNSharedElement.xcodeproj; path = ../../ios/RNSharedElement.xcodeproj; sourceTree = "<group>"; };
+		2139DDB9231E738D00E495B6 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		25C0819982F04985AAFED357 /* Feather.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Feather.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Feather.ttf"; sourceTree = "<group>"; };
 		2D02E47B1E0B4A5D006451C7 /* SharedElementExample-tvOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "SharedElementExample-tvOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2D02E4901E0B4A5D006451C7 /* SharedElementExample-tvOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "SharedElementExample-tvOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -696,6 +698,7 @@
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.m */,
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
+				2139DDB9231E738D00E495B6 /* Assets.xcassets */,
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				13B07FB11A68108700A75B9A /* LaunchScreen.xib */,
 				13B07FB71A68108700A75B9A /* main.m */,
@@ -1594,6 +1597,7 @@
 				2522CEC599E9408F97D865F3 /* MaterialIcons.ttf in Resources */,
 				D70D4BFDF7BD4339BDD1444B /* Octicons.ttf in Resources */,
 				EE06EAEA38D74599B752CA66 /* SimpleLineIcons.ttf in Resources */,
+				2139DDBA231E738D00E495B6 /* Assets.xcassets in Resources */,
 				4A31EF8534FD4B7F84D6B4DF /* Zocial.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
