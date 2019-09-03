@@ -1,5 +1,5 @@
 // @flow
-import {
+import type {
   SharedElementAnimation,
   SharedElementResize,
   SharedElementAlign

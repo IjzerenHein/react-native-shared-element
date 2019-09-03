@@ -1,6 +1,6 @@
 // @flow
 import * as React from "react";
-import {
+import type {
   SharedElementAnimation,
   SharedElementResize,
   SharedElementAlign
