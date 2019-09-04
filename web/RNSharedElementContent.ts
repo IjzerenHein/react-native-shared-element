@@ -1,9 +1,9 @@
 import { Rect } from "./Rect";
 
 export class RNSharedElementContent {
-    public readonly size: Rect;
+  public readonly size: Rect;
 
-    constructor(size: Rect) {
-        this.size = size;
-    }
+  constructor(size: Rect) {
+    this.size = size;
+  }
 }

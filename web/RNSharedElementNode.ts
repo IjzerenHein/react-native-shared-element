@@ -1,80 +1,86 @@
 import { RNSharedElementStyle } from "./RNSharedElementStyle";
 import { RNSharedElementContent } from "./RNSharedElementContent";
 
-export type RNSharedElementNodeStyleCallback = (style: RNSharedElementStyle, node: RNSharedElementNode) => void;
-export type RNSharedElementNodeContentCallback = (content: RNSharedElementContent, node: RNSharedElementNode) => void;
+export type RNSharedElementNodeStyleCallback = (
+  style: RNSharedElementStyle,
+  node: RNSharedElementNode
+) => void;
+export type RNSharedElementNodeContentCallback = (
+  content: RNSharedElementContent,
+  node: RNSharedElementNode
+) => void;
 
 export class RNSharedElementNode {
-    public readonly domNode: Element;
-    public readonly ancestorDomNode: Element;
-    public readonly isParent: boolean;
-    private hideRefCount: number = 0;
-    private refCount: number = 1;
-    private styleCache: RNSharedElementStyle | null = null;
-    private styleCallbacks: RNSharedElementNodeStyleCallback[] | null = null;
-    private contentCache: RNSharedElementContent | null = null;
-    private contentCallbacks: RNSharedElementNodeContentCallback[] | null = null;
-    
-    constructor(domNode: Element, isParent: boolean, ancestorDomNode: Element) {
-        this.domNode = domNode;
-        this.isParent = isParent;
-        this.ancestorDomNode = ancestorDomNode;
-    }
+  public readonly domNode: Element;
+  public readonly ancestorDomNode: Element;
+  public readonly isParent: boolean;
+  private hideRefCount: number = 0;
+  private refCount: number = 1;
+  private styleCache: RNSharedElementStyle | null = null;
+  private styleCallbacks: RNSharedElementNodeStyleCallback[] | null = null;
+  private contentCache: RNSharedElementContent | null = null;
+  private contentCallbacks: RNSharedElementNodeContentCallback[] | null = null;
 
-    addRef() {
-        return ++this.refCount;
-    }
+  constructor(domNode: Element, isParent: boolean, ancestorDomNode: Element) {
+    this.domNode = domNode;
+    this.isParent = isParent;
+    this.ancestorDomNode = ancestorDomNode;
+  }
 
-    releaseRef() {
-        return --this.refCount;
-    }
+  addRef() {
+    return ++this.refCount;
+  }
 
-    addHideRef() {
-        this.hideRefCount++;
-        if (this.hideRefCount === 1) {
-            //mHideAlpha = mView.getAlpha();
-            //mView.setAlpha(0);
-        }
-    }
+  releaseRef() {
+    return --this.refCount;
+  }
 
-    releaseHideRef() {
-        this.hideRefCount--;
-        if (this.hideRefCount == 0) {
-            //mView.setAlpha(mHideAlpha);
-        }
+  addHideRef() {
+    this.hideRefCount++;
+    if (this.hideRefCount === 1) {
+      //mHideAlpha = mView.getAlpha();
+      //mView.setAlpha(0);
     }
+  }
 
-    requestStyle(callback: RNSharedElementNodeStyleCallback) {
-        if (this.styleCache) {
-            callback(this.styleCache, this);
-            return;
-        }
-        this.styleCallbacks = this.styleCallbacks || [];
-        this.styleCallbacks.push(callback);
-        if (!this.fetchInitialStyle()) {
-            //startRetryLoop();
-        }
+  releaseHideRef() {
+    this.hideRefCount--;
+    if (this.hideRefCount === 0) {
+      //mView.setAlpha(mHideAlpha);
     }
+  }
 
-    private fetchInitialStyle(): boolean {
-         // TODO
-         return false;
+  requestStyle(callback: RNSharedElementNodeStyleCallback) {
+    if (this.styleCache) {
+      callback(this.styleCache, this);
+      return;
     }
+    this.styleCallbacks = this.styleCallbacks || [];
+    this.styleCallbacks.push(callback);
+    if (!this.fetchInitialStyle()) {
+      //startRetryLoop();
+    }
+  }
 
-    requestContent(callback: RNSharedElementNodeContentCallback) {
-        if (this.contentCache) {
-            callback(this.contentCache, this);
-            return;
-        }
-        this.contentCallbacks = this.contentCallbacks || [];
-        this.contentCallbacks.push(callback);
-        if (!this.fetchInitialContent()) {
-            //startRetryLoop();
-        }
-    }
+  private fetchInitialStyle(): boolean {
+    // TODO
+    return false;
+  }
 
-    private fetchInitialContent(): boolean {
-         // TODO
-         return false;
+  requestContent(callback: RNSharedElementNodeContentCallback) {
+    if (this.contentCache) {
+      callback(this.contentCache, this);
+      return;
     }
+    this.contentCallbacks = this.contentCallbacks || [];
+    this.contentCallbacks.push(callback);
+    if (!this.fetchInitialContent()) {
+      //startRetryLoop();
+    }
+  }
+
+  private fetchInitialContent(): boolean {
+    // TODO
+    return false;
+  }
 }

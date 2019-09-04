@@ -1,16 +1,11 @@
-
-
 export class RNSharedElementStyle {
-    
-    constructor() {
-    }
+  constructor() {}
 
-    addHideRef() {
-        // ToDO
-    }
+  addHideRef() {
+    // ToDO
+  }
 
-    releaseHideRef() {
-        // ToDO
-    }
-
+  releaseHideRef() {
+    // ToDO
+  }
 }
