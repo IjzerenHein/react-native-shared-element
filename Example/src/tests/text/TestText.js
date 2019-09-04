@@ -74,6 +74,7 @@ type PropsType = {
   size: Size,
   position: Position,
   length: TextLength | number,
+  scale?: number,
   navigation?: any
 };
 
@@ -83,7 +84,8 @@ export class TestText extends React.Component<PropsType> {
     color: Colors.blue,
     position: "default",
     size: "default",
-    length: "words"
+    length: "words",
+    scale: 1
   };
 
   render() {
@@ -94,6 +96,7 @@ export class TestText extends React.Component<PropsType> {
       size,
       position,
       length,
+      scale,
       navigation
     } = this.props;
     const fontSize = FontSizes[size === "default" ? "regular" : size];
@@ -114,7 +117,10 @@ export class TestText extends React.Component<PropsType> {
       >
         <SharedElement
           id="testContent"
-          style={size === "max" ? { flex: 1 } : undefined}
+          style={[
+            size === "max" ? { flex: 1 } : undefined,
+            { transform: [{ scale }] }
+          ]}
           navigation={navigation}
         >
           <Text
