@@ -41,6 +41,7 @@ class RNSharedElementTransitionItem {
     void setHidden(boolean hidden) {
         if (mHidden == hidden) return;
         mHidden = hidden;
+        if (mNode == null) return;
         if (hidden) {
             mNode.addHideRef();
         } else {
@@ -66,11 +67,13 @@ class RNSharedElementTransitionItem {
             mNodeManager.release(mNode);
         }
         mNode = node;
-        mHidden = false;
         mNeedsStyle = node != null;
         mStyle = null;
         mNeedsContent = (node != null);
         mContent = null;
+        if (mNode != null) {
+            if (mHidden) mNode.addHideRef();
+        }
     }
 
     boolean getNeedsStyle() {
