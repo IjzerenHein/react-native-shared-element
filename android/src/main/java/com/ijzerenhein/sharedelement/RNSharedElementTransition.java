@@ -179,8 +179,13 @@ public class RNSharedElementTransition extends ViewGroup {
         RNSharedElementStyle startStyle = startItem.getStyle();
         RNSharedElementStyle endStyle = endItem.getStyle();
         if ((startStyle == null) && (endStyle == null)) return;
+
+        // Get content
         RNSharedElementContent startContent = startItem.getContent();
         RNSharedElementContent endContent = endItem.getContent();
+        if ((mAnimation == RNSharedElementAnimation.MOVE) && (startContent == null) && (endContent != null)) {
+            startContent = endContent;
+        }
 
         // Get layout
         Rect startLayout = (startStyle != null) ? startStyle.layout : EMPTY_RECT;
