@@ -7,6 +7,7 @@ import android.os.Build;
 import android.util.Log;
 import android.graphics.Canvas;
 import android.graphics.Rect;
+import android.graphics.RectF;
 import android.graphics.Color;
 import android.view.View;
 import android.view.ViewGroup;
@@ -175,7 +176,7 @@ public class RNSharedElementTransition extends ViewGroup {
         RNSharedElementTransitionItem startItem = mItems.get(Item.START.getValue());
         RNSharedElementTransitionItem endItem = mItems.get(Item.END.getValue());
 
-        // Get styles & content
+        // Get styles
         RNSharedElementStyle startStyle = startItem.getStyle();
         RNSharedElementStyle endStyle = endItem.getStyle();
         if ((startStyle == null) && (endStyle == null)) return;
@@ -192,8 +193,8 @@ public class RNSharedElementTransition extends ViewGroup {
         Rect startFrame = (startStyle != null) ? startStyle.frame : EMPTY_RECT;
         Rect endLayout = (endStyle != null) ? endStyle.layout : EMPTY_RECT;
         Rect endFrame = (endStyle != null) ? endStyle.frame : EMPTY_RECT;
-        Rect parentLayout = new Rect(startLayout);
-        parentLayout.union(endLayout);
+        RectF parentLayout = new RectF(startLayout);
+        parentLayout.union(new RectF(endLayout));
 
         // Get clipped areas
         Rect startClippedLayout = (startStyle != null) ? startItem.getClippedLayout() : EMPTY_RECT;
@@ -202,25 +203,25 @@ public class RNSharedElementTransition extends ViewGroup {
         Rect endClipInsets = getClipInsets(endLayout, endClippedLayout);
 
         // Get interpolated layout
-        Rect interpolatedLayout;
-        Rect interpolatedClipInsets;
+        RectF interpolatedLayout;
+        RectF interpolatedClipInsets;
         RNSharedElementStyle interpolatedStyle;
         if ((startStyle != null) && (endStyle != null)) {
             interpolatedLayout = getInterpolatedLayout(startLayout, endLayout, mNodePosition);
             interpolatedClipInsets = getInterpolatedClipInsets(parentLayout, startClipInsets, startClippedLayout, endClipInsets, endClippedLayout, mNodePosition);
             interpolatedStyle = getInterpolatedStyle(startStyle, startContent, endStyle, endContent, mNodePosition);
         } else if (startStyle != null) {
-            interpolatedLayout = startLayout;
+            interpolatedLayout = new RectF(startLayout);
             interpolatedStyle = startStyle;
-            interpolatedClipInsets = startClipInsets;
+            interpolatedClipInsets = new RectF(startClipInsets);
         } else {
             if (!mInitialNodePositionSet) {
                 mNodePosition = 1.0f;
                 mInitialNodePositionSet = true;
             }
-            interpolatedLayout = endLayout;
+            interpolatedLayout = new RectF(endLayout);
             interpolatedStyle = endStyle;
-            interpolatedClipInsets = endClipInsets;
+            interpolatedClipInsets = new RectF(endClipInsets);
         }
 
         // Apply clipping insets
@@ -241,8 +242,8 @@ public class RNSharedElementTransition extends ViewGroup {
         super.layout(
                 -mParentOffset[0],
                 -mParentOffset[1],
-            parentLayout.width() - mParentOffset[0],
-            parentLayout.height() - mParentOffset[1]
+          (int) Math.ceil(parentLayout.width() - mParentOffset[0]),
+          (int) Math.ceil(parentLayout.height() - mParentOffset[1])
         );
         setTranslationX(parentLayout.left);
         setTranslationY(parentLayout.top);
@@ -352,14 +353,14 @@ public class RNSharedElementTransition extends ViewGroup {
         );
     }
 
-    private Rect getInterpolatedClipInsets(
-        Rect interpolatedLayout,
+    private RectF getInterpolatedClipInsets(
+        RectF interpolatedLayout,
         Rect startClipInsets,
         Rect startClippedLayout,
         Rect endClipInsets,
         Rect endClippedLayout,
         float position) {
-        Rect clipInsets = new Rect();
+        RectF clipInsets = new RectF();
 
         // Top
         if ((endClipInsets.top == 0) && (startClipInsets.top != 0) && (startClippedLayout.top <= endClippedLayout.top)) {
@@ -367,7 +368,7 @@ public class RNSharedElementTransition extends ViewGroup {
         } else if ((startClipInsets.top == 0) && (endClipInsets.top != 0) && (endClippedLayout.top <= startClippedLayout.top)) {
             clipInsets.top = Math.max(0, endClippedLayout.top - interpolatedLayout.top);
         } else {
-            clipInsets.top = (int) (startClipInsets.top + ((endClipInsets.top - startClipInsets.top) * position));
+            clipInsets.top = (startClipInsets.top + ((endClipInsets.top - startClipInsets.top) * position));
         }
 
         // Bottom
@@ -376,7 +377,7 @@ public class RNSharedElementTransition extends ViewGroup {
         } else if ((startClipInsets.bottom == 0) && (endClipInsets.bottom != 0) && (endClippedLayout.bottom >= startClippedLayout.bottom)) {
             clipInsets.bottom = Math.max(0, interpolatedLayout.bottom - endClippedLayout.bottom);
         } else {
-            clipInsets.bottom = (int) (startClipInsets.bottom + ((endClipInsets.bottom - startClipInsets.bottom) * position));
+            clipInsets.bottom = (startClipInsets.bottom + ((endClipInsets.bottom - startClipInsets.bottom) * position));
         }
 
         // Left
@@ -385,7 +386,7 @@ public class RNSharedElementTransition extends ViewGroup {
         } else if ((startClipInsets.left == 0) && (endClipInsets.left != 0) && (endClippedLayout.left <= startClippedLayout.left)) {
             clipInsets.left = Math.max(0, endClippedLayout.left - interpolatedLayout.left);
         } else {
-            clipInsets.left = (int) (startClipInsets.left + ((endClipInsets.left - startClipInsets.left) * position));
+            clipInsets.left = (startClipInsets.left + ((endClipInsets.left - startClipInsets.left) * position));
         }
 
          // Right
@@ -394,18 +395,18 @@ public class RNSharedElementTransition extends ViewGroup {
         } else if ((startClipInsets.right == 0) && (endClipInsets.right != 0) && (endClippedLayout.right >= startClippedLayout.right)) {
             clipInsets.right = Math.max(0, interpolatedLayout.right - endClippedLayout.right);
         } else {
-            clipInsets.right = (int) (startClipInsets.right + ((endClipInsets.right - startClipInsets.right) * position));
+            clipInsets.right = (startClipInsets.right + ((endClipInsets.right - startClipInsets.right) * position));
         }
 
         return clipInsets;
     }
 
-    private Rect getInterpolatedLayout(Rect layout1, Rect layout2, float position) {
-        return new Rect(
-            (int) (layout1.left + ((layout2.left - layout1.left) * position)),
-            (int) (layout1.top + ((layout2.top - layout1.top) * position)),
-            (int) (layout1.right + ((layout2.right - layout1.right) * position)),
-            (int) (layout1.bottom + ((layout2.bottom - layout1.bottom) * position))
+    private RectF getInterpolatedLayout(Rect layout1, Rect layout2, float position) {
+        return new RectF(
+            (layout1.left + ((layout2.left - layout1.left) * position)),
+            (layout1.top + ((layout2.top - layout1.top) * position)),
+            (layout1.right + ((layout2.right - layout1.right) * position)),
+            (layout1.bottom + ((layout2.bottom - layout1.bottom) * position))
         );
     }
 
