@@ -217,7 +217,7 @@ export class CardScreen extends React.Component<PropsType, StateType> {
                   style={StyleSheet.absoluteFill}
                   navigation={navigation}
                 >
-                  <View style={StyleSheet.absoluteFill} />
+                  <View style={StyleSheet.absoluteFill} collapsable={false} />
                   {/*<LinearGradient
                     style={StyleSheet.absoluteFill}
                     colors={["#00000000", "#00000000", "#000000FF"]}

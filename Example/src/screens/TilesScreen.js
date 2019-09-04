@@ -392,7 +392,6 @@ export class TilesScreen extends React.Component<PropsType> {
           }
         ];
         routeName = "Card";
-        props.gradientOverlay = true;
         break;
     }
 
