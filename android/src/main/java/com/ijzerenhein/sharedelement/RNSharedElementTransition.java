@@ -21,6 +21,7 @@ import com.facebook.react.uimanager.events.RCTEventEmitter;
 
 public class RNSharedElementTransition extends ViewGroup {
     static private String LOG_TAG = "RNSharedElementTransition";
+    static private Rect EMPTY_RECT = new Rect();
 
     enum Item {
         START(0),
@@ -180,15 +181,17 @@ public class RNSharedElementTransition extends ViewGroup {
         RNSharedElementContent endContent = endItem.getContent();
 
         // Get layout
-        Rect startLayout = (startStyle != null) ? startStyle.layout : new Rect();
-        Rect endLayout = (endStyle != null) ? endStyle.layout : new Rect();
+        Rect startLayout = (startStyle != null) ? startStyle.layout : EMPTY_RECT;
+        Rect startFrame = (startStyle != null) ? startStyle.frame : EMPTY_RECT;
+        Rect endLayout = (endStyle != null) ? endStyle.layout : EMPTY_RECT;
+        Rect endFrame = (endStyle != null) ? endStyle.frame : EMPTY_RECT;
         Rect parentLayout = new Rect(startLayout);
         parentLayout.union(endLayout);
 
         // Get clipped areas
-        Rect startClippedLayout = (startStyle != null) ? startItem.getClippedLayout() : new Rect();
+        Rect startClippedLayout = (startStyle != null) ? startItem.getClippedLayout() : EMPTY_RECT;
         Rect startClipInsets = getClipInsets(startLayout, startClippedLayout);
-        Rect endClippedLayout = (endStyle != null) ? endItem.getClippedLayout() : new Rect();
+        Rect endClippedLayout = (endStyle != null) ? endItem.getClippedLayout() : EMPTY_RECT;
         Rect endClipInsets = getClipInsets(endLayout, endClippedLayout);
 
         // Get interpolated layout
@@ -260,8 +263,9 @@ public class RNSharedElementTransition extends ViewGroup {
             mStartView.updateViewAndDrawable(
                 interpolatedLayout,
                 parentLayout,
-                startContent,
                 startLayout,
+                startFrame,
+                startContent,
                 interpolatedStyle,
                 startAlpha,
                 mResize,
@@ -275,8 +279,9 @@ public class RNSharedElementTransition extends ViewGroup {
             mEndView.updateViewAndDrawable(
                 interpolatedLayout,
                 parentLayout,
-                endContent,
                 endLayout,
+                endFrame,
+                endContent,
                 interpolatedStyle,
                 endAlpha,
                 mResize,

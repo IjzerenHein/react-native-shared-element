@@ -27,8 +27,9 @@ class RNSharedElementView extends View {
     void updateViewAndDrawable(
             Rect layout,
             Rect parentLayout,
-            RNSharedElementContent content,
             Rect originalLayout,
+            Rect originalFrame,
+            RNSharedElementContent content,
             RNSharedElementStyle style,
             float alpha,
             RNSharedElementResize resize,
@@ -51,8 +52,8 @@ class RNSharedElementView extends View {
         int width = layout.width();
         int height = layout.height();
         if (useGPUScaling) {
-            int originalWidth = originalLayout.width();
-            int originalHeight = originalLayout.height();
+            int originalWidth = originalFrame.width();
+            int originalHeight = originalFrame.height();
 
             // Update view
             layout(0, 0, originalWidth, originalHeight);
@@ -71,8 +72,8 @@ class RNSharedElementView extends View {
                         break;
                     case CLIP:
                     case NONE:
-                        scaleX = 1.0f;
-                        scaleY = 1.0f;
+                        scaleX = (float) originalWidth / (float) originalLayout.width();
+                        scaleY = (float) originalHeight / (float) originalLayout.height();
                         break;
                 }
 
