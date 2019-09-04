@@ -5,16 +5,16 @@ import java.util.Locale;
 import android.graphics.Rect;
 import android.graphics.Color;
 import android.graphics.Matrix;
-import android.support.v4.text.TextUtilsCompat;
-import android.support.v4.view.ViewCompat;
 import android.view.View;
 import android.view.ViewParent;
+import android.content.Context;
 
 import com.facebook.react.uimanager.PixelUtil;
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.drawee.drawable.ScalingUtils.ScaleType;
 import com.facebook.drawee.drawable.ScalingUtils.InterpolatingScaleType;
 import com.facebook.react.views.image.ImageResizeMode;
+import com.facebook.react.modules.i18nmanager.I18nUtil;
 
 public class RNSharedElementStyle {
     static int PROP_OPACITY = 1 << 0;
@@ -56,7 +56,7 @@ public class RNSharedElementStyle {
         // nop
     }
 
-    RNSharedElementStyle(ReadableMap config) {
+    RNSharedElementStyle(ReadableMap config, Context context) {
         // Pre-fill the style with the style-config
         if (config.hasKey("opacity")) opacity = (float) config.getDouble("opacity");
         if (config.hasKey("backgroundColor")) backgroundColor = config.getInt("backgroundColor");
@@ -67,7 +67,7 @@ public class RNSharedElementStyle {
         if (config.hasKey("elevation")) elevation = PixelUtil.toPixelFromDIP((float) config.getDouble("elevation"));
 
         // Border-radius
-        boolean isRTL = TextUtilsCompat.getLayoutDirectionFromLocale(Locale.getDefault()) == ViewCompat.LAYOUT_DIRECTION_RTL;
+        boolean isRTL = I18nUtil.getInstance().isRTL(context);
         if (config.hasKey("borderRadius")) {
             float borderRadius = PixelUtil.toPixelFromDIP((float) config.getDouble("borderRadius"));
             borderTopLeftRadius = borderRadius;

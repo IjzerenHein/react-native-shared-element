@@ -12,6 +12,7 @@ import android.graphics.RectF;
 import android.graphics.Matrix;
 import android.graphics.drawable.Animatable;
 import android.widget.ImageView;
+import android.content.Context;
 
 import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.ReadableMap;
@@ -34,6 +35,7 @@ class RNSharedElementNode {
     private View mAncestorView;
     private boolean mIsParent;
     private ReadableMap mStyleConfig;
+    private Context mContext;
     private View mResolvedView;
     private int mRefCount;
     private int mHideRefCount;
@@ -45,12 +47,13 @@ class RNSharedElementNode {
     private BaseControllerListener<ImageInfo> mDraweeControllerListener;
     private Handler mRetryHandler;
 
-    RNSharedElementNode(int reactTag, View view, boolean isParent, View ancestorView, ReadableMap styleConfig) {
+    RNSharedElementNode(int reactTag, View view, boolean isParent, View ancestorView, ReadableMap styleConfig, Context context) {
         mReactTag = reactTag;
         mView = view;
         mAncestorView = ancestorView;
         mIsParent = isParent;
         mStyleConfig = styleConfig;
+        mContext = context;
         mRefCount = 1;
         mHideRefCount = 0;
         mHideAlpha = 1;
@@ -191,7 +194,7 @@ class RNSharedElementNode {
         Rect layout = new Rect(left, top, left + width, top + height);
 
         // Create style
-        RNSharedElementStyle style = new RNSharedElementStyle(mStyleConfig);
+        RNSharedElementStyle style = new RNSharedElementStyle(mStyleConfig, mContext);
         style.layout = layout;
         style.frame = frame;
         style.transform = transform;
@@ -206,6 +209,8 @@ class RNSharedElementNode {
 
         // Update initial style cache
         mStyleCache = style;
+
+        //Log.d(LOG_TAG, "Style fetched: " + style);
 
         // Notify callbacks
         ArrayList<Callback> callbacks = mStyleCallbacks;

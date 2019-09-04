@@ -17,6 +17,7 @@ public class RNSharedElementModule extends ReactContextBaseJavaModule {
     public RNSharedElementModule(ReactApplicationContext reactContext, RNSharedElementNodeManager nodeManager) {
         super(reactContext);
         mNodeManager = nodeManager;
+        mNodeManager.setContext(reactContext);
     }
 
     @Override
