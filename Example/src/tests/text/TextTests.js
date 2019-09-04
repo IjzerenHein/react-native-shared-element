@@ -72,6 +72,14 @@ export const TextTests: TestGroup = {
       animation: "fade",
       resize: "none",
       align: "left-top"
+    },
+    {
+      name: "Scaled  ➔  Unscaled",
+      description:
+        "When the initial content is scaled down, it should correct resize to the end position",
+      start: <TestText length="words" scale={0.5} size="large" />,
+      end: <TestText end length="words" size="large" />,
+      animation: "fade"
     }
   ]
 };
