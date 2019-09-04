@@ -242,6 +242,7 @@ public class RNSharedElementTransition extends ViewGroup {
         case FADE:
             startAlpha = ((startStyle != null) ? startStyle.opacity : 1) * (1 - mNodePosition);
             endAlpha = ((endStyle != null) ? endStyle.opacity : 1) * mNodePosition;
+            break;
         case FADE_IN:
             startAlpha = 0.0f;
             endAlpha = ((endStyle != null) ? endStyle.opacity : 1) * mNodePosition;
