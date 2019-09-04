@@ -24,6 +24,10 @@ class RNSharedElementView extends View {
         return mViewType == RNSharedElementDrawable.ViewType.GENERIC;
     }
 
+    void reset() {
+      setAlpha(0.0f);
+    }
+
     void updateViewAndDrawable(
             Rect layout,
             Rect parentLayout,

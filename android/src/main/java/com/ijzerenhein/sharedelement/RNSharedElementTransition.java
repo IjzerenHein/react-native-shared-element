@@ -38,6 +38,7 @@ public class RNSharedElementTransition extends ViewGroup {
     private float mNodePosition = 0.0f;
     private boolean mReactLayoutSet = false;
     private boolean mInitialLayoutPassCompleted = false;
+    private boolean mInitialNodePositionSet = false;
     private ArrayList<RNSharedElementTransitionItem> mItems = new ArrayList<RNSharedElementTransitionItem>();
     private int[] mParentOffset = new int[2];
     private boolean mRequiresClipping = false;
@@ -90,8 +91,9 @@ public class RNSharedElementTransition extends ViewGroup {
 
     public void setNodePosition(final float nodePosition) {
         if (mNodePosition != nodePosition) {
-            mNodePosition = nodePosition;
             //Log.d(LOG_TAG, "setNodePosition " + nodePosition + ", mInitialLayoutPassCompleted: " + mInitialLayoutPassCompleted);
+            mNodePosition = nodePosition;
+            mInitialNodePositionSet = true;            
             updateLayout();
         }
     }
@@ -207,6 +209,10 @@ public class RNSharedElementTransition extends ViewGroup {
             interpolatedStyle = startStyle;
             interpolatedClipInsets = startClipInsets;
         } else {
+            if (!mInitialNodePositionSet) {
+                mNodePosition = 1.0f;
+                mInitialNodePositionSet = true;
+            }
             interpolatedLayout = endLayout;
             interpolatedStyle = endStyle;
             interpolatedClipInsets = endClipInsets;
@@ -221,7 +227,7 @@ public class RNSharedElementTransition extends ViewGroup {
         // Calculate clipped layout
         mRequiresClipping = !parentLayout.contains(interpolatedLayout);
 
-        //Log.d(LOG_TAG, "mRequiresClipping: " +mRequiresClipping + ", " + endClippedLayout + ", " + endClipInsets);
+        Log.d(LOG_TAG, "updateLayout: " + mNodePosition);
 
         // Update outer viewgroup layout. The outer viewgroup hosts 2 inner views
         // which draw the content & elevation. The outer viewgroup performs additional
@@ -242,7 +248,7 @@ public class RNSharedElementTransition extends ViewGroup {
         switch (mAnimation) {
         case MOVE:
             startAlpha = interpolatedStyle.opacity;
-            endAlpha = 0.0f;
+            endAlpha = (startStyle == null) ? interpolatedStyle.opacity : 0.0f;
             break;
         case FADE:
             startAlpha = ((startStyle != null) ? startStyle.opacity : 1) * (1 - mNodePosition);
@@ -275,7 +281,10 @@ public class RNSharedElementTransition extends ViewGroup {
         }
         
         // Render the end view as well for the "cross-fade" animations
-        if ((mAnimation == RNSharedElementAnimation.FADE) || (mAnimation == RNSharedElementAnimation.FADE_IN)) {
+        if ((mAnimation == RNSharedElementAnimation.FADE)
+          || (mAnimation == RNSharedElementAnimation.FADE_IN)
+          || ((mAnimation == RNSharedElementAnimation.MOVE) && (startStyle == null))
+        ) {
             mEndView.updateViewAndDrawable(
                 interpolatedLayout,
                 parentLayout,
@@ -301,6 +310,8 @@ public class RNSharedElementTransition extends ViewGroup {
                     mEndView.setOutlineSpotShadowColor(Color.argb(endAlpha, 0, 0, 0));
                 }
             }
+        } else {
+          mEndView.reset();
         }
 
         // Fire events
@@ -316,9 +327,9 @@ public class RNSharedElementTransition extends ViewGroup {
 
     private void updateNodeVisibility() {
         for (RNSharedElementTransitionItem item : mItems) {
-            boolean hidden = mInitialLayoutPassCompleted &&
-                (item.getStyle() != null) &&
-                (item.getContent() != null);
+            boolean hidden = mInitialLayoutPassCompleted
+                && (item.getStyle() != null)
+                && (item.getContent() != null);
             if (hidden && (mAnimation == RNSharedElementAnimation.FADE_IN) && item.getName().equals("start")) hidden = false;
             if (hidden && (mAnimation == RNSharedElementAnimation.FADE_OUT) && item.getName().equals("end")) hidden = false;
             item.setHidden(hidden);
