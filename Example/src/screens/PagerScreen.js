@@ -57,7 +57,11 @@ type PropsType = {
   navigation: any
 };
 type StateType = {
-  selectedHero: Hero
+  selectedHero: Hero,
+  initialContentOffset: {
+    x: number,
+    y: number
+  }
 };
 
 const VIEWABILITY_CONFIG = {
@@ -90,8 +94,15 @@ export class PagerScreen extends React.Component<PropsType, StateType> {
     const hero = props.navigation
       ? props.navigation.getParam("hero")
       : props.hero;
+    const initialItemIndex = Heroes.findIndex(({ id }) => id === hero.id);
+    const initialOffset = this.getItemLayout(
+      Heroes[initialItemIndex],
+      initialItemIndex
+    ).offset;
+    const initialContentOffset = { x: initialOffset, y: 0 };
     this.state = {
-      selectedHero: hero
+      selectedHero: hero,
+      initialContentOffset
     };
   }
 
@@ -118,7 +129,10 @@ export class PagerScreen extends React.Component<PropsType, StateType> {
           horizontal
           pagingEnabled
           data={Heroes}
-          initialScrollIndex={initialIndex}
+          //initialScrollIndex={initialIndex}
+          // initialScrollIndex causes an initial wrong layout pass
+          // we therefore calculate the offset ourselves
+          contentOffset={this.state.initialContentOffset}
           renderItem={this.renderItem}
           getItemLayout={this.getItemLayout}
           keyExtractor={this.keyExtractor}
