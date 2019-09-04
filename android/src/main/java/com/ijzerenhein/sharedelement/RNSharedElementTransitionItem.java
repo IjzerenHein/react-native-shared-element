@@ -19,6 +19,7 @@ class RNSharedElementTransitionItem {
     private boolean mNeedsContent;
     private RNSharedElementContent mContent;
     private Rect mClippedLayoutCache;
+    private boolean mHasCalledOnMeasure;
 
     RNSharedElementTransitionItem(RNSharedElementNodeManager nodeManager, String name) {
         mNodeManager = nodeManager;
@@ -30,6 +31,7 @@ class RNSharedElementTransitionItem {
         mNeedsContent = false;
         mContent = null;
         mClippedLayoutCache = null;
+        mHasCalledOnMeasure = false;
     }
 
     String getName() {
@@ -101,6 +103,14 @@ class RNSharedElementTransitionItem {
 
     RNSharedElementContent getContent() {
         return mContent;
+    }
+
+    void setHasCalledOnMeasure(boolean hasCalledOnMeasure) {
+        mHasCalledOnMeasure = hasCalledOnMeasure;
+    }
+
+    boolean getHasCalledOnMeasure() {
+        return mHasCalledOnMeasure;
     }
 
     View getView() {

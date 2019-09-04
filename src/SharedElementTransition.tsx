@@ -176,6 +176,10 @@ export class SharedElementTransition extends React.Component<
         // $FlowFixMe
         nodeStyle.borderColor = processColor(nodeStyle.borderColor);
       }
+      if (nodeStyle.color) {
+        // $FlowFixMe
+        nodeStyle.color = processColor(nodeStyle.color);
+      }
     }
     return node
       ? {
@@ -214,9 +218,7 @@ export class SharedElementTransition extends React.Component<
 
   renderDebugLayer(name: SharedElementNodeType) {
     const event = this.state[name];
-    if (!event || !this.props.debug) {
-      return undefined;
-    }
+    if (!event || !this.props.debug) return;
     const { layout, style } = event;
     const isContentDifferent =
       layout.x !== layout.contentX ||
@@ -267,7 +269,7 @@ export class SharedElementTransition extends React.Component<
           <Text
             style={[
               debugStyles.text,
-              { color, marginTop: Math.max(style.borderRadius - 7, 3) }
+              { color, marginTop: Math.max((style.borderRadius || 0) - 7, 3) }
             ]}
           >
             {name}

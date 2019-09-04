@@ -11,11 +11,13 @@ import android.graphics.Color;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.Callback;
+import com.facebook.react.bridge.ReactContext;
+import com.facebook.react.bridge.WritableMap;
+import com.facebook.react.uimanager.PixelUtil;
 import com.facebook.react.uimanager.ThemedReactContext;
-import com.facebook.react.uimanager.UIBlock;
-import com.facebook.react.uimanager.UIManagerModule;
-import com.facebook.react.uimanager.NativeViewHierarchyManager;
+import com.facebook.react.uimanager.events.RCTEventEmitter;
 
 public class RNSharedElementTransition extends ViewGroup {
     static private String LOG_TAG = "RNSharedElementTransition";
@@ -295,6 +297,16 @@ public class RNSharedElementTransition extends ViewGroup {
                 }
             }
         }
+
+        // Fire events
+        if ((startStyle != null) && !startItem.getHasCalledOnMeasure()) {
+            startItem.setHasCalledOnMeasure(true);
+            fireMeasureEvent("startNode", startItem, startClippedLayout);
+        }
+        if ((endStyle != null) && !endItem.getHasCalledOnMeasure()) {
+            endItem.setHasCalledOnMeasure(true);
+            fireMeasureEvent("endNode", endItem, endClippedLayout);
+        }
     }
 
     private void updateNodeVisibility() {
@@ -413,45 +425,43 @@ public class RNSharedElementTransition extends ViewGroup {
         return result;
     }
 
-    private void fireMeasureEvent() {
-        /*ReactContext reactContext = (ReactContext)getContext();
-        WritableMap eventData = Arguments.createMap();
+    private void fireMeasureEvent(String name, RNSharedElementTransitionItem item, Rect clippedLayout) {
+        ReactContext reactContext = (ReactContext)getContext();
+        RNSharedElementStyle style = item.getStyle();
+        RNSharedElementContent content = item.getContent();
+        
         WritableMap layoutData = Arguments.createMap();
-        layoutData.putFloat();
-        //eventData.putString("message", "MyMessage");
-        eventData.putString("node", item.name);
-        eventData.putMap("layout", layoutData)
+        layoutData.putDouble("x", PixelUtil.toDIPFromPixel(style.layout.left));
+        layoutData.putDouble("y", PixelUtil.toDIPFromPixel(style.layout.top));
+        layoutData.putDouble("width", PixelUtil.toDIPFromPixel(style.layout.width()));
+        layoutData.putDouble("height", PixelUtil.toDIPFromPixel(style.layout.height()));
+        layoutData.putDouble("visibleX", PixelUtil.toDIPFromPixel(clippedLayout.left));
+        layoutData.putDouble("visibleY", PixelUtil.toDIPFromPixel(clippedLayout.top));
+        layoutData.putDouble("visibleWidth", PixelUtil.toDIPFromPixel(clippedLayout.width()));
+        layoutData.putDouble("visibleHeight", PixelUtil.toDIPFromPixel(clippedLayout.height()));
+        layoutData.putDouble("contentX", PixelUtil.toDIPFromPixel(style.layout.left)); // TODO
+        layoutData.putDouble("contentY", PixelUtil.toDIPFromPixel(style.layout.top)); // TODO
+        layoutData.putDouble("contentWidth", PixelUtil.toDIPFromPixel(style.layout.width())); // TODO
+        layoutData.putDouble("contentHeight", PixelUtil.toDIPFromPixel(style.layout.height())); // TODO
+
+        WritableMap styleData = Arguments.createMap();
+        styleData.putDouble("borderTopLeftRadius", PixelUtil.toDIPFromPixel(style.borderTopLeftRadius));
+        styleData.putDouble("borderTopRightRadius", PixelUtil.toDIPFromPixel(style.borderTopRightRadius));
+        styleData.putDouble("borderBottomLeftRadius", PixelUtil.toDIPFromPixel(style.borderBottomLeftRadius));
+        styleData.putDouble("borderBottomRightRadius", PixelUtil.toDIPFromPixel(style.borderBottomRightRadius));
+
+        WritableMap eventData = Arguments.createMap();
+        eventData.putString("node", name);
+        eventData.putMap("layout", layoutData);
+        RNSharedElementDrawable.ViewType viewType = (content != null)
+            ? RNSharedElementDrawable.getViewType(content.view, style)
+            : RNSharedElementDrawable.ViewType.NONE;
+        eventData.putString("contentType", viewType.getValue());
+        eventData.putMap("style", styleData);
+
         reactContext.getJSModule(RCTEventEmitter.class).receiveEvent(
             getId(),
-            "onMeasure",
-            eventData);*/
-
-        /*
-        - (void) fireMeasureEvent:(RNSharedElementTransitionItem*) item layout:(CGRect)layout visibleLayout:(CGRect)visibleLayout contentLayout:(CGRect)contentLayout
-{
-    if (!self.onMeasureNode) return;
-    NSDictionary* eventData = @{
-                                @"node": item.name,
-                                @"layout": @{
-                                        @"x": @(layout.origin.x),
-                                        @"y": @(layout.origin.y),
-                                        @"width": @(layout.size.width),
-                                        @"height": @(layout.height()),
-                                        @"visibleX": @(visibleLayout.origin.x),
-                                        @"visibleY": @(visibleLayout.origin.y),
-                                        @"visibleWidth": @(visibleLayout.size.width),
-                                        @"visibleHeight": @(visibleLayout.height()),
-                                        @"contentX": @(contentLayout.origin.x),
-                                        @"contentY": @(contentLayout.origin.y),
-                                        @"contentWidth": @(contentLayout.size.width),
-                                        @"contentHeight": @(contentLayout.height()),
-                                        },
-                                @"contentType": item.contentTypeName,
-                                @"style": @{
-                                        @"borderRadius": @(item.style.cornerRadius)
-                                        }
-                                };
-    self.onMeasureNode(eventData);
-}*/
+            "onMeasureNode",
+            eventData);
     }
 }

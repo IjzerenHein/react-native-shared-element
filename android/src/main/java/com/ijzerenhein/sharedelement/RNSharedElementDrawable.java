@@ -24,11 +24,15 @@ import com.facebook.drawee.generic.RoundingParams;
 
 class RNSharedElementDrawable extends Drawable {
   enum ViewType {
-    NONE,
-    REACTIMAGEVIEW,
-    IMAGEVIEW,
-    PLAIN,
-    GENERIC
+    NONE("none"),
+    REACTIMAGEVIEW("image"),
+    IMAGEVIEW("image"),
+    PLAIN("view"),
+    GENERIC("generic");
+
+    private final String value;
+    ViewType(final String newValue) { value = newValue;}
+    public String getValue() { return value; }
   }
 
   static private String LOG_TAG = "RNSharedElementDrawable";
@@ -182,7 +186,7 @@ class RNSharedElementDrawable extends Drawable {
     outline.setConvexPath(mPathForBorderRadiusOutline);
   }
 
-  static private ViewType getViewType(View view, RNSharedElementStyle style) {
+  static ViewType getViewType(View view, RNSharedElementStyle style) {
     if (view == null) return ViewType.NONE;
     if (view instanceof ReactImageView) {
       return ViewType.REACTIMAGEVIEW;

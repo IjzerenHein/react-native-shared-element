@@ -1,7 +1,10 @@
 package com.ijzerenhein.sharedelement;
 
+import java.util.Map;
+
 import android.view.View;
 
+import com.facebook.react.common.MapBuilder;
 import com.facebook.react.uimanager.annotations.ReactProp;
 import com.facebook.react.uimanager.ThemedReactContext;
 import com.facebook.react.uimanager.SimpleViewManager;
@@ -23,6 +26,17 @@ public class RNSharedElementTransitionManager extends SimpleViewManager<RNShared
     @Override
     public String getName() {
         return REACT_CLASS;
+    }
+
+    @Override
+    public Map getExportedCustomBubblingEventTypeConstants() {
+        return MapBuilder.builder()
+            .put(
+                "onMeasureNode",
+                MapBuilder.of(
+                    "phasedRegistrationNames",
+                    MapBuilder.of("bubbled", "onMeasureNode")))
+                    .build();
     }
 
     @Override

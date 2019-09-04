@@ -12,7 +12,7 @@ Open issues:
 [X] Android `resize` prop support
 [X] Android backgroundImage support
 [X] Android scale transform support
-[ ] Android `debug` prop support (fix measurement event)
+[X] Android `debug` prop support (fix measurement event)
 [ ] Android `align` prop support
 [ ] Android FirebaseUI rounded corners
 [ ] Android inverted scrollview clipping
