@@ -227,7 +227,7 @@ public class RNSharedElementTransition extends ViewGroup {
         // Calculate clipped layout
         mRequiresClipping = !parentLayout.contains(interpolatedLayout);
 
-        Log.d(LOG_TAG, "updateLayout: " + mNodePosition);
+        //Log.d(LOG_TAG, "updateLayout: " + mNodePosition);
 
         // Update outer viewgroup layout. The outer viewgroup hosts 2 inner views
         // which draw the content & elevation. The outer viewgroup performs additional
@@ -326,10 +326,12 @@ public class RNSharedElementTransition extends ViewGroup {
     }
 
     private void updateNodeVisibility() {
+      RNSharedElementTransitionItem startItem = mItems.get(Item.START.getValue());
+      RNSharedElementTransitionItem endItem = mItems.get(Item.END.getValue());
+        boolean hidden = mInitialLayoutPassCompleted
+            && (((startItem.getStyle() != null)  && (startItem.getContent() != null))
+            || ((endItem.getStyle() != null)  && (endItem.getContent() != null)));
         for (RNSharedElementTransitionItem item : mItems) {
-            boolean hidden = mInitialLayoutPassCompleted
-                && (item.getStyle() != null)
-                && (item.getContent() != null);
             if (hidden && (mAnimation == RNSharedElementAnimation.FADE_IN) && item.getName().equals("start")) hidden = false;
             if (hidden && (mAnimation == RNSharedElementAnimation.FADE_OUT) && item.getName().equals("end")) hidden = false;
             item.setHidden(hidden);
