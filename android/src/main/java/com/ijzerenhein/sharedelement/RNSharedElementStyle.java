@@ -2,6 +2,7 @@ package com.ijzerenhein.sharedelement;
 
 import java.util.Locale;
 
+import android.util.Log;
 import android.graphics.Rect;
 import android.graphics.Color;
 import android.graphics.Matrix;
@@ -17,6 +18,8 @@ import com.facebook.react.views.image.ImageResizeMode;
 import com.facebook.react.modules.i18nmanager.I18nUtil;
 
 public class RNSharedElementStyle {
+    static private String LOG_TAG = "RNSharedElementStyle";
+
     static int PROP_OPACITY = 1 << 0;
     static int PROP_ELEVATION = 1 << 1;
     static int PROP_BACKGROUND_COLOR = 1 << 2;
@@ -131,13 +134,14 @@ public class RNSharedElementStyle {
         return scaleType;
     }
 
-    static Matrix getAbsoluteViewTransform(View view) {
+    static Matrix getAbsoluteViewTransform(View view, boolean failIfNotMounted) {
         Matrix matrix = new Matrix(view.getMatrix());
         float[] vals = new float[9];
         matrix.getValues(vals);
 
         float[] vals2 = new float[9];
         ViewParent parentView = view.getParent();
+
         while (parentView != null && parentView instanceof View) {
             Matrix parentMatrix = ((View)parentView).getMatrix();
             parentMatrix.getValues(vals2);
@@ -154,7 +158,9 @@ public class RNSharedElementStyle {
 
             parentView = parentView.getParent();
         }
-        if (parentView == null) return null;
+        if (parentView == null && failIfNotMounted) {
+          return null;
+        }
         matrix.setValues(vals);
         return matrix;
     }
