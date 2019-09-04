@@ -162,7 +162,7 @@ class RNSharedElementNode {
         int width = view.getWidth();
         int height = view.getHeight();
         if (width == 0 && height == 0) return false;
-        Matrix transform = RNSharedElementStyle.getAbsoluteViewTransform(view, false);
+        Matrix transform = RNSharedElementStyle.getAbsoluteViewTransform(view, true);
         Matrix ancestorTransform = RNSharedElementStyle.getAbsoluteViewTransform(mAncestorView, true);
         if ((transform == null) || (ancestorTransform == null)) return false;
         Rect frame = new Rect(left, top, left + width, top + height);
