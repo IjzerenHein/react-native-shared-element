@@ -5,6 +5,7 @@ import android.view.View;
 import android.view.ViewParent;
 import android.view.ViewGroup;
 import android.graphics.Rect;
+import android.graphics.Matrix;
 
 class RNSharedElementTransitionItem {
     static private String LOG_TAG = "RNSharedElementTransitionItem";
@@ -109,10 +110,15 @@ class RNSharedElementTransitionItem {
     Rect getClippedLayout() {
         if (mClippedLayoutCache != null) return mClippedLayoutCache;
         if (mStyle == null) return null;
+
         View view = getView();
         View ancestorView = mNode.getAncestorView();
-        int[] ancestorLocation = new int[2];
-        ancestorView.getLocationOnScreen(ancestorLocation);
+
+        // Get ancestor transform
+        float[] f = new float[9];
+        mStyle.ancestorTransform.getValues(f);
+        int ancestorTranslateX = (int) f[Matrix.MTRANS_X];
+        int ancestorTranslateY = (int) f[Matrix.MTRANS_Y];
         
         // Get visible area (some parts may be clipped in a scrollview or something)
         Rect clippedLayout = new Rect(mStyle.layout);
@@ -123,8 +129,8 @@ class RNSharedElementTransitionItem {
             if (!(parentView instanceof ViewGroup)) break;
             ViewGroup viewGroup = (ViewGroup) parentView;
             viewGroup.getLocationOnScreen(location);
-            location[0] -= ancestorLocation[0];
-            location[1] -= ancestorLocation[1];
+            location[0] -= ancestorTranslateX;
+            location[1] -= ancestorTranslateY;
 
             bounds.left = location[0];
             bounds.top = location[1];

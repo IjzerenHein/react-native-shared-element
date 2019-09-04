@@ -40,6 +40,7 @@ public class RNSharedElementStyle {
     Rect layout = new Rect(); // absolute layout on screen
     Rect frame = new Rect(); // frame rect relative to parent
     Matrix transform = new Matrix();
+    Matrix ancestorTransform = new Matrix();
     ScaleType scaleType = ScaleType.FIT_XY;
     int backgroundColor = Color.TRANSPARENT;
     float opacity = 1;

@@ -198,6 +198,7 @@ class RNSharedElementNode {
         style.layout = layout;
         style.frame = frame;
         style.transform = transform;
+        style.ancestorTransform = ancestorTransform;
         
         // Get opacity
         style.opacity = view.getAlpha();
