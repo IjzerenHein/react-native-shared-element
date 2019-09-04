@@ -1,6 +1,6 @@
 // @flow
 import * as React from "react";
-import { View } from "react-native";
+import { View, Platform } from "react-native";
 import { Icon } from "../components";
 import { createSharedElementStackNavigator } from "react-navigation-sharedelement";
 import { createAppContainer } from "@react-navigation/native";
@@ -14,7 +14,7 @@ import { PagerScreen } from "./PagerScreen";
 import { CardScreen } from "./CardScreen";
 import { TestsScreen } from "./TestsScreen";
 import { TestScreen } from "./TestScreen";
-import { fadeIn } from "../transitions";
+import { fadeIn, fromRight } from "../transitions";
 
 const screens = {
   Tiles: TilesScreen,
@@ -53,7 +53,8 @@ const stackNavigator = createSharedElementStackNavigator(
         <Icon name="login" size={18} color={tintColor} />
       ),
       tabBarVisible: isTabBarVisible(navigation)
-    })
+    }),
+    transitionConfig: Platform.OS === "android" ? () => fromRight() : undefined
   }
 );
 
