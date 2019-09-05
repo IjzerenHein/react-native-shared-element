@@ -70,16 +70,24 @@ class RNSharedElementNode {
         return mReactTag;
     }
 
-    int getRefCount() {
-        return mRefCount;
+    int addRef() {
+        return ++mRefCount;
     }
 
-    void setRefCount(int refCount) {
-        mRefCount = refCount;
-        if (mRefCount == 0) {
+    int releaseRef() {
+        if (--mRefCount == 0) {
             removeDraweeControllerListener(mResolvedView);
             stopRetryLoop();
+            mView = null;
+            mAncestorView = null;
+            mStyleConfig = null;
+            mResolvedView = null;
+            mContentCache = null;
+            mContentCallbacks = null;
+            mStyleCache = null;
+            mStyleCallbacks = null;
         }
+        return mRefCount;
     }
 
     void addHideRef() {

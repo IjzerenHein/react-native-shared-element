@@ -30,7 +30,7 @@ class RNSharedElementNodeManager {
         synchronized (mNodes) {
             RNSharedElementNode node = mNodes.get(reactTag);
             if (node != null) {
-                node.setRefCount(node.getRefCount() + 1);
+                node.addRef();
                 return node;
             }
             node = new RNSharedElementNode(mContext, reactTag, view, isParent, ancestor, styleConfig);
@@ -41,11 +41,11 @@ class RNSharedElementNodeManager {
 
     int release(RNSharedElementNode node) {
         synchronized (mNodes) {
-            node.setRefCount(node.getRefCount() - 1);
-            if (node.getRefCount() == 0) {
+            int refCount = node.releaseRef();
+            if (refCount == 0) {
                 mNodes.remove(node.getReactTag());
             }
-            return node.getRefCount();
+            return refCount;
         }
     }
 }
