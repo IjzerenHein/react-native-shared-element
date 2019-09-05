@@ -10,17 +10,13 @@ import com.facebook.react.uimanager.ThemedReactContext;
 import com.facebook.react.uimanager.SimpleViewManager;
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.ReactApplicationContext;
+import com.facebook.react.bridge.ReactApplicationContext;
 
 public class RNSharedElementTransitionManager extends SimpleViewManager<RNSharedElementTransition> {
-    private ReactApplicationContext mReactContext;
-    private RNSharedElementNodeManager mNodeManager;
-
     public static final String REACT_CLASS = "RNSharedElementTransition";
 
-    RNSharedElementTransitionManager(ReactApplicationContext reactContext, RNSharedElementNodeManager nodeManager) {
+    public RNSharedElementTransitionManager(ReactApplicationContext reactContext) {
         super();
-        mReactContext = reactContext;
-        mNodeManager = nodeManager;
     }
 
     @Override
@@ -40,8 +36,9 @@ public class RNSharedElementTransitionManager extends SimpleViewManager<RNShared
     }
 
     @Override
-    public RNSharedElementTransition createViewInstance(ThemedReactContext context) {
-        return new RNSharedElementTransition(context, mNodeManager);
+    public RNSharedElementTransition createViewInstance(ThemedReactContext reactContext) {
+        RNSharedElementModule module = (RNSharedElementModule) reactContext.getNativeModule(RNSharedElementModule.class);
+        return new RNSharedElementTransition(reactContext, module.getNodeManager());
     }
 
     @Override
@@ -79,9 +76,9 @@ public class RNSharedElementTransitionManager extends SimpleViewManager<RNShared
         int ancestorHandle = ancestorMap.getInt("nodeHandle");
         boolean isParent = nodeMap.getBoolean("isParent");
         ReadableMap styleConfig = nodeMap.getMap("nodeStyle");
-        View nodeView = mNodeManager.getNativeViewHierarchyManager().resolveView(nodeHandle);
-        View ancestorView = mNodeManager.getNativeViewHierarchyManager().resolveView(ancestorHandle);
-        RNSharedElementNode node = mNodeManager.acquire(nodeHandle, nodeView, isParent, ancestorView, styleConfig);
+        View nodeView = view.getNodeManager().getNativeViewHierarchyManager().resolveView(nodeHandle);
+        View ancestorView = view.getNodeManager().getNativeViewHierarchyManager().resolveView(ancestorHandle);
+        RNSharedElementNode node = view.getNodeManager().acquire(nodeHandle, nodeView, isParent, ancestorView, styleConfig);
         view.setItemNode(item, node);
     }
 

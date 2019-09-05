@@ -14,20 +14,16 @@ class RNSharedElementNodeManager {
     private NativeViewHierarchyManager mNativeViewHierarchyManager;
     private Context mContext;
 
+    RNSharedElementNodeManager(Context context) {
+        mContext = context;
+    }
+
     void setNativeViewHierarchyManager(NativeViewHierarchyManager nativeViewHierarchyManager) {
         mNativeViewHierarchyManager = nativeViewHierarchyManager;
     }
 
     NativeViewHierarchyManager getNativeViewHierarchyManager() {
         return mNativeViewHierarchyManager;
-    }
-
-    void setContext(Context context) {
-        mContext = context;
-    }
-
-    Context getContext() {
-        return mContext;
     }
 
     RNSharedElementNode acquire(int reactTag, View view, boolean isParent, View ancestor, ReadableMap styleConfig) {
@@ -37,7 +33,7 @@ class RNSharedElementNodeManager {
                 node.setRefCount(node.getRefCount() + 1);
                 return node;
             }
-            node = new RNSharedElementNode(reactTag, view, isParent, ancestor, styleConfig, mContext);
+            node = new RNSharedElementNode(mContext, reactTag, view, isParent, ancestor, styleConfig);
             mNodes.put(reactTag, node);
             return node;
         }

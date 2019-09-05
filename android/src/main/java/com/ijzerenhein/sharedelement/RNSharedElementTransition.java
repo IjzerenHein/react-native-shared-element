@@ -33,6 +33,7 @@ public class RNSharedElementTransition extends ViewGroup {
         public int getValue() { return value; }
     }
 
+    private RNSharedElementNodeManager mNodeManager = null;
     private RNSharedElementAnimation mAnimation = RNSharedElementAnimation.MOVE;
     private RNSharedElementResize mResize = RNSharedElementResize.STRETCH;
     private RNSharedElementAlign mAlign = RNSharedElementAlign.CENTER_CENTER;
@@ -48,6 +49,7 @@ public class RNSharedElementTransition extends ViewGroup {
 
     public RNSharedElementTransition(ThemedReactContext context, RNSharedElementNodeManager nodeManager) {
         super(context);
+        mNodeManager = nodeManager;
         mItems.add(new RNSharedElementTransitionItem(nodeManager, "start"));
         mItems.add(new RNSharedElementTransitionItem(nodeManager, "end"));
 
@@ -58,39 +60,43 @@ public class RNSharedElementTransition extends ViewGroup {
         addView(mEndView);
     }
 
-    public void releaseData() {
+    void releaseData() {
         for (RNSharedElementTransitionItem item : mItems) {
             item.setNode(null);
         }
     }
 
-    public void setItemNode(Item item, RNSharedElementNode node) {
+    RNSharedElementNodeManager getNodeManager() {
+        return mNodeManager;
+    }
+
+    void setItemNode(Item item, RNSharedElementNode node) {
         mItems.get(item.getValue()).setNode(node);
         requestStylesAndContent(false);
     }
 
-    public void setAnimation(final RNSharedElementAnimation animation) {
+    void setAnimation(final RNSharedElementAnimation animation) {
         if (mAnimation != animation) {
             mAnimation = animation;
             updateLayout();
         }
     }
 
-    public void setResize(final RNSharedElementResize resize) {
+    void setResize(final RNSharedElementResize resize) {
         if (mResize != resize) {
             mResize = resize;
             updateLayout();
         }
     }
 
-    public void setAlign(final RNSharedElementAlign align) {
+    void setAlign(final RNSharedElementAlign align) {
         if (mAlign != align) {
             mAlign = align;
             updateLayout();
         }
     }
 
-    public void setNodePosition(final float nodePosition) {
+    void setNodePosition(final float nodePosition) {
         if (mNodePosition != nodePosition) {
             //Log.d(LOG_TAG, "setNodePosition " + nodePosition + ", mInitialLayoutPassCompleted: " + mInitialLayoutPassCompleted);
             mNodePosition = nodePosition;

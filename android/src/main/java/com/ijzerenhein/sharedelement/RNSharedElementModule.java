@@ -8,21 +8,27 @@ import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.uimanager.UIBlock;
 import com.facebook.react.uimanager.UIManagerModule;
 import com.facebook.react.uimanager.NativeViewHierarchyManager;
+import com.facebook.react.module.annotations.ReactModule;
 
+@ReactModule(name = RNSharedElementModule.MODULE_NAME)
 public class RNSharedElementModule extends ReactContextBaseJavaModule {
-    private RNSharedElementNodeManager mNodeManager;
-
+    public static final String MODULE_NAME = "RNSharedElementTransition";
     static String LOG_TAG = "RNSharedElementModule";
 
-    public RNSharedElementModule(ReactApplicationContext reactContext, RNSharedElementNodeManager nodeManager) {
+    private RNSharedElementNodeManager mNodeManager;
+
+    public RNSharedElementModule(ReactApplicationContext reactContext) {
         super(reactContext);
-        mNodeManager = nodeManager;
-        mNodeManager.setContext(reactContext);
+        mNodeManager = new RNSharedElementNodeManager(reactContext);
     }
 
     @Override
     public String getName() {
-        return "RNSharedElementTransition";
+        return MODULE_NAME;
+    }
+
+    RNSharedElementNodeManager getNodeManager() {
+        return mNodeManager;
     }
 
     @ReactMethod

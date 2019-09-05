@@ -30,12 +30,12 @@ abstract class RetryRunnable implements Runnable {
 class RNSharedElementNode {
     static private String LOG_TAG = "RNSharedElementNode";
 
+    private Context mContext;
     private int mReactTag;
     private View mView;
     private View mAncestorView;
     private boolean mIsParent;
     private ReadableMap mStyleConfig;
-    private Context mContext;
     private View mResolvedView;
     private int mRefCount;
     private int mHideRefCount;
@@ -47,7 +47,7 @@ class RNSharedElementNode {
     private BaseControllerListener<ImageInfo> mDraweeControllerListener;
     private Handler mRetryHandler;
 
-    RNSharedElementNode(int reactTag, View view, boolean isParent, View ancestorView, ReadableMap styleConfig, Context context) {
+    RNSharedElementNode(Context context, int reactTag, View view, boolean isParent, View ancestorView, ReadableMap styleConfig) {
         mReactTag = reactTag;
         mView = view;
         mAncestorView = ancestorView;
