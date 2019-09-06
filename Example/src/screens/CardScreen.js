@@ -19,7 +19,6 @@ import {
 } from "../components";
 import type { Hero, SharedElementsConfig } from "../types";
 import { fadeIn } from "../transitions";
-// import LinearGradient from "react-native-linear-gradient";
 
 const HEIGHT = Dimensions.get("window").height;
 const IMAGE_HEIGHT = Dimensions.get("window").width * 0.75;

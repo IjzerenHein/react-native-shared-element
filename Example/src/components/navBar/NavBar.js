@@ -4,7 +4,7 @@ import { StyleSheet, View, TouchableOpacity } from "react-native";
 import { Heading3 } from "../Text";
 import { Router } from "../Router";
 import { Colors, Shadows } from "../Colors";
-import { Icon } from "../Icon";
+import { Icon } from "../icon";
 import { NavBarHeight } from "./constants";
 
 const styles = StyleSheet.create({

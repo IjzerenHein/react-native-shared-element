@@ -6,24 +6,19 @@ import {
   Image,
   Dimensions,
   Animated,
-  StatusBar,
-  Platform
+  StatusBar
 } from "react-native";
-import { NavBar, SharedElement, Colors, Router } from "../components";
+import {
+  NavBar,
+  SharedElement,
+  Colors,
+  Router,
+  ViewPager
+} from "../components";
 import type { Hero, SharedElementsConfig } from "../types";
 import { Heroes } from "../assets";
 import { fadeIn } from "../transitions";
-import {
-  PanGestureHandler,
-  State,
-  FlatList,
-  createNativeWrapper
-} from "react-native-gesture-handler";
-import ViewPager from "@react-native-community/viewpager";
-
-const RNGHViewPager = createNativeWrapper(ViewPager, {
-  disallowInterruption: true
-});
+import { PanGestureHandler, State } from "react-native-gesture-handler";
 
 const WIDTH = Dimensions.get("window").width;
 
@@ -57,16 +52,7 @@ type PropsType = {
   navigation: any
 };
 type StateType = {
-  selectedHero: Hero,
-  initialContentOffset: {
-    x: number,
-    y: number
-  }
-};
-
-const VIEWABILITY_CONFIG = {
-  minimumViewTime: 0,
-  viewAreaCoveragePercentThreshold: 51
+  selectedHero: Hero
 };
 
 export class PagerScreen extends React.Component<PropsType, StateType> {
@@ -94,53 +80,22 @@ export class PagerScreen extends React.Component<PropsType, StateType> {
     const hero = props.navigation
       ? props.navigation.getParam("hero")
       : props.hero;
-    const initialItemIndex = Heroes.findIndex(({ id }) => id === hero.id);
-    const initialOffset = this.getItemLayout(
-      Heroes[initialItemIndex],
-      initialItemIndex
-    ).offset;
-    const initialContentOffset = { x: initialOffset, y: 0 };
     this.state = {
-      selectedHero: hero,
-      initialContentOffset
+      selectedHero: hero
     };
   }
 
   renderPager(items: Hero[], initialIndex: number) {
-    if (Platform.OS === "android") {
-      return (
-        <RNGHViewPager
-          style={styles.flex}
-          initialPage={initialIndex}
-          onPageSelected={this.onPageSelected}
-        >
-          {items.map((item, index) =>
-            this.renderItem({
-              item,
-              index
-            })
-          )}
-        </RNGHViewPager>
-      );
-    } else {
-      return (
-        <FlatList
-          style={styles.flex}
-          horizontal
-          pagingEnabled
-          data={Heroes}
-          //initialScrollIndex={initialIndex}
-          // initialScrollIndex causes an initial wrong layout pass
-          // we therefore calculate the offset ourselves
-          contentOffset={this.state.initialContentOffset}
-          renderItem={this.renderItem}
-          getItemLayout={this.getItemLayout}
-          keyExtractor={this.keyExtractor}
-          onViewableItemsChanged={this.onViewableItemsChanged}
-          viewabilityConfig={VIEWABILITY_CONFIG}
-        />
-      );
-    }
+    return (
+      <ViewPager
+        style={styles.flex}
+        data={items}
+        initialItemIndex={initialIndex}
+        renderItem={this.renderItem}
+        getItemLayout={this.getItemLayout}
+        onItemSelected={this.onItemSelected}
+      />
+    );
   }
 
   render() {
@@ -191,8 +146,6 @@ export class PagerScreen extends React.Component<PropsType, StateType> {
     );
   }
 
-  keyExtractor = (item: any) => item.id;
-
   getItemLayout = (item: any, index: number) => ({
     length: WIDTH,
     offset: WIDTH * index,
@@ -215,14 +168,8 @@ export class PagerScreen extends React.Component<PropsType, StateType> {
     );
   };
 
-  onViewableItemsChanged = (event: any) => {
-    const { viewableItems } = event;
-    if (!viewableItems.length) return;
-    this.updateHero(viewableItems[0].item);
-  };
-
-  onPageSelected = ({ nativeEvent }: any) => {
-    this.updateHero(Heroes[nativeEvent.position]);
+  onItemSelected = (index: number) => {
+    this.updateHero(Heroes[index]);
   };
 
   updateHero(hero: Hero) {

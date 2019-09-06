@@ -1,4 +1,8 @@
 {
   "name": "SharedElementExample",
-  "displayName": "SharedElementExample"
+  "displayName": "SharedElementExample",
+  "expo": {
+    "name": "SharedElementExample",
+    "platforms": ["web"]
+  }
 }

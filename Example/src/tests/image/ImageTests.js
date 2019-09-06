@@ -4,8 +4,8 @@ import type { TestGroup } from "../../types";
 import { Heroes } from "../../assets";
 import { TestImage } from "./TestImage";
 import { ImageBackground } from "react-native";
-import FastImage from "react-native-fast-image";
-import PhotoView from "react-native-photo-view";
+import { FastImage } from "./FastImage";
+import { PhotoView } from "./PhotoView";
 import { Colors, Shadows } from "../../components";
 
 export const ImageTests: TestGroup = {

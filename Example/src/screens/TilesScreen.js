@@ -17,13 +17,13 @@ import {
   Shadows,
   Heading1,
   Heading2,
-  Body
+  Body,
+  LinearGradient
 } from "../components";
 import { Heroes } from "../assets";
 import { DetailScreen } from "./DetailScreen";
 import type { Hero, SharedElementsConfig } from "../types";
 import { fadeIn } from "../transitions";
-import LinearGradient from "react-native-linear-gradient";
 import TouchableScale from "react-native-touchable-scale";
 
 const styles = StyleSheet.create({
