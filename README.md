@@ -215,7 +215,7 @@ When `auto` is selected, the default alignment strategy is used, which is `cente
 ## Example apps
 
 - The main example & test app is located in [`./Example`](./Example) and serves as an exploration and testing tool. It features a custom stack router which implements the shared element primitives. It also implements the react-navigation binding and serves as a testing tool for that.
-- [Simple demo app using RN60 and the react-navigation binding](https://github.com/IjzerenHein/react-navigation-sharedelement-rn60demo)
+- [Simple demo app using RN60 and the react-navigation binding](https://github.com/IjzerenHein/react-navigation-shared-element-rn60demo)
 
 **Usage**
 
