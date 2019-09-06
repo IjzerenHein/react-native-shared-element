@@ -1,37 +1,33 @@
-
 # react-native-shared-element <!-- omit in toc -->
 
-Native shared element transition *"primitives"* for react-native 💫
+Native shared element transition _"primitives"_ for react-native 💫
 
 This library in itself is not a Navigation- or Router library. Instead, it provides a set of comprehensive full native building blocks for performing shared element transitions in Router- or Transition libraries. If you are looking [for the React Navigation binding, you can find it here](https://github.com/IjzerenHein/react-navigation-shared-element).
 
 ![MagicMoveGif](set-ios.gif)
 ![MagicMoveGif](set-android.gif)
 
-
 ## Motivation
 
 Shared-element transitions add **shine** to your app but can be hard to do in practise.
-It's possible to achieve some nice transitions by building custom modals and using the the core `react-native API`, But this also brings with it many restrictions. Things like resizing an image or making sure no *"flicker"* occurs even an older Android devices can be a real challenge.
+It's possible to achieve some nice transitions by building custom modals and using the the core `react-native API`, But this also brings with it many restrictions. Things like resizing an image or making sure no _"flicker"_ occurs even an older Android devices can be a real challenge.
 
-This library solves that problem through an all native implementation which is very close to the metal of the OS. It solves the problem by providing a set of *"primitives"*, which don't require any back and forth passes over the react-native bridge. This way, the best possible performance is achieved and better image transitions can be accomplished. The following list is an impression of the kinds of problems that are solved through the native implementation.
+This library solves that problem through an all native implementation which is very close to the metal of the OS. It solves the problem by providing a set of _"primitives"_, which don't require any back and forth passes over the react-native bridge. This way, the best possible performance is achieved and better image transitions can be accomplished. The following list is an impression of the kinds of problems that are solved through the native implementation.
 
-- [X] No flickering
-- [X] CPU & GPU friendly
-- [X] Image resizeMode transitions
-- [X] Scrollview clipping
-- [X] Border (radius, color, width) transitions
-- [X] Background color transitions
-- [X] Shadow transitions
-- [X] Cross-fade transitions
-- [X] Clipping reveal transitions
-
+- [x] No flickering
+- [x] CPU & GPU friendly
+- [x] Image resizeMode transitions
+- [x] Scrollview clipping
+- [x] Border (radius, color, width) transitions
+- [x] Background color transitions
+- [x] Shadow transitions
+- [x] Cross-fade transitions
+- [x] Clipping reveal transitions
 
 ## Under development
 
 This library is under active development. The iOS and Android implementations are mostly done, which exception of some edge cases.
 The library also aims to support the `web` platform with an optimized DOM implementation. That development hasn't started yet.
-
 
 ## Index <!-- omit in toc -->
 
@@ -52,7 +48,6 @@ The library also aims to support the `web` platform with an optimized DOM implem
 - [Example apps](#example-apps)
 - [License](#license)
 - [Credits](#credits)
-
 
 ## Installation
 
@@ -120,13 +115,14 @@ const position = new Animated.Value(0);
 
 ## How it works
 
-react-native-shared-element is a *"primitive"* that runs shared element transitions
+react-native-shared-element is a _"primitive"_ that runs shared element transitions
 entirely native without requiring any passes over the JavaScript bridge. It works by taking in a start- and end node, which are obtained using the `<SharedElement>` component.
 
 Whenever a transition between screens occurs (e.g. performed by a router/navigator), a view in
 front of the app should be rendered to host the shared element transition. The `position` prop is used to interpolate between the start- and end nodes, `0` meaning "Show the start node" and `1` meaning "Show the end node".
 
 Whenever the `<SharedElementTransition>` component is rendered, it performs the following tasks:
+
 - Measure the size and position of the provided element
 - Obtain the styles of the elements
 - Obtain the visual content of the elements (e.g. an image or a view snapshot)
@@ -136,7 +132,7 @@ Whenever the `<SharedElementTransition>` component is rendered, it performs the 
 - Upon unmount, unhide the original elements
 
 You typically do not use this component directly, but instead use a Router or Transition-engine which provides a higher-level API.
-See [`./Example/src/components/Router.js`](./Example/src/components/Router.js) for an example implementation of a simple stack router using 
+See [`./Example/src/components/Router.js`](./Example/src/components/Router.js) for an example implementation of a simple stack router using
 shared element transitions.
 
 ## API Documentation
@@ -175,7 +171,7 @@ The `<SharedElementTransition>` component executes a shared element transition n
 The transition effect can be controlled using the `animation`, `resize` and `align` props.
 In most cases you should leave these to their default values for the best possible results.
 
-If however the start- element and end elements are visually different, then it can make 
+If however the start- element and end elements are visually different, then it can make
 sense to choose different values. For instance, if you are transitioning from a `<Text>`
 with a `white` color to a `<Text>` with a `black` color, then using `animation="fade"` will
 create a cross-fade between them.
@@ -184,7 +180,6 @@ Another case is when you have a single-line of `<Text>` in the start- view and a
 description in the end- view. A `stretch` effect would in this case not look good, because
 the end- element is much larger in size compared the start- element.
 In this case you can use `resize="clip"` and `align="left-top"` to create a text reveal effect.
-
 
 #### SharedElementAnimation
 
@@ -195,7 +190,6 @@ In this case you can use `resize="clip"` and `align="left-top"` to create a text
 | `fade-in`  | Fade-in the end element coming from the start position (start-element is not visible) |
 | `fade-out` | Fade-out the start element to the end position (end-element is not visible)           |
 
-
 #### SharedElementResize
 
 | Resize    | Description                                                                                                                                                                                                    |
@@ -204,7 +198,6 @@ In this case you can use `resize="clip"` and `align="left-top"` to create a text
 | `stretch` | Stretches the element to the same shape and size of the other element. If the aspect-ratio of the content differs, you may see stretching. In that case consider the `clip` or `none` resize options.          |
 | `clip`    | Do not resize, but clip the content to the size of the other content. This option is for instance useful in combination with `<Text>` components, where you want to reveal more text.                          |
 | `none`    | Do not resize the content. When combined with `fade`, this creates a plain cross-fade effect without any resizing or clipping                                                                                  |
-
 
 #### SharedElementAlign
 
@@ -236,7 +229,6 @@ react-native run-android
 ## License
 
 Shared element transition library is licensed under [The MIT License](./LICENSE.txt).
-
 
 ## Credits
 
