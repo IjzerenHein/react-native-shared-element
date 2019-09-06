@@ -2,7 +2,7 @@
 import * as React from "react";
 import { View, Platform } from "react-native";
 import { Icon } from "../components";
-import { createSharedElementStackNavigator } from "react-navigation-sharedelement";
+import { createSharedElementStackNavigator } from "react-navigation-shared-element";
 import { createAppContainer } from "@react-navigation/native";
 import { createStackNavigator } from "react-navigation-stack";
 import { createBottomTabNavigator } from "react-navigation-tabs";

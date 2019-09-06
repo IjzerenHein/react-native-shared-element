@@ -1,7 +1,7 @@
 // @flow
 import * as React from "react";
 import { RouterScreenTransition } from "./RouterScreenTransition";
-import { SharedElement as ReactNavigationCoreSharedElement } from "react-navigation-sharedelement";
+import { SharedElement as ReactNavigationCoreSharedElement } from "react-navigation-shared-element";
 
 type PropsType = {|
   id?: string,

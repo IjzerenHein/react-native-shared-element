@@ -36,7 +36,7 @@
     "react-native-touchable-scale": "^2.0.0",
     "react-native-vector-icons": "^6.5.0",
     "react-native-web": "file:.yalc/react-native-web",
-    "react-navigation-sharedelement": "^0.4.4",
+    "react-navigation-shared-element": "^0.5.0",
     "react-navigation-stack": "1.4.0",
     "react-navigation-tabs": "^2.3.0",
     "react-navigation-transitions": "^1.0.12"

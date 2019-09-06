@@ -3,7 +3,7 @@
 
 Native shared element transition *"primitives"* for react-native 💫
 
-This library in itself is not a Navigation- or Router library. Instead, it provides a set of comprehensive full native building blocks for performing shared element transitions in Router- or Transition libraries. If you are looking [for the React Navigation binding, you can find it here](https://github.com/IjzerenHein/react-navigation-sharedelement).
+This library in itself is not a Navigation- or Router library. Instead, it provides a set of comprehensive full native building blocks for performing shared element transitions in Router- or Transition libraries. If you are looking [for the React Navigation binding, you can find it here](https://github.com/IjzerenHein/react-navigation-shared-element).
 
 ![MagicMoveGif](set-ios.gif)
 ![MagicMoveGif](set-android.gif)
