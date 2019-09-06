@@ -5,8 +5,6 @@ import {
   Animated,
   Dimensions,
   StyleSheet,
-  requireNativeComponent,
-  NativeModules,
   processColor,
   Platform
 } from "react-native";
@@ -18,6 +16,7 @@ import {
   SharedElementNodeType,
   SharedElementContentType
 } from "./types";
+import { RNSharedElementTransition } from "./RNSharedElementTransition";
 
 export type SharedElementMeasureData = {
   node: SharedElementNodeType;
@@ -63,19 +62,6 @@ export type SharedElementTransitionProps = {
   onMeasure?: (event: SharedElementOnMeasureEvent) => void;
   SharedElementComponent?: any;
 };
-
-export const isAvailable = NativeModules.RNSharedElementTransition
-  ? true
-  : false;
-
-if (isAvailable) {
-  NativeModules.RNSharedElementTransition.configure({
-    imageResolvers: [
-      "RNPhotoView.MWTapDetectingImageView", // react-native-photo-view
-      "RCTView.FFFastImageView" // react-native-fast-image
-    ].map(path => path.split("."))
-  });
-}
 
 const NativeAnimationType = new Map<SharedElementAnimation, number>([
   ["move", 0],
@@ -136,10 +122,6 @@ type StateType = {
   startAncestor?: SharedElementMeasureData;
   endAncestor?: SharedElementMeasureData;
 };
-
-export const RNSharedElementTransition = isAvailable
-  ? requireNativeComponent("RNSharedElementTransition")
-  : undefined;
 
 export const RNAnimatedSharedElementTransition = RNSharedElementTransition
   ? Animated.createAnimatedComponent(RNSharedElementTransition)

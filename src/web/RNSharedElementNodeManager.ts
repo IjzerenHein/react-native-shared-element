@@ -1,12 +1,20 @@
 import { RNSharedElementNode } from "./RNSharedElementNode";
 
 export class RNSharedElementNodeManager {
-  private nodes = new Map<Element, RNSharedElementNode>();
+  private nodes = new Map<HTMLElement, RNSharedElementNode>();
+  private static instance: RNSharedElementNodeManager;
+
+  static getInstance(): RNSharedElementNodeManager {
+    if (!RNSharedElementNodeManager.instance) {
+      RNSharedElementNodeManager.instance = new RNSharedElementNodeManager();
+    }
+    return RNSharedElementNodeManager.instance;
+  }
 
   acquire(
-    domNode: Element,
+    domNode: HTMLElement,
     isParent: boolean,
-    ancestorDomNode: Element
+    ancestorDomNode: HTMLElement | null
   ): RNSharedElementNode {
     let node = this.nodes.get(domNode);
     if (node) {
