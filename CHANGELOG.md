@@ -1,6 +1,10 @@
 ## [0.5.1](https://github.com/IjzerenHein/react-native-shared-element/compare/v0.5.0...v0.5.1) (2019-09-06)
 
 
+## Improvements
+
+* **android:** updated internal Package and ViewManager init so it's easier to integrate into Expo
+
 
 # [0.5.0](https://github.com/IjzerenHein/react-native-shared-element/compare/v0.4.3...v0.5.0) (2019-09-04)
 
