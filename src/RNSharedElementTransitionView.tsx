@@ -11,6 +11,6 @@ if (isAvailable) {
   });
 }
 
-export const RNSharedElementTransition = isAvailable
+export const RNSharedElementTransitionView = isAvailable
   ? requireNativeComponent("RNSharedElementTransition")
   : undefined;

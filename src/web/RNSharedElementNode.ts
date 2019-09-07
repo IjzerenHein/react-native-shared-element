@@ -11,9 +11,10 @@ export type RNSharedElementNodeContentCallback = (
 
 export class RNSharedElementNode {
   public readonly domNode: HTMLElement;
-  public readonly ancestorDomNode: HTMLElement | null;
+  public readonly ancestorDomNode: HTMLElement;
   public readonly isParent: boolean;
   private hideRefCount: number = 0;
+  private hideOpacity: number = 0;
   private refCount: number = 1;
   private styleCache: RNSharedElementStyle | null = null;
   private styleCallbacks: RNSharedElementNodeStyleCallback[] | null = null;
@@ -23,7 +24,7 @@ export class RNSharedElementNode {
   constructor(
     domNode: HTMLElement,
     isParent: boolean,
-    ancestorDomNode: HTMLElement | null
+    ancestorDomNode: HTMLElement
   ) {
     this.domNode = domNode;
     this.isParent = isParent;
@@ -41,15 +42,17 @@ export class RNSharedElementNode {
   addHideRef() {
     this.hideRefCount++;
     if (this.hideRefCount === 1) {
-      //mHideAlpha = mView.getAlpha();
-      //mView.setAlpha(0);
+      const element: any = this.resolvedElement;
+      this.hideOpacity = element.style.opacity;
+      element.style.opacity = 0;
     }
   }
 
   releaseHideRef() {
     this.hideRefCount--;
     if (this.hideRefCount === 0) {
-      //mView.setAlpha(mHideAlpha);
+      const element: any = this.resolvedElement;
+      element.style.opacity = this.hideOpacity;
     }
   }
 
@@ -72,7 +75,7 @@ export class RNSharedElementNode {
     return RNSharedElementNode.resolveElement(element);
   }
 
-  get ancestorElement(): HTMLElement | null {
+  get resolvedAncestor(): HTMLElement | null {
     return this.ancestorDomNode;
   }
 
@@ -84,6 +87,7 @@ export class RNSharedElementNode {
       this.styleCallbacks = this.styleCallbacks || [];
       this.styleCallbacks.push(resolve);
       if (!this.fetchInitialStyle()) {
+        console.debug("Failed to fetch style");
         //startRetryLoop();
       }
     });
@@ -91,14 +95,28 @@ export class RNSharedElementNode {
 
   private fetchInitialStyle(): boolean {
     const element: any = this.resolvedElement;
-    if (!element) return false;
+    const ancestor: any = this.resolvedAncestor;
+    if (!element || !ancestor) return false;
     if (!this.styleCallbacks) return true;
 
     // Fetch layout
-    const layout = new Rect(element.getBoundingClientRect());
+    const rect = element.getBoundingClientRect();
+    // const ancestorTransform = ancestor.style.transform;
+    const ancestorRect = ancestor.getBoundingClientRect();
+    // console.log("ancestorTransform: ", ancestor.style, ancestorRect);
+    const translateX = ancestorRect.x; // TODO
+    const translateY = ancestorRect.y; // TODO
+    const layout = new Rect({
+      x: rect.x - translateX,
+      y: rect.y - translateY,
+      width: rect.width,
+      height: rect.height
+    });
 
     // Create style
     const style = new RNSharedElementStyle(layout, element.style);
+
+    // console.debug("Style fetched: ", style);
 
     // Update cache
     this.styleCache = style;
@@ -118,24 +136,27 @@ export class RNSharedElementNode {
       this.contentCallbacks = this.contentCallbacks || [];
       this.contentCallbacks.push(resolve);
       if (!this.fetchInitialContent()) {
+        console.debug("Failed to fetch content");
         //startRetryLoop();
       }
     });
   }
 
   private fetchInitialContent(): boolean {
-    const element = this.resolvedElement;
+    const element: any = this.resolvedElement;
     if (!element) return false;
     if (!this.contentCallbacks) return true;
 
-    // Fetch content
+    // Fetch content size
     const size = RNSharedElementContent.getSize(element);
     if (!size) {
       return false;
     }
 
     // Create content
-    const content = new RNSharedElementContent(size);
+    const content = new RNSharedElementContent(element, size);
+
+    // console.debug("Content fetched: ", content);
 
     // Update cache
     this.contentCache = content;

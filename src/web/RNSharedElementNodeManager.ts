@@ -14,7 +14,7 @@ export class RNSharedElementNodeManager {
   acquire(
     domNode: HTMLElement,
     isParent: boolean,
-    ancestorDomNode: HTMLElement | null
+    ancestorDomNode: HTMLElement
   ): RNSharedElementNode {
     let node = this.nodes.get(domNode);
     if (node) {

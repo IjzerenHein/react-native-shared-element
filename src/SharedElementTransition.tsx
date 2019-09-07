@@ -16,7 +16,7 @@ import {
   SharedElementNodeType,
   SharedElementContentType
 } from "./types";
-import { RNSharedElementTransition } from "./RNSharedElementTransition";
+import { RNSharedElementTransitionView } from "./RNSharedElementTransitionView";
 
 export type SharedElementMeasureData = {
   node: SharedElementNodeType;
@@ -123,8 +123,8 @@ type StateType = {
   endAncestor?: SharedElementMeasureData;
 };
 
-export const RNAnimatedSharedElementTransition = RNSharedElementTransition
-  ? Animated.createAnimatedComponent(RNSharedElementTransition)
+export const RNAnimatedSharedElementTransitionView = RNSharedElementTransitionView
+  ? Animated.createAnimatedComponent(RNSharedElementTransitionView)
   : undefined;
 
 export class SharedElementTransition extends React.Component<
@@ -134,7 +134,7 @@ export class SharedElementTransition extends React.Component<
   static defaultProps = {
     start: {},
     end: {},
-    SharedElementComponent: RNAnimatedSharedElementTransition,
+    SharedElementComponent: RNAnimatedSharedElementTransitionView,
     animation: "move",
     resize: "auto",
     align: "auto"

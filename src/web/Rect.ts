@@ -1,4 +1,3 @@
-
 export interface IRect {
   readonly x: number;
   readonly y: number;
