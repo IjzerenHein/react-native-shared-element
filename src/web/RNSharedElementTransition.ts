@@ -100,7 +100,8 @@ export class RNSharedElementTransition {
     const {
       element,
       items,
-      nodePosition /*, animation, resize, align*/
+      nodePosition,
+      animation /*, animation, resize, align*/
     } = this;
     if (!element) return;
 
@@ -170,14 +171,38 @@ export class RNSharedElementTransition {
       // interpolatedClipInsets = endClipInsets;
     }
 
-    this.updateView(
-      0,
-      interpolatedLayout,
-      interpolatedStyle,
-      interpolatedContentLayout,
-      startLayout,
-      startContent
-    );
+    if (
+      animation === RNSharedElementAnimation.Move ||
+      animation === RNSharedElementAnimation.Fade ||
+      animation === RNSharedElementAnimation.FadeOut
+    ) {
+      const startOpacity =
+        animation === RNSharedElementAnimation.Move ? 1 : 1 - nodePosition;
+      this.updateView(
+        0,
+        interpolatedLayout,
+        interpolatedStyle,
+        interpolatedContentLayout,
+        startLayout,
+        startContent,
+        startOpacity
+      );
+    }
+    if (
+      animation === RNSharedElementAnimation.Fade ||
+      animation === RNSharedElementAnimation.FadeIn
+    ) {
+      const endOpacity = nodePosition;
+      this.updateView(
+        1,
+        interpolatedLayout,
+        interpolatedStyle,
+        interpolatedContentLayout,
+        endLayout,
+        endContent,
+        endOpacity
+      );
+    }
   }
 
   private updateView(
@@ -188,7 +213,8 @@ export class RNSharedElementTransition {
     interpolatedContentLayout: Rect,
     // @ts-ignore
     originalLayout: Rect,
-    content: RNSharedElementContent | null
+    content: RNSharedElementContent | null,
+    opacity: number
   ) {
     // Find / create view
     let view = this.views[index];
@@ -208,5 +234,6 @@ export class RNSharedElementTransition {
       if (!content || !content.element) return;
       view.contentElement = (content.element as any).cloneNode(true);
     }
+    (view.contentElement as any).style.opacity = opacity;
   }
 }
