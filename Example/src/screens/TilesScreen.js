@@ -82,7 +82,6 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 20,
     height: 200,
     width: "100%",
-    resizeMode: "cover",
     overflow: "hidden"
   },
   cardImage2: {
@@ -236,7 +235,7 @@ export class TilesScreen extends React.Component<PropsType> {
           <View style={styles.cardBackground} />
         </SharedElement>
         <SharedElement id={`heroPhoto.${hero.id}`} navigation={navigation}>
-          <ImageBackground style={styles.cardImage} source={hero.photo} />
+          <ImageBackground style={styles.cardImage} source={hero.photo} resizeMode='cover'/>
         </SharedElement>
         <View style={styles.cardFooter}>
           <SharedElement
