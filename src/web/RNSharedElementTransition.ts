@@ -107,27 +107,39 @@ export class RNSharedElementTransition {
     // Get parent layout
     this.layout = new Rect((element as any).getBoundingClientRect());
 
-    // Get styles
+    // Get styles & content
     const startStyle = items[0].style;
     const endStyle = items[1].style;
     if (!startStyle && !endStyle) return;
+    const startContent = items[0].content;
+    const endContent = items[1].content;
 
-    // Get content
-    let startContent = items[0].content;
-    // const endContent = items[1].content;
-    /*if ((animation == RNSharedElementAnimation.Move) && !startContent && endContent != null) {
-      startContent = endContent;
-    }*/
-
-    // Get layout
+    // Get start layout
     const startLayout = startStyle ? startStyle.layout : Rect.empty;
-    const endLayout = endStyle ? endStyle.layout : Rect.empty;
+    const startContentLayout = startStyle
+      ? RNSharedElementContent.getLayout(
+          startLayout,
+          startContent,
+          startStyle.style.backgroundSize
+        )
+      : startLayout;
+    //CGRect startVisibleLayout = startStyle ? [self normalizeLayout:[startItem visibleLayoutForAncestor:startAncestor] ancestor:startAncestor] : CGRectZero;
+    //UIEdgeInsets startClipInsets = [self getClipInsets:startLayout visibleLayout:startVisibleLayout];
 
-    // TODO CLIPPING
+    // Get end layout
+    const endLayout = endStyle ? endStyle.layout : Rect.empty;
+    const endContentLayout = endStyle
+      ? RNSharedElementContent.getLayout(
+          endLayout,
+          endContent || startContent,
+          endStyle.style.backgroundSize
+        )
+      : endLayout;
 
     // Get interpolated layout
     let interpolatedLayout: Rect = startLayout;
     let interpolatedStyle: RNSharedElementStyle = startStyle!;
+    let interpolatedContentLayout: Rect = startContentLayout;
     // let interpolatedClipInsets: Rect = Rect.empty;
     if (startStyle && endStyle) {
       interpolatedLayout = RNSharedElementStyle.getInterpolatedLayout(
@@ -141,13 +153,20 @@ export class RNSharedElementTransition {
         endStyle,
         nodePosition
       );
+      interpolatedContentLayout = RNSharedElementStyle.getInterpolatedLayout(
+        startContentLayout,
+        endContentLayout,
+        nodePosition
+      );
     } else if (startStyle) {
       interpolatedLayout = startLayout;
       interpolatedStyle = startStyle;
+      interpolatedContentLayout = startContentLayout;
       // interpolatedClipInsets = startClipInsets;
     } else {
       interpolatedLayout = endLayout;
       interpolatedStyle = endStyle!;
+      interpolatedContentLayout = endContentLayout;
       // interpolatedClipInsets = endClipInsets;
     }
 
@@ -155,6 +174,7 @@ export class RNSharedElementTransition {
       0,
       interpolatedLayout,
       interpolatedStyle,
+      interpolatedContentLayout,
       startLayout,
       startContent
     );
@@ -165,6 +185,7 @@ export class RNSharedElementTransition {
     interpolatedLayout: Rect,
     // @ts-ignore
     interpolatedStyle: RNSharedElementStyle,
+    interpolatedContentLayout: Rect,
     // @ts-ignore
     originalLayout: Rect,
     content: RNSharedElementContent | null
@@ -180,7 +201,7 @@ export class RNSharedElementTransition {
     // Update layouts
     view.parentLayout = this.layout;
     view.layout = interpolatedLayout;
-    view.contentLayout = interpolatedLayout;
+    view.contentLayout = interpolatedContentLayout;
 
     // If the content-element does not yet exist, then clone it and add it to the view
     if (!view.contentElement) {

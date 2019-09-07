@@ -9,6 +9,7 @@ function initElement(element: HTMLElement): HTMLElement {
   style.transformOrigin = "0% 0%";
   style.transformStyle = "preserve-3d";
   style.backfaceVisibility = "hidden";
+  style.backgroundSize = "100% 100%";
   style.boxSizing = "border-box";
   style.overflow = "hidden";
   return element;

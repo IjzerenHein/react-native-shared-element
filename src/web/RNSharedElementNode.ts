@@ -124,7 +124,11 @@ export class RNSharedElementNode {
     });
 
     // Create style
-    const style = new RNSharedElementStyle(layout, element.style);
+    const style = new RNSharedElementStyle(
+      layout,
+      // @ts-ignore
+      window.getComputedStyle(element, null)
+    );
 
     // console.debug("Style fetched: ", style);
 
