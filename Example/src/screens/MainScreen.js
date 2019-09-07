@@ -11,10 +11,13 @@ import {
 import { Router, NavBar, ListItem, Colors, Heading3 } from "../components";
 import { TilesScreen } from "./TilesScreen";
 import { TestsScreen } from "./TestsScreen";
+import { TestScreen } from "./TestScreen";
 import { PagerScreen } from "./PagerScreen";
 import { CardScreen } from "./CardScreen";
 import { Tests } from "../tests";
-import { fadeIn } from "../transitions";
+import { TestImage } from "../tests/image";
+import type { Test } from "../types";
+import { fadeIn, fromRight } from "../transitions";
 
 const styles = StyleSheet.create({
   container: {
@@ -61,6 +64,11 @@ export class MainScreen extends React.Component<PropsType> {
           undefined
         )}
         <ScrollView style={styles.content} endFillColor={Colors.empty}>
+          {/*<ListItem
+            label="Quick Test"
+            description="Immediately start the current development test"
+            onPress={this.onPressQuickTest}
+          />*/}
           <ListItem
             label="Test Cases"
             description="Test cases for development and diagnosing problems"
@@ -91,6 +99,27 @@ export class MainScreen extends React.Component<PropsType> {
       </View>
     );
   }
+
+  onPressQuickTest = () => {
+    const { navigation } = this.props;
+    const test: Test = {
+      name: "Simple move",
+      description:
+        "The most basic form of a shared-element transition. The image should move smoothly without flickering from the start- to the end state, and back",
+      start: <TestImage />,
+      end: <TestImage end />
+    };
+
+    if (navigation) {
+      navigation.push("Test", {
+        test
+      });
+    } else {
+      Router.push(<TestScreen test={test} />, {
+        transitionConfig: fromRight(100)
+      });
+    }
+  };
 
   onPressTests = () => {
     const { navigation } = this.props;
