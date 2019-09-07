@@ -56,23 +56,33 @@ export class RNSharedElementNode {
     }
   }
 
-  private static resolveElement(element: HTMLElement): HTMLElement {
-    // TODO
-    return element;
-  }
-
   get resolvedElement(): HTMLElement | null {
     let element: HTMLElement = this.domNode;
+
+    // If this node is a parent, look for the first child
     if (this.isParent) {
       const node: any = element;
       if (node.childNodes.length === 1) {
-        return node.childNodes[0];
+        element = node.childNodes[0];
       } else if (node.childNodes.length <= 0) {
         console.log("Child for parent doesnt exist");
         return null;
       }
     }
-    return RNSharedElementNode.resolveElement(element);
+
+    // Get background-image node
+    const { childNodes } = element as any;
+    if (childNodes.length === 2) {
+      for (let i = 0; i < 2; i++) {
+        const childNode = childNodes[i];
+        if (childNode.tagName === "IMG") {
+          element = childNodes[i ? 0 : i + 1];
+          break;
+        }
+      }
+    }
+
+    return element;
   }
 
   get resolvedAncestor(): HTMLElement | null {
@@ -128,27 +138,25 @@ export class RNSharedElementNode {
     return true;
   }
 
-  requestContent(): Promise<RNSharedElementContent> {
-    if (this.contentCache) {
-      return Promise.resolve(this.contentCache);
-    }
+  async requestContent(): Promise<RNSharedElementContent> {
+    if (this.contentCache) return this.contentCache;
+
     return new Promise(resolve => {
+      if (this.contentCallbacks) return;
       this.contentCallbacks = this.contentCallbacks || [];
       this.contentCallbacks.push(resolve);
-      if (!this.fetchInitialContent()) {
-        console.debug("Failed to fetch content");
-        //startRetryLoop();
-      }
+      this.fetchInitialContent();
+      // TODO RETRY IN CASE OF FAILURE?
     });
   }
 
-  private fetchInitialContent(): boolean {
+  private async fetchInitialContent(): Promise<boolean> {
     const element: any = this.resolvedElement;
     if (!element) return false;
     if (!this.contentCallbacks) return true;
 
     // Fetch content size
-    const size = RNSharedElementContent.getSize(element);
+    const size = await RNSharedElementContent.getSize(element);
     if (!size) {
       return false;
     }

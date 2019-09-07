@@ -10,8 +10,7 @@ import {
 import { Rect } from "./Rect";
 import { RNSharedElementStyle } from "./RNSharedElementStyle";
 import { RNSharedElementContent } from "./RNSharedElementContent";
-
-const EMPTY_RECT = new Rect();
+import { RNSharedElementView } from "./RNSharedElementView";
 
 export class RNSharedElementTransition {
   private items = [
@@ -29,7 +28,8 @@ export class RNSharedElementTransition {
   public align: RNSharedElementAlign = RNSharedElementAlign.Auto;
   public nodePosition: number = 0;
   public element: HTMLElement | null = null;
-  private childElements: (HTMLElement | null)[] = [null, null];
+  private layout: Rect = Rect.empty;
+  private views: (RNSharedElementView | null)[] = [null, null];
 
   public destroy() {
     this.element = null;
@@ -104,6 +104,9 @@ export class RNSharedElementTransition {
     } = this;
     if (!element) return;
 
+    // Get parent layout
+    this.layout = new Rect((element as any).getBoundingClientRect());
+
     // Get styles
     const startStyle = items[0].style;
     const endStyle = items[1].style;
@@ -117,15 +120,15 @@ export class RNSharedElementTransition {
     }*/
 
     // Get layout
-    const startLayout = startStyle ? startStyle.layout : EMPTY_RECT;
-    const endLayout = endStyle ? endStyle.layout : EMPTY_RECT;
+    const startLayout = startStyle ? startStyle.layout : Rect.empty;
+    const endLayout = endStyle ? endStyle.layout : Rect.empty;
 
     // TODO CLIPPING
 
     // Get interpolated layout
     let interpolatedLayout: Rect = startLayout;
     let interpolatedStyle: RNSharedElementStyle = startStyle!;
-    // let interpolatedClipInsets: Rect = EMPTY_RECT;
+    // let interpolatedClipInsets: Rect = Rect.empty;
     if (startStyle && endStyle) {
       interpolatedLayout = RNSharedElementStyle.getInterpolatedLayout(
         startLayout,
@@ -148,7 +151,7 @@ export class RNSharedElementTransition {
       // interpolatedClipInsets = endClipInsets;
     }
 
-    this.updateChildElement(
+    this.updateView(
       0,
       interpolatedLayout,
       interpolatedStyle,
@@ -157,7 +160,7 @@ export class RNSharedElementTransition {
     );
   }
 
-  private updateChildElement(
+  private updateView(
     index: number,
     interpolatedLayout: Rect,
     // @ts-ignore
@@ -166,44 +169,23 @@ export class RNSharedElementTransition {
     originalLayout: Rect,
     content: RNSharedElementContent | null
   ) {
-    const { element, childElements } = this;
-    let childElement: any = childElements[index];
-
-    // If the child-element does not yet exist, then clone it and add it to the DOM
-    const widthPx = interpolatedLayout.width + "px";
-    const heightPx = interpolatedLayout.height + "px";
-    if (!childElement) {
-      if (!content || !content.element) return;
-      childElement = (content.element as any).cloneNode(true);
-      childElements[index] = childElement;
-      (element as any).appendChild(childElement);
-      const { style } = childElement;
-      style.position = "absolute";
-      style.left = "0px";
-      style.top = "0px";
-      style.width = widthPx;
-      style.height = heightPx;
-      style.pointerEvents = "none";
-      style.transformOrigin = "0% 0%";
-      style.transformStyle = "preserve-3d";
-      style.backfaceVisibility = "hidden";
-      style.boxSizing = "border-box";
+    // Find / create view
+    let view = this.views[index];
+    if (!view) {
+      view = new RNSharedElementView();
+      (this.element as any).appendChild(view.element);
+      this.views[index] = view;
     }
 
-    // Update layout
-    const { style } = childElement;
-    if (style.width !== widthPx) style.width = widthPx;
-    if (style.height !== heightPx) style.height = heightPx;
-    const transform = `matrix3d(
-      1, 0, 0, 0,
-      0, 1, 0, 0,
-      0, 0, 1, 0,
-      ${interpolatedLayout.x}, ${interpolatedLayout.y}, 0, 1
-    )`;
-    style.transform = transform;
-    //console.log("transform: ", style.transform, style, interpolatedLayout);
+    // Update layouts
+    view.parentLayout = this.layout;
+    view.layout = interpolatedLayout;
+    view.contentLayout = interpolatedLayout;
 
-    // Update style
-    // TODO
+    // If the content-element does not yet exist, then clone it and add it to the view
+    if (!view.contentElement) {
+      if (!content || !content.element) return;
+      view.contentElement = (content.element as any).cloneNode(true);
+    }
   }
 }
