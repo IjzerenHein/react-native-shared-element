@@ -4,6 +4,7 @@ import java.util.Locale;
 
 import android.util.Log;
 import android.graphics.Rect;
+import android.graphics.RectF;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.view.View;
@@ -117,6 +118,28 @@ public class RNSharedElementStyle {
         if (config.hasKey("borderBottomRightRadius")) borderBottomRightRadius = PixelUtil.toPixelFromDIP((float) config.getDouble("borderBottomRightRadius"));
     }
 
+    int compare(RNSharedElementStyle style) {
+        int res = 0;
+        if (opacity != style.opacity) res += PROP_OPACITY;
+        if (backgroundColor != style.backgroundColor) res += PROP_BACKGROUND_COLOR;
+        if (borderColor != style.borderColor) res += PROP_BORDER_COLOR;
+        if (borderWidth != style.borderWidth) res += PROP_BORDER_WIDTH;
+        if (!borderStyle.equals(style.borderStyle)) res += PROP_BORDER_STYLE;
+        if (borderTopLeftRadius != style.borderTopLeftRadius) res += PROP_BORDER_TOPLEFTRADIUS;
+        if (borderTopRightRadius != style.borderTopRightRadius) res += PROP_BORDER_TOPRIGHTRADIUS;
+        if (borderBottomLeftRadius != style.borderBottomLeftRadius) res += PROP_BORDER_BOTTOMLEFTRADIUS;
+        if (borderBottomRightRadius != style.borderBottomRightRadius) res += PROP_BORDER_BOTTOMRIGHT_RADIUS;
+        if (elevation != style.elevation) res += PROP_ELEVATION;
+        if (!RNSharedElementStyle.equalsScaleType(scaleType, style.scaleType)) res += PROP_SCALETYPE;
+        return res;
+    }
+
+    boolean isVisible() {
+        if (opacity <= 0) return false;
+        if (elevation > 0) return true;
+        return (Color.alpha(backgroundColor) > 0) || (Color.alpha(borderColor) > 0);
+    }
+
     static boolean equalsScaleType(ScaleType scaleType1, ScaleType scaleType2) {
         if (scaleType1 == scaleType2) return true;
         return false;
@@ -132,6 +155,52 @@ public class RNSharedElementStyle {
         );
         scaleType.setValue(position);
         return scaleType;
+    }
+
+    static RectF getInterpolatedLayout(Rect layout1, Rect layout2, float position) {
+        return new RectF(
+            (layout1.left + ((layout2.left - layout1.left) * position)),
+            (layout1.top + ((layout2.top - layout1.top) * position)),
+            (layout1.right + ((layout2.right - layout1.right) * position)),
+            (layout1.bottom + ((layout2.bottom - layout1.bottom) * position))
+        );
+    }
+
+    static int getInterpolatedColor(int color1, int color2, float position) {
+        int redA = Color.red(color1);
+        int greenA = Color.green(color1);
+        int blueA = Color.blue(color1);
+        int alphaA = Color.alpha(color1);
+        int redB = Color.red(color2);
+        int greenB = Color.green(color2);
+        int blueB = Color.blue(color2);
+        int alphaB = Color.alpha(color2);
+        return Color.argb(
+            (int) (alphaA + ((alphaB - alphaA) * position)),
+            (int) (redA + ((redB - redA) * position)),
+            (int) (greenA + ((greenB - greenA) * position)),
+            (int) (blueA + ((blueB - blueA) * position))
+        );
+    }
+
+    static RNSharedElementStyle getInterpolatedStyle(
+        RNSharedElementStyle style1,
+        RNSharedElementStyle style2,
+        float position
+    ) {
+        RNSharedElementStyle result = new RNSharedElementStyle();
+        result.scaleType = RNSharedElementStyle.getInterpolatingScaleType(style1, style2, position);
+        result.opacity = style1.opacity + ((style2.opacity - style1.opacity) * position);
+        result.backgroundColor = RNSharedElementStyle.getInterpolatedColor(style1.backgroundColor, style2.backgroundColor, position);
+        result.borderTopLeftRadius = style1.borderTopLeftRadius + ((style2.borderTopLeftRadius - style1.borderTopLeftRadius) * position);
+        result.borderTopRightRadius = style1.borderTopRightRadius + ((style2.borderTopRightRadius - style1.borderTopRightRadius) * position);
+        result.borderBottomLeftRadius = style1.borderBottomLeftRadius + ((style2.borderBottomLeftRadius - style1.borderBottomLeftRadius) * position);
+        result.borderBottomRightRadius = style1.borderBottomRightRadius + ((style2.borderBottomRightRadius - style1.borderBottomRightRadius) * position);
+        result.borderWidth = style1.borderWidth + ((style2.borderWidth - style1.borderWidth) * position);
+        result.borderColor = RNSharedElementStyle.getInterpolatedColor(style1.borderColor, style2.borderColor, position);
+        result.borderStyle = style1.borderStyle;
+        result.elevation = style1.elevation + ((style2.elevation - style1.elevation) * position);
+        return result;
     }
 
     static Matrix getAbsoluteViewTransform(View view, boolean failIfNotMounted) {
@@ -163,27 +232,5 @@ public class RNSharedElementStyle {
         }
         matrix.setValues(vals);
         return matrix;
-    }
-
-    int compare(RNSharedElementStyle style) {
-        int res = 0;
-        if (opacity != style.opacity) res += PROP_OPACITY;
-        if (backgroundColor != style.backgroundColor) res += PROP_BACKGROUND_COLOR;
-        if (borderColor != style.borderColor) res += PROP_BORDER_COLOR;
-        if (borderWidth != style.borderWidth) res += PROP_BORDER_WIDTH;
-        if (!borderStyle.equals(style.borderStyle)) res += PROP_BORDER_STYLE;
-        if (borderTopLeftRadius != style.borderTopLeftRadius) res += PROP_BORDER_TOPLEFTRADIUS;
-        if (borderTopRightRadius != style.borderTopRightRadius) res += PROP_BORDER_TOPRIGHTRADIUS;
-        if (borderBottomLeftRadius != style.borderBottomLeftRadius) res += PROP_BORDER_BOTTOMLEFTRADIUS;
-        if (borderBottomRightRadius != style.borderBottomRightRadius) res += PROP_BORDER_BOTTOMRIGHT_RADIUS;
-        if (elevation != style.elevation) res += PROP_ELEVATION;
-        if (!RNSharedElementStyle.equalsScaleType(scaleType, style.scaleType)) res += PROP_SCALETYPE;
-        return res;
-    }
-
-    boolean isVisible() {
-        if (opacity <= 0) return false;
-        if (elevation > 0) return true;
-        return (Color.alpha(backgroundColor) > 0) || (Color.alpha(borderColor) > 0);
     }
 }

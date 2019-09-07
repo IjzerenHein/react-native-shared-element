@@ -213,9 +213,9 @@ public class RNSharedElementTransition extends ViewGroup {
         RectF interpolatedClipInsets;
         RNSharedElementStyle interpolatedStyle;
         if ((startStyle != null) && (endStyle != null)) {
-            interpolatedLayout = getInterpolatedLayout(startLayout, endLayout, mNodePosition);
+            interpolatedLayout = RNSharedElementStyle.getInterpolatedLayout(startLayout, endLayout, mNodePosition);
             interpolatedClipInsets = getInterpolatedClipInsets(parentLayout, startClipInsets, startClippedLayout, endClipInsets, endClippedLayout, mNodePosition);
-            interpolatedStyle = getInterpolatedStyle(startStyle, startContent, endStyle, endContent, mNodePosition);
+            interpolatedStyle = RNSharedElementStyle.getInterpolatedStyle(startStyle, endStyle, mNodePosition);
         } else if (startStyle != null) {
             interpolatedLayout = new RectF(startLayout);
             interpolatedStyle = startStyle;
@@ -405,54 +405,6 @@ public class RNSharedElementTransition extends ViewGroup {
         }
 
         return clipInsets;
-    }
-
-    private RectF getInterpolatedLayout(Rect layout1, Rect layout2, float position) {
-        return new RectF(
-            (layout1.left + ((layout2.left - layout1.left) * position)),
-            (layout1.top + ((layout2.top - layout1.top) * position)),
-            (layout1.right + ((layout2.right - layout1.right) * position)),
-            (layout1.bottom + ((layout2.bottom - layout1.bottom) * position))
-        );
-    }
-
-    private int getInterpolatedColor(int color1, int color2, float position) {
-        int redA = Color.red(color1);
-        int greenA = Color.green(color1);
-        int blueA = Color.blue(color1);
-        int alphaA = Color.alpha(color1);
-        int redB = Color.red(color2);
-        int greenB = Color.green(color2);
-        int blueB = Color.blue(color2);
-        int alphaB = Color.alpha(color2);
-        return Color.argb(
-            (int) (alphaA + ((alphaB - alphaA) * position)),
-            (int) (redA + ((redB - redA) * position)),
-            (int) (greenA + ((greenB - greenA) * position)),
-            (int) (blueA + ((blueB - blueA) * position))
-        );
-    }
-
-    private RNSharedElementStyle getInterpolatedStyle(
-        RNSharedElementStyle style1,
-        RNSharedElementContent content1,
-        RNSharedElementStyle style2,
-        RNSharedElementContent content2,
-        float position
-    ) {
-        RNSharedElementStyle result = new RNSharedElementStyle();
-        result.scaleType = RNSharedElementStyle.getInterpolatingScaleType(style1, style2, position);
-        result.opacity = style1.opacity + ((style2.opacity - style1.opacity) * position);
-        result.backgroundColor = getInterpolatedColor(style1.backgroundColor, style2.backgroundColor, position);
-        result.borderTopLeftRadius = style1.borderTopLeftRadius + ((style2.borderTopLeftRadius - style1.borderTopLeftRadius) * position);
-        result.borderTopRightRadius = style1.borderTopRightRadius + ((style2.borderTopRightRadius - style1.borderTopRightRadius) * position);
-        result.borderBottomLeftRadius = style1.borderBottomLeftRadius + ((style2.borderBottomLeftRadius - style1.borderBottomLeftRadius) * position);
-        result.borderBottomRightRadius = style1.borderBottomRightRadius + ((style2.borderBottomRightRadius - style1.borderBottomRightRadius) * position);
-        result.borderWidth = style1.borderWidth + ((style2.borderWidth - style1.borderWidth) * position);
-        result.borderColor = getInterpolatedColor(style1.borderColor, style2.borderColor, position);
-        result.borderStyle = style1.borderStyle;
-        result.elevation = style1.elevation + ((style2.elevation - style1.elevation) * position);
-        return result;
     }
 
     private void fireMeasureEvent(String name, RNSharedElementTransitionItem item, Rect clippedLayout) {
