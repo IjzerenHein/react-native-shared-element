@@ -20,15 +20,9 @@ import {
 import type { Hero, SharedElementsConfig } from "../types";
 import { fadeIn } from "../transitions";
 
-const HEIGHT = Dimensions.get("window").height;
-const IMAGE_HEIGHT = Dimensions.get("window").width * 0.75;
-
 const styles = StyleSheet.create({
   flex: {
     flex: 1
-  },
-  scrollViewContent: {
-    minHeight: HEIGHT
   },
   background: {
     flex: 1,
@@ -45,7 +39,6 @@ const styles = StyleSheet.create({
     top: 0
   },
   image: {
-    height: IMAGE_HEIGHT,
     width: "100%",
     resizeMode: "cover"
   },
@@ -71,7 +64,9 @@ type PropsType = {
 type StateType = {
   contentHeight: number,
   scrollOffset: Animated.Value,
-  scrollEvent: any
+  scrollEvent: any,
+  width: number,
+  height: number
 };
 
 export class CardScreen extends React.Component<PropsType, StateType> {
@@ -158,17 +153,26 @@ export class CardScreen extends React.Component<PropsType, StateType> {
           useNativeDriver: true
         }
       ),
-      contentHeight: 0
+      contentHeight: 0,
+      width: Dimensions.get("window").width,
+      height: Dimensions.get("window").height
     };
   }
 
   render() {
-    const { scrollOffset, scrollEvent, contentHeight } = this.state;
+    const {
+      scrollOffset,
+      scrollEvent,
+      contentHeight,
+      height,
+      width
+    } = this.state;
     const { navigation } = this.props;
     const hero = navigation ? navigation.getParam("hero") : this.props.hero;
     const type = navigation ? navigation.getParam("type") : this.props.type;
     const gradientOverlay = type === "card2";
     const { id, name, photo, description } = hero;
+    const imageHeight = width * 0.75;
     return (
       <View style={styles.flex}>
         <StatusBar barStyle="light-content" animated />
@@ -177,7 +181,7 @@ export class CardScreen extends React.Component<PropsType, StateType> {
           scrollEventThrottle={16}
           onScroll={scrollEvent}
         >
-          <View style={styles.scrollViewContent}>
+          <View style={{ minHeight: height }}>
             <SharedElement
               id={`heroBackground.${id}`}
               style={StyleSheet.absoluteFill}
@@ -198,7 +202,7 @@ export class CardScreen extends React.Component<PropsType, StateType> {
                         },
                         {
                           scale: scrollOffset.interpolate({
-                            inputRange: [IMAGE_HEIGHT / -2, 0, 1],
+                            inputRange: [imageHeight / -2, 0, 1],
                             outputRange: [2, 1, 1]
                           })
                         }
@@ -208,7 +212,10 @@ export class CardScreen extends React.Component<PropsType, StateType> {
               }
             >
               <SharedElement id={`heroPhoto.${id}`} navigation={navigation}>
-                <Image style={styles.image} source={photo} />
+                <Image
+                  style={[styles.image, { height: imageHeight }]}
+                  source={photo}
+                />
               </SharedElement>
               {gradientOverlay ? (
                 <SharedElement
@@ -259,8 +266,8 @@ export class CardScreen extends React.Component<PropsType, StateType> {
                       translateY: scrollOffset.interpolate({
                         inputRange: [
                           0,
-                          Math.max(IMAGE_HEIGHT + contentHeight - HEIGHT, 0),
-                          Math.max(IMAGE_HEIGHT + contentHeight - HEIGHT, 0) + 1
+                          Math.max(imageHeight + contentHeight - height, 0),
+                          Math.max(imageHeight + contentHeight - height, 0) + 1
                         ],
                         outputRange: [0, 0, 0.5]
                       })
@@ -269,8 +276,8 @@ export class CardScreen extends React.Component<PropsType, StateType> {
                       scaleY: scrollOffset.interpolate({
                         inputRange: [
                           0,
-                          Math.max(IMAGE_HEIGHT + contentHeight - HEIGHT, 0),
-                          Math.max(IMAGE_HEIGHT + contentHeight - HEIGHT, 0) + 1
+                          Math.max(imageHeight + contentHeight - height, 0),
+                          Math.max(imageHeight + contentHeight - height, 0) + 1
                         ],
                         outputRange: [0, 1, 2]
                       })
@@ -293,6 +300,16 @@ export class CardScreen extends React.Component<PropsType, StateType> {
       </View>
     );
   }
+
+  onLayout = (event: any) => {
+    const { width, height } = event.nativeEvent.layout;
+    if (this.state.width !== width || this.state.height !== height) {
+      this.setState({
+        width,
+        height
+      });
+    }
+  };
 
   onLayoutContent = (event: any) => {
     const { height } = event.nativeEvent.layout;

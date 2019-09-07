@@ -4,8 +4,8 @@ import {
   StyleSheet,
   View,
   Animated,
-  Dimensions,
-  BackHandler
+  BackHandler,
+  Dimensions
 } from "react-native";
 import { SharedElementTransition } from "react-native-shared-element";
 import { ScreenTransitionContext } from "./RouterScreenTransitionContext";
@@ -21,9 +21,6 @@ import type {
 import { normalizeSharedElementsConfig } from "../types/SharedElement";
 
 Screens.useScreens();
-
-const WIDTH = Dimensions.get("window").width;
-const HEIGHT = Dimensions.get("window").height;
 
 const styles = StyleSheet.create({
   container: {
@@ -74,6 +71,8 @@ interface RouterState {
   sharedElementsConfig: ?SharedElementsStrictConfig;
   sharedElementScreens: Array<?ScreenTransitionContextOnSharedElementsUpdatedEvent>;
   actionsQueue: Array<RouterAction>;
+  width: number;
+  height: number;
 }
 
 type RouterConfig = {
@@ -128,14 +127,16 @@ export class Router extends React.Component<RouterProps, RouterState> {
       animValue: Animated.subtract(
         this._animValue,
         this._swipeBackAnimValue.interpolate({
-          inputRange: [0, WIDTH],
+          inputRange: [0, Dimensions.get("window").width],
           outputRange: [0, 1],
           extrapolate: "clamp"
         })
       ),
       sharedElementScreens: [],
       sharedElementsConfig: undefined,
-      transitionConfig: undefined
+      transitionConfig: undefined,
+      width: Dimensions.get("window").width,
+      height: Dimensions.get("window").height
     };
   }
 
@@ -222,6 +223,7 @@ export class Router extends React.Component<RouterProps, RouterState> {
   }
 
   _onSwipeBackStateChange = (event: any) => {
+    const { width } = this.state;
     const { nativeEvent } = event;
     switch (nativeEvent.state) {
       case State.ACTIVE:
@@ -241,10 +243,10 @@ export class Router extends React.Component<RouterProps, RouterState> {
         if (
           nativeEvent.velocityX >= 1000 ||
           (nativeEvent.velocityX > -1000 &&
-            nativeEvent.translationX >= WIDTH / 2)
+            nativeEvent.translationX >= width / 2)
         ) {
           Animated.timing(this._swipeBackAnimValue, {
-            toValue: WIDTH,
+            toValue: width,
             duration: 100,
             useNativeDriver: true
           }).start(({ finished }) => {
@@ -278,11 +280,18 @@ export class Router extends React.Component<RouterProps, RouterState> {
   };
 
   render() {
-    const { stack, animValue, nextIndex, prevIndex } = this.state;
+    const {
+      stack,
+      animValue,
+      nextIndex,
+      prevIndex,
+      width,
+      height
+    } = this.state;
     const transitionConfig =
       this.state.transitionConfig || this.props.transitionConfig;
     return (
-      <View style={styles.container}>
+      <View style={styles.container} onLayout={this.onLayout}>
         <MaybeScreenContainer style={StyleSheet.absoluteFill}>
           {stack.map((node: React.Node, index: number) => {
             const isScreenActive =
@@ -296,8 +305,8 @@ export class Router extends React.Component<RouterProps, RouterState> {
                   styles.node,
                   transitionConfig.screenInterpolator({
                     layout: {
-                      initHeight: HEIGHT,
-                      initWidth: WIDTH
+                      initHeight: height,
+                      initWidth: width
                       //width:
                       //height:
                       //isMeasured
@@ -331,6 +340,24 @@ export class Router extends React.Component<RouterProps, RouterState> {
       </View>
     );
   }
+
+  onLayout = (event: any) => {
+    const { width, height } = event.nativeEvent.layout;
+    if (this.state.width !== width || this.state.height !== height) {
+      this.setState({
+        width,
+        height,
+        animValue: Animated.subtract(
+          this._animValue,
+          this._swipeBackAnimValue.interpolate({
+            inputRange: [0, width],
+            outputRange: [0, 1],
+            extrapolate: "clamp"
+          })
+        )
+      });
+    }
+  };
 
   onSharedElementsUpdated = (
     event: ScreenTransitionContextOnSharedElementsUpdatedEvent

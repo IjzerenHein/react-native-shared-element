@@ -40,7 +40,6 @@ const styles = StyleSheet.create({
   },
   item: {
     height: 160,
-    width: Dimensions.get("window").width / 2,
     borderColor: Colors.back,
     borderRightWidth: 2,
     borderBottomWidth: 2
@@ -53,7 +52,6 @@ const styles = StyleSheet.create({
     width: "100%"
   },
   avatar: {
-    width: Dimensions.get("window").width / 3,
     height: 140,
     justifyContent: "center",
     alignItems: "center"
@@ -121,7 +119,12 @@ type PropsType = {
   navigation?: any
 };
 
-export class TilesScreen extends React.Component<PropsType> {
+type StateType = {
+  width: number,
+  height: number
+};
+
+export class TilesScreen extends React.Component<PropsType, StateType> {
   static defaultProps = {
     type: "tile",
     title: "Tiles",
@@ -129,11 +132,16 @@ export class TilesScreen extends React.Component<PropsType> {
     transitionConfig: fadeIn()
   };
 
+  state = {
+    width: Dimensions.get("window").width,
+    height: Dimensions.get("window").height
+  };
+
   render() {
     const { title, navigation } = this.props;
     const type = navigation ? navigation.getParam("type") : this.props.type;
     return (
-      <View style={styles.flex}>
+      <View style={styles.flex} onLayout={this.onLayout}>
         {!navigation ? <NavBar title={title} /> : undefined}
         <FlatList
           style={type === "avatar" ? styles.avatarList : styles.list}
@@ -150,6 +158,16 @@ export class TilesScreen extends React.Component<PropsType> {
       </View>
     );
   }
+
+  onLayout = (event: any) => {
+    const { width, height } = event.nativeEvent.layout;
+    if (this.state.width !== width || this.state.height !== height) {
+      this.setState({
+        width,
+        height
+      });
+    }
+  };
 
   keyExtractor = (item: any) => item.id;
 
@@ -170,11 +188,16 @@ export class TilesScreen extends React.Component<PropsType> {
 
   renderTile = ({ item, index }: any) => {
     const { navigation } = this.props;
+    const { width } = this.state;
     const hero = item;
     return (
       <TouchableOpacity
         key={`Hero${hero.id}`}
-        style={[styles.item, index % 2 ? styles.itemOdd : undefined]}
+        style={[
+          styles.item,
+          index % 2 ? styles.itemOdd : undefined,
+          { width: width / 2 }
+        ]}
         activeOpacity={1}
         onPress={() => this.onPressItem(hero)}
       >
@@ -202,11 +225,12 @@ export class TilesScreen extends React.Component<PropsType> {
 
   renderAvatar = ({ item, index }: any) => {
     const { navigation } = this.props;
+    const { width } = this.state;
     const hero = item;
     return (
       <TouchableOpacity
         key={`Hero${hero.id}`}
-        style={[styles.avatar]}
+        style={[styles.avatar, { width: width / 3 }]}
         activeOpacity={1}
         onPress={() => this.onPressItem(hero)}
       >

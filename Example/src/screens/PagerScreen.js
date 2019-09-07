@@ -20,8 +20,6 @@ import { Heroes } from "../assets";
 import { fadeIn } from "../transitions";
 import { PanGestureHandler, State } from "react-native-gesture-handler";
 
-const WIDTH = Dimensions.get("window").width;
-
 const styles = StyleSheet.create({
   container: {
     flex: 1
@@ -37,9 +35,6 @@ const styles = StyleSheet.create({
     flex: 1,
     marginVertical: NavBar.HEIGHT
   },
-  itemContainer: {
-    width: WIDTH
-  },
   image: {
     flex: 1,
     width: "100%",
@@ -52,7 +47,8 @@ type PropsType = {
   navigation: any
 };
 type StateType = {
-  selectedHero: Hero
+  selectedHero: Hero,
+  width: number
 };
 
 export class PagerScreen extends React.Component<PropsType, StateType> {
@@ -81,7 +77,8 @@ export class PagerScreen extends React.Component<PropsType, StateType> {
       ? props.navigation.getParam("hero")
       : props.hero;
     this.state = {
-      selectedHero: hero
+      selectedHero: hero,
+      width: Dimensions.get("window").width
     };
   }
 
@@ -105,7 +102,7 @@ export class PagerScreen extends React.Component<PropsType, StateType> {
     const dismissAnimValue = this._dismissAnimValue;
     const initialIndex = Heroes.findIndex(({ id }) => id === hero.id);
     return (
-      <View style={styles.container}>
+      <View style={styles.container} onLayout={this.onLayout}>
         <StatusBar barStyle="light-content" animated />
         <Animated.View
           style={[
@@ -146,17 +143,30 @@ export class PagerScreen extends React.Component<PropsType, StateType> {
     );
   }
 
-  getItemLayout = (item: any, index: number) => ({
-    length: WIDTH,
-    offset: WIDTH * index,
-    index
-  });
+  onLayout = (event: any) => {
+    const { width } = event.nativeEvent.layout;
+    if (this.state.width !== width) {
+      this.setState({
+        width
+      });
+    }
+  };
+
+  getItemLayout = (item: any, index: number) => {
+    const { width } = this.state;
+    return {
+      length: width,
+      offset: width * index,
+      index
+    };
+  };
 
   renderItem = ({ item }: any) => {
+    const { width } = this.state;
     const hero = item;
     const { id, photo } = hero;
     return (
-      <View style={styles.itemContainer} key={`item.${item.id}`}>
+      <View style={{ width }} key={`item.${item.id}`}>
         <SharedElement
           id={`heroPhoto.${id}`}
           style={styles.flex}
