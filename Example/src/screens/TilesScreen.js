@@ -27,7 +27,7 @@ import { fadeIn } from "../transitions";
 import TouchableScale from "react-native-touchable-scale";
 
 const styles = StyleSheet.create({
-  container: {
+  flex: {
     flex: 1
   },
   list: {
@@ -133,7 +133,7 @@ export class TilesScreen extends React.Component<PropsType> {
     const { title, navigation } = this.props;
     const type = navigation ? navigation.getParam("type") : this.props.type;
     return (
-      <View style={styles.container}>
+      <View style={styles.flex}>
         {!navigation ? <NavBar title={title} /> : undefined}
         <FlatList
           style={type === "avatar" ? styles.avatarList : styles.list}
@@ -178,7 +178,11 @@ export class TilesScreen extends React.Component<PropsType> {
         activeOpacity={1}
         onPress={() => this.onPressItem(hero)}
       >
-        <SharedElement id={`heroPhoto.${hero.id}`} navigation={navigation}>
+        <SharedElement
+          id={`heroPhoto.${hero.id}`}
+          style={styles.flex}
+          navigation={navigation}
+        >
           <Image
             style={styles.image}
             source={hero.photo}
@@ -235,7 +239,11 @@ export class TilesScreen extends React.Component<PropsType> {
           <View style={styles.cardBackground} />
         </SharedElement>
         <SharedElement id={`heroPhoto.${hero.id}`} navigation={navigation}>
-          <ImageBackground style={styles.cardImage} source={hero.photo} resizeMode='cover'/>
+          <ImageBackground
+            style={styles.cardImage}
+            source={hero.photo}
+            resizeMode="cover"
+          />
         </SharedElement>
         <View style={styles.cardFooter}>
           <SharedElement
