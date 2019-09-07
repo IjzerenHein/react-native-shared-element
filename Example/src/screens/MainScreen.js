@@ -64,11 +64,15 @@ export class MainScreen extends React.Component<PropsType> {
           undefined
         )}
         <ScrollView style={styles.content} endFillColor={Colors.empty}>
-          {/*<ListItem
-            label="Quick Test"
-            description="Immediately start the current development test"
-            onPress={this.onPressQuickTest}
-          />*/}
+          {Platform.OS === "web" ? (
+            <ListItem
+              label="Quick Test"
+              description="Immediately start the current development test"
+              onPress={this.onPressQuickTest}
+            />
+          ) : (
+            undefined
+          )}
           <ListItem
             label="Test Cases"
             description="Test cases for development and diagnosing problems"
