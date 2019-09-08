@@ -212,7 +212,6 @@ export class RNSharedElementTransition {
     // @ts-ignore
     interpolatedStyle: RNSharedElementStyle,
     interpolatedContentLayout: Rect,
-    // @ts-ignore
     originalLayout: Rect,
     content: RNSharedElementContent | null,
     opacity: number
@@ -225,8 +224,9 @@ export class RNSharedElementTransition {
       this.views[index] = view;
     }
 
-    // Update layouts
+    // Set layouts
     view.parentLayout = this.layout;
+    view.originalLayout = originalLayout;
     view.layout = interpolatedLayout;
     view.contentLayout = interpolatedContentLayout;
 
@@ -236,5 +236,8 @@ export class RNSharedElementTransition {
       view.contentElement = content.element.cloneNode(true);
     }
     view.contentElement!.style.opacity = opacity;
+
+    // Update layout
+    view.updateLayout();
   }
 }

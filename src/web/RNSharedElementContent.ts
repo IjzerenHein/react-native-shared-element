@@ -48,6 +48,7 @@ export class RNSharedElementContent {
     reverse?: boolean
   ) {
     if (!content) return layout;
+    if (!content.element.style.backgroundImage) return layout;
     let { width, height } = layout;
     const contentAspectRatio = content.size.width / content.size.height;
     const lo = width / height < contentAspectRatio;
