@@ -5,9 +5,10 @@ Web support is under development
 [X] Content fetching
 [X] Image content fetching
 [X] Image resizeMode transitions
-[ ] element scaling
+[X] element scaling
+[X] fade animations
+[X] resize prop
+[X] align prop
 [ ] style interpolation
 [ ] scrollview clipping
-[ ] fade animations
-[ ] resize prop
-[ ] align prop
+[ ] scale/transform handling

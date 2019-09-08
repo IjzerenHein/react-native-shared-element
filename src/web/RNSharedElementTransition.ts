@@ -224,6 +224,10 @@ export class RNSharedElementTransition {
       this.views[index] = view;
     }
 
+    // Set resize & align
+    view.resize = this.resize;
+    view.align = this.align;
+
     // Set layouts
     view.parentLayout = this.layout;
     view.originalLayout = originalLayout;
