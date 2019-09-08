@@ -4,9 +4,12 @@ import {
   RNSharedElementResize
 } from "./types";
 import { Rect } from "./Rect";
+import { RNSharedElementStyle } from "./RNSharedElementStyle";
 
 function initElement(element: IHTMLElement): IHTMLElement {
   const { style } = element;
+
+  // Reset default layout behavior
   style.position = "absolute";
   style.left = "0px";
   style.top = "0px";
@@ -17,6 +20,10 @@ function initElement(element: IHTMLElement): IHTMLElement {
   style.backgroundSize = "100% 100%";
   style.boxSizing = "border-box";
   style.overflow = "hidden";
+
+  // Clear styles
+  // style.backgroundColor = null;
+
   return element;
 }
 
@@ -39,6 +46,7 @@ export class RNSharedElementView {
   // @ts-ignore
   public readonly element = initElement(document.createElement("div"));
   public layout: Rect = Rect.empty;
+  public style: RNSharedElementStyle | null = null;
   public originalLayout: Rect = Rect.empty;
   public _contentElement: IHTMLElement | null = null;
   public contentLayout: Rect = Rect.empty;
@@ -72,6 +80,9 @@ export class RNSharedElementView {
     } else {
       this.updateLayoutForResize();
     }
+
+    // Update style
+    this.updateStyle();
   }
 
   /**
@@ -228,5 +239,11 @@ export class RNSharedElementView {
     if (element.style.overflow !== overflow) {
       element.style.overflow = overflow;
     }
+  }
+
+  private updateStyle() {
+    //const { style, element } = this;
+    //if (!style) return;
+    // element.style.backgroundColor = formatColor(style.backgroundColor);
   }
 }

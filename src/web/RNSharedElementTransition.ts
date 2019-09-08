@@ -178,7 +178,9 @@ export class RNSharedElementTransition {
       animation === RNSharedElementAnimation.FadeOut
     ) {
       const startOpacity =
-        animation === RNSharedElementAnimation.Move ? 1 : 1 - nodePosition;
+        animation === RNSharedElementAnimation.Move
+          ? interpolatedStyle.opacity
+          : (startStyle ? startStyle.opacity : 1) * (1 - nodePosition);
       this.updateView(
         0,
         interpolatedLayout,
@@ -193,7 +195,7 @@ export class RNSharedElementTransition {
       animation === RNSharedElementAnimation.Fade ||
       animation === RNSharedElementAnimation.FadeIn
     ) {
-      const endOpacity = nodePosition;
+      const endOpacity = (endStyle ? endStyle.opacity : 1) * nodePosition;
       this.updateView(
         1,
         interpolatedLayout,
@@ -209,7 +211,6 @@ export class RNSharedElementTransition {
   private updateView(
     index: number,
     interpolatedLayout: Rect,
-    // @ts-ignore
     interpolatedStyle: RNSharedElementStyle,
     interpolatedContentLayout: Rect,
     originalLayout: Rect,
@@ -233,6 +234,9 @@ export class RNSharedElementTransition {
     view.originalLayout = originalLayout;
     view.layout = interpolatedLayout;
     view.contentLayout = interpolatedContentLayout;
+
+    // Set style
+    view.style = interpolatedStyle;
 
     // If the content-element does not yet exist, then clone it and add it to the view
     if (!view.contentElement) {

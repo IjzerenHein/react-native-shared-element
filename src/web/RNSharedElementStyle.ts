@@ -1,5 +1,6 @@
 import { Rect } from "./Rect";
 import { CSSStyleDeclaration } from "./types";
+import { Color, parseColor, interpolateColor } from "./Color";
 
 /*int backgroundColor = Color.TRANSPARENT;
     float opacity = 1;
@@ -12,13 +13,21 @@ import { CSSStyleDeclaration } from "./types";
     String borderStyle = "solid";
     float elevation = 0;*/
 
+function interpolate(val1: number, val2: number, position: number) {
+  return val1 + (val2 - val1) * position;
+}
+
 export class RNSharedElementStyle {
   public readonly layout: Rect;
   public readonly style: CSSStyleDeclaration;
+  public readonly opacity: number;
+  public readonly backgroundColor: Color;
 
   constructor(layout: Rect, style: CSSStyleDeclaration) {
     this.layout = layout;
     this.style = style;
+    this.opacity = Number(style.opacity);
+    this.backgroundColor = parseColor(style.backgroundColor);
   }
 
   public static getInterpolatedLayout(
@@ -27,34 +36,11 @@ export class RNSharedElementStyle {
     position: number
   ) {
     return new Rect({
-      x: layout1.x + (layout2.x - layout1.x) * position,
-      y: layout1.y + (layout2.y - layout1.y) * position,
-      width: layout1.width + (layout2.width - layout1.width) * position,
-      height: layout1.height + (layout2.height - layout1.height) * position
+      x: interpolate(layout1.x, layout2.x, position),
+      y: interpolate(layout1.y, layout2.y, position),
+      width: interpolate(layout1.width, layout2.width, position),
+      height: interpolate(layout1.height, layout2.height, position)
     });
-  }
-
-  public static getInterpolatedColor(
-    color1: number,
-    color2: number,
-    position: number
-  ) {
-    /* TODO
-    int redA = Color.red(color1);
-        int greenA = Color.green(color1);
-        int blueA = Color.blue(color1);
-        int alphaA = Color.alpha(color1);
-        int redB = Color.red(color2);
-        int greenB = Color.green(color2);
-        int blueB = Color.blue(color2);
-        int alphaB = Color.alpha(color2);
-        return Color.argb(
-            (int) (alphaA + ((alphaB - alphaA) * position)),
-            (int) (redA + ((redB - redA) * position)),
-            (int) (greenA + ((greenB - greenA) * position)),
-            (int) (blueA + ((blueB - blueA) * position))
-        );*/
-    return color1 + (color2 - color1) * position;
   }
 
   public static getInterpolatedStyle(
@@ -67,7 +53,15 @@ export class RNSharedElementStyle {
       style2.layout,
       position
     );
-    return new RNSharedElementStyle(layout, style1);
+    return new RNSharedElementStyle(layout, {
+      ...style1,
+      opacity: interpolate(style1.opacity, style2.opacity, position),
+      backgroundColor: interpolateColor(
+        style1.backgroundColor,
+        style2.backgroundColor,
+        position
+      )
+    });
   }
 
   /* 
