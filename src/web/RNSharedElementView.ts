@@ -1,4 +1,8 @@
-import { IHTMLElement } from "./types";
+import {
+  IHTMLElement,
+  RNSharedElementAlign,
+  RNSharedElementResize
+} from "./types";
 import { Rect } from "./Rect";
 
 function initElement(element: IHTMLElement): IHTMLElement {
@@ -16,46 +20,30 @@ function initElement(element: IHTMLElement): IHTMLElement {
   return element;
 }
 
+function createTransform(
+  translateX: number = 0,
+  translateY: number = 0,
+  scaleX: number = 1,
+  scaleY: number = 1
+) {
+  return `matrix3d(
+    ${scaleX}, 0, 0, 0,
+    0, ${scaleY}, 0, 0,
+    0, 0, 1, 0,
+    ${translateX}, ${translateY}, 0, 1
+)`;
+}
+
 export class RNSharedElementView {
-  private _parentLayout: Rect = Rect.empty;
+  public parentLayout: Rect = Rect.empty;
   // @ts-ignore
   public readonly element = initElement(document.createElement("div"));
-  private _layout: Rect = Rect.empty;
-  private _originalLayout: Rect = Rect.empty;
-  private _contentElement: IHTMLElement | null = null;
-  private _contentLayout: Rect = Rect.empty;
-
-  get parentLayout(): Rect {
-    return this._parentLayout;
-  }
-  set parentLayout(rect: Rect) {
-    if (this._parentLayout.equals(rect)) return;
-    this._parentLayout = rect;
-  }
-
-  get layout(): Rect {
-    return this._layout;
-  }
-  set layout(rect: Rect) {
-    if (this._layout.equals(rect)) return;
-    this._layout = rect;
-  }
-
-  get originalLayout(): Rect {
-    return this._originalLayout;
-  }
-  set originalLayout(rect: Rect) {
-    if (this._originalLayout.equals(rect)) return;
-    this._originalLayout = rect;
-  }
-
-  get contentLayout(): Rect {
-    return this._contentLayout;
-  }
-  set contentLayout(rect: Rect) {
-    if (this._contentLayout.equals(rect)) return;
-    this._contentLayout = rect;
-  }
+  public layout: Rect = Rect.empty;
+  public originalLayout: Rect = Rect.empty;
+  public _contentElement: IHTMLElement | null = null;
+  public contentLayout: Rect = Rect.empty;
+  public resize: RNSharedElementResize = RNSharedElementResize.Auto;
+  public align: RNSharedElementAlign = RNSharedElementAlign.Auto;
 
   get contentElement(): IHTMLElement | null {
     return this._contentElement;
@@ -72,90 +60,83 @@ export class RNSharedElementView {
   }
 
   public updateLayout() {
-    if (this._layout.equals(Rect.empty)) return;
+    const {
+      layout,
+      originalLayout,
+      parentLayout,
+      contentLayout,
+      element
+    } = this;
+    if (layout.equals(Rect.empty)) return;
 
     // In case of images, run the resize algorithm
-    if (!this._contentLayout.equals(this._layout)) {
+    if (!contentLayout.equals(layout)) {
       this.updateImageLayout();
       this.updateImageContentLayout();
       return;
     }
 
     // Update layout
-    const { width, height } = this._originalLayout;
-    const { x, y, width: scaledWidth, height: scaledHeight } = this._layout;
+    const { width, height } = originalLayout;
+    const { x, y, width: scaledWidth, height: scaledHeight } = layout;
 
     // Update size
     const widthPx = width + "px";
     const heightPx = height + "px";
-    const { style } = this.element;
+    const { style } = element;
     if (style.width !== widthPx) style.width = widthPx;
     if (style.height !== heightPx) style.height = heightPx;
 
     // Calculate translation
-    const translateX = x - this._parentLayout.x;
-    const translateY = y - this._parentLayout.y;
+    const translateX = x - parentLayout.x;
+    const translateY = y - parentLayout.y;
 
     // Calculate scale
     const scaleX = scaledWidth / width;
     const scaleY = scaledHeight / height;
 
-    // Update matrix
-    const transform = `matrix3d(
-            ${scaleX}, 0, 0, 0,
-            0, ${scaleY}, 0, 0,
-            0, 0, 1, 0,
-            ${translateX}, ${translateY}, 0, 1
-        )`;
-    style.transform = transform;
+    // Update transform matrix
+    style.transform = createTransform(translateX, translateY, scaleX, scaleY);
 
     // Update content element
     const { style: contentStyle } = this._contentElement!;
     if (contentStyle.width !== widthPx) contentStyle.width = widthPx;
     if (contentStyle.height !== heightPx) contentStyle.height = heightPx;
-    const contentTransform = `matrix3d(
-      1, 0, 0, 0,
-      0, 1, 0, 0,
-      0, 0, 1, 0,
-      0, 0, 0, 1
-  )`;
-    contentStyle.transform = contentTransform;
+    contentStyle.transform = createTransform();
   }
 
   private updateImageLayout() {
-    const { x, y, width, height } = this._layout;
+    const { layout, parentLayout, element } = this;
+    const { x, y, width, height } = layout;
+
+    // Update size
     const widthPx = width + "px";
     const heightPx = height + "px";
-    const { style } = this.element;
+    const { style } = element;
     if (style.width !== widthPx) style.width = widthPx;
     if (style.height !== heightPx) style.height = heightPx;
-    const translateX = x - this._parentLayout.x;
-    const translateY = y - this._parentLayout.y;
-    const transform = `matrix3d(
-            1, 0, 0, 0,
-            0, 1, 0, 0,
-            0, 0, 1, 0,
-            ${translateX}, ${translateY}, 0, 1
-        )`;
-    style.transform = transform;
+
+    // Update transform
+    const translateX = x - parentLayout.x;
+    const translateY = y - parentLayout.y;
+    style.transform = createTransform(translateX, translateY);
   }
 
   private updateImageContentLayout() {
     if (!this._contentElement) return;
-    const { x, y, width, height } = this._contentLayout;
+    const { layout, contentLayout, parentLayout } = this;
+    const { x, y, width, height } = contentLayout;
+
+    // Update size
     const widthPx = width + "px";
     const heightPx = height + "px";
     const { style } = this._contentElement;
     if (style.width !== widthPx) style.width = widthPx;
     if (style.height !== heightPx) style.height = heightPx;
-    const translateX = x - (this._layout.x + this._parentLayout.x);
-    const translateY = y - (this._layout.y + this._parentLayout.y);
-    const transform = `matrix3d(
-            1, 0, 0, 0,
-            0, 1, 0, 0,
-            0, 0, 1, 0,
-            ${translateX}, ${translateY}, 0, 1
-        )`;
-    style.transform = transform;
+
+    // Update transform
+    const translateX = x - (layout.x + parentLayout.x);
+    const translateY = y - (layout.y + parentLayout.y);
+    style.transform = createTransform(translateX, translateY);
   }
 }
