@@ -1,7 +1,8 @@
+import { IHTMLElement } from "./types";
 import { Rect } from "./Rect";
 
-function initElement(element: HTMLElement): HTMLElement {
-  const { style } = element as any;
+function initElement(element: IHTMLElement): IHTMLElement {
+  const { style } = element;
   style.position = "absolute";
   style.left = "0px";
   style.top = "0px";
@@ -20,7 +21,7 @@ export class RNSharedElementView {
   // @ts-ignore
   public readonly element = initElement(document.createElement("div"));
   private _layout: Rect = Rect.empty;
-  private _contentElement: HTMLElement | null = null;
+  private _contentElement: IHTMLElement | null = null;
   private _contentLayout: Rect = Rect.empty;
 
   get parentLayout(): Rect {
@@ -46,7 +47,7 @@ export class RNSharedElementView {
     const { x, y, width, height } = this._layout;
     const widthPx = width + "px";
     const heightPx = height + "px";
-    const { style } = this.element as any;
+    const { style } = this.element;
     if (style.width !== widthPx) style.width = widthPx;
     if (style.height !== heightPx) style.height = heightPx;
     const translateX = x - this._parentLayout.x;
@@ -60,17 +61,17 @@ export class RNSharedElementView {
     style.transform = transform;
   }
 
-  get contentElement(): HTMLElement | null {
+  get contentElement(): IHTMLElement | null {
     return this._contentElement;
   }
-  set contentElement(value: HTMLElement | null) {
+  set contentElement(value: IHTMLElement | null) {
     if (this._contentElement === value) return;
     if (this._contentElement) {
-      (this.element as any).removeChild(this._contentElement);
+      this.element.removeChild(this._contentElement);
     }
     this._contentElement = value ? initElement(value) : null;
     if (this._contentElement) {
-      (this.element as any).appendChild(this._contentElement);
+      this.element.appendChild(this._contentElement);
     }
     this.updateContentLayout();
   }
@@ -89,7 +90,7 @@ export class RNSharedElementView {
     const { x, y, width, height } = this._contentLayout;
     const widthPx = width + "px";
     const heightPx = height + "px";
-    const { style } = this._contentElement as any;
+    const { style } = this._contentElement;
     if (style.width !== widthPx) style.width = widthPx;
     if (style.height !== heightPx) style.height = heightPx;
     const translateX = x - (this._layout.x + this._parentLayout.x);

@@ -5,7 +5,8 @@ import {
   RNSharedElementNodeConfig,
   RNSharedElementAnimation,
   RNSharedElementResize,
-  RNSharedElementAlign
+  RNSharedElementAlign,
+  IHTMLElement
 } from "./types";
 import { Rect } from "./Rect";
 import { RNSharedElementStyle } from "./RNSharedElementStyle";
@@ -27,7 +28,7 @@ export class RNSharedElementTransition {
   public resize: RNSharedElementResize = RNSharedElementResize.Auto;
   public align: RNSharedElementAlign = RNSharedElementAlign.Auto;
   public nodePosition: number = 0;
-  public element: HTMLElement | null = null;
+  public element: IHTMLElement | null = null;
   private layout: Rect = Rect.empty;
   private views: (RNSharedElementView | null)[] = [null, null];
 
@@ -106,7 +107,7 @@ export class RNSharedElementTransition {
     if (!element) return;
 
     // Get parent layout
-    this.layout = new Rect((element as any).getBoundingClientRect());
+    this.layout = new Rect(element.getBoundingClientRect());
 
     // Get styles & content
     const startStyle = items[0].style;
@@ -220,7 +221,7 @@ export class RNSharedElementTransition {
     let view = this.views[index];
     if (!view) {
       view = new RNSharedElementView();
-      (this.element as any).appendChild(view.element);
+      this.element!.appendChild(view.element);
       this.views[index] = view;
     }
 
@@ -232,8 +233,8 @@ export class RNSharedElementTransition {
     // If the content-element does not yet exist, then clone it and add it to the view
     if (!view.contentElement) {
       if (!content || !content.element) return;
-      view.contentElement = (content.element as any).cloneNode(true);
+      view.contentElement = content.element.cloneNode(true);
     }
-    (view.contentElement as any).style.opacity = opacity;
+    view.contentElement!.style.opacity = opacity;
   }
 }

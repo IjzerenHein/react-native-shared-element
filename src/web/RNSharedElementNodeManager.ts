@@ -1,4 +1,5 @@
 import { RNSharedElementNode } from "./RNSharedElementNode";
+import { IHTMLElement } from "./types";
 
 export class RNSharedElementNodeManager {
   private nodes = new Map<HTMLElement, RNSharedElementNode>();
@@ -12,9 +13,9 @@ export class RNSharedElementNodeManager {
   }
 
   acquire(
-    domNode: HTMLElement,
+    domNode: IHTMLElement,
     isParent: boolean,
-    ancestorDomNode: HTMLElement
+    ancestorDomNode: IHTMLElement
   ): RNSharedElementNode {
     let node = this.nodes.get(domNode);
     if (node) {

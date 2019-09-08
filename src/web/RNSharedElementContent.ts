@@ -1,15 +1,16 @@
 import { Rect } from "./Rect";
+import { IHTMLElement } from "./types";
 
 export class RNSharedElementContent {
-  public readonly element: HTMLElement;
+  public readonly element: IHTMLElement;
   public readonly size: Rect;
 
-  constructor(element: HTMLElement, size: Rect) {
+  constructor(element: IHTMLElement, size: Rect) {
     this.element = element;
     this.size = size;
   }
 
-  static getSize(element: any): Promise<Rect | null> {
+  static getSize(element: IHTMLElement): Promise<Rect | null> {
     return new Promise(resolve => {
       if (element.style.backgroundImage) {
         // @ts-ignore

@@ -1,9 +1,4 @@
-export interface IRect {
-  readonly x: number;
-  readonly y: number;
-  readonly width: number;
-  readonly height: number;
-}
+import { IRect } from "./types";
 
 export class Rect implements IRect {
   public x: number = 0;

@@ -1,5 +1,26 @@
+export interface IRect {
+  readonly x: number;
+  readonly y: number;
+  readonly width: number;
+  readonly height: number;
+}
+
+export type CSSStyleDeclaration = any;
+
+export interface IHTMLElement extends HTMLElement {
+  readonly tagName: string;
+  readonly style: CSSStyleDeclaration;
+  readonly clientWidth: number;
+  readonly clientHeight: number;
+  readonly childNodes: IHTMLElement[];
+  appendChild(element: HTMLElement): HTMLElement;
+  removeChild(element: HTMLElement): HTMLElement;
+  cloneNode(deep: boolean): IHTMLElement;
+  getBoundingClientRect(): IRect;
+}
+
 export type RNSharedElementNodeConfig = {
-  nodeHandle: HTMLElement;
+  nodeHandle: IHTMLElement;
   isParent: boolean;
   nodeStyle: any;
 };

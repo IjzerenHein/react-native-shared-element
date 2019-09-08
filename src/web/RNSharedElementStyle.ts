@@ -1,4 +1,5 @@
 import { Rect } from "./Rect";
+import { CSSStyleDeclaration } from "./types";
 
 /*int backgroundColor = Color.TRANSPARENT;
     float opacity = 1;
@@ -10,8 +11,6 @@ import { Rect } from "./Rect";
     int borderColor = Color.TRANSPARENT;
     String borderStyle = "solid";
     float elevation = 0;*/
-
-type CSSStyleDeclaration = any;
 
 export class RNSharedElementStyle {
   public readonly layout: Rect;

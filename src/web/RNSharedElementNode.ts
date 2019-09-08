@@ -1,6 +1,7 @@
 import { RNSharedElementStyle } from "./RNSharedElementStyle";
 import { RNSharedElementContent } from "./RNSharedElementContent";
 import { Rect } from "./Rect";
+import { IHTMLElement } from "./types";
 
 export type RNSharedElementNodeStyleCallback = (
   value: RNSharedElementStyle
@@ -10,8 +11,8 @@ export type RNSharedElementNodeContentCallback = (
 ) => void;
 
 export class RNSharedElementNode {
-  public readonly domNode: HTMLElement;
-  public readonly ancestorDomNode: HTMLElement;
+  public readonly domNode: IHTMLElement;
+  public readonly ancestorDomNode: IHTMLElement;
   public readonly isParent: boolean;
   private hideRefCount: number = 0;
   private hideOpacity: number = 0;
@@ -22,9 +23,9 @@ export class RNSharedElementNode {
   private contentCallbacks: RNSharedElementNodeContentCallback[] | null = null;
 
   constructor(
-    domNode: HTMLElement,
+    domNode: IHTMLElement,
     isParent: boolean,
-    ancestorDomNode: HTMLElement
+    ancestorDomNode: IHTMLElement
   ) {
     this.domNode = domNode;
     this.isParent = isParent;
@@ -42,36 +43,35 @@ export class RNSharedElementNode {
   addHideRef() {
     this.hideRefCount++;
     if (this.hideRefCount === 1) {
-      const element: any = this.resolvedElement;
-      this.hideOpacity = element.style.opacity;
-      element.style.opacity = 0;
+      const element = this.resolvedElement;
+      this.hideOpacity = element!.style.opacity;
+      element!.style.opacity = 0;
     }
   }
 
   releaseHideRef() {
     this.hideRefCount--;
     if (this.hideRefCount === 0) {
-      const element: any = this.resolvedElement;
-      element.style.opacity = this.hideOpacity;
+      const element = this.resolvedElement;
+      element!.style.opacity = this.hideOpacity;
     }
   }
 
-  get resolvedElement(): HTMLElement | null {
-    let element: HTMLElement = this.domNode;
+  get resolvedElement(): IHTMLElement | null {
+    let element: IHTMLElement = this.domNode;
 
     // If this node is a parent, look for the first child
     if (this.isParent) {
-      const node: any = element;
-      if (node.childNodes.length === 1) {
-        element = node.childNodes[0];
-      } else if (node.childNodes.length <= 0) {
+      if (element.childNodes.length === 1) {
+        element = element.childNodes[0];
+      } else if (element.childNodes.length <= 0) {
         console.log("Child for parent doesnt exist");
         return null;
       }
     }
 
     // Get background-image node
-    const { childNodes } = element as any;
+    const { childNodes } = element;
     if (childNodes.length === 2) {
       for (let i = 0; i < 2; i++) {
         const childNode = childNodes[i];
@@ -85,7 +85,7 @@ export class RNSharedElementNode {
     return element;
   }
 
-  get resolvedAncestor(): HTMLElement | null {
+  get resolvedAncestor(): IHTMLElement | null {
     return this.ancestorDomNode;
   }
 
@@ -104,8 +104,8 @@ export class RNSharedElementNode {
   }
 
   private fetchInitialStyle(): boolean {
-    const element: any = this.resolvedElement;
-    const ancestor: any = this.resolvedAncestor;
+    const element = this.resolvedElement;
+    const ancestor = this.resolvedAncestor;
     if (!element || !ancestor) return false;
     if (!this.styleCallbacks) return true;
 
@@ -155,7 +155,7 @@ export class RNSharedElementNode {
   }
 
   private async fetchInitialContent(): Promise<boolean> {
-    const element: any = this.resolvedElement;
+    const element = this.resolvedElement;
     if (!element) return false;
     if (!this.contentCallbacks) return true;
 
