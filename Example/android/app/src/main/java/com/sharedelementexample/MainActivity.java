@@ -1,4 +1,4 @@
-package com.ijzerenhein.sharedelement.example;
+package com.sharedelementexample;
 
 import com.facebook.react.ReactActivity;
 
