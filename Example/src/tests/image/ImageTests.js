@@ -3,7 +3,7 @@ import * as React from 'react';
 import type {TestGroup} from '../../types';
 import {Heroes} from '../../assets';
 import {TestImage} from './TestImage';
-import {ImageBackground} from 'react-native';
+import {ImageBackground, Animated} from 'react-native';
 import {FastImage} from './FastImage';
 import {PhotoView} from './PhotoView';
 import {Colors, Shadows} from '../../components';
@@ -211,6 +211,27 @@ export const ImageTests: TestGroup = {
               size="large"
               resizeMode="contain"
               ImageComponent={ImageBackground}
+            />
+          ),
+        },
+        {
+          name: 'Animated.Image',
+          description: 'Animated.Image',
+          start: (
+            <TestImage
+              size="regular"
+              resizeMode="cover"
+              ImageComponent={Animated.Image}
+              style={{transform: [{scaleX: new Animated.Value(0.5)}]}}
+            />
+          ),
+          end: (
+            <TestImage
+              end
+              size="large"
+              resizeMode="contain"
+              ImageComponent={Animated.Image}
+              style={{transform: [{scaleX: new Animated.Value(0.5)}]}}
             />
           ),
         },
