@@ -45,31 +45,33 @@
     "react-native": "*"
   },
   "devDependencies": {
-    "@commitlint/config-conventional": "^8.1.0",
+    "@commitlint/config-conventional": "^8.2.0",
     "@react-native-community/bob": "^0.7.0",
     "@react-native-community/eslint-config": "^0.0.5",
-    "@types/react": "^16.9.2",
-    "@types/react-native": "^0.60.6",
-    "commitlint": "^8.1.0",
-    "conventional-changelog-cli": "^2.0.23",
-    "eslint": "^6.3.0",
-    "eslint-config-prettier": "^6.1.0",
-    "eslint-plugin-prettier": "^3.1.0",
-    "eslint-plugin-react": "^7.14.2",
-    "eslint-plugin-react-native": "^3.7.0",
-    "husky": "^3.0.4",
-    "jest": "^24.7.0",
-    "prettier": "^1.18.2",
-    "react": "16.9.0",
-    "react-native": "0.60.5",
-    "react-test-renderer": "16.9.0",
-    "typescript": "^3.5.3"
+    "@types/react": "^16.9.11",
+    "@types/react-native": "^0.60.22",
+    "commitlint": "^8.2.0",
+    "conventional-changelog-cli": "^2.0.27",
+    "eslint": "^6.6.0",
+    "eslint-config-satya164": "^3.1.2",
+    "husky": "^3.0.9",
+    "jest": "^24.9.0",
+    "prettier": "^1.19.1",
+    "react": "^16.11.0",
+    "react-native": "^0.61.4",
+    "react-test-renderer": "^16.11.0",
+    "typescript": "^3.7.2"
   },
   "@react-native-community/bob": {
     "source": "src",
     "output": "lib",
     "targets": [
-      "commonjs",
+      [
+        "commonjs",
+        {
+          "flow": true
+        }
+      ],
       "module",
       "typescript"
     ]
