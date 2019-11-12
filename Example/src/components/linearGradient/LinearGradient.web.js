@@ -1,2 +1,2 @@
 // @flow
-export * from "expo-linear-gradient";
+export * from 'expo-linear-gradient';

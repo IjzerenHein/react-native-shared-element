@@ -1,3 +1,3 @@
 // @flow
-export * from "./ImageTests";
-export * from "./TestImage";
+export * from './ImageTests';
+export * from './TestImage';

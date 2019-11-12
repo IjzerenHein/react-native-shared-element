@@ -1,2 +1,2 @@
 // @flow
-export * from "./MainScreen";
+export * from './MainScreen';

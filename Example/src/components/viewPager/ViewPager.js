@@ -1,29 +1,29 @@
 // @flow
-import * as React from "react";
-import { FlatList } from "react-native";
+import * as React from 'react';
+import {FlatList} from 'react-native';
 
 type PropsType = {
   style: any,
   data: any[],
-  renderItem: (data: { item: any, index: number }) => any,
+  renderItem: (data: {item: any, index: number}) => any,
   getItemLayout: (item: any, index: number) => any,
   initialItemIndex: number,
-  onItemSelected: (index: number) => any
+  onItemSelected: (index: number) => any,
 };
 type StateType = {
-  selectedIndex: number
+  selectedIndex: number,
 };
 
 const VIEWABILITY_CONFIG = {
   minimumViewTime: 0,
-  viewAreaCoveragePercentThreshold: 51
+  viewAreaCoveragePercentThreshold: 51,
 };
 
 export class ViewPager extends React.PureComponent<PropsType, StateType> {
   constructor(props: PropsType) {
     super(props);
     this.state = {
-      selectedIndex: props.initialItemIndex || 0
+      selectedIndex: props.initialItemIndex || 0,
     };
   }
 
@@ -33,7 +33,7 @@ export class ViewPager extends React.PureComponent<PropsType, StateType> {
       data,
       initialItemIndex,
       renderItem,
-      getItemLayout
+      getItemLayout,
     } = this.props;
     return (
       <FlatList
@@ -54,15 +54,15 @@ export class ViewPager extends React.PureComponent<PropsType, StateType> {
   keyExtractor = (item: any, index: number) => `item${index}`;
 
   onViewableItemsChanged = (event: any) => {
-    const { onItemSelected, data } = this.props;
-    const { viewableItems } = event;
+    const {onItemSelected, data} = this.props;
+    const {viewableItems} = event;
     if (!viewableItems.length) return;
     const selectedItem = viewableItems[0].item;
     const selectedIndex = data.indexOf(selectedItem);
     if (this.state.selectedIndex !== selectedIndex) {
       this.setState(
         {
-          selectedIndex
+          selectedIndex,
         },
         () => {
           if (onItemSelected) onItemSelected(selectedIndex);

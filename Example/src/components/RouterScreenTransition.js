@@ -1,11 +1,11 @@
 // @flow
-import * as React from "react";
-import { SharedElement } from "react-native-shared-element";
-import type { SharedElementNode } from "react-native-shared-element";
+import * as React from 'react';
+import {SharedElement} from 'react-native-shared-element';
+import type {SharedElementNode} from 'react-native-shared-element';
 import {
   ScreenTransitionContext,
-  withScreenTransitionContext
-} from "./RouterScreenTransitionContext";
+  withScreenTransitionContext,
+} from './RouterScreenTransitionContext';
 
 export interface ScreenTransitionProps {
   sharedId?: string;
@@ -16,25 +16,20 @@ export interface ScreenTransitionProps {
 export const RouterScreenTransition = withScreenTransitionContext(
   class RouterScreenTransition extends React.Component<ScreenTransitionProps> {
     _node: ?SharedElementNode;
-    _sharedId = "";
+    _sharedId = '';
 
     constructor(props: ScreenTransitionProps) {
       super(props);
       this._sharedId = props.sharedId;
     }
 
-    render() {
-      const { sharedId, screenTransitionContext, ...otherProps } = this.props;
-      return <SharedElement {...otherProps} onNode={this.onSetNode} />;
-    }
-
     componentDidUpdate() {
-      const { sharedId, screenTransitionContext } = this.props;
+      const {sharedId, screenTransitionContext} = this.props;
       if (this._sharedId !== sharedId) {
         if (this._sharedId && this._node) {
           screenTransitionContext.removeSharedElement(
             this._sharedId,
-            this._node
+            this._node,
           );
         }
         this._sharedId = sharedId;
@@ -51,19 +46,24 @@ export const RouterScreenTransition = withScreenTransitionContext(
       if (this._node && this._sharedId) {
         this.props.screenTransitionContext.removeSharedElement(
           this._sharedId,
-          this._node
+          this._node,
         );
       }
       this._node = node;
       if (this._node && this._sharedId) {
         this.props.screenTransitionContext.addSharedElement(
           this._sharedId,
-          this._node
+          this._node,
         );
       }
       this._node = node;
     };
-  }
+
+    render() {
+      const {sharedId, screenTransitionContext, ...otherProps} = this.props;
+      return <SharedElement {...otherProps} onNode={this.onSetNode} />;
+    }
+  },
 );
 
 export const ScreenTransition = RouterScreenTransition;

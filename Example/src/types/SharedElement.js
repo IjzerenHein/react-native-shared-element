@@ -2,8 +2,8 @@
 import type {
   SharedElementAnimation,
   SharedElementResize,
-  SharedElementAlign
-} from "react-native-shared-element";
+  SharedElementAlign,
+} from 'react-native-shared-element';
 
 export type SharedElementStrictConfig = {|
   +id: string,
@@ -11,7 +11,7 @@ export type SharedElementStrictConfig = {|
   +animation: SharedElementAnimation,
   +resize?: SharedElementResize,
   +align?: SharedElementAlign,
-  +debug?: boolean
+  +debug?: boolean,
 |};
 
 export type SharedElementsStrictConfig = SharedElementStrictConfig[];
@@ -23,7 +23,7 @@ export type SharedElementConfig =
       +animation?: SharedElementAnimation,
       +resize?: SharedElementResize,
       +align?: SharedElementAlign,
-      +debug?: boolean
+      +debug?: boolean,
     |}
   | string;
 
@@ -32,19 +32,19 @@ export type SharedElementsConfig = SharedElementConfig[];
 export function normalizeSharedElementConfig(
   sharedElementConfig: SharedElementConfig
 ): SharedElementStrictConfig {
-  if (typeof sharedElementConfig === "string") {
+  if (typeof sharedElementConfig === 'string') {
     return {
       id: sharedElementConfig,
       otherId: sharedElementConfig,
-      animation: "move"
+      animation: 'move',
     };
   } else {
-    const { id, otherId, animation, ...other } = sharedElementConfig;
+    const {id, otherId, animation, ...other} = sharedElementConfig;
     return {
       id,
       otherId: otherId || id,
-      animation: animation || "move",
-      ...other
+      animation: animation || 'move',
+      ...other,
     };
   }
 }

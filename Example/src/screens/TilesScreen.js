@@ -1,5 +1,5 @@
 // @flow
-import * as React from "react";
+import * as React from 'react';
 import {
   StyleSheet,
   FlatList,
@@ -7,8 +7,8 @@ import {
   TouchableOpacity,
   Dimensions,
   Image,
-  ImageBackground
-} from "react-native";
+  ImageBackground,
+} from 'react-native';
 import {
   Router,
   NavBar,
@@ -18,136 +18,136 @@ import {
   Heading1,
   Heading2,
   Body,
-  LinearGradient
-} from "../components";
-import { Heroes } from "../assets";
-import { DetailScreen } from "./DetailScreen";
-import type { Hero, SharedElementsConfig } from "../types";
-import { fadeIn } from "../transitions";
-import TouchableScale from "react-native-touchable-scale";
+  LinearGradient,
+} from '../components';
+import {Heroes} from '../assets';
+import {DetailScreen} from './DetailScreen';
+import type {Hero, SharedElementsConfig} from '../types';
+import {fadeIn} from '../transitions';
+import TouchableScale from 'react-native-touchable-scale';
 
 const styles = StyleSheet.create({
   flex: {
-    flex: 1
+    flex: 1,
   },
   list: {
     flex: 1,
-    backgroundColor: Colors.empty
+    backgroundColor: Colors.empty,
   },
   avatarList: {
     flex: 1,
-    backgroundColor: Colors.empty
+    backgroundColor: Colors.empty,
   },
   item: {
     height: 160,
     borderColor: Colors.back,
     borderRightWidth: 2,
-    borderBottomWidth: 2
+    borderBottomWidth: 2,
   },
   itemOdd: {
-    borderRightWidth: 0
+    borderRightWidth: 0,
   },
   image: {
-    height: "100%",
-    width: "100%"
+    height: '100%',
+    width: '100%',
   },
   avatar: {
     height: 140,
-    justifyContent: "center",
-    alignItems: "center"
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   avatarImage: {
     width: 100,
     height: 100,
-    borderRadius: 50
+    borderRadius: 50,
   },
   cardListContentContainer: {
     marginTop: 10,
-    marginBottom: 10
+    marginBottom: 10,
   },
   cardContainer: {
     marginHorizontal: 20,
-    marginVertical: 20
+    marginVertical: 20,
   },
   cardBackground: {
     ...StyleSheet.absoluteFillObject,
     backgroundColor: Colors.back,
     borderRadius: 20,
-    ...Shadows.elevation1
+    ...Shadows.elevation1,
   },
   cardImage: {
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     height: 200,
-    width: "100%",
-    overflow: "hidden"
+    width: '100%',
+    overflow: 'hidden',
   },
   cardImage2: {
     borderRadius: 20,
     height: 360,
-    width: "100%",
-    resizeMode: "cover",
-    overflow: "hidden"
+    width: '100%',
+    resizeMode: 'cover',
+    overflow: 'hidden',
   },
   cardGradientOverlay: {
     ...StyleSheet.absoluteFillObject,
-    borderRadius: 20
+    borderRadius: 20,
   },
   cardOverlay: {
     ...StyleSheet.absoluteFillObject,
     padding: 16,
-    justifyContent: "flex-end"
+    justifyContent: 'flex-end',
   },
   cardFooter: {
-    flexDirection: "column",
-    padding: 16
+    flexDirection: 'column',
+    padding: 16,
   },
   cardName: {
-    alignSelf: "flex-start"
+    alignSelf: 'flex-start',
   },
   cardDescription: {
-    marginTop: 4
+    marginTop: 4,
   },
-  cardQuote: {}
+  cardQuote: {},
 });
 
 type PropsType = {
-  type: "tile" | "card" | "card2" | "avatar",
+  type: 'tile' | 'card' | 'card2' | 'avatar',
   title: string,
   DetailComponent: any,
   transitionConfig: any,
-  navigation?: any
+  navigation?: any,
 };
 
 type StateType = {
   width: number,
-  height: number
+  height: number,
 };
 
 export class TilesScreen extends React.Component<PropsType, StateType> {
   static defaultProps = {
-    type: "tile",
-    title: "Tiles",
+    type: 'tile',
+    title: 'Tiles',
     DetailComponent: DetailScreen,
-    transitionConfig: fadeIn()
+    transitionConfig: fadeIn(),
   };
 
   state = {
-    width: Dimensions.get("window").width,
-    height: Dimensions.get("window").height
+    width: Dimensions.get('window').width,
+    height: Dimensions.get('window').height,
   };
 
   render() {
-    const { title, navigation } = this.props;
-    const type = navigation ? navigation.getParam("type") : this.props.type;
+    const {title, navigation} = this.props;
+    const type = navigation ? navigation.getParam('type') : this.props.type;
     return (
       <View style={styles.flex} onLayout={this.onLayout}>
         {!navigation ? <NavBar title={title} /> : undefined}
         <FlatList
-          style={type === "avatar" ? styles.avatarList : styles.list}
-          numColumns={type === "tile" ? 2 : type === "avatar" ? 3 : 1}
+          style={type === 'avatar' ? styles.avatarList : styles.list}
+          numColumns={type === 'tile' ? 2 : type === 'avatar' ? 3 : 1}
           contentContainerStyle={
-            type === "card" ? styles.cardListContentContainer : undefined
+            type === 'card' ? styles.cardListContentContainer : undefined
           }
           horizontal={false}
           data={Heroes}
@@ -160,11 +160,11 @@ export class TilesScreen extends React.Component<PropsType, StateType> {
   }
 
   onLayout = (event: any) => {
-    const { width, height } = event.nativeEvent.layout;
+    const {width, height} = event.nativeEvent.layout;
     if (this.state.width !== width || this.state.height !== height) {
       this.setState({
         width,
-        height
+        height,
       });
     }
   };
@@ -172,23 +172,23 @@ export class TilesScreen extends React.Component<PropsType, StateType> {
   keyExtractor = (item: any) => item.id;
 
   renderItem = (data: any) => {
-    const { navigation } = this.props;
-    const type = navigation ? navigation.getParam("type") : this.props.type;
+    const {navigation} = this.props;
+    const type = navigation ? navigation.getParam('type') : this.props.type;
     switch (type) {
-      case "tile":
+      case 'tile':
         return this.renderTile(data);
-      case "avatar":
+      case 'avatar':
         return this.renderAvatar(data);
-      case "card":
+      case 'card':
         return this.renderCard(data);
-      case "card2":
+      case 'card2':
         return this.renderCard2(data);
     }
   };
 
-  renderTile = ({ item, index }: any) => {
-    const { navigation } = this.props;
-    const { width } = this.state;
+  renderTile = ({item, index}: any) => {
+    const {navigation} = this.props;
+    const {width} = this.state;
     const hero = item;
     return (
       <TouchableOpacity
@@ -196,70 +196,60 @@ export class TilesScreen extends React.Component<PropsType, StateType> {
         style={[
           styles.item,
           index % 2 ? styles.itemOdd : undefined,
-          { width: width / 2 }
+          {width: width / 2},
         ]}
         activeOpacity={1}
-        onPress={() => this.onPressItem(hero)}
-      >
+        onPress={() => this.onPressItem(hero)}>
         <SharedElement
           id={`heroPhoto.${hero.id}`}
           style={styles.flex}
-          navigation={navigation}
-        >
-          <Image
-            style={styles.image}
-            source={hero.photo}
-            resizeMode={"cover"}
-          />
+          navigation={navigation}>
+          <Image style={styles.image} source={hero.photo} resizeMode="cover" />
         </SharedElement>
         <SharedElement
           id={`heroPhotoOverlay.${hero.id}`}
           style={StyleSheet.absoluteFill}
-          navigation={navigation}
-        >
+          navigation={navigation}>
           <View style={StyleSheet.absoluteFill} collapsable={false} />
         </SharedElement>
       </TouchableOpacity>
     );
   };
 
-  renderAvatar = ({ item, index }: any) => {
-    const { navigation } = this.props;
-    const { width } = this.state;
+  renderAvatar = ({item, index}: any) => {
+    const {navigation} = this.props;
+    const {width} = this.state;
     const hero = item;
     return (
       <TouchableOpacity
         key={`Hero${hero.id}`}
-        style={[styles.avatar, { width: width / 3 }]}
+        style={[styles.avatar, {width: width / 3}]}
         activeOpacity={1}
-        onPress={() => this.onPressItem(hero)}
-      >
+        onPress={() => this.onPressItem(hero)}>
         <SharedElement id={`heroPhoto.${hero.id}`} navigation={navigation}>
           <Image
             style={styles.avatarImage}
             source={hero.photo}
-            resizeMode={"cover"}
+            resizeMode="cover"
           />
         </SharedElement>
       </TouchableOpacity>
     );
   };
 
-  renderCard = ({ item }: any) => {
-    const { navigation } = this.props;
+  renderCard = ({item}: any) => {
+    const {navigation} = this.props;
     const hero = item;
     return (
       <TouchableOpacity
         key={`Hero${hero.id}`}
         style={styles.cardContainer}
         activeOpacity={1}
-        onPress={() => this.onPressItem(hero)}
-      >
+        onPress={() => this.onPressItem(hero)}>
         <SharedElement
           id={`heroBackground.${hero.id}`}
           style={StyleSheet.absoluteFill}
-          navigation={navigation}
-        >
+          navigation={navigation}>
           <View style={styles.cardBackground} />
         </SharedElement>
         <SharedElement id={`heroPhoto.${hero.id}`} navigation={navigation}>
@@ -273,16 +263,14 @@ export class TilesScreen extends React.Component<PropsType, StateType> {
           <SharedElement
             id={`heroName.${hero.id}`}
             style={styles.cardName}
-            navigation={navigation}
-          >
+            navigation={navigation}>
             <Heading2>{hero.name}</Heading2>
           </SharedElement>
           {hero.description ? (
             <SharedElement
               id={`heroDescription.${hero.id}`}
               style={styles.cardDescription}
-              navigation={navigation}
-            >
+              navigation={navigation}>
               <Body numberOfLines={3}>{hero.description}</Body>
             </SharedElement>
           ) : (
@@ -293,8 +281,8 @@ export class TilesScreen extends React.Component<PropsType, StateType> {
     );
   };
 
-  renderCard2 = ({ item }: any) => {
-    const { navigation } = this.props;
+  renderCard2 = ({item}: any) => {
+    const {navigation} = this.props;
     const hero = item;
     return (
       <TouchableScale
@@ -303,14 +291,12 @@ export class TilesScreen extends React.Component<PropsType, StateType> {
         activeScale={0.95}
         tension={50}
         friction={7}
-        useNativeDriver={true}
-        onPress={() => this.onPressItem(hero)}
-      >
+        useNativeDriver
+        onPress={() => this.onPressItem(hero)}>
         <SharedElement
           id={`heroBackground.${hero.id}`}
           style={StyleSheet.absoluteFill}
-          navigation={navigation}
-        >
+          navigation={navigation}>
           <View style={styles.cardBackground} />
         </SharedElement>
         <SharedElement id={`heroPhoto.${hero.id}`} navigation={navigation}>
@@ -319,28 +305,25 @@ export class TilesScreen extends React.Component<PropsType, StateType> {
         <SharedElement
           id={`heroGradientOverlay.${hero.id}`}
           style={StyleSheet.absoluteFill}
-          navigation={navigation}
-        >
+          navigation={navigation}>
           <LinearGradient
             style={styles.cardGradientOverlay}
-            colors={["#00000000", "#000000FF"]}
-            start={{ x: 0, y: 0.5 }}
-            end={{ x: 0, y: 1 }}
+            colors={['#00000000', '#000000FF']}
+            start={{x: 0, y: 0.5}}
+            end={{x: 0, y: 1}}
           />
         </SharedElement>
         <View style={styles.cardOverlay}>
           <SharedElement
             id={`heroName.${hero.id}`}
             style={styles.cardName}
-            navigation={navigation}
-          >
+            navigation={navigation}>
             <Heading1 light>{hero.name}</Heading1>
           </SharedElement>
           <SharedElement
             id={`heroDescription.${hero.id}`}
             style={styles.cardQuote}
-            navigation={navigation}
-          >
+            navigation={navigation}>
             {hero.quote ? (
               <Body numberOfLines={1} light>
                 {hero.quote}
@@ -355,85 +338,85 @@ export class TilesScreen extends React.Component<PropsType, StateType> {
   };
 
   onPressItem = (hero: Hero) => {
-    const { navigation, DetailComponent } = this.props;
-    const type = navigation ? navigation.getParam("type") : this.props.type;
+    const {navigation, DetailComponent} = this.props;
+    const type = navigation ? navigation.getParam('type') : this.props.type;
     const transitionConfig =
-      (navigation ? navigation.getParam("transitionConfig") : undefined) ||
+      (navigation ? navigation.getParam('transitionConfig') : undefined) ||
       this.props.transitionConfig;
     let sharedElements: SharedElementsConfig = [];
     const props: any = {
       hero,
-      type
+      type,
     };
-    let routeName = "Detail";
+    let routeName = 'Detail';
     switch (type) {
-      case "tile":
+      case 'tile':
         sharedElements = [`heroPhoto.${hero.id}`];
-        routeName = "Pager";
+        routeName = 'Pager';
         break;
-      case "avatar":
+      case 'avatar':
         sharedElements = [
           {
             otherId: `heroBackground.${hero.id}`,
             id: `heroPhoto.${hero.id}`,
-            animation: "fade-in"
+            animation: 'fade-in',
           },
           `heroPhoto.${hero.id}`,
           {
             otherId: `heroName.${hero.id}`,
             id: `heroPhoto.${hero.id}`,
-            animation: "fade-in"
+            animation: 'fade-in',
           },
           {
             otherId: `heroDescription.${hero.id}`,
             id: `heroPhoto.${hero.id}`,
-            animation: "fade-in"
+            animation: 'fade-in',
           },
-          { id: `heroCloseButton.${hero.id}`, animation: "fade" }
+          {id: `heroCloseButton.${hero.id}`, animation: 'fade'},
         ];
-        routeName = "Card";
+        routeName = 'Card';
         break;
-      case "card":
+      case 'card':
         sharedElements = [
           `heroBackground.${hero.id}`,
           `heroPhoto.${hero.id}`,
-          { id: `heroCloseButton.${hero.id}`, animation: "fade" },
+          {id: `heroCloseButton.${hero.id}`, animation: 'fade'},
           `heroName.${hero.id}`,
           {
             id: `heroDescription.${hero.id}`,
-            animation: "fade",
-            resize: "none",
-            align: "left-top"
-          }
+            animation: 'fade',
+            resize: 'none',
+            align: 'left-top',
+          },
         ];
-        routeName = "Card";
+        routeName = 'Card';
         break;
-      case "card2":
+      case 'card2':
         sharedElements = [
           `heroBackground.${hero.id}`,
           `heroPhoto.${hero.id}`,
-          { id: `heroGradientOverlay.${hero.id}`, animation: "fade" },
-          { id: `heroCloseButton.${hero.id}`, animation: "fade" },
-          { id: `heroName.${hero.id}`, animation: "fade" },
+          {id: `heroGradientOverlay.${hero.id}`, animation: 'fade'},
+          {id: `heroCloseButton.${hero.id}`, animation: 'fade'},
+          {id: `heroName.${hero.id}`, animation: 'fade'},
           {
             id: `heroDescription.${hero.id}`,
-            animation: "fade",
-            resize: "clip",
-            align: "left-top"
-          }
+            animation: 'fade',
+            resize: 'clip',
+            align: 'left-top',
+          },
         ];
-        routeName = "Card";
+        routeName = 'Card';
         break;
     }
 
     if (navigation) {
       navigation.push(routeName, {
-        ...props
+        ...props,
       });
     } else {
       Router.push(<DetailComponent {...props} />, {
         sharedElements,
-        transitionConfig
+        transitionConfig,
       });
     }
   };

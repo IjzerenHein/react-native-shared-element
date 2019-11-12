@@ -1,40 +1,40 @@
 // @flow
-import * as React from "react";
-import { StyleSheet, ScrollView, View, Platform } from "react-native";
-import { Router, NavBar, ListItem, Colors } from "../components";
-import { TestScreen } from "./TestScreen";
-import type { Test, TestGroup } from "../types";
+import * as React from 'react';
+import {StyleSheet, ScrollView, View, Platform} from 'react-native';
+import {Router, NavBar, ListItem, Colors} from '../components';
+import {TestScreen} from './TestScreen';
+import type {Test, TestGroup} from '../types';
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1
+    flex: 1,
   },
   content: Platform.select({
     ios: {
       flex: 1,
-      backgroundColor: Colors.empty
+      backgroundColor: Colors.empty,
     },
     android: {
-      flex: 1
-    }
-  })
+      flex: 1,
+    },
+  }),
 });
 
 type PropsType = {
-  tests: (Test | TestGroup)[],
+  tests: Array<Test | TestGroup>,
   title?: string,
   description?: string,
-  navigation?: any
+  navigation?: any,
 };
 
 export class TestsScreen extends React.Component<PropsType> {
   render() {
-    const { title, navigation } = this.props;
-    const tests = navigation ? navigation.getParam("tests") : this.props.tests;
+    const {title, navigation} = this.props;
+    const tests = navigation ? navigation.getParam('tests') : this.props.tests;
     return (
       <View style={styles.container}>
         {!navigation ? (
-          <NavBar title={title || "Tests"} zIndex={100} />
+          <NavBar title={title || 'Tests'} zIndex={100} />
         ) : (
           undefined
         )}
@@ -52,21 +52,21 @@ export class TestsScreen extends React.Component<PropsType> {
   }
 
   onPressItem = (test: Test | TestGroup) => {
-    const { navigation } = this.props;
+    const {navigation} = this.props;
     const description = navigation
-      ? navigation.getParam("description")
+      ? navigation.getParam('description')
       : this.props.description;
     if (navigation) {
       if (test.tests) {
-        navigation.push("Tests", {
+        navigation.push('Tests', {
           title: test.name,
           description: test.description,
-          tests: test.tests
+          tests: test.tests,
         });
       } else {
-        navigation.push("Test", {
+        navigation.push('Test', {
           test: test,
-          description: description || ""
+          description: description || '',
         });
       }
     } else {
@@ -78,7 +78,7 @@ export class TestsScreen extends React.Component<PropsType> {
             description={test.description}
           />
         ) : (
-          <TestScreen test={test} description={description || ""} />
+          <TestScreen test={test} description={description || ''} />
         )
       );
     }

@@ -1,2 +1,2 @@
 // @flow
-export * from "./ScrollViewTests";
+export * from './ScrollViewTests';

@@ -1,45 +1,45 @@
 // @flow
-import * as React from "react";
-import { StyleSheet, View, Image, TouchableOpacity } from "react-native";
-import { Heading3, Caption } from "./Text";
-import { Colors } from "./Colors";
+import * as React from 'react';
+import {StyleSheet, View, Image, TouchableOpacity} from 'react-native';
+import {Heading3, Caption} from './Text';
+import {Colors} from './Colors';
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
     backgroundColor: Colors.back,
     paddingHorizontal: 16,
     paddingVertical: 12,
     borderColor: Colors.separator,
     borderBottomWidth: StyleSheet.hairlineWidth,
-    minHeight: 60
+    minHeight: 60,
   },
   content: {
     flex: 1,
-    flexDirection: "column",
-    justifyContent: "center",
-    alignItems: "flex-start"
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'flex-start',
   },
   description: {
-    marginTop: 1
+    marginTop: 1,
   },
   image: {
     width: 44,
     height: 44,
     borderRadius: 22,
-    resizeMode: "cover",
+    resizeMode: 'cover',
     marginRight: 16,
-    shadowColor: "#000",
+    shadowColor: '#000',
     /*shadowOffset: {
       width: 0,
       height: 11
     },*/
     shadowOpacity: 0.55,
-    shadowRadius: 14.78
+    shadowRadius: 14.78,
     //borderWidth: 4,
     //borderColor: "orange"
-  }
+  },
 });
 
 export interface ListItemProps {
@@ -51,8 +51,14 @@ export interface ListItemProps {
 }
 
 export class ListItem extends React.Component<ListItemProps> {
+  onPress = () => {
+    if (this.props.onPress) {
+      this.props.onPress(this.props.data);
+    }
+  };
+
   renderImage() {
-    const { image } = this.props;
+    const {image} = this.props;
     if (!image) {
       return;
     }
@@ -60,13 +66,12 @@ export class ListItem extends React.Component<ListItemProps> {
   }
 
   render() {
-    const { label, description, onPress } = this.props;
+    const {label, description, onPress} = this.props;
     return (
       <TouchableOpacity
         activeOpacity={0.5}
         disabled={!onPress}
-        onPress={this.onPress}
-      >
+        onPress={this.onPress}>
         <View style={styles.container}>
           {this.renderImage()}
           <View style={styles.content}>
@@ -81,10 +86,4 @@ export class ListItem extends React.Component<ListItemProps> {
       </TouchableOpacity>
     );
   }
-
-  onPress = () => {
-    if (this.props.onPress) {
-      this.props.onPress(this.props.data);
-    }
-  };
 }

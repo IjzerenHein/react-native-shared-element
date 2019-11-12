@@ -1,3 +1,3 @@
 // @flow
-import LinearGradient from "react-native-linear-gradient";
-export { LinearGradient };
+import LinearGradient from 'react-native-linear-gradient';
+export {LinearGradient};

@@ -1,34 +1,34 @@
 // @flow
-import * as React from "react";
-import { StyleSheet, View } from "react-native";
-import { NavBar, Colors, Button, Body, Router } from "../components";
-import { fromRight } from "../transitions";
-import type { Test, SharedElementsConfig } from "../types";
+import * as React from 'react';
+import {StyleSheet, View} from 'react-native';
+import {NavBar, Colors, Button, Body, Router} from '../components';
+import {fromRight} from '../transitions';
+import type {Test, SharedElementsConfig} from '../types';
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1
+    flex: 1,
   },
   bottomContainer: {
     flex: 1,
     borderTopLeftRadius: 16,
     borderTopRightRadius: 16,
     backgroundColor: Colors.empty,
-    padding: 20
+    padding: 20,
   },
   buttonContainer: {
-    flexDirection: "row"
+    flexDirection: 'row',
   },
   button: {
     flex: 1,
-    marginRight: 10
+    marginRight: 10,
   },
   debugButton: {
-    flex: 1
+    flex: 1,
   },
   body: {
-    marginTop: 20
-  }
+    marginTop: 20,
+  },
 });
 
 interface PropsType {
@@ -42,16 +42,16 @@ function getSharedElements(test: Test): SharedElementsConfig {
   const props = {
     animation: test.animation,
     resize: test.resize,
-    align: test.align
+    align: test.align,
   };
   return test.multi
     ? [
-        { id: "testImage", ...props },
-        { id: "testOverlay", ...props, animation: test.animation || "fade" },
-        { id: "testLogo", ...props },
-        { id: "testTitle", ...props, animation: test.animation || "fade" }
+        {id: 'testImage', ...props},
+        {id: 'testOverlay', ...props, animation: test.animation || 'fade'},
+        {id: 'testLogo', ...props},
+        {id: 'testTitle', ...props, animation: test.animation || 'fade'},
       ]
-    : [{ id: "testContent", ...props }];
+    : [{id: 'testContent', ...props}];
 }
 
 export class TestScreen extends React.Component<PropsType> {
@@ -60,35 +60,35 @@ export class TestScreen extends React.Component<PropsType> {
     otherNavigation: any,
     showing: boolean
   ): ?SharedElementsConfig => {
-    if (otherNavigation.state.routeName !== "Test") return;
-    const test = navigation.getParam("test");
+    if (otherNavigation.state.routeName !== 'Test') return;
+    const test = navigation.getParam('test');
     return getSharedElements(test);
   };
 
   render() {
-    const { navigation } = this.props;
-    const test = navigation ? navigation.getParam("test") : this.props.test;
+    const {navigation} = this.props;
+    const test = navigation ? navigation.getParam('test') : this.props.test;
     const description = navigation
-      ? navigation.getParam("description")
+      ? navigation.getParam('description')
       : this.props.description;
-    const end = navigation ? navigation.getParam("end") : this.props.end;
+    const end = navigation ? navigation.getParam('end') : this.props.end;
     return (
       <View style={styles.container}>
         {!navigation ? <NavBar title={test.name} /> : undefined}
         {React.cloneElement(end ? test.end : test.start, {
-          navigation
+          navigation,
         })}
         <View style={styles.bottomContainer}>
           <View style={styles.buttonContainer}>
             <Button
               style={styles.button}
-              label={navigation ? "Animate" : "Fast"}
+              label={navigation ? 'Animate' : 'Fast'}
               onPress={this.onPressButton}
             />
             {!navigation ? (
               <Button
                 style={styles.button}
-                label={"Slow"}
+                label="Slow"
                 onPress={this.onPressSlowButton}
               />
             ) : (
@@ -97,7 +97,7 @@ export class TestScreen extends React.Component<PropsType> {
             {!navigation ? (
               <Button
                 style={styles.debugButton}
-                label={"Debug"}
+                label="Debug"
                 onPress={this.onPressDebugButton}
               />
             ) : (
@@ -121,17 +121,17 @@ export class TestScreen extends React.Component<PropsType> {
   onPressDebugButton = () => {
     this.transition({
       ...fromRight(8000),
-      debug: true
+      debug: true,
     });
   };
 
   transition(transitionConfig: any) {
-    const { navigation } = this.props;
-    const test = navigation ? navigation.getParam("test") : this.props.test;
+    const {navigation} = this.props;
+    const test = navigation ? navigation.getParam('test') : this.props.test;
     const description = navigation
-      ? navigation.getParam("description")
+      ? navigation.getParam('description')
       : this.props.description;
-    const end = navigation ? navigation.getParam("end") : this.props.end;
+    const end = navigation ? navigation.getParam('end') : this.props.end;
     const sharedElements = getSharedElements(test);
     if (end) {
       if (navigation) {
@@ -139,20 +139,20 @@ export class TestScreen extends React.Component<PropsType> {
       } else {
         Router.pop({
           transitionConfig,
-          sharedElements
+          sharedElements,
         });
       }
     } else {
       if (navigation) {
-        navigation.push("Test", {
+        navigation.push('Test', {
           test,
-          description: description || "",
-          end: true
+          description: description || '',
+          end: true,
         });
       } else {
         Router.push(
-          <TestScreen test={test} end description={description || ""} />,
-          { transitionConfig, sharedElements }
+          <TestScreen test={test} end description={description || ''} />,
+          {transitionConfig, sharedElements}
         );
       }
     }

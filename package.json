@@ -30,7 +30,7 @@
   ],
   "scripts": {
     "test": "yarn lint && yarn flow && yarn jest",
-    "lint": "eslint --ext .js,.ts,.tsx .",
+    "lint": "eslint --ext .js,.ts,.tsx ./src",
     "typescript": "tsc --noEmit",
     "jest": "jest src/",
     "prepare": "bob build",

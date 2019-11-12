@@ -1,2 +1,2 @@
 // @flow
-export * from "./ViewPager";
+export * from './ViewPager';

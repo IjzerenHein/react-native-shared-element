@@ -1,60 +1,60 @@
 // @flow
-import * as React from "react";
+import * as React from 'react';
 import {
   StyleSheet,
   ScrollView,
   View,
   StatusBar,
   Platform,
-  TouchableOpacity
-} from "react-native";
-import { Router, NavBar, ListItem, Colors, Heading3 } from "../components";
-import { TilesScreen } from "./TilesScreen";
-import { TestsScreen } from "./TestsScreen";
-import { TestScreen } from "./TestScreen";
-import { PagerScreen } from "./PagerScreen";
-import { CardScreen } from "./CardScreen";
-import { Tests } from "../tests";
-import { TestImage } from "../tests/image";
-import type { Test } from "../types";
-import { fadeIn, fromRight } from "../transitions";
+  TouchableOpacity,
+} from 'react-native';
+import {Router, NavBar, ListItem, Colors, Heading3} from '../components';
+import {TilesScreen} from './TilesScreen';
+import {TestsScreen} from './TestsScreen';
+import {TestScreen} from './TestScreen';
+import {PagerScreen} from './PagerScreen';
+import {CardScreen} from './CardScreen';
+import {Tests} from '../tests';
+import {TestImage} from '../tests/image';
+import type {Test} from '../types';
+import {fadeIn, fromRight} from '../transitions';
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1
+    flex: 1,
   },
   content: Platform.select({
     ios: {
       flex: 1,
-      backgroundColor: Colors.empty
+      backgroundColor: Colors.empty,
     },
     android: {
-      flex: 1
-    }
+      flex: 1,
+    },
   }),
   back: {
     color: Colors.blue,
-    marginLeft: 20
-  }
+    marginLeft: 20,
+  },
 });
 
 type PropsType = {
   navigation?: any,
-  footer?: any
+  footer?: any,
 };
 
 export class MainScreen extends React.Component<PropsType> {
   static navigationOptions = {
-    title: "React Navigation",
+    title: 'React Navigation',
     headerLeft: () => (
       <TouchableOpacity onPress={() => Router.pop()}>
         <Heading3 style={styles.back}>Back</Heading3>
       </TouchableOpacity>
-    )
+    ),
   };
 
   render() {
-    const { footer, navigation } = this.props;
+    const {footer, navigation} = this.props;
     return (
       <View style={styles.container}>
         <StatusBar barStyle="dark-content" animated />
@@ -64,7 +64,7 @@ export class MainScreen extends React.Component<PropsType> {
           undefined
         )}
         <ScrollView style={styles.content} endFillColor={Colors.empty}>
-          {Platform.OS === "web" ? (
+          {Platform.OS === 'web' ? (
             <ListItem
               label="Quick Test"
               description="Immediately start the current development test"
@@ -105,31 +105,31 @@ export class MainScreen extends React.Component<PropsType> {
   }
 
   onPressQuickTest = () => {
-    const { navigation } = this.props;
+    const {navigation} = this.props;
     const test: Test = {
-      name: "Simple move",
+      name: 'Simple move',
       description:
-        "The most basic form of a shared-element transition. The image should move smoothly without flickering from the start- to the end state, and back",
+        'The most basic form of a shared-element transition. The image should move smoothly without flickering from the start- to the end state, and back',
       start: <TestImage />,
-      end: <TestImage end />
+      end: <TestImage end />,
     };
 
     if (navigation) {
-      navigation.push("Test", {
-        test
+      navigation.push('Test', {
+        test,
       });
     } else {
       Router.push(<TestScreen test={test} />, {
-        transitionConfig: fromRight(100)
+        transitionConfig: fromRight(100),
       });
     }
   };
 
   onPressTests = () => {
-    const { navigation } = this.props;
+    const {navigation} = this.props;
     if (navigation) {
-      navigation.push("Tests", {
-        tests: Tests
+      navigation.push('Tests', {
+        tests: Tests,
       });
     } else {
       Router.push(<TestsScreen tests={Tests} />);
@@ -137,9 +137,9 @@ export class MainScreen extends React.Component<PropsType> {
   };
 
   onPressTilesDemo = () => {
-    const { navigation } = this.props;
+    const {navigation} = this.props;
     if (navigation) {
-      navigation.push("Tiles", { type: "tile" });
+      navigation.push('Tiles', {type: 'tile'});
     } else {
       Router.push(
         <TilesScreen
@@ -152,10 +152,10 @@ export class MainScreen extends React.Component<PropsType> {
   };
 
   onPressCardDemo = () => {
-    const { navigation } = this.props;
+    const {navigation} = this.props;
     if (navigation) {
-      navigation.push("Tiles", {
-        type: "card"
+      navigation.push('Tiles', {
+        type: 'card',
       });
     } else {
       Router.push(
@@ -169,10 +169,10 @@ export class MainScreen extends React.Component<PropsType> {
   };
 
   onPressCardDemo2 = () => {
-    const { navigation } = this.props;
+    const {navigation} = this.props;
     if (navigation) {
-      navigation.push("Tiles", {
-        type: "card2"
+      navigation.push('Tiles', {
+        type: 'card2',
       });
     } else {
       Router.push(
@@ -187,10 +187,10 @@ export class MainScreen extends React.Component<PropsType> {
   };
 
   onPressAvatarDemo = () => {
-    const { navigation } = this.props;
+    const {navigation} = this.props;
     if (navigation) {
-      navigation.push("Tiles", {
-        type: "avatar"
+      navigation.push('Tiles', {
+        type: 'avatar',
       });
     } else {
       Router.push(
