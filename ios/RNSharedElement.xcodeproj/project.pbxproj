@@ -12,6 +12,7 @@
 		214D6B6122B01BDA00227ED9 /* RNSharedElementTransitionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 214D6B5A22B01BD900227ED9 /* RNSharedElementTransitionManager.m */; };
 		214D6B6222B01BDA00227ED9 /* RNSharedElementTransition.m in Sources */ = {isa = PBXBuildFile; fileRef = 214D6B5C22B01BD900227ED9 /* RNSharedElementTransition.m */; };
 		214D6B6422B01C5800227ED9 /* RNSharedElementStyle.m in Sources */ = {isa = PBXBuildFile; fileRef = 214D6B6322B01C5800227ED9 /* RNSharedElementStyle.m */; };
+		2157927E237AFB23003B1102 /* RNSharedElementContent.m in Sources */ = {isa = PBXBuildFile; fileRef = 2157927C237AFB23003B1102 /* RNSharedElementContent.m */; };
 		21CDDEBF22C612EC0081ABDB /* RNSharedElementTransitionItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 21CDDEBE22C612EC0081ABDB /* RNSharedElementTransitionItem.m */; };
 /* End PBXBuildFile section */
 
@@ -41,6 +42,8 @@
 		214D6B5D22B01BD900227ED9 /* RNSharedElementDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RNSharedElementDelegate.h; sourceTree = "<group>"; };
 		214D6B5E22B01BDA00227ED9 /* RNSharedElementTransitionManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RNSharedElementTransitionManager.h; sourceTree = "<group>"; };
 		214D6B6322B01C5800227ED9 /* RNSharedElementStyle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RNSharedElementStyle.m; sourceTree = "<group>"; };
+		2157927C237AFB23003B1102 /* RNSharedElementContent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RNSharedElementContent.m; sourceTree = "<group>"; };
+		2157927D237AFB23003B1102 /* RNSharedElementContent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RNSharedElementContent.h; sourceTree = "<group>"; };
 		21CDDEBD22C612EB0081ABDB /* RNSharedElementTransitionItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RNSharedElementTransitionItem.h; sourceTree = "<group>"; };
 		21CDDEBE22C612EC0081ABDB /* RNSharedElementTransitionItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RNSharedElementTransitionItem.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -81,6 +84,8 @@
 				214D6B5D22B01BD900227ED9 /* RNSharedElementDelegate.h */,
 				214D6B5822B01BD900227ED9 /* RNSharedElementStyle.h */,
 				214D6B6322B01C5800227ED9 /* RNSharedElementStyle.m */,
+				2157927D237AFB23003B1102 /* RNSharedElementContent.h */,
+				2157927C237AFB23003B1102 /* RNSharedElementContent.m */,
 				134814211AA4EA7D00B7C361 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -144,6 +149,7 @@
 			files = (
 				214D6B6222B01BDA00227ED9 /* RNSharedElementTransition.m in Sources */,
 				214D6B5F22B01BDA00227ED9 /* RNSharedElementNodeManager.m in Sources */,
+				2157927E237AFB23003B1102 /* RNSharedElementContent.m in Sources */,
 				214D6B6122B01BDA00227ED9 /* RNSharedElementTransitionManager.m in Sources */,
 				214D6B6022B01BDA00227ED9 /* RNSharedElementNode.m in Sources */,
 				214D6B6422B01C5800227ED9 /* RNSharedElementStyle.m in Sources */,

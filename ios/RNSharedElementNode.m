@@ -5,7 +5,7 @@
 
 #import <UIKit/UIKit.h>
 #import "RNSharedElementNode.h"
-#import <React/RCTImageView.h>
+#import "RNSharedElementContent.h"
 
 @implementation RNSharedElementNode
 {
@@ -77,8 +77,7 @@ NSArray* _imageResolvers;
     if (view == nil || _imageResolvers == nil) return view;
  
     // If the view is an ImageView, then use that.
-    if ([view isKindOfClass:[RCTImageView class]] ||
-        [view isKindOfClass:[UIImageView class]]) {
+    if ([RNSharedElementContent isKindOfImageView:view]) {
         return view;
     }
     
@@ -89,11 +88,7 @@ NSArray* _imageResolvers;
     for (int i = 0; i < 2; i++) {
         if (subview.subviews.count != 1) break;
         subview = subview.subviews.firstObject;
-        if ([subview isKindOfClass:[RCTImageView class]]) {
-            if (CGRectEqualToRect(subview.frame, view.bounds)) {
-                return subview;
-            }
-        } else if ([subview isKindOfClass:[UIImageView class]]) {
+        if ([RNSharedElementContent isKindOfImageView:subview]) {
             if (CGRectEqualToRect(subview.frame, view.bounds)) {
                 return subview;
             }
@@ -125,17 +120,9 @@ NSArray* _imageResolvers;
     [view addObserver:self forKeyPath:@"bounds" options:NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld context:nil];
     [view addObserver:self forKeyPath:@"frame" options:NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld context:nil];
     
-    if ([view isKindOfClass:[UIImageView class]]) {
-        UIImageView* imageView = (UIImageView*) view;
+    if ([RNSharedElementContent isKindOfImageView:view]) {
+        UIImageView* imageView = [RNSharedElementContent imageViewFromView:view];
         [imageView addObserver:self forKeyPath:@"image" options:NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld context:nil];
-
-    // As of rn 0.61.4, RCTImageView is no longer inherited from
-    // UIImageView, but has a UIImageView as child.
-    } else if ([view isKindOfClass:[RCTImageView class]]) {
-        UIImageView* imageView = (UIImageView*) view.subviews.firstObject;
-        if (imageView != nil && [imageView isKindOfClass:[UIImageView class]]) {
-            [imageView addObserver:self forKeyPath:@"image" options:NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld context:nil];
-        }
     }
 }
 
@@ -144,17 +131,9 @@ NSArray* _imageResolvers;
     [view removeObserver:self forKeyPath:@"bounds"];
     [view removeObserver:self forKeyPath:@"frame"];
     
-    if ([view isKindOfClass:[UIImageView class]]) {
-        UIImageView* imageView = (UIImageView*) view;
+    if ([RNSharedElementContent isKindOfImageView:view]) {
+        UIImageView* imageView = [RNSharedElementContent imageViewFromView:view];
         [imageView removeObserver:self forKeyPath:@"image"];
-        
-    // As of rn 0.61.4, RCTImageView is no longer inherited from
-    // UIImageView, but has a UIImageView as child.
-    } else if ([view isKindOfClass:[RCTImageView class]]) {
-        UIImageView* imageView = (UIImageView*) view.subviews.firstObject;
-        if (imageView != nil && [imageView isKindOfClass:[UIImageView class]]) {
-            [imageView removeObserver:self forKeyPath:@"image"];
-        }
     }
 }
 
@@ -227,19 +206,10 @@ NSArray* _imageResolvers;
     // Obtain snapshot content
     NSObject* content;
     RNSharedElementContentType contentType;
-    if ([view isKindOfClass:[UIImageView class]]) {
-        UIImageView* imageView = (UIImageView*) view;
+    
+    if ([RNSharedElementContent isKindOfImageView:view]) {
+        UIImageView* imageView = [RNSharedElementContent imageViewFromView:view];
         UIImage* image = imageView.image;
-        content = image;
-        contentType = RNSharedElementContentTypeRawImage;
-    }
-    else if ([view isKindOfClass:[RCTImageView class]]) {
-        
-        // As of rn 0.61.4, RCTImageView is no longer inherited from
-        // UIImageView, but has a UIImageView as child.
-        RCTImageView* imageView = (RCTImageView*) view;
-        UIImageView* subImageView = [imageView.subviews firstObject];
-        UIImage* image = subImageView.image;
         content = image;
         contentType = RNSharedElementContentTypeRawImage;
     }
@@ -325,15 +295,11 @@ NSArray* _imageResolvers;
     style.layout = layout;
     style.size = view.bounds.size;
     style.transform = [RNSharedElementStyle getAbsoluteViewTransform:view];
-    
-    // As of rn 0.61.4, RCTImageView is no longer inherited from
-    // UIImageView, but has a UIImageView as child.
-    style.contentMode = view.contentMode;
-    if ([view isKindOfClass:[RCTImageView class]]) {
-        UIImageView* imageView = [view.subviews firstObject];
-        if (imageView != nil && [imageView isKindOfClass:[UIImageView class]]) {
-            style.contentMode = imageView.contentMode;
-        }
+    if ([RNSharedElementContent isKindOfImageView:view]) {
+        UIImageView* imageView = [RNSharedElementContent imageViewFromView:view];
+        style.contentMode = imageView.contentMode;
+    } else {
+        style.contentMode = view.contentMode;
     }
     style.opacity = layer.opacity;
     style.cornerRadius = layer.cornerRadius;
