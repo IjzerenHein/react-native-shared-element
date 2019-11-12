@@ -78,8 +78,10 @@ NSArray* _imageResolvers;
     // In case the view contains a single UIImageView child
     // which is also the same size as the parent, then
     // use child image-view. This fixes <ImageBackground>.
-    if (view.subviews.count == 1) {
-        UIView* subview = view.subviews.firstObject;
+    UIView* subview = view;
+    for (int i = 0; i < 2; i++) {
+        if (subview.subviews.count != 1) break;
+        subview = subview.subviews.firstObject;
         if ([subview isKindOfClass:[UIImageView class]]) {
             if (CGRectEqualToRect(subview.frame, view.bounds)) {
                 return subview;
