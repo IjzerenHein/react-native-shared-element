@@ -29,12 +29,14 @@
     "/*.podspec"
   ],
   "scripts": {
-    "test": "yarn lint && yarn flow && yarn jest",
+    "test": "yarn lint && yarn jest",
     "lint": "eslint --ext .js,.ts,.tsx ./src",
     "typescript": "tsc --noEmit",
     "jest": "jest src/",
-    "prepare": "bob build",
-    "yalc": "bob build && yalc push",
+    "copy-flow-typings": "cp ./flow-typed/index.js.flow ./lib/module/index.js.flow && cp ./flow-typed/index.js.flow ./lib/commonjs/index.js.flow",
+    "build": "bob build && yarn copy-flow-typings",
+    "prepare": "yarn build",
+    "yalc": "yarn build && yalc push",
     "version": "conventional-changelog -p angular -i CHANGELOG.md -s && git add CHANGELOG.md"
   },
   "publishConfig": {
@@ -66,10 +68,7 @@
     "output": "lib",
     "targets": [
       [
-        "commonjs",
-        {
-          "flow": true
-        }
+        "commonjs"
       ],
       "module",
       "typescript"

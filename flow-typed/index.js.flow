@@ -1,0 +1,111 @@
+// @flow
+import * as React from 'react';
+import type { ViewStyleProp } from 'react-native/Libraries/StyleSheet/StyleSheet';
+
+///////////////////////////////
+// types.ts
+///////////////////////////////
+
+export type SharedElementNode = {
+  ref: any,
+  nodeHandle: number,
+  isParent: boolean,
+  parentInstance: any,
+};
+
+export type SharedElementAnimation = 'move' | 'fade' | 'fade-in' | 'fade-out';
+
+export type SharedElementResize = 'auto' | 'stretch' | 'clip' | 'none';
+
+export type SharedElementAlign =
+  | 'auto'
+  | 'left-top'
+  | 'left-center'
+  | 'left-bottom'
+  | 'right-top'
+  | 'right-center'
+  | 'right-bottom'
+  | 'center-top'
+  | 'center-center'
+  | 'center-bottom';
+
+export type SharedElementNodeType =
+  | 'startNode'
+  | 'endNode'
+  | 'startAncestor'
+  | 'endAncestor';
+
+export type SharedElementContentType =
+  | 'none'
+  | 'snapshotView'
+  | 'snapshotImage'
+  | 'image';
+
+///////////////////////////////
+// SharedElement.tsx
+///////////////////////////////
+
+export type SharedElementProps = {
+  style?: ViewStyleProp,
+  children: React.Node,
+  onNode: (node: SharedElementNode | null) => void,
+};
+
+declare export function nodeFromRef(
+  ref: any,
+  isParent?: boolean,
+  parentInstance?: any
+): SharedElementNode | null;
+
+declare export class SharedElement extends React.Component<SharedElementProps> {}
+
+///////////////////////////////
+// SharedElementTransition.tsx
+///////////////////////////////
+
+export type SharedElementMeasureData = {
+  node: SharedElementNodeType,
+  layout: {
+    x: number,
+    y: number,
+    width: number,
+    height: number,
+    visibleX: number,
+    visibleY: number,
+    visibleWidth: number,
+    visibleHeight: number,
+    contentX: number,
+    contentY: number,
+    contentWidth: number,
+    contentHeight: number,
+  },
+  contentType: SharedElementContentType,
+  style: {
+    borderRadius: number,
+  },
+};
+
+export type SharedElementOnMeasureEvent = {
+  nativeEvent: SharedElementMeasureData,
+};
+
+export type SharedElementTransitionProps = {
+  start: {
+    node: SharedElementNode | null,
+    ancestor: SharedElementNode | null,
+  },
+  end: {
+    node: SharedElementNode | null,
+    ancestor: SharedElementNode | null,
+  },
+  position: number | any | void,
+  animation: SharedElementAnimation,
+  resize?: SharedElementResize,
+  align?: SharedElementAlign,
+  debug?: boolean,
+  style?: any,
+  onMeasure?: (event: SharedElementOnMeasureEvent) => void,
+  SharedElementComponent?: any,
+};
+
+declare export class SharedElementTransition extends React.Component<SharedElementTransitionProps> {}
