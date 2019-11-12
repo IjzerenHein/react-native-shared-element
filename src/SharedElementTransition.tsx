@@ -133,23 +133,18 @@ export class SharedElementTransition extends React.Component<
 > {
   static prepareNode(node: SharedElementNode | null): any {
     let nodeStyle: any = {};
-    if (node && node.parentInstance) {
+    if (Platform.OS === 'android' && node && node.parentInstance) {
       const child = React.Children.only(node.parentInstance.props.children);
       const props = child ? child.props : {};
       nodeStyle = StyleSheet.flatten([props.style]) || {};
+      delete nodeStyle.transform;
+      delete nodeStyle.opacity;
       nodeStyle.resizeMode = nodeStyle.resizeMode || props.resizeMode;
-      if (nodeStyle.backgroundColor) {
-        // $FlowFixMe
+      if (nodeStyle.backgroundColor)
         nodeStyle.backgroundColor = processColor(nodeStyle.backgroundColor);
-      }
-      if (nodeStyle.borderColor) {
-        // $FlowFixMe
+      if (nodeStyle.borderColor)
         nodeStyle.borderColor = processColor(nodeStyle.borderColor);
-      }
-      if (nodeStyle.color) {
-        // $FlowFixMe
-        nodeStyle.color = processColor(nodeStyle.color);
-      }
+      if (nodeStyle.color) nodeStyle.color = processColor(nodeStyle.color);
     }
     return node
       ? {
