@@ -131,18 +131,6 @@ export class SharedElementTransition extends React.Component<
   SharedElementTransitionProps,
   StateType
 > {
-  static defaultProps = {
-    start: {},
-    end: {},
-    SharedElementComponent: RNAnimatedSharedElementTransitionView,
-    animation: 'move',
-    resize: 'auto',
-    align: 'auto',
-  };
-  private static isNotAvailableWarningShown = false;
-
-  state: StateType = {};
-
   static prepareNode(node: SharedElementNode | null): any {
     let nodeStyle: any = {};
     if (node && node.parentInstance) {
@@ -172,6 +160,15 @@ export class SharedElementTransition extends React.Component<
       : undefined;
   }
 
+  static defaultProps = {
+    start: {},
+    end: {},
+    SharedElementComponent: RNAnimatedSharedElementTransitionView,
+    animation: 'move',
+    resize: 'auto',
+    align: 'auto',
+  };
+
   constructor(props: SharedElementTransitionProps) {
     super(props);
     if (
@@ -190,6 +187,22 @@ export class SharedElementTransition extends React.Component<
       }
     }
   }
+
+  state: StateType = {};
+
+  private static isNotAvailableWarningShown = false;
+
+  onMeasureNode = (event: SharedElementOnMeasureEvent) => {
+    const { nativeEvent } = event;
+    const { onMeasure } = this.props;
+    this.setState({
+      [`${nativeEvent.node}`]: nativeEvent,
+    });
+    // console.log("onMeasure: ", nativeEvent);
+    if (onMeasure) {
+      onMeasure(event);
+    }
+  };
 
   renderDebugOverlay() {
     if (!this.props.debug) {
@@ -329,16 +342,4 @@ export class SharedElementTransition extends React.Component<
       </View>
     );
   }
-
-  onMeasureNode = (event: SharedElementOnMeasureEvent) => {
-    const { nativeEvent } = event;
-    const { onMeasure } = this.props;
-    this.setState({
-      [`${nativeEvent.node}`]: nativeEvent,
-    });
-    // console.log("onMeasure: ", nativeEvent);
-    if (onMeasure) {
-      onMeasure(event);
-    }
-  };
 }

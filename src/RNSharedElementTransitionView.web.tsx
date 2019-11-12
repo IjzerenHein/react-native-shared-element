@@ -63,14 +63,15 @@ export class RNSharedElementTransitionView extends React.Component<
     this.state.transition.destroy();
   }
 
+  private onSetRef = (ref: any) => {
+    if (!ref) return;
+    const element: any = ref ? findNodeHandle(ref) : null;
+    const { transition } = this.state;
+    transition.element = element;
+  };
+
   render() {
     // console.log("RNSharedElementTransitionView.render");
     return <View ref={this.onSetRef} />;
   }
-
-  private onSetRef = (ref: any) => {
-    if (!ref) return;
-    const element: any = ref ? findNodeHandle(ref) : null;
-    this.state.transition.element = element;
-  };
 }

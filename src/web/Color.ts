@@ -28,7 +28,7 @@ export function parseColor(color: string | Color): Color {
   else if ((cache = /rgb\(([\d]+),([\d]+),([\d]+)\)/.exec(color)))
     return [+cache[1], +cache[2], +cache[3], 1];
   // Otherwise throw an exception to make debugging easier
-  else throw color + ' is not supported by parseColor';
+  else throw new Error(color + ' is not supported by parseColor');
 }
 
 export function formatColor(color: Color): string {

@@ -24,15 +24,13 @@ export function nodeFromRef(
 }
 
 export class SharedElement extends React.Component<SharedElementProps> {
-  private _node: SharedElementNode | null = null;
-
-  render() {
-    const {
-      onNode, //eslint-disable-line @typescript-eslint/no-unused-vars
-      ...otherProps
-    } = this.props;
-    return <View ref={this.onSetRef} collapsable={false} {...otherProps} />;
+  componentDidUpdate(prevProps: SharedElementProps) {
+    if (!prevProps.onNode && this.props.onNode && this._node) {
+      this.props.onNode(this._node);
+    }
   }
+
+  private _node: SharedElementNode | null = null;
 
   private onSetRef = (ref: any) => {
     this._node = nodeFromRef(ref, true, this);
@@ -41,9 +39,11 @@ export class SharedElement extends React.Component<SharedElementProps> {
     }
   };
 
-  componentDidUpdate(prevProps: SharedElementProps) {
-    if (!prevProps.onNode && this.props.onNode && this._node) {
-      this.props.onNode(this._node);
-    }
+  render() {
+    const {
+      onNode, //eslint-disable-line @typescript-eslint/no-unused-vars
+      ...otherProps
+    } = this.props;
+    return <View ref={this.onSetRef} collapsable={false} {...otherProps} />;
   }
 }
