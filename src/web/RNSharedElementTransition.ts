@@ -1,28 +1,28 @@
-import { RNSharedElementTransitionItem } from "./RNSharedElementTransitionItem";
+import { RNSharedElementTransitionItem } from './RNSharedElementTransitionItem';
 // import { RNSharedElementNode } from "./RNSharedElementNode";
-import { RNSharedElementNodeManager } from "./RNSharedElementNodeManager";
+import { RNSharedElementNodeManager } from './RNSharedElementNodeManager';
 import {
   RNSharedElementNodeConfig,
   RNSharedElementAnimation,
   RNSharedElementResize,
   RNSharedElementAlign,
-  IHTMLElement
-} from "./types";
-import { Rect } from "./Rect";
-import { RNSharedElementStyle } from "./RNSharedElementStyle";
-import { RNSharedElementContent } from "./RNSharedElementContent";
-import { RNSharedElementView } from "./RNSharedElementView";
+  IHTMLElement,
+} from './types';
+import { Rect } from './Rect';
+import { RNSharedElementStyle } from './RNSharedElementStyle';
+import { RNSharedElementContent } from './RNSharedElementContent';
+import { RNSharedElementView } from './RNSharedElementView';
 
 export class RNSharedElementTransition {
   private items = [
     new RNSharedElementTransitionItem(
       RNSharedElementNodeManager.getInstance(),
-      "start"
+      'start'
     ),
     new RNSharedElementTransitionItem(
       RNSharedElementNodeManager.getInstance(),
-      "end"
-    )
+      'end'
+    ),
   ];
   public animation: RNSharedElementAnimation = RNSharedElementAnimation.Move;
   public resize: RNSharedElementResize = RNSharedElementResize.Auto;
@@ -84,13 +84,13 @@ export class RNSharedElementTransition {
       if (
         hidden &&
         animation === RNSharedElementAnimation.FadeIn &&
-        item.name === "start"
+        item.name === 'start'
       )
         hidden = false;
       if (
         hidden &&
         animation === RNSharedElementAnimation.FadeOut &&
-        item.name === "end"
+        item.name === 'end'
       )
         hidden = false;
       item.hidden = hidden;
@@ -102,7 +102,7 @@ export class RNSharedElementTransition {
       element,
       items,
       nodePosition,
-      animation /*, animation, resize, align*/
+      animation /*, animation, resize, align*/,
     } = this;
     if (!element) return;
 

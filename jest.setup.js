@@ -9,7 +9,7 @@
  */
 /* eslint-env jest */
 
-import { NativeModules } from "react-native";
+import { NativeModules } from 'react-native';
 
 // Mock the RNCGeolocation native module to allow us to unit test the JavaScript code
 NativeModules.RNCGeolocation = {
@@ -19,7 +19,7 @@ NativeModules.RNCGeolocation = {
   requestAuthorization: jest.fn(),
   setConfiguration: jest.fn(),
   startObserving: jest.fn(),
-  stopObserving: jest.fn()
+  stopObserving: jest.fn(),
 };
 
 // Reset the mocks before each test

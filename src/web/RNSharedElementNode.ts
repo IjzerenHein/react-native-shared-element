@@ -1,7 +1,7 @@
-import { RNSharedElementStyle } from "./RNSharedElementStyle";
-import { RNSharedElementContent } from "./RNSharedElementContent";
-import { Rect } from "./Rect";
-import { IHTMLElement } from "./types";
+import { RNSharedElementStyle } from './RNSharedElementStyle';
+import { RNSharedElementContent } from './RNSharedElementContent';
+import { Rect } from './Rect';
+import { IHTMLElement } from './types';
 
 export type RNSharedElementNodeStyleCallback = (
   value: RNSharedElementStyle
@@ -65,7 +65,7 @@ export class RNSharedElementNode {
       if (element.childNodes.length === 1) {
         element = element.childNodes[0];
       } else if (element.childNodes.length <= 0) {
-        console.log("Child for parent doesnt exist");
+        console.log('Child for parent doesnt exist');
         return null;
       }
     }
@@ -75,7 +75,7 @@ export class RNSharedElementNode {
     if (childNodes.length === 2) {
       for (let i = 0; i < 2; i++) {
         const childNode = childNodes[i];
-        if (childNode.tagName === "IMG") {
+        if (childNode.tagName === 'IMG') {
           element = childNodes[i ? 0 : i + 1];
           break;
         }
@@ -97,7 +97,7 @@ export class RNSharedElementNode {
       this.styleCallbacks = this.styleCallbacks || [];
       this.styleCallbacks.push(resolve);
       if (!this.fetchInitialStyle()) {
-        console.debug("Failed to fetch style");
+        console.debug('Failed to fetch style');
         //startRetryLoop();
       }
     });
@@ -120,7 +120,7 @@ export class RNSharedElementNode {
       x: rect.x - translateX,
       y: rect.y - translateY,
       width: rect.width,
-      height: rect.height
+      height: rect.height,
     });
 
     // Create style

@@ -1,12 +1,12 @@
-import * as React from "react";
-import { View, findNodeHandle } from "react-native";
+import * as React from 'react';
+import { View, findNodeHandle } from 'react-native';
 import {
   RNSharedElementTransition,
   RNSharedElementNodeConfig,
   RNSharedElementAnimation,
   RNSharedElementResize,
-  RNSharedElementAlign
-} from "./web";
+  RNSharedElementAlign,
+} from './web';
 
 type PropsType = {
   startNode: {
@@ -32,7 +32,7 @@ export class RNSharedElementTransitionView extends React.Component<
   StateType
 > {
   state = {
-    transition: new RNSharedElementTransition()
+    transition: new RNSharedElementTransition(),
   };
 
   static getDerivedStateFromProps(props: PropsType, state: StateType) {
@@ -42,7 +42,7 @@ export class RNSharedElementTransitionView extends React.Component<
       animation,
       resize,
       align,
-      nodePosition
+      nodePosition,
     } = props;
     const { transition } = state;
     transition.setNode(false, startNode.node, startNode.ancestor);

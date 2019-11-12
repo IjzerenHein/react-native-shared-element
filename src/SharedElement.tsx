@@ -1,6 +1,6 @@
-import * as React from "react";
-import { View, findNodeHandle, ViewStyle } from "react-native";
-import { SharedElementNode } from "./types";
+import * as React from 'react';
+import { View, findNodeHandle, ViewStyle } from 'react-native';
+import { SharedElementNode } from './types';
 
 export type SharedElementProps = ViewStyle & {
   children: React.ReactNode;
@@ -18,7 +18,7 @@ export function nodeFromRef(
         ref,
         nodeHandle,
         isParent: isParent || false,
-        parentInstance
+        parentInstance,
       }
     : null;
 }
