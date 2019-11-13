@@ -26,8 +26,7 @@ This library solves that problem through an all native implementation which is v
 
 ## Under development
 
-This library is under active development. The iOS and Android implementations are mostly done, which exception of some edge cases.
-The library also aims to support the `web` platform with an optimized DOM implementation. That development hasn't started yet.
+This library is under active development. The iOS and Android implementations are mostly done, which exception of some edge cases. The library also aims to support the `web` platform with an optimized DOM implementation. That development is about 60% done.
 
 ## Index <!-- omit in toc -->
 
