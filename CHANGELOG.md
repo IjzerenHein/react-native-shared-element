@@ -5,7 +5,7 @@
 
 * **ios:** fixed <ImageBackground> transitions on iOS ([5b6b856](https://github.com/IjzerenHein/react-native-shared-element/commit/5b6b856ccfae07b9f9bfa6c3a1030ce8aa5d4641))
 * fixed crash with Animated.Image animated.Value transforms/opacity ([0ee7970](https://github.com/IjzerenHein/react-native-shared-element/commit/0ee7970c7b90ae6d2e89b80830fe3070d35b5067))
-* **ios:** fixed image border-radius/opacity/stretch on rn >= 0.61.x ([ad66f87](https://github.com/IjzerenHein/react-native-shared-element/commit/ad66f87dbde550fc3dfa2dda7b35075032138c2c))
+* **ios:** fixed image border-radius/opacity/stretch on rn >= 0.60.2 ([ad66f87](https://github.com/IjzerenHein/react-native-shared-element/commit/ad66f87dbde550fc3dfa2dda7b35075032138c2c))
 
 
 ### Features
