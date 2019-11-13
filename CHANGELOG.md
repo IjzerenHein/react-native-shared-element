@@ -5,19 +5,11 @@
 
 * **ios:** fixed <ImageBackground> transitions on iOS ([5b6b856](https://github.com/IjzerenHein/react-native-shared-element/commit/5b6b856ccfae07b9f9bfa6c3a1030ce8aa5d4641))
 * fixed crash with Animated.Image animated.Value transforms/opacity ([0ee7970](https://github.com/IjzerenHein/react-native-shared-element/commit/0ee7970c7b90ae6d2e89b80830fe3070d35b5067))
-* **ios:** fixed image border-radius/opacity/stretch on rn >= 0.64.4 ([ad66f87](https://github.com/IjzerenHein/react-native-shared-element/commit/ad66f87dbde550fc3dfa2dda7b35075032138c2c))
+* **ios:** fixed image border-radius/opacity/stretch on rn >= 0.61.x ([ad66f87](https://github.com/IjzerenHein/react-native-shared-element/commit/ad66f87dbde550fc3dfa2dda7b35075032138c2c))
 
 
 ### Features
 
-* **web:** added fade support ([818fe14](https://github.com/IjzerenHein/react-native-shared-element/commit/818fe14fbca0b5cc9d4e5e8a48dc45e3327d69e7))
-* **web:** added stricter types (no more any types) ([04b2415](https://github.com/IjzerenHein/react-native-shared-element/commit/04b24157335a0248003305491ee51cffddf14af2))
-* **web:** added support for image resizeMode transitions ([660a4a0](https://github.com/IjzerenHein/react-native-shared-element/commit/660a4a0bf15d12bd47e0dd061371821a1da40dc2))
-* **web:** added support for scaling ([d2a1dc3](https://github.com/IjzerenHein/react-native-shared-element/commit/d2a1dc3ab43e0146aea72ec73101500d946c1057))
-* **web:** content-clipping & image-size fetch ([95b4ace](https://github.com/IjzerenHein/react-native-shared-element/commit/95b4aceb4d8f9b232ef3baa764cbab1f375ffae1))
-* **web:** implemented resize & align props ([2e81177](https://github.com/IjzerenHein/react-native-shared-element/commit/2e81177ef0918210371c1e039a79638475b90085))
-* **web:** opacity interpolation & wip style support ([f5f8393](https://github.com/IjzerenHein/react-native-shared-element/commit/f5f8393473706b76f91d3fee40d185677a2fe0f0))
-* **web:** wip basic transitions infra ([6c230c2](https://github.com/IjzerenHein/react-native-shared-element/commit/6c230c240f1b8f7ab21be42df065da2098a646d5))
 * added flow-typings ([ab792c7](https://github.com/IjzerenHein/react-native-shared-element/commit/ab792c7bccf2c19294e74848b7b678889b8a004b))
 
 
