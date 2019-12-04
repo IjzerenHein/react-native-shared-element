@@ -31,7 +31,7 @@
     "react-native-photo-view": "https://github.com/tomtom94/react-native-photo-view",
     "react-native-reanimated": "^1.4.0",
     "react-native-screens": "^1.0.0-alpha.23",
-    "react-native-shared-element": "file:.yalc/react-native-shared-element",
+    "react-native-shared-element": "^0.5.2",
     "react-native-touchable-scale": "^2.1.0",
     "react-native-vector-icons": "^6.6.0",
     "react-native-web": "^0.11.7",
