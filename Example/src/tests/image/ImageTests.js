@@ -203,6 +203,11 @@ export const ImageTests: TestGroup = {
               size="regular"
               resizeMode="cover"
               ImageComponent={ImageBackground}
+              style={{
+                borderWidth: 2,
+                borderRadius: 8,
+                borderColor: 'green',
+              }}
             />
           ),
           end: (
@@ -244,6 +249,11 @@ export const ImageTests: TestGroup = {
               size="regular"
               resizeMode="cover"
               ImageComponent={FastImage}
+              style={{
+                //marginRight: 16,
+                borderWidth: 2,
+                borderColor: '#e5e5e5',
+              }}
             />
           ),
           end: (
