@@ -1,3 +1,12 @@
+## [0.5.3](https://github.com/IjzerenHein/react-native-shared-element/compare/v0.5.2...v0.5.3) (2019-12-07)
+
+
+### Bug Fixes
+
+* **android:** fixed FastImage/BackgroundImage anim for borderWidth > 0 ([2f5c48d](https://github.com/IjzerenHein/react-native-shared-element/commit/2f5c48d87bbf474a48296a282446a10481ab24ef))
+
+
+
 ## [0.5.2](https://github.com/IjzerenHein/react-native-shared-element/compare/v0.5.1...v0.5.2) (2019-11-13)
 
 
