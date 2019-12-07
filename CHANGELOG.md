@@ -3,7 +3,7 @@
 
 ### Bug Fixes
 
-* **android:** fixed FastImage/BackgroundImage anim for borderWidth > 0 ([2f5c48d](https://github.com/IjzerenHein/react-native-shared-element/commit/2f5c48d87bbf474a48296a282446a10481ab24ef))
+* **android:** fixed FastImage/ImageBackground animation for borderWidth > 0 ([2f5c48d](https://github.com/IjzerenHein/react-native-shared-element/commit/2f5c48d87bbf474a48296a282446a10481ab24ef))
 
 
 
