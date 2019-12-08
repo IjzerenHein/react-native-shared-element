@@ -289,29 +289,15 @@ NSArray* _imageResolvers;
     if (CGRectIsEmpty(layout)) return;
     
     // Create style
-    RNSharedElementStyle* style = [[RNSharedElementStyle alloc]init];
-    CALayer* layer = view.layer;
-    style.view = view;
+    RNSharedElementStyle* style = [[RNSharedElementStyle alloc]initWithView:view];
     style.layout = layout;
-    style.size = view.bounds.size;
-    style.transform = [RNSharedElementStyle getAbsoluteViewTransform:view];
     if ([RNSharedElementContent isKindOfImageView:view]) {
         UIImageView* imageView = [RNSharedElementContent imageViewFromView:view];
         style.contentMode = imageView.contentMode;
     } else {
         style.contentMode = view.contentMode;
     }
-    style.opacity = layer.opacity;
-    style.cornerRadius = layer.cornerRadius;
-    style.borderWidth = layer.borderWidth;
-    style.borderColor = layer.borderColor ? [UIColor colorWithCGColor:layer.borderColor] : [UIColor clearColor];
-    style.backgroundColor = layer.backgroundColor ? [UIColor colorWithCGColor:layer.backgroundColor] : [UIColor clearColor];
-    style.shadowColor = layer.shadowColor ? [UIColor colorWithCGColor:layer.shadowColor] : [UIColor clearColor];
-    style.shadowOffset = layer.shadowOffset;
-    style.shadowRadius = layer.shadowRadius;
-    style.shadowOpacity = layer.shadowOpacity;
-    
-    /*NSLog(@"Style fetched: %@, realSize: %@, opacity: %lf, transform: %@", NSStringFromCGRect(layout), NSStringFromCGSize(view.bounds.size), style.opacity, [RNSharedElementStyle stringFromTransform:style.transform]);*/
+    // NSLog(@"Style fetched: %@, realSize: %@, opacity: %lf, transform: %@, borderWidth: %lf", NSStringFromCGRect(layout), NSStringFromCGSize(style.size), style.opacity, [RNSharedElementStyle stringFromTransform:style.transform], style.borderWidth);
     
     _styleCache = style;
     
