@@ -9,6 +9,7 @@ The example app includes a variety of tests and receipes. It features a simple s
 yarn # in the root directory
 cd Example
 yarn
+cd ios && pod install && cd ..
 
 # Run for ios
 react-native run-ios
