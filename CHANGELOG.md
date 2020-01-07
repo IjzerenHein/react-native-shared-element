@@ -1,3 +1,15 @@
+## [0.5.4](https://github.com/IjzerenHein/react-native-shared-element/compare/v0.5.3...v0.5.4) (2020-01-07)
+
+
+### Bug Fixes
+
+* **ios:** fixed border/background anim on >= RN60 ([17ef283](https://github.com/IjzerenHein/react-native-shared-element/commit/17ef2836a81848296a885d8085dbbc57b01bed78))
+* **ios:** fixed image stretching/detection on RN60 ([8571cc5](https://github.com/IjzerenHein/react-native-shared-element/commit/8571cc5e981f8254992e9331a475eedff5ad594f))
+* **ios:** fixed several ios code warnings ([117abcd](https://github.com/IjzerenHein/react-native-shared-element/commit/117abcda1f8b3d24b642aa1f55aa989add4b9166))
+* **ios:** fixed transition hickup when using borderWidth ([ca0628c](https://github.com/IjzerenHein/react-native-shared-element/commit/ca0628c8ee5d50385f3903574626f7ce31677104))
+
+
+
 ## [0.5.3](https://github.com/IjzerenHein/react-native-shared-element/compare/v0.5.2...v0.5.3) (2019-12-07)
 
 
