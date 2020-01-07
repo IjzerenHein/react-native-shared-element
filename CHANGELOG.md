@@ -1,3 +1,12 @@
+## [0.5.5](https://github.com/IjzerenHein/react-native-shared-element/compare/v0.5.4...v0.5.5) (2020-01-07)
+
+
+### Bug Fixes
+
+* **ios:** fixed exception when rendering an empty ([af63cc0](https://github.com/IjzerenHein/react-native-shared-element/commit/af63cc0f0db7ab763ec0500409b90495b0d45b75))
+
+
+
 ## [0.5.4](https://github.com/IjzerenHein/react-native-shared-element/compare/v0.5.3...v0.5.4) (2020-01-07)
 
 
