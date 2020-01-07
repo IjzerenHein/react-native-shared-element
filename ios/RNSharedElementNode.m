@@ -37,8 +37,7 @@
     long _hideRefCount;
     
     NSMutableArray* _contentRequests;
-    NSObject* _contentCache;
-    RNSharedElementContentType _contentTypeCache;
+    RNSharedElementContent* _contentCache;
     
     NSMutableArray* _styleRequests;
     RNSharedElementStyle* _styleCache;
@@ -67,7 +66,6 @@ NSArray* _imageResolvers;
     _hideRefCount = 0;
     _contentRequests = nil;
     _contentCache = nil;
-    _contentTypeCache = RNSharedElementContentTypeNone;
     _styleRequests = nil;
     _styleCache = nil;
     _displayLink = nil;
@@ -244,7 +242,7 @@ NSArray* _imageResolvers;
 - (void) requestContent:(__weak id <RNSharedElementDelegate>) delegate
 {
     if (_contentCache != nil) {
-        [delegate didLoadContent:_contentCache contentType:_contentTypeCache node:self];
+        [delegate didLoadContent:_contentCache node:self];
         return;
     }
     
@@ -270,23 +268,18 @@ NSArray* _imageResolvers;
     }
     
     // Obtain snapshot content
-    NSObject* content;
-    RNSharedElementContentType contentType;
-    
+    RNSharedElementContent* content;
     if ([RNSharedElementContent isKindOfImageView:contentView]) {
         UIImageView* imageView = [RNSharedElementContent imageViewFromView:contentView];
         UIImage* image = imageView.image;
-        content = image;
-        contentType = RNSharedElementContentTypeRawImage;
+        content = [[RNSharedElementContent alloc]initWithData:image type:RNSharedElementContentTypeRawImage];
     }
     else if ([NSStringFromClass(view.class) isEqualToString:@"RCTView"] && !view.subviews.count) {
-        content = [[UIView alloc]init];
-        contentType = RNSharedElementContentTypeSnapshotView;
+        content = [[RNSharedElementContent alloc]initWithData:[[UIView alloc]init] type:RNSharedElementContentTypeSnapshotView];
     }
     else {
         UIView* snapshotView = [view snapshotViewAfterScreenUpdates:NO];
-        content = snapshotView;
-        contentType = RNSharedElementContentTypeSnapshotView;
+        content = [[RNSharedElementContent alloc]initWithData:snapshotView type:RNSharedElementContentTypeSnapshotView];
     }
     /*else {
      NSLog(@"drawViewHierarchyInRect: bounds: %@", NSStringFromCGRect(bounds));
@@ -300,7 +293,7 @@ NSArray* _imageResolvers;
      }*/
     
     // If the content could not be obtained, then try again later
-    if (content == nil) {
+    if (content == nil || content.data == nil) {
         if (_displayLink == nil) {
             _displayLink = [CADisplayLink displayLinkWithTarget:self selector:@selector(onDisplayLinkUpdate:)];
             [_displayLink addToRunLoop:[NSRunLoop mainRunLoop] forMode:NSDefaultRunLoopMode];
@@ -310,7 +303,6 @@ NSArray* _imageResolvers;
     //NSLog(@"Content fetched: %@, contentType: %d, size: %@", content, contentType, NSStringFromCGSize(bounds.size));
     
     _contentCache = content;
-    _contentTypeCache = contentType;
     
     NSArray* delegates = _contentRequests;
     _contentRequests = nil;
@@ -320,7 +312,7 @@ NSArray* _imageResolvers;
     }
     for (__weak id <RNSharedElementDelegate> delegate in delegates) {
         if (delegate != nil) {
-            [delegate didLoadContent:content contentType:contentType node:self];
+            [delegate didLoadContent:content node:self];
         }
     }
 }

@@ -7,10 +7,20 @@
 #define RNSharedElementContent_h
 
 #import <UIKit/UIKit.h>
+#import "RNSharedElementTypes.h"
 
 @interface RNSharedElementContent : NSObject
+@property (nonatomic, assign) id data;
+@property (nonatomic, assign) RNSharedElementContentType type;
+
+- (instancetype)initWithData:(id) data type:(RNSharedElementContentType)type;
+- (NSString*) typeName;
+
 + (BOOL) isKindOfImageView:(UIView*) view;
 + (UIImageView*) imageViewFromView:(UIView*) view;
+
++ (CGRect) layoutForRect:(CGRect)layout content:(RNSharedElementContent*) content contentMode:(UIViewContentMode) contentMode reverse:(BOOL)reverse;
+
 @end
 
 #endif
