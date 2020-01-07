@@ -592,7 +592,7 @@
         //NSLog(@"reactSetFrame: %@", NSStringFromCGRect(frame));
         _reactFrameSet = YES;
         dispatch_async(dispatch_get_main_queue(), ^{
-            for (RNSharedElementTransitionItem* item in _items) {
+            for (RNSharedElementTransitionItem* item in self->_items) {
                 if (item.needsLayout) {
                     item.needsLayout = NO;
                     [item.node requestStyle:self];
@@ -602,7 +602,7 @@
                     [item.node requestContent:self];
                 }
             }
-            _initialLayoutPassCompleted = YES;
+            self->_initialLayoutPassCompleted = YES;
             [self updateStyle];
             [self updateNodeVisibility];
         });
