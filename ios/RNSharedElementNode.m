@@ -283,7 +283,8 @@ NSArray* _imageResolvers;
         content = [[RNSharedElementContent alloc]initWithData:image type:RNSharedElementContentTypeRawImage insets:imageInsets];
     }
     else if ([NSStringFromClass(view.class) isEqualToString:@"RCTView"] && !view.subviews.count) {
-        content = [[RNSharedElementContent alloc]initWithData:[[UIView alloc]init] type:RNSharedElementContentTypeSnapshotView insets:UIEdgeInsetsZero];
+        UIView* dummyView = [[UIView alloc]init];
+        content = [[RNSharedElementContent alloc]initWithData:dummyView type:RNSharedElementContentTypeSnapshotView insets:UIEdgeInsetsZero];
     }
     else {
         UIView* snapshotView = [view snapshotViewAfterScreenUpdates:NO];

@@ -10,9 +10,9 @@
 #import "RNSharedElementTypes.h"
 
 @interface RNSharedElementContent : NSObject
-@property (nonatomic, assign) id data;
-@property (nonatomic, assign) RNSharedElementContentType type;
-@property (nonatomic, assign) UIEdgeInsets insets;
+@property (nonatomic, readonly) id data;
+@property (nonatomic, readonly) RNSharedElementContentType type;
+@property (nonatomic, readonly) UIEdgeInsets insets;
 
 - (instancetype)initWithData:(id) data type:(RNSharedElementContentType)type insets:(UIEdgeInsets)insets;
 - (NSString*) typeName;
