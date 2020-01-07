@@ -10,10 +10,11 @@
     // nop
 }
 
-- (instancetype)initWithData:(id) data type:(RNSharedElementContentType)type
+- (instancetype)initWithData:(id) data type:(RNSharedElementContentType)type insets:(UIEdgeInsets)insets
 {
     _data = data;
     _type = type;
+    _insets = insets;
     return self;
 }
 
@@ -64,6 +65,8 @@
     if (content == nil || content.data == nil) return layout;
     if (content.type != RNSharedElementContentTypeRawImage) return layout;
     CGSize size = layout.size;
+    size.width -= (content.insets.left + content.insets.right);
+    size.height -= (content.insets.top + content.insets.bottom);
     CGSize contentSize = [RNSharedElementContent sizeForRect:layout content:content];
     CGFloat contentAspectRatio = (contentSize.width / contentSize.height);
     BOOL lo = (size.width / size.height) < contentAspectRatio;

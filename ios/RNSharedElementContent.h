@@ -12,8 +12,9 @@
 @interface RNSharedElementContent : NSObject
 @property (nonatomic, assign) id data;
 @property (nonatomic, assign) RNSharedElementContentType type;
+@property (nonatomic, assign) UIEdgeInsets insets;
 
-- (instancetype)initWithData:(id) data type:(RNSharedElementContentType)type;
+- (instancetype)initWithData:(id) data type:(RNSharedElementContentType)type insets:(UIEdgeInsets)insets;
 - (NSString*) typeName;
 
 + (BOOL) isKindOfImageView:(UIView*) view;

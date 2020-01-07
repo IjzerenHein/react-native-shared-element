@@ -263,6 +263,7 @@ NSArray* _imageResolvers;
     if (_contentRequests == nil) return;
     
     CGRect bounds = view.bounds;
+    CGRect frame = contentView.frame;
     if (!bounds.size.width || !bounds.size.height) {
         return;
     }
@@ -272,14 +273,21 @@ NSArray* _imageResolvers;
     if ([RNSharedElementContent isKindOfImageView:contentView]) {
         UIImageView* imageView = [RNSharedElementContent imageViewFromView:contentView];
         UIImage* image = imageView.image;
-        content = [[RNSharedElementContent alloc]initWithData:image type:RNSharedElementContentTypeRawImage];
+        UIEdgeInsets imageInsets = UIEdgeInsetsZero;
+        if (contentView != view) {
+            imageInsets.left = frame.origin.x;
+            imageInsets.top = frame.origin.y;
+            imageInsets.right = bounds.size.width - frame.size.width - frame.origin.x;
+            imageInsets.bottom = bounds.size.height - frame.size.height - frame.origin.y;
+        }
+        content = [[RNSharedElementContent alloc]initWithData:image type:RNSharedElementContentTypeRawImage insets:imageInsets];
     }
     else if ([NSStringFromClass(view.class) isEqualToString:@"RCTView"] && !view.subviews.count) {
-        content = [[RNSharedElementContent alloc]initWithData:[[UIView alloc]init] type:RNSharedElementContentTypeSnapshotView];
+        content = [[RNSharedElementContent alloc]initWithData:[[UIView alloc]init] type:RNSharedElementContentTypeSnapshotView insets:UIEdgeInsetsZero];
     }
     else {
         UIView* snapshotView = [view snapshotViewAfterScreenUpdates:NO];
-        content = [[RNSharedElementContent alloc]initWithData:snapshotView type:RNSharedElementContentTypeSnapshotView];
+        content = [[RNSharedElementContent alloc]initWithData:snapshotView type:RNSharedElementContentTypeSnapshotView insets:UIEdgeInsetsZero];
     }
     /*else {
      NSLog(@"drawViewHierarchyInRect: bounds: %@", NSStringFromCGRect(bounds));
