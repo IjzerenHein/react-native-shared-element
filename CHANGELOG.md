@@ -1,3 +1,12 @@
+## [0.5.6](https://github.com/IjzerenHein/react-native-shared-element/compare/v0.5.5...v0.5.6) (2020-02-09)
+
+
+### Bug Fixes
+
+* **ios:** Fix old content/style used when starting a new transition before a previous transition has ended ([64d8597](https://github.com/IjzerenHein/react-native-shared-element/commit/64d8597057609b668eff1dbbd627426a24def82b))
+
+
+
 ## [0.5.5](https://github.com/IjzerenHein/react-native-shared-element/compare/v0.5.4...v0.5.5) (2020-01-07)
 
 
