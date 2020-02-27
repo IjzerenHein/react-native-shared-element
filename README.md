@@ -4,8 +4,8 @@ Native shared element transition _"primitives"_ for react-native 💫
 
 This library in itself is not a Navigation- or Router library. Instead, it provides a set of comprehensive full native building blocks for performing shared element transitions in Router- or Transition libraries. If you are looking [for the React Navigation binding, you can find it here](https://github.com/IjzerenHein/react-navigation-shared-element).
 
-![MagicMoveGif](set-ios.gif)
-![MagicMoveGif](set-android.gif)
+![MagicMoveGif-iOS](set-ios.gif)
+![MagicMoveGif-Android](set-android.gif)
 
 ## Motivation
 
@@ -208,22 +208,6 @@ When `auto` is selected, the default alignment strategy is used, which is `cente
 
 - The main example & test app is located in [`./Example`](./Example) and serves as an exploration and testing tool. It features a custom stack router which implements the shared element primitives. It also implements the react-navigation binding and serves as a testing tool for that.
 - [Simple demo app using RN60 and the react-navigation binding](https://github.com/IjzerenHein/react-navigation-shared-element-rn60demo)
-
-**Usage**
-
-```bash
-# Installation
-# clone this repo
-yarn # in the root directory
-cd Example
-yarn
-
-# Run for ios
-react-native run-ios
-
-# Run for android
-react-native run-android
-```
 
 ## License
 
