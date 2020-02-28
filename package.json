@@ -1,83 +1,50 @@
 {
-  "name": "react-native-shared-element",
-  "version": "0.5.6",
+  "name": "expo-shared-element",
+  "version": "1.0.0",
   "description": "Native shared element transition primitives for react-native 💫",
-  "author": "IjzerenHein <hrutjes@gmail.com>",
+  "main": "build/index.js",
+  "types": "build/index.d.ts",
+  "sideEffects": false,
+  "scripts": {
+    "build": "expo-module build",
+    "clean": "expo-module clean",
+    "lint": "expo-module lint",
+    "test": "expo-module test",
+    "prepare": "expo-module prepare",
+    "prepublishOnly": "expo-module prepublishOnly",
+    "expo-module": "expo-module"
+  },
   "keywords": [
     "react-native-shared-element",
+    "expo-shared-element",
+    "expo",
+    "expo-magic-move",
     "react-native",
     "magic move",
     "shared element",
     "shared element transition",
     "visual clone"
   ],
-  "repository": "https://github.com/IjzerenHein/react-native-shared-element",
-  "bugs": "https://github.com/IjzerenHein/react-native-shared-element",
+  "repository": "https://github.com/IjzerenHein/expo-shared-element",
+  "bugs": "https://github.com/IjzerenHein/expo-shared-element/issues",
+  "author": "IjzerenHein <hrutjes@gmail.com>",
   "license": "MIT",
-  "main": "lib/commonjs/index.js",
-  "module": "lib/module/index.js",
-  "react-native": "lib/module/index.js",
-  "types": "lib/typescript/index.d.ts",
-  "sideEffects": false,
+  "homepage": "https://github.com/IjzerenHein/expo-shared-element",
   "files": [
     "src/",
-    "lib/",
+    "build/",
     "/ios",
     "/android",
     "/windows",
-    "/web",
-    "/*.podspec"
+    "/web"
   ],
-  "scripts": {
-    "test": "yarn lint && yarn jest",
-    "lint": "eslint --ext .js,.ts,.tsx ./src",
-    "typescript": "tsc --noEmit",
-    "jest": "jest src/",
-    "copy-flow-typings": "cp ./flow-typed/index.js.flow ./lib/module/index.js.flow && cp ./flow-typed/index.js.flow ./lib/commonjs/index.js.flow",
-    "build": "bob build && yarn copy-flow-typings",
-    "prepare": "yarn build",
-    "yalc": "yarn build && yalc push",
-    "version": "conventional-changelog -p angular -i CHANGELOG.md -s && git add CHANGELOG.md"
-  },
-  "publishConfig": {
-    "registry": "https://registry.npmjs.org/"
-  },
-  "peerDependencies": {
-    "react": "*",
-    "react-native": "*"
-  },
   "devDependencies": {
-    "@commitlint/config-conventional": "^8.3.4",
-    "@react-native-community/bob": "^0.7.0",
-    "@types/react": "^16.9.17",
-    "@types/react-native": "^0.60.28",
-    "commitlint": "^8.3.4",
-    "conventional-changelog-cli": "^2.0.31",
+    "@types/react": "^16.9.23",
     "eslint": "^6.8.0",
-    "eslint-config-satya164": "^3.1.5",
-    "husky": "^4.0.0",
-    "jest": "^24.9.0",
+    "expo-module-scripts": "^1.2.0",
     "prettier": "^1.19.1",
-    "react": "16.9.0",
-    "react-native": "^0.61.5",
-    "react-test-renderer": "^16.12.0",
-    "typescript": "^3.7.4"
+    "react": "^16.13.0",
+    "react-native": "^0.61.5"
   },
-  "@react-native-community/bob": {
-    "source": "src",
-    "output": "lib",
-    "targets": [
-      [
-        "commonjs"
-      ],
-      "module",
-      "typescript"
-    ]
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit2": "yarn typescript && yarn lint && yarn test",
-      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
-    }
-  }
+  "dependencies": {}
 }

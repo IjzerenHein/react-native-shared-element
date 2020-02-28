@@ -1,0 +1,4 @@
+{
+  "name": "expo-shared-element",
+  "platforms": ["ios", "android", "web"]
+}
