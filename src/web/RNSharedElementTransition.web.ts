@@ -1,10 +1,10 @@
-import { RNSharedElementContent } from "./RNSharedElementContent";
-import { RNSharedElementNodeManager } from "./RNSharedElementNodeManager";
-import { RNSharedElementStyle } from "./RNSharedElementStyle";
-import { RNSharedElementTransitionItem } from "./RNSharedElementTransitionItem";
+import { RNSharedElementContent } from "./RNSharedElementContent.web";
+import { RNSharedElementNodeManager } from "./RNSharedElementNodeManager.web";
+import { RNSharedElementStyle } from "./RNSharedElementStyle.web";
+import { RNSharedElementTransitionItem } from "./RNSharedElementTransitionItem.web";
 // import { RNSharedElementNode } from "./RNSharedElementNode";
-import { RNSharedElementView } from "./RNSharedElementView";
-import { Rect } from "./Rect";
+import { RNSharedElementView } from "./RNSharedElementView.web";
+import { Rect } from "./Rect.web";
 import {
   RNSharedElementNodeConfig,
   RNSharedElementAnimation,

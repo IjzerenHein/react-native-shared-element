@@ -1,4 +1,4 @@
-import { Rect } from "./Rect";
+import { Rect } from "./Rect.web";
 import { IHTMLElement } from "./types";
 
 export class RNSharedElementContent {
@@ -13,7 +13,6 @@ export class RNSharedElementContent {
   static getSize(element: IHTMLElement): Promise<Rect | null> {
     return new Promise(resolve => {
       if (element.style.backgroundImage) {
-        // @ts-ignore
         const img = document.createElement("img");
         img.onload = () => {
           resolve(

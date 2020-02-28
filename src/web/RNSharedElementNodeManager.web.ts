@@ -1,4 +1,4 @@
-import { RNSharedElementNode } from "./RNSharedElementNode";
+import { RNSharedElementNode } from "./RNSharedElementNode.web";
 import { IHTMLElement } from "./types";
 
 export class RNSharedElementNodeManager {

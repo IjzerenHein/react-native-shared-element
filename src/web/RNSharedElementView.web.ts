@@ -1,5 +1,5 @@
-import { RNSharedElementStyle } from "./RNSharedElementStyle";
-import { Rect } from "./Rect";
+import { RNSharedElementStyle } from "./RNSharedElementStyle.web";
+import { Rect } from "./Rect.web";
 import {
   IHTMLElement,
   RNSharedElementAlign,
@@ -43,7 +43,6 @@ function createTransform(
 
 export class RNSharedElementView {
   public parentLayout: Rect = Rect.empty;
-  // @ts-ignore
   public readonly element = initElement(document.createElement("div"));
   public layout: Rect = Rect.empty;
   public style: RNSharedElementStyle | null = null;

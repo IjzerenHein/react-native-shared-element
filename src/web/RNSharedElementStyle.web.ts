@@ -1,5 +1,5 @@
-import { Color, parseColor, interpolateColor } from "./Color";
-import { Rect } from "./Rect";
+import { Color, parseColor, interpolateColor } from "./Color.web";
+import { Rect } from "./Rect.web";
 import { CSSStyleDeclaration } from "./types";
 
 /*int backgroundColor = Color.TRANSPARENT;

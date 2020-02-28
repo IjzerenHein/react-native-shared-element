@@ -1,6 +1,6 @@
-import { RNSharedElementContent } from "./RNSharedElementContent";
-import { RNSharedElementStyle } from "./RNSharedElementStyle";
-import { Rect } from "./Rect";
+import { RNSharedElementContent } from "./RNSharedElementContent.web";
+import { RNSharedElementStyle } from "./RNSharedElementStyle.web";
+import { Rect } from "./Rect.web";
 import { IHTMLElement } from "./types";
 
 export type RNSharedElementNodeStyleCallback = (

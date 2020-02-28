@@ -7,7 +7,7 @@ import {
   RNSharedElementAnimation,
   RNSharedElementResize,
   RNSharedElementAlign
-} from "./web";
+} from "./web/index.web";
 
 type PropsType = {
   startNode: {
