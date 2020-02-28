@@ -1,8 +1,8 @@
-import * as React from 'react';
-import { View, findNodeHandle, ViewStyle } from 'react-native';
-import { SharedElementNode } from './types';
+import * as React from "react";
+import { View, findNodeHandle, ViewProps } from "react-native";
+import { SharedElementNode } from "./types";
 
-export type SharedElementProps = ViewStyle & {
+export type SharedElementProps = ViewProps & {
   children: React.ReactNode;
   onNode: (node: SharedElementNode | null) => void;
 };
