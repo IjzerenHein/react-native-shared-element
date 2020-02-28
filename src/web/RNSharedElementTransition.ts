@@ -241,9 +241,10 @@ export class RNSharedElementTransition {
     // If the content-element does not yet exist, then clone it and add it to the view
     if (!view.contentElement) {
       if (!content || !content.element) return;
+      // @ts-ignore
       view.contentElement = content.element.cloneNode(true);
     }
-    view.contentElement!.style.opacity = opacity;
+    view.contentElement!.style.opacity = String(opacity);
 
     // Update layout
     view.updateLayout();

@@ -15,7 +15,7 @@ export class RNSharedElementNode {
   public readonly ancestorDomNode: IHTMLElement;
   public readonly isParent: boolean;
   private hideRefCount: number = 0;
-  private hideOpacity: number = 0;
+  private hideOpacity: string | null = null;
   private refCount: number = 1;
   private styleCache: RNSharedElementStyle | null = null;
   private styleCallbacks: RNSharedElementNodeStyleCallback[] | null = null;
@@ -45,7 +45,7 @@ export class RNSharedElementNode {
     if (this.hideRefCount === 1) {
       const element = this.resolvedElement;
       this.hideOpacity = element!.style.opacity;
-      element!.style.opacity = 0;
+      element!.style.opacity = "0";
     }
   }
 
@@ -53,6 +53,7 @@ export class RNSharedElementNode {
     this.hideRefCount--;
     if (this.hideRefCount === 0) {
       const element = this.resolvedElement;
+      // @ts-ignore
       element!.style.opacity = this.hideOpacity;
     }
   }
@@ -63,9 +64,10 @@ export class RNSharedElementNode {
     // If this node is a parent, look for the first child
     if (this.isParent) {
       if (element.childNodes.length === 1) {
+        // @ts-ignore
         element = element.childNodes[0];
       } else if (element.childNodes.length <= 0) {
-        console.log('Child for parent doesnt exist');
+        console.log("Child for parent doesnt exist");
         return null;
       }
     }
@@ -74,8 +76,10 @@ export class RNSharedElementNode {
     const { childNodes } = element;
     if (childNodes.length === 2) {
       for (let i = 0; i < 2; i++) {
-        const childNode = childNodes[i];
-        if (childNode.tagName === 'IMG') {
+        // @ts-ignore
+        const childNode: IHTMLElement = childNodes[i];
+        if (childNode.tagName === "IMG") {
+          // @ts-ignore
           element = childNodes[i ? 0 : i + 1];
           break;
         }

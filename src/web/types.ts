@@ -7,17 +7,7 @@ export interface IRect {
 
 export type CSSStyleDeclaration = any;
 
-export interface IHTMLElement extends HTMLElement {
-  readonly tagName: string;
-  readonly style: CSSStyleDeclaration;
-  readonly clientWidth: number;
-  readonly clientHeight: number;
-  readonly childNodes: IHTMLElement[];
-  appendChild(element: HTMLElement): HTMLElement;
-  removeChild(element: HTMLElement): HTMLElement;
-  cloneNode(deep: boolean): IHTMLElement;
-  getBoundingClientRect(): IRect;
-}
+export type IHTMLElement = HTMLElement;
 
 export type RNSharedElementNodeConfig = {
   nodeHandle: IHTMLElement;
