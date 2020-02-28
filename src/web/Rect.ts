@@ -1,4 +1,4 @@
-import { IRect } from './types';
+import { IRect } from "./types";
 
 export class Rect implements IRect {
   public x: number = 0;

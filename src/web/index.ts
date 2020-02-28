@@ -1,2 +1,2 @@
-export * from './RNSharedElementTransition';
-export * from './types';
+export * from "./RNSharedElementTransition";
+export * from "./types";

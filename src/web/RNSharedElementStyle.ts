@@ -1,6 +1,6 @@
-import { Rect } from './Rect';
-import { CSSStyleDeclaration } from './types';
-import { Color, parseColor, interpolateColor } from './Color';
+import { Color, parseColor, interpolateColor } from "./Color";
+import { Rect } from "./Rect";
+import { CSSStyleDeclaration } from "./types";
 
 /*int backgroundColor = Color.TRANSPARENT;
     float opacity = 1;
@@ -39,7 +39,7 @@ export class RNSharedElementStyle {
       x: interpolate(layout1.x, layout2.x, position),
       y: interpolate(layout1.y, layout2.y, position),
       width: interpolate(layout1.width, layout2.width, position),
-      height: interpolate(layout1.height, layout2.height, position),
+      height: interpolate(layout1.height, layout2.height, position)
     });
   }
 
@@ -60,7 +60,7 @@ export class RNSharedElementStyle {
         style1.backgroundColor,
         style2.backgroundColor,
         position
-      ),
+      )
     });
   }
 

@@ -4,7 +4,7 @@ export function parseColor(color: string | Color): Color {
   if (Array.isArray(color)) return color;
   let cache;
   const p = parseInt;
-  color = color.replace(/\s/g, ''); // Remove all spaces
+  color = color.replace(/\s/g, ""); // Remove all spaces
 
   // Checks for 6 digit hex and converts string to integer
   if ((cache = /#([\da-fA-F]{2})([\da-fA-F]{2})([\da-fA-F]{2})/.exec(color)))
@@ -15,7 +15,7 @@ export function parseColor(color: string | Color): Color {
       p(cache[1], 16) * 17,
       p(cache[2], 16) * 17,
       p(cache[3], 16) * 17,
-      1,
+      1
     ];
   // Checks for rgba and converts string to
   // integer/float using unary + operator to save bytes
@@ -28,7 +28,7 @@ export function parseColor(color: string | Color): Color {
   else if ((cache = /rgb\(([\d]+),([\d]+),([\d]+)\)/.exec(color)))
     return [+cache[1], +cache[2], +cache[3], 1];
   // Otherwise throw an exception to make debugging easier
-  else throw new Error(color + ' is not supported by parseColor');
+  else throw new Error(color + " is not supported by parseColor");
 }
 
 export function formatColor(color: Color): string {

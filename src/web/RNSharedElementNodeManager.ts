@@ -1,5 +1,5 @@
-import { RNSharedElementNode } from './RNSharedElementNode';
-import { IHTMLElement } from './types';
+import { RNSharedElementNode } from "./RNSharedElementNode";
+import { IHTMLElement } from "./types";
 
 export class RNSharedElementNodeManager {
   private nodes = new Map<HTMLElement, RNSharedElementNode>();

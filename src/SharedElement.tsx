@@ -1,5 +1,6 @@
 import * as React from "react";
 import { View, findNodeHandle, ViewProps } from "react-native";
+
 import { SharedElementNode } from "./types";
 
 export type SharedElementProps = ViewProps & {
@@ -18,7 +19,7 @@ export function nodeFromRef(
         ref,
         nodeHandle,
         isParent: isParent || false,
-        parentInstance,
+        parentInstance
       }
     : null;
 }

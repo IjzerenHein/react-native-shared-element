@@ -1,25 +1,25 @@
+import { RNSharedElementStyle } from "./RNSharedElementStyle";
+import { Rect } from "./Rect";
 import {
   IHTMLElement,
   RNSharedElementAlign,
-  RNSharedElementResize,
-} from './types';
-import { Rect } from './Rect';
-import { RNSharedElementStyle } from './RNSharedElementStyle';
+  RNSharedElementResize
+} from "./types";
 
 function initElement(element: IHTMLElement): IHTMLElement {
   const { style } = element;
 
   // Reset default layout behavior
-  style.position = 'absolute';
-  style.left = '0px';
-  style.top = '0px';
-  style.pointerEvents = 'none';
-  style.transformOrigin = '0% 0%';
-  style.transformStyle = 'preserve-3d';
-  style.backfaceVisibility = 'hidden';
-  style.backgroundSize = '100% 100%';
-  style.boxSizing = 'border-box';
-  style.overflow = 'hidden';
+  style.position = "absolute";
+  style.left = "0px";
+  style.top = "0px";
+  style.pointerEvents = "none";
+  style.transformOrigin = "0% 0%";
+  style.transformStyle = "preserve-3d";
+  style.backfaceVisibility = "hidden";
+  style.backgroundSize = "100% 100%";
+  style.boxSizing = "border-box";
+  style.overflow = "hidden";
 
   // Clear styles
   // style.backgroundColor = null;
@@ -44,7 +44,7 @@ function createTransform(
 export class RNSharedElementView {
   public parentLayout: Rect = Rect.empty;
   // @ts-ignore
-  public readonly element = initElement(document.createElement('div'));
+  public readonly element = initElement(document.createElement("div"));
   public layout: Rect = Rect.empty;
   public style: RNSharedElementStyle | null = null;
   public originalLayout: Rect = Rect.empty;
@@ -100,8 +100,8 @@ export class RNSharedElementView {
     const { x, y, width: scaledWidth, height: scaledHeight } = layout;
 
     // Update size
-    const widthPx = width + 'px';
-    const heightPx = height + 'px';
+    const widthPx = width + "px";
+    const heightPx = height + "px";
     const { style } = element;
     if (style.width !== widthPx) style.width = widthPx;
     if (style.height !== heightPx) style.height = heightPx;
@@ -138,13 +138,13 @@ export class RNSharedElementView {
       contentLayout,
       originalLayout,
       align,
-      resize,
+      resize
     } = this;
     const { x, y, width, height } = layout;
 
     // Update size
-    const widthPx = width + 'px';
-    const heightPx = height + 'px';
+    const widthPx = width + "px";
+    const heightPx = height + "px";
     const { style } = element;
     if (style.width !== widthPx) style.width = widthPx;
     if (style.height !== heightPx) style.height = heightPx;
@@ -160,11 +160,11 @@ export class RNSharedElementView {
       x: contentX,
       y: contentY,
       width: contentWidth,
-      height: contentHeight,
+      height: contentHeight
     } = contentLayout;
 
     // Get content size
-    let overflow = 'hidden';
+    let overflow = "hidden";
     switch (resize) {
       case RNSharedElementResize.Auto:
         // keep original size
@@ -180,7 +180,7 @@ export class RNSharedElementView {
       case RNSharedElementResize.None:
         contentWidth = originalLayout.width;
         contentHeight = originalLayout.height;
-        overflow = 'visible';
+        overflow = "visible";
         break;
     }
 
@@ -226,8 +226,8 @@ export class RNSharedElementView {
     }
 
     // Update content size
-    const contentWidthPx = contentWidth + 'px';
-    const contentHeightPx = contentHeight + 'px';
+    const contentWidthPx = contentWidth + "px";
+    const contentHeightPx = contentHeight + "px";
     const { style: contentStyle } = this._contentElement;
     if (contentStyle.width !== widthPx) contentStyle.width = contentWidthPx;
     if (contentStyle.height !== heightPx) contentStyle.height = contentHeightPx;

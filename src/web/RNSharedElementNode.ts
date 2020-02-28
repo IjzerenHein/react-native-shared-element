@@ -1,7 +1,7 @@
-import { RNSharedElementStyle } from './RNSharedElementStyle';
-import { RNSharedElementContent } from './RNSharedElementContent';
-import { Rect } from './Rect';
-import { IHTMLElement } from './types';
+import { RNSharedElementContent } from "./RNSharedElementContent";
+import { RNSharedElementStyle } from "./RNSharedElementStyle";
+import { Rect } from "./Rect";
+import { IHTMLElement } from "./types";
 
 export type RNSharedElementNodeStyleCallback = (
   value: RNSharedElementStyle
@@ -101,7 +101,7 @@ export class RNSharedElementNode {
       this.styleCallbacks = this.styleCallbacks || [];
       this.styleCallbacks.push(resolve);
       if (!this.fetchInitialStyle()) {
-        console.debug('Failed to fetch style');
+        console.debug("Failed to fetch style");
         //startRetryLoop();
       }
     });
@@ -124,7 +124,7 @@ export class RNSharedElementNode {
       x: rect.x - translateX,
       y: rect.y - translateY,
       width: rect.width,
-      height: rect.height,
+      height: rect.height
     });
 
     // Create style

@@ -1,28 +1,28 @@
-import { RNSharedElementTransitionItem } from './RNSharedElementTransitionItem';
+import { RNSharedElementContent } from "./RNSharedElementContent";
+import { RNSharedElementNodeManager } from "./RNSharedElementNodeManager";
+import { RNSharedElementStyle } from "./RNSharedElementStyle";
+import { RNSharedElementTransitionItem } from "./RNSharedElementTransitionItem";
 // import { RNSharedElementNode } from "./RNSharedElementNode";
-import { RNSharedElementNodeManager } from './RNSharedElementNodeManager';
+import { RNSharedElementView } from "./RNSharedElementView";
+import { Rect } from "./Rect";
 import {
   RNSharedElementNodeConfig,
   RNSharedElementAnimation,
   RNSharedElementResize,
   RNSharedElementAlign,
-  IHTMLElement,
-} from './types';
-import { Rect } from './Rect';
-import { RNSharedElementStyle } from './RNSharedElementStyle';
-import { RNSharedElementContent } from './RNSharedElementContent';
-import { RNSharedElementView } from './RNSharedElementView';
+  IHTMLElement
+} from "./types";
 
 export class RNSharedElementTransition {
   private items = [
     new RNSharedElementTransitionItem(
       RNSharedElementNodeManager.getInstance(),
-      'start'
+      "start"
     ),
     new RNSharedElementTransitionItem(
       RNSharedElementNodeManager.getInstance(),
-      'end'
-    ),
+      "end"
+    )
   ];
   public animation: RNSharedElementAnimation = RNSharedElementAnimation.Move;
   public resize: RNSharedElementResize = RNSharedElementResize.Auto;
@@ -80,17 +80,17 @@ export class RNSharedElementTransition {
   private updateNodeVisibility() {
     const { items, animation } = this;
     items.forEach(item => {
-      let hidden = item.style && item.content ? true : false;
+      let hidden = !!(item.style && item.content);
       if (
         hidden &&
         animation === RNSharedElementAnimation.FadeIn &&
-        item.name === 'start'
+        item.name === "start"
       )
         hidden = false;
       if (
         hidden &&
         animation === RNSharedElementAnimation.FadeOut &&
-        item.name === 'end'
+        item.name === "end"
       )
         hidden = false;
       item.hidden = hidden;
@@ -102,7 +102,7 @@ export class RNSharedElementTransition {
       element,
       items,
       nodePosition,
-      animation /*, animation, resize, align*/,
+      animation /*, animation, resize, align*/
     } = this;
     if (!element) return;
 

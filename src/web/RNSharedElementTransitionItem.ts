@@ -1,7 +1,7 @@
-import { RNSharedElementNodeManager } from './RNSharedElementNodeManager';
-import { RNSharedElementNode } from './RNSharedElementNode';
-import { RNSharedElementContent } from './RNSharedElementContent';
-import { RNSharedElementStyle } from './RNSharedElementStyle';
+import { RNSharedElementContent } from "./RNSharedElementContent";
+import { RNSharedElementNode } from "./RNSharedElementNode";
+import { RNSharedElementNodeManager } from "./RNSharedElementNodeManager";
+import { RNSharedElementStyle } from "./RNSharedElementStyle";
 
 export class RNSharedElementTransitionItem {
   private _hidden: boolean = false;

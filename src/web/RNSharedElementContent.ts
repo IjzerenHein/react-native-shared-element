@@ -1,5 +1,5 @@
-import { Rect } from './Rect';
-import { IHTMLElement } from './types';
+import { Rect } from "./Rect";
+import { IHTMLElement } from "./types";
 
 export class RNSharedElementContent {
   public readonly element: IHTMLElement;
@@ -14,14 +14,14 @@ export class RNSharedElementContent {
     return new Promise(resolve => {
       if (element.style.backgroundImage) {
         // @ts-ignore
-        const img = document.createElement('img');
+        const img = document.createElement("img");
         img.onload = () => {
           resolve(
             new Rect({
               x: 0,
               y: 0,
               width: img.width,
-              height: img.height,
+              height: img.height
             })
           );
         };
@@ -35,7 +35,7 @@ export class RNSharedElementContent {
           x: 0,
           y: 0,
           width: element.clientWidth || 0,
-          height: element.clientHeight || 0,
+          height: element.clientHeight || 0
         })
       );
     });
@@ -54,22 +54,22 @@ export class RNSharedElementContent {
     const lo = width / height < contentAspectRatio;
     const aspectRatioCriteria = reverse ? !lo : lo;
     switch (resizeMode) {
-      case 'stretch':
-      case '100% 100%':
+      case "stretch":
+      case "100% 100%":
         // nop
         break;
-      case 'cover':
+      case "cover":
         if (aspectRatioCriteria) {
           width = height * contentAspectRatio;
         } else {
           height = width / contentAspectRatio;
         }
         break;
-      case 'center':
+      case "center":
         width = content.size.width;
         height = content.size.height;
         break;
-      case 'contain':
+      case "contain":
       default:
         if (aspectRatioCriteria) {
           height = width / contentAspectRatio;
@@ -82,7 +82,7 @@ export class RNSharedElementContent {
       x: layout.x + (layout.width - width) / 2,
       y: layout.y + (layout.height - height) / 2,
       width,
-      height,
+      height
     });
   }
 }
