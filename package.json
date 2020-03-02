@@ -40,11 +40,10 @@
   ],
   "devDependencies": {
     "@types/react": "^16.9.23",
+    "@types/react-native": "^0.61.17",
     "eslint": "^6.8.0",
     "expo-module-scripts": "^1.2.0",
-    "prettier": "^1.19.1",
-    "react": "^16.13.0",
-    "react-native": "^0.61.5"
+    "prettier": "^1.19.1"
   },
   "dependencies": {}
 }
