@@ -16,7 +16,8 @@ public class BasePackageList {
         new expo.modules.location.LocationPackage(),
         new expo.modules.permissions.PermissionsPackage(),
         new expo.modules.sqlite.SQLitePackage(),
-        new expo.modules.webbrowser.WebBrowserPackage()
+        new expo.modules.webbrowser.WebBrowserPackage(),
+        new com.ijzerenhein.sharedelement.RNSharedElementPackage()
     );
   }
 }

@@ -5,13 +5,13 @@ import { Heroes } from "../../assets";
 import { Colors, Shadows } from "../../components";
 import { TestGroup } from "../../types";
 import { FastImage } from "./FastImage";
-import { PhotoView } from "./PhotoView";
+//import { PhotoView } from "./PhotoView";
 import { TestImage } from "./TestImage";
 
 export function createImageTests(config: {
-  title: string,
-  name: string,
-  props: any
+  title: string;
+  name: string;
+  props: any;
 }): TestGroup {
   const { title, name, props } = config;
   const startProps = props;
@@ -339,7 +339,7 @@ ImageTests.tests.push(FastImageTests);
 const oldTests: TestGroup = {
   name: "Other Image Components",
   tests: [
-    {
+    /*{
       name: "react-native-photo-view",
       description: "TODO - This one doesnt work yet",
       start: <TestImage size="regular" resizeMode="cover" />,
@@ -358,7 +358,7 @@ const oldTests: TestGroup = {
           )}
         />
       )
-    },
+    },*/
     {
       name: "react-native-image-pan-zoom",
       description:
