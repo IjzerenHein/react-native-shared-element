@@ -3,7 +3,7 @@ platform :ios, '10.0'
 require_relative '../node_modules/react-native-unimodules/cocoapods'
 require_relative '../node_modules/@react-native-community/cli-platform-ios/native_modules'
 
-target 'ExpoSharedElementExample' do
+target 'SharedElementExample' do
   rnPrefix = "../node_modules/react-native"
 
   # React Native and its dependencies
@@ -39,12 +39,12 @@ target 'ExpoSharedElementExample' do
   # Other native modules
 
   # Automatically detect installed unimodules
-  # Link the library path directly, instead of using
-  # the symlink location
-  use_unimodules!(exclude: ['expo-shared-element'])
-  pod 'RNSharedElement', :path => "../../ios"
+  use_unimodules!
 
   # react-native-cli autolinking
   use_native_modules!
+
+  # Link package
+  pod 'RNSharedElement', :path => "../.."
 
 end

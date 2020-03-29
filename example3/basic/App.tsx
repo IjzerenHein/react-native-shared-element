@@ -2,7 +2,7 @@ import {
   SharedElement,
   SharedElementTransition,
   nodeFromRef
-} from "expo-shared-element";
+} from "react-native-shared-element";
 import * as React from "react";
 import {
   View,

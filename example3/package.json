@@ -12,7 +12,7 @@
     "@react-native-community/viewpager": "^3.3.0",
     "expo": "~36.0.0",
     "expo-linear-gradient": "^7.0.1",
-    "expo-shared-element": "link:../",
+    "react-native-shared-element": "link:../",
     "react": "~16.9.0",
     "react-dom": "~16.9.0",
     "react-native": "~0.61.4",

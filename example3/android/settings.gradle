@@ -1,4 +1,4 @@
-rootProject.name = 'ExpoSharedElementExample'
+rootProject.name = 'SharedElementExample'
 
 apply from: '../node_modules/react-native-unimodules/gradle.groovy'
 includeUnimodulesProjects()

@@ -1,4 +1,4 @@
-import { SharedElement as ReactNavigationCoreSharedElement } from "expo-shared-element";
+import { SharedElement as ReactNavigationCoreSharedElement } from "react-native-shared-element";
 import * as React from "react";
 
 import { RouterScreenTransition } from "./RouterScreenTransition";

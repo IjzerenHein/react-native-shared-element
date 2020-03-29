@@ -2,7 +2,7 @@ import {
   SharedElementAnimation,
   SharedElementResize,
   SharedElementAlign
-} from "expo-shared-element";
+} from "react-native-shared-element";
 
 export interface SharedElementStrictConfig {
   readonly id: string;

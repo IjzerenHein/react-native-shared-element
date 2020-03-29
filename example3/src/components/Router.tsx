@@ -1,4 +1,4 @@
-import { SharedElementTransition } from "expo-shared-element";
+import { SharedElementTransition } from "react-native-shared-element";
 import * as React from "react";
 import {
   StyleSheet,

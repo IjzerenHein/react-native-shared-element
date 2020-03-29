@@ -1,4 +1,4 @@
-import { nodeFromRef, SharedElementNode } from "expo-shared-element";
+import { nodeFromRef, SharedElementNode } from "react-native-shared-element";
 import * as React from "react";
 import { View } from "react-native";
 

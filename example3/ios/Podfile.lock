@@ -223,9 +223,7 @@ PODS:
   - React-jsinspector (0.61.5)
   - react-native-blur (0.8.0):
     - React
-  - react-native-photo-view (1.5.2):
-    - React
-  - react-native-viewpager (2.0.2):
+  - react-native-viewpager (3.3.0):
     - React
   - React-RCTActionSheet (0.61.5):
     - React-Core/RCTActionSheetHeaders (= 0.61.5)
@@ -276,12 +274,11 @@ PODS:
     - React
   - RNSharedElement (1.0.0):
     - React
-    - UMCore
   - RNVectorIcons (6.6.0):
     - React
-  - SDWebImage (5.4.2):
-    - SDWebImage/Core (= 5.4.2)
-  - SDWebImage/Core (5.4.2)
+  - SDWebImage (5.6.0):
+    - SDWebImage/Core (= 5.6.0)
+  - SDWebImage/Core (5.6.0)
   - SDWebImageWebPCoder (0.2.5):
     - libwebp (~> 1.0)
     - SDWebImage/Core (~> 5.0)
@@ -308,14 +305,14 @@ DEPENDENCIES:
   - EXAppLoaderProvider (from `../node_modules/expo-app-loader-provider/ios`)
   - EXConstants (from `../node_modules/expo-constants/ios`)
   - EXErrorRecovery (from `../node_modules/expo-error-recovery/ios`)
-  - EXFileSystem (from `../node_modules/expo-shared-element/example3/node_modules/expo-file-system/ios`)
+  - EXFileSystem (from `../node_modules/expo-file-system/ios`)
   - EXFont (from `../node_modules/expo-font/ios`)
-  - EXKeepAwake (from `../node_modules/expo-shared-element/example3/node_modules/expo-keep-awake/ios`)
+  - EXKeepAwake (from `../node_modules/expo-keep-awake/ios`)
   - EXLinearGradient (from `../node_modules/expo/node_modules/expo-linear-gradient/ios`)
   - EXLocation (from `../node_modules/expo-location/ios`)
   - EXPermissions (from `../node_modules/expo-permissions/ios`)
-  - EXSQLite (from `../node_modules/expo-shared-element/example3/node_modules/expo-sqlite/ios`)
-  - EXWebBrowser (from `../node_modules/expo-shared-element/example3/node_modules/expo-web-browser/ios`)
+  - EXSQLite (from `../node_modules/expo-sqlite/ios`)
+  - EXWebBrowser (from `../node_modules/expo-web-browser/ios`)
   - FBLazyVector (from `../node_modules/react-native/Libraries/FBLazyVector`)
   - FBReactNativeSpec (from `../node_modules/react-native/Libraries/FBReactNativeSpec`)
   - Folly (from `../node_modules/react-native/third-party-podspecs/Folly.podspec`)
@@ -332,7 +329,6 @@ DEPENDENCIES:
   - React-jsiexecutor (from `../node_modules/react-native/ReactCommon/jsiexecutor`)
   - React-jsinspector (from `../node_modules/react-native/ReactCommon/jsinspector`)
   - "react-native-blur (from `../node_modules/@react-native-community/blur`)"
-  - react-native-photo-view (from `../node_modules/react-native-photo-view`)
   - "react-native-viewpager (from `../node_modules/@react-native-community/viewpager`)"
   - React-RCTActionSheet (from `../node_modules/react-native/Libraries/ActionSheetIOS`)
   - React-RCTAnimation (from `../node_modules/react-native/Libraries/NativeAnimation`)
@@ -350,19 +346,19 @@ DEPENDENCIES:
   - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
   - RNReanimated (from `../node_modules/react-native-reanimated`)
   - RNScreens (from `../node_modules/react-native-screens`)
-  - RNSharedElement (from `../../ios`)
+  - RNSharedElement (from `../..`)
   - RNVectorIcons (from `../node_modules/react-native-vector-icons`)
   - UMBarCodeScannerInterface (from `../node_modules/unimodules-barcode-scanner-interface/ios`)
   - UMCameraInterface (from `../node_modules/unimodules-camera-interface/ios`)
-  - UMConstantsInterface (from `../node_modules/expo-shared-element/example3/node_modules/unimodules-constants-interface/ios`)
+  - UMConstantsInterface (from `../node_modules/unimodules-constants-interface/ios`)
   - "UMCore (from `../node_modules/@unimodules/core/ios`)"
-  - UMFaceDetectorInterface (from `../node_modules/expo-shared-element/example3/node_modules/unimodules-face-detector-interface/ios`)
+  - UMFaceDetectorInterface (from `../node_modules/unimodules-face-detector-interface/ios`)
   - UMFileSystemInterface (from `../node_modules/unimodules-file-system-interface/ios`)
   - UMFontInterface (from `../node_modules/unimodules-font-interface/ios`)
-  - UMImageLoaderInterface (from `../node_modules/expo-shared-element/example3/node_modules/unimodules-image-loader-interface/ios`)
+  - UMImageLoaderInterface (from `../node_modules/unimodules-image-loader-interface/ios`)
   - UMPermissionsInterface (from `../node_modules/unimodules-permissions-interface/ios`)
   - "UMReactNativeAdapter (from `../node_modules/@unimodules/react-native-adapter/ios`)"
-  - UMSensorsInterface (from `../node_modules/expo-shared-element/example3/node_modules/unimodules-sensors-interface/ios`)
+  - UMSensorsInterface (from `../node_modules/react-native-shared-element/example3/node_modules/unimodules-sensors-interface/ios`)
   - UMTaskManagerInterface (from `../node_modules/unimodules-task-manager-interface/ios`)
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga`)
 
@@ -389,13 +385,13 @@ EXTERNAL SOURCES:
     path: "../node_modules/expo-error-recovery/ios"
   EXFileSystem:
     :path: !ruby/object:Pathname
-    path: "../node_modules/expo-shared-element/example3/node_modules/expo-file-system/ios"
+    path: "../node_modules/expo-file-system/ios"
   EXFont:
     :path: !ruby/object:Pathname
     path: "../node_modules/expo-font/ios"
   EXKeepAwake:
     :path: !ruby/object:Pathname
-    path: "../node_modules/expo-shared-element/example3/node_modules/expo-keep-awake/ios"
+    path: "../node_modules/expo-keep-awake/ios"
   EXLinearGradient:
     :path: !ruby/object:Pathname
     path: "../node_modules/expo/node_modules/expo-linear-gradient/ios"
@@ -407,10 +403,10 @@ EXTERNAL SOURCES:
     path: "../node_modules/expo-permissions/ios"
   EXSQLite:
     :path: !ruby/object:Pathname
-    path: "../node_modules/expo-shared-element/example3/node_modules/expo-sqlite/ios"
+    path: "../node_modules/expo-sqlite/ios"
   EXWebBrowser:
     :path: !ruby/object:Pathname
-    path: "../node_modules/expo-shared-element/example3/node_modules/expo-web-browser/ios"
+    path: "../node_modules/expo-web-browser/ios"
   FBLazyVector:
     :path: "../node_modules/react-native/Libraries/FBLazyVector"
   FBReactNativeSpec:
@@ -439,8 +435,6 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/jsinspector"
   react-native-blur:
     :path: "../node_modules/@react-native-community/blur"
-  react-native-photo-view:
-    :path: "../node_modules/react-native-photo-view"
   react-native-viewpager:
     :path: "../node_modules/@react-native-community/viewpager"
   React-RCTActionSheet:
@@ -474,7 +468,7 @@ EXTERNAL SOURCES:
   RNScreens:
     :path: "../node_modules/react-native-screens"
   RNSharedElement:
-    :path: "../../ios"
+    :path: "../.."
   RNVectorIcons:
     :path: "../node_modules/react-native-vector-icons"
   UMBarCodeScannerInterface:
@@ -485,13 +479,13 @@ EXTERNAL SOURCES:
     path: "../node_modules/unimodules-camera-interface/ios"
   UMConstantsInterface:
     :path: !ruby/object:Pathname
-    path: "../node_modules/expo-shared-element/example3/node_modules/unimodules-constants-interface/ios"
+    path: "../node_modules/unimodules-constants-interface/ios"
   UMCore:
     :path: !ruby/object:Pathname
     path: "../node_modules/@unimodules/core/ios"
   UMFaceDetectorInterface:
     :path: !ruby/object:Pathname
-    path: "../node_modules/expo-shared-element/example3/node_modules/unimodules-face-detector-interface/ios"
+    path: "../node_modules/unimodules-face-detector-interface/ios"
   UMFileSystemInterface:
     :path: !ruby/object:Pathname
     path: "../node_modules/unimodules-file-system-interface/ios"
@@ -500,7 +494,7 @@ EXTERNAL SOURCES:
     path: "../node_modules/unimodules-font-interface/ios"
   UMImageLoaderInterface:
     :path: !ruby/object:Pathname
-    path: "../node_modules/expo-shared-element/example3/node_modules/unimodules-image-loader-interface/ios"
+    path: "../node_modules/unimodules-image-loader-interface/ios"
   UMPermissionsInterface:
     :path: !ruby/object:Pathname
     path: "../node_modules/unimodules-permissions-interface/ios"
@@ -509,7 +503,7 @@ EXTERNAL SOURCES:
     path: "../node_modules/@unimodules/react-native-adapter/ios"
   UMSensorsInterface:
     :path: !ruby/object:Pathname
-    path: "../node_modules/expo-shared-element/example3/node_modules/unimodules-sensors-interface/ios"
+    path: "../node_modules/react-native-shared-element/example3/node_modules/unimodules-sensors-interface/ios"
   UMTaskManagerInterface:
     :path: !ruby/object:Pathname
     path: "../node_modules/unimodules-task-manager-interface/ios"
@@ -546,8 +540,7 @@ SPEC CHECKSUMS:
   React-jsiexecutor: d5525f9ed5f782fdbacb64b9b01a43a9323d2386
   React-jsinspector: fa0ecc501688c3c4c34f28834a76302233e29dc0
   react-native-blur: cad4d93b364f91e7b7931b3fa935455487e5c33c
-  react-native-photo-view: 63e9e61da873531f931008b545d8d10c5373ddf8
-  react-native-viewpager: 88f4269c19d626d2ccd5f7c7f5f7f76422ddb9e3
+  react-native-viewpager: a7b438ca32c57b2614ece2a123e7fe116f743131
   React-RCTActionSheet: 600b4d10e3aea0913b5a92256d2719c0cdd26d76
   React-RCTAnimation: 791a87558389c80908ed06cc5dfc5e7920dfa360
   React-RCTBlob: d89293cc0236d9cb0933d85e430b0bbe81ad1d72
@@ -563,9 +556,9 @@ SPEC CHECKSUMS:
   RNGestureHandler: 911d3b110a7a233a34c4f800e7188a84b75319c6
   RNReanimated: b2ab0b693dddd2339bd2f300e770f6302d2e960c
   RNScreens: 254da4b84f25971cbb30ed3ddc84131f23cac812
-  RNSharedElement: ad7607024fb72055876a29682fe95fd7f243eb57
+  RNSharedElement: c9898ac5fd12ab19b0825c455ae7c53ed164bce5
   RNVectorIcons: 0bb4def82230be1333ddaeee9fcba45f0b288ed4
-  SDWebImage: 4ca2dc4eefae4224bea8f504251cda485a363745
+  SDWebImage: 21b19f56b4226cdfe3aefe4e6848dc43ed129a86
   SDWebImageWebPCoder: 947093edd1349d820c40afbd9f42acb6cdecd987
   UMBarCodeScannerInterface: 3802c8574ef119c150701d679ab386e2266d6a54
   UMCameraInterface: 985d301f688ed392f815728f0dd906ca34b7ccb1
@@ -581,6 +574,6 @@ SPEC CHECKSUMS:
   UMTaskManagerInterface: a98e37a576a5220bf43b8faf33cfdc129d2f441d
   Yoga: f2a7cd4280bfe2cca5a7aed98ba0eb3d1310f18b
 
-PODFILE CHECKSUM: 5734c8d7d92d3ec0af893f5eb5e410ac1c514746
+PODFILE CHECKSUM: b9d188e7888b90ddbb275217e559a013957b4e12
 
-COCOAPODS: 1.8.4
+COCOAPODS: 1.9.1

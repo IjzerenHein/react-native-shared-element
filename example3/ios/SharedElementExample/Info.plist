@@ -5,7 +5,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleDisplayName</key>
-	<string>ExpoSharedElementExample</string>
+	<string>SharedElementExample</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -57,26 +57,26 @@
 		</dict>
 	</dict>
 	<key>NSCalendarsUsageDescription</key>
-	<string>Allow ExpoSharedElementExample to access your calendar</string>
+	<string>Allow SharedElementExample to access your calendar</string>
 	<key>NSCameraUsageDescription</key>
-	<string>Allow ExpoSharedElementExample to use the camera</string>
+	<string>Allow SharedElementExample to use the camera</string>
 	<key>NSContactsUsageDescription</key>
-	<string>Allow ExpoSharedElementExample experiences to access your contacts</string>
+	<string>Allow SharedElementExample experiences to access your contacts</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>Allow ExpoSharedElementExample to use your location</string>
+	<string>Allow SharedElementExample to use your location</string>
 	<key>NSLocationAlwaysUsageDescription</key>
-	<string>Allow ExpoSharedElementExample to use your location</string>
+	<string>Allow SharedElementExample to use your location</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Allow ExpoSharedElementExample to use your location</string>
+	<string>Allow SharedElementExample to use your location</string>
 	<key>NSMicrophoneUsageDescription</key>
-	<string>Allow ExpoSharedElementExample to access your microphone</string>
+	<string>Allow SharedElementExample to access your microphone</string>
 	<key>NSMotionUsageDescription</key>
-	<string>Allow ExpoSharedElementExample to access your device's accelerometer</string>
+	<string>Allow SharedElementExample to access your device's accelerometer</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
-	<string>Give ExpoSharedElementExample periences permission to save photos</string>
+	<string>Give SharedElementExample periences permission to save photos</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Give ExpoSharedElementExample periences permission to access your photos</string>
+	<string>Give SharedElementExample periences permission to access your photos</string>
 	<key>NSRemindersUsageDescription</key>
-	<string>Allow ExpoSharedElementExample to access your reminders</string>
+	<string>Allow SharedElementExample to access your reminders</string>
 </dict>
 </plist>
