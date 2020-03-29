@@ -1,3 +1,5 @@
+## Important: The `./Example` app is being phased out. Use `./test-app` instead.
+
 # Shared Element Transition Example
 
 The example app includes a variety of tests and receipes. It features a simple stack router which implements the shared element primitives.
