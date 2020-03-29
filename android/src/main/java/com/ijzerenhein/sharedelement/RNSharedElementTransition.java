@@ -22,7 +22,6 @@ import com.facebook.react.uimanager.events.RCTEventEmitter;
 
 public class RNSharedElementTransition extends ViewGroup {
   static private String LOG_TAG = "RNSharedElementTransition";
-  static private Rect EMPTY_RECT = new Rect();
 
   enum Item {
     START(0),
@@ -201,17 +200,17 @@ public class RNSharedElementTransition extends ViewGroup {
     }
 
     // Get layout
-    Rect startLayout = (startStyle != null) ? startStyle.layout : EMPTY_RECT;
-    Rect startFrame = (startStyle != null) ? startStyle.frame : EMPTY_RECT;
-    Rect endLayout = (endStyle != null) ? endStyle.layout : EMPTY_RECT;
-    Rect endFrame = (endStyle != null) ? endStyle.frame : EMPTY_RECT;
+    Rect startLayout = RNSharedElementStyle.normalizeLayout(startStyle, endStyle);
+    Rect startFrame = (startStyle != null) ? startStyle.frame : RNSharedElementStyle.EMPTY_RECT;
+    Rect endLayout = RNSharedElementStyle.normalizeLayout(endStyle, startStyle);
+    Rect endFrame = (endStyle != null) ? endStyle.frame : RNSharedElementStyle.EMPTY_RECT;
     RectF parentLayout = new RectF(startLayout);
     parentLayout.union(new RectF(endLayout));
 
     // Get clipped areas
-    Rect startClippedLayout = (startStyle != null) ? startItem.getClippedLayout() : EMPTY_RECT;
+    Rect startClippedLayout = (startStyle != null) ? startItem.getClippedLayout() : RNSharedElementStyle.EMPTY_RECT;
     Rect startClipInsets = getClipInsets(startLayout, startClippedLayout);
-    Rect endClippedLayout = (endStyle != null) ? endItem.getClippedLayout() : EMPTY_RECT;
+    Rect endClippedLayout = (endStyle != null) ? endItem.getClippedLayout() : RNSharedElementStyle.EMPTY_RECT;
     Rect endClipInsets = getClipInsets(endLayout, endClippedLayout);
 
     // Get interpolated layout

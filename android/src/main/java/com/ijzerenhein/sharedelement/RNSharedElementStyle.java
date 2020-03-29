@@ -21,6 +21,8 @@ import com.facebook.react.modules.i18nmanager.I18nUtil;
 public class RNSharedElementStyle {
   static private String LOG_TAG = "RNSharedElementStyle";
 
+  static Rect EMPTY_RECT = new Rect();
+
   static int PROP_OPACITY = 1 << 0;
   static int PROP_ELEVATION = 1 << 1;
   static int PROP_BACKGROUND_COLOR = 1 << 2;
@@ -146,6 +148,33 @@ public class RNSharedElementStyle {
     if (opacity <= 0) return false;
     if (elevation > 0) return true;
     return (Color.alpha(backgroundColor) > 0) || (Color.alpha(borderColor) > 0);
+  }
+
+  static Rect normalizeLayout(RNSharedElementStyle style, RNSharedElementStyle otherStyle) {
+    if (style == null) return EMPTY_RECT;
+
+    // Get ancestor translation
+    float[] f = new float[9];
+    style.ancestorTransform.getValues(f);
+    int ancestorTranslateX = (int) f[Matrix.MTRANS_X];
+    int ancestorTranslateY = (int) f[Matrix.MTRANS_Y];
+
+    // Get other translation
+    int otherAncestorTranslateX = ancestorTranslateX;
+    int otherAncestorTranslateY = ancestorTranslateY;
+    if (otherStyle != null) {
+      otherStyle.ancestorTransform.getValues(f);
+      otherAncestorTranslateX = (int) f[Matrix.MTRANS_X];
+      otherAncestorTranslateY = (int) f[Matrix.MTRANS_Y];
+    }
+
+    // Calculate the optional translation that was performed on the ancestor.
+    // This corrects for any scene translation that was performed by the navigator.
+    // E.g. when the incoming scene starts to the right and moves to the left
+    // to enter the screen
+    int left = style.layout.left - ((ancestorTranslateX != otherAncestorTranslateX) ? ancestorTranslateX : 0);
+    int top = style.layout.top -  ((ancestorTranslateY != otherAncestorTranslateY) ? ancestorTranslateY : 0);
+    return new Rect(left, top, left + style.layout.width(), top + style.layout.height());
   }
 
   static boolean equalsScaleType(ScaleType scaleType1, ScaleType scaleType2) {

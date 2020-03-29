@@ -189,20 +189,12 @@ class RNSharedElementNode {
     // Get absolute position on screen (left/top)
     int[] location = new int[2];
     view.getLocationOnScreen(location);
-
-    // Calculate the optional translation that was performed on the ancestor.
-    // This corrects for any scene translation that was performed by the navigator.
-    // E.g. when the incoming scene starts to the right and moves to the left
-    // to enter the screen
-    float[] f = new float[9];
-    ancestorTransform.getValues(f);
-    int ancestorTranslateX = (int) f[Matrix.MTRANS_X];
-    int ancestorTranslateY = (int) f[Matrix.MTRANS_Y];
-    left = location[0] - ancestorTranslateX;
-    top = location[1] - ancestorTranslateY;
+    left = location[0];
+    top = location[1];
 
     // In case the view has a scale transform applied, the calculate
     // the correct visual width & height of the view
+    float[] f = new float[9];
     transform.getValues(f);
     float scaleX = f[Matrix.MSCALE_X];
     float scaleY = f[Matrix.MSCALE_Y];
