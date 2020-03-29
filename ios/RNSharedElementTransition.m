@@ -227,17 +227,22 @@
   [self updateNodeVisibility];
 }
 
-- (CGRect)normalizeLayout:(CGRect)layout ancestor:(RNSharedElementTransitionItem*)ancestor
+- (CGRect)normalizeLayout:(CGRect)layout
+                 ancestor:(RNSharedElementTransitionItem*)ancestor
+            otherAncestor:(RNSharedElementTransitionItem*)otherAncestor
 {
   RNSharedElementStyle* style = ancestor.style;
   if (style == nil) return [self.superview convertRect:layout fromView:nil];
+  RNSharedElementStyle* otherStyle = otherAncestor ? otherAncestor.style : nil;
   
   // Exclude translations that have been applied to the scene by the navigator.
   // E.g. a navigator might translate the scene to the right of the screen,
   // in order to create a "slide in" animation to show it. In this case the absolute
   // measured position of the element is incorrect, and needs to be corrected.
-  layout.origin.x -= style.transform.m41;
-  layout.origin.y -= style.transform.m42;
+  CGFloat sceneTranslateX = ((otherStyle == nil) || (otherStyle.transform.m41 != style.transform.m41)) ? style.transform.m41 : 0;
+  CGFloat sceneTranslateY = ((otherStyle == nil) || (otherStyle.transform.m42 != style.transform.m42)) ? style.transform.m42 : 0;
+  layout.origin.x -= sceneTranslateX;
+  layout.origin.y -= sceneTranslateY;
   
   // Undo any scaling in case the screen is scaled
   if (!CGSizeEqualToSize(style.layout.size, style.size)) {
@@ -367,16 +372,16 @@
   
   // Get start layout
   RNSharedElementStyle* startStyle = startItem.style;
-  CGRect startLayout = startStyle ? [self normalizeLayout:startStyle.layout ancestor:startAncestor] : CGRectZero;
-  CGRect startVisibleLayout = startStyle ? [self normalizeLayout:[startItem visibleLayoutForAncestor:startAncestor] ancestor:startAncestor] : CGRectZero;
-  CGRect startContentLayout = startStyle ? [self normalizeLayout:[startItem contentLayoutForContent:startItem.content] ancestor:startAncestor] : CGRectZero;
+  CGRect startLayout = startStyle ? [self normalizeLayout:startStyle.layout ancestor:startAncestor otherAncestor:endAncestor] : CGRectZero;
+  CGRect startVisibleLayout = startStyle ? [self normalizeLayout:[startItem visibleLayoutForAncestor:startAncestor] ancestor:startAncestor otherAncestor:endAncestor] : CGRectZero;
+  CGRect startContentLayout = startStyle ? [self normalizeLayout:[startItem contentLayoutForContent:startItem.content] ancestor:startAncestor otherAncestor:endAncestor] : CGRectZero;
   UIEdgeInsets startClipInsets = [self getClipInsets:startLayout visibleLayout:startVisibleLayout];
   
   // Get end layout
   RNSharedElementStyle* endStyle = endItem.style;
-  CGRect endLayout = endStyle ? [self normalizeLayout:endStyle.layout ancestor:endAncestor] : CGRectZero;
-  CGRect endVisibleLayout = endStyle ? [self normalizeLayout:[endItem visibleLayoutForAncestor:endAncestor] ancestor:endAncestor] : CGRectZero;
-  CGRect endContentLayout = endStyle ?  [self normalizeLayout:[endItem contentLayoutForContent:(endItem.content ? endItem.content : startItem.content)] ancestor:endAncestor] : CGRectZero;
+  CGRect endLayout = endStyle ? [self normalizeLayout:endStyle.layout ancestor:endAncestor otherAncestor:startAncestor] : CGRectZero;
+  CGRect endVisibleLayout = endStyle ? [self normalizeLayout:[endItem visibleLayoutForAncestor:endAncestor] ancestor:endAncestor otherAncestor:startAncestor] : CGRectZero;
+  CGRect endContentLayout = endStyle ?  [self normalizeLayout:[endItem contentLayoutForContent:(endItem.content ? endItem.content : startItem.content)] ancestor:endAncestor otherAncestor:startAncestor] : CGRectZero;
   UIEdgeInsets endClipInsets = [self getClipInsets:endLayout visibleLayout:endVisibleLayout];
   
   // Get interpolated style & layout
