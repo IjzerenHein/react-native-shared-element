@@ -12,7 +12,9 @@
     "test": "expo-module test",
     "prepare_disabled": "expo-module prepare",
     "prepublishOnly": "expo-module prepublishOnly",
-    "expo-module": "expo-module"
+    "expo-module": "expo-module",
+    "copy-flow-typings": "cp ./flow-typed/index.js.flow ./build/index.js.flow",
+    "prepare": "yarn copy-flow-typings"
   },
   "keywords": [
     "react-native-shared-element",
