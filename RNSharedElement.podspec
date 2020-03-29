@@ -8,7 +8,7 @@ Pod::Spec.new do |s|
   s.name         = "RNSharedElement"
   s.version      = package['version']
   s.summary      = package['description']
-  s.description    = package['description']
+  s.description  = package['description']
   s.license      = package['license']
 
   s.authors      = package['author']

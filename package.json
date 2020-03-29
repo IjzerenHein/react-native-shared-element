@@ -1,5 +1,5 @@
 {
-  "name": "expo-shared-element",
+  "name": "react-native-shared-element",
   "version": "1.0.0",
   "description": "Native shared element transition primitives for react-native 💫",
   "main": "build/index.js",
@@ -16,20 +16,19 @@
   },
   "keywords": [
     "react-native-shared-element",
-    "expo-shared-element",
     "expo",
-    "expo-magic-move",
+    "expo-shared-element",
     "react-native",
     "magic move",
     "shared element",
     "shared element transition",
     "visual clone"
   ],
-  "repository": "https://github.com/IjzerenHein/expo-shared-element",
-  "bugs": "https://github.com/IjzerenHein/expo-shared-element/issues",
+  "repository": "https://github.com/IjzerenHein/react-native-shared-element",
+  "bugs": "https://github.com/IjzerenHein/react-native-shared-element/issues",
   "author": "IjzerenHein <hrutjes@gmail.com>",
   "license": "MIT",
-  "homepage": "https://github.com/IjzerenHein/expo-shared-element",
+  "homepage": "https://github.com/IjzerenHein/react-native-shared-element",
   "files": [
     "src/",
     "build/",
