@@ -20,7 +20,7 @@ export const ScrollViewTests: TestGroup = {
       end: <TestImage end size="max" />
     },
     {
-      name: "Clip top  ➔  Slide down",
+      name: "Clip top  ➔  Slide down (inverted)",
       start: <TestScrollView inverted />,
       end: <TestImage end position="bottom" />
     },
@@ -30,7 +30,7 @@ export const ScrollViewTests: TestGroup = {
       end: <TestImage end position="top" />
     },
     {
-      name: "Clip left  ➔  Slide right",
+      name: "Clip left  ➔  Slide right (inverted)",
       start: <TestScrollView horizontal inverted />,
       end: <TestImage end position="right" />
     },
@@ -40,7 +40,7 @@ export const ScrollViewTests: TestGroup = {
       end: <TestImage end position="left" />
     },
     {
-      name: "Clip top  ➔  Full reveal",
+      name: "Clip top  ➔  Full reveal (inverted)",
       start: <TestScrollView inverted />,
       end: <TestImage end size="max" />
     },
@@ -50,7 +50,7 @@ export const ScrollViewTests: TestGroup = {
       end: <TestImage end size="max" />
     },
     {
-      name: "Clip left  ➔  Full reveal",
+      name: "Clip left  ➔  Full reveal (inverted)",
       start: <TestScrollView horizontal inverted />,
       end: <TestImage end size="max" />
     },
