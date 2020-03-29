@@ -57,3 +57,7 @@ buck-out/
 
 # Pods
 Pods/
+
+# Web-build
+web-build/
+.expo/
