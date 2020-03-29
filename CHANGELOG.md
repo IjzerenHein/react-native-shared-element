@@ -1,3 +1,16 @@
+# [0.6.0-alpha0](https://github.com/IjzerenHein/react-native-shared-element/compare/v0.5.6...v0.6.0-alpha0) (2020-03-29)
+
+### Bug Fixes
+
+* **ios** Fix element position when scene is translated
+* **android** Fix element position when scene is translated
+* **android** Fix clipping for translation transforms
+
+## Improvements
+
+* Updated internal tooling
+* Added new `test-app` using TypeScript (wip)
+
 ## [0.5.6](https://github.com/IjzerenHein/react-native-shared-element/compare/v0.5.5...v0.5.6) (2020-02-09)
 
 
