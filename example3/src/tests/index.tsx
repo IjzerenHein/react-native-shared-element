@@ -5,6 +5,7 @@ import { MultipleTests } from "./multiple";
 import { ResizeAlignTests } from "./resizeAlign";
 import { ScrollViewTests } from "./scrollView";
 import { TextTests } from "./text";
+import { TransformTests } from "./transform";
 import { ViewTests } from "./view";
 
 export const Tests: (Test | TestGroup)[] = [
@@ -14,5 +15,6 @@ export const Tests: (Test | TestGroup)[] = [
   CompoundTests,
   MultipleTests,
   ScrollViewTests,
-  ResizeAlignTests
+  ResizeAlignTests,
+  TransformTests
 ];
