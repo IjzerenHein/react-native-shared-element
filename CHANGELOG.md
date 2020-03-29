@@ -2,6 +2,7 @@
 
 ### Bug Fixes
 
+* **js** Fix SharedElementProp type-definition (thanks @evanc)
 * **ios** Fix element position when scene is translated
 * **android** Fix element position when scene is translated
 * **android** Fix clipping for translation transforms
