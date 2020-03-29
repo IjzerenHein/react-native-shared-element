@@ -152,6 +152,11 @@ public class RNSharedElementStyle {
 
   static Rect normalizeLayout(RNSharedElementStyle style, RNSharedElementStyle otherStyle) {
     if (style == null) return EMPTY_RECT;
+    return normalizeLayout(style.layout, style, otherStyle);
+  }
+
+  static Rect normalizeLayout(Rect layout, RNSharedElementStyle style, RNSharedElementStyle otherStyle) {
+    if ((layout == null) || (style == null)) return EMPTY_RECT;
 
     // Get ancestor translation
     float[] f = new float[9];
@@ -172,9 +177,9 @@ public class RNSharedElementStyle {
     // This corrects for any scene translation that was performed by the navigator.
     // E.g. when the incoming scene starts to the right and moves to the left
     // to enter the screen
-    int left = style.layout.left - ((ancestorTranslateX != otherAncestorTranslateX) ? ancestorTranslateX : 0);
-    int top = style.layout.top -  ((ancestorTranslateY != otherAncestorTranslateY) ? ancestorTranslateY : 0);
-    return new Rect(left, top, left + style.layout.width(), top + style.layout.height());
+    int left = layout.left - ((ancestorTranslateX != otherAncestorTranslateX) ? ancestorTranslateX : 0);
+    int top = layout.top -  ((ancestorTranslateY != otherAncestorTranslateY) ? ancestorTranslateY : 0);
+    return new Rect(left, top, left + layout.width(), top + layout.height());
   }
 
   static boolean equalsScaleType(ScaleType scaleType1, ScaleType scaleType2) {

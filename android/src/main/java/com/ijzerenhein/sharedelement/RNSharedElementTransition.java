@@ -208,9 +208,9 @@ public class RNSharedElementTransition extends ViewGroup {
     parentLayout.union(new RectF(endLayout));
 
     // Get clipped areas
-    Rect startClippedLayout = (startStyle != null) ? startItem.getClippedLayout() : RNSharedElementStyle.EMPTY_RECT;
+    Rect startClippedLayout = RNSharedElementStyle.normalizeLayout((startStyle != null) ? startItem.getClippedLayout() : RNSharedElementStyle.EMPTY_RECT, startStyle, endStyle);
     Rect startClipInsets = getClipInsets(startLayout, startClippedLayout);
-    Rect endClippedLayout = (endStyle != null) ? endItem.getClippedLayout() : RNSharedElementStyle.EMPTY_RECT;
+    Rect endClippedLayout = RNSharedElementStyle.normalizeLayout((endStyle != null) ? endItem.getClippedLayout() : RNSharedElementStyle.EMPTY_RECT, endStyle, startStyle);
     Rect endClipInsets = getClipInsets(endLayout, endClippedLayout);
 
     // Get interpolated layout
@@ -236,6 +236,9 @@ public class RNSharedElementTransition extends ViewGroup {
     }
 
     // Apply clipping insets
+    // TODO: Fix clipping when end-layout is larger than
+    // start-layout in all dimensions.
+    // TEST: ScrollViews & Clipping > Clip Bottom --> Full reveal
     parentLayout.left += interpolatedClipInsets.left;
     parentLayout.top += interpolatedClipInsets.top;
     parentLayout.right -= interpolatedClipInsets.right;
@@ -361,8 +364,8 @@ public class RNSharedElementTransition extends ViewGroup {
     return new Rect(
             clippedLayout.left - layout.left,
             clippedLayout.top - layout.top,
-            clippedLayout.right - layout.right,
-            clippedLayout.bottom - layout.bottom
+            layout.right - clippedLayout.right,
+            layout.bottom - clippedLayout.bottom
     );
   }
 

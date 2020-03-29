@@ -5,7 +5,6 @@ import android.view.View;
 import android.view.ViewParent;
 import android.view.ViewGroup;
 import android.graphics.Rect;
-import android.graphics.Matrix;
 
 class RNSharedElementTransitionItem {
   static private String LOG_TAG = "RNSharedElementTransitionItem";
@@ -127,12 +126,6 @@ class RNSharedElementTransitionItem {
     View view = getView();
     View ancestorView = mNode.getAncestorView();
 
-    // Get ancestor transform
-    float[] f = new float[9];
-    mStyle.ancestorTransform.getValues(f);
-    int ancestorTranslateX = (int) f[Matrix.MTRANS_X];
-    int ancestorTranslateY = (int) f[Matrix.MTRANS_Y];
-
     // Get visible area (some parts may be clipped in a scrollview or something)
     Rect clippedLayout = new Rect(mStyle.layout);
     ViewParent parentView = view.getParent();
@@ -142,36 +135,37 @@ class RNSharedElementTransitionItem {
       if (!(parentView instanceof ViewGroup)) break;
       ViewGroup viewGroup = (ViewGroup) parentView;
       viewGroup.getLocationOnScreen(location);
-      location[0] -= ancestorTranslateX;
-      location[1] -= ancestorTranslateY;
 
       bounds.left = location[0];
       bounds.top = location[1];
       bounds.right = location[0] + (viewGroup.getWidth());
       bounds.bottom = location[1] + (viewGroup.getHeight());
 
-      if (!clippedLayout.intersect(bounds)) {
-        if (clippedLayout.bottom < bounds.top) {
-          clippedLayout.top = bounds.top;
-          clippedLayout.bottom = bounds.top;
+      if (viewGroup.getClipChildren()) {
+        if (!clippedLayout.intersect(bounds)) {
+          if (clippedLayout.bottom < bounds.top) {
+            clippedLayout.top = bounds.top;
+            clippedLayout.bottom = bounds.top;
+          }
+          if (clippedLayout.top > bounds.bottom) {
+            clippedLayout.top = bounds.bottom;
+            clippedLayout.bottom = bounds.bottom;
+          }
+          if (clippedLayout.right < bounds.left) {
+            clippedLayout.left = bounds.left;
+            clippedLayout.right = bounds.left;
+          }
+          if (clippedLayout.left > bounds.right) {
+            clippedLayout.left = bounds.right;
+            clippedLayout.right = bounds.right;
+          }
+          break;
         }
-        if (clippedLayout.top > bounds.bottom) {
-          clippedLayout.top = bounds.bottom;
-          clippedLayout.bottom = bounds.bottom;
-        }
-        if (clippedLayout.right < bounds.left) {
-          clippedLayout.left = bounds.left;
-          clippedLayout.right = bounds.left;
-        }
-        if (clippedLayout.left > bounds.right) {
-          clippedLayout.left = bounds.right;
-          clippedLayout.right = bounds.right;
-        }
-        break;
       }
       if (parentView == ancestorView) {
         break;
       }
+      view = (View) parentView;
       parentView = parentView.getParent();
     }
 
