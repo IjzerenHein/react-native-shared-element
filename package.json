@@ -33,6 +33,7 @@
     "src/",
     "build/",
     "/ios",
+    "/*.podspec",
     "/android",
     "/windows",
     "/web"
