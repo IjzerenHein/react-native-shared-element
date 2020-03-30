@@ -178,7 +178,7 @@ public class RNSharedElementStyle {
     // E.g. when the incoming scene starts to the right and moves to the left
     // to enter the screen
     int left = layout.left - ((ancestorTranslateX != otherAncestorTranslateX) ? ancestorTranslateX : 0);
-    int top = layout.top -  ((ancestorTranslateY != otherAncestorTranslateY) ? ancestorTranslateY : 0);
+    int top = layout.top - ((ancestorTranslateY != otherAncestorTranslateY) ? ancestorTranslateY : 0);
     return new Rect(left, top, left + layout.width(), top + layout.height());
   }
 

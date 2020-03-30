@@ -337,11 +337,11 @@ public class RNSharedElementTransition extends ViewGroup {
     // Fire events
     if ((startStyle != null) && !startItem.getHasCalledOnMeasure()) {
       startItem.setHasCalledOnMeasure(true);
-      fireMeasureEvent("startNode", startItem, startClippedLayout);
+      fireMeasureEvent("startNode", startItem, startLayout, startClippedLayout);
     }
     if ((endStyle != null) && !endItem.getHasCalledOnMeasure()) {
       endItem.setHasCalledOnMeasure(true);
-      fireMeasureEvent("endNode", endItem, endClippedLayout);
+      fireMeasureEvent("endNode", endItem, endLayout, endClippedLayout);
     }
   }
 
@@ -417,24 +417,25 @@ public class RNSharedElementTransition extends ViewGroup {
     return clipInsets;
   }
 
-  private void fireMeasureEvent(String name, RNSharedElementTransitionItem item, Rect clippedLayout) {
+  private void fireMeasureEvent(String name, RNSharedElementTransitionItem item, Rect layout, Rect clippedLayout) {
     ReactContext reactContext = (ReactContext) getContext();
     RNSharedElementStyle style = item.getStyle();
     RNSharedElementContent content = item.getContent();
 
     WritableMap layoutData = Arguments.createMap();
-    layoutData.putDouble("x", PixelUtil.toDIPFromPixel(style.layout.left));
-    layoutData.putDouble("y", PixelUtil.toDIPFromPixel(style.layout.top));
-    layoutData.putDouble("width", PixelUtil.toDIPFromPixel(style.layout.width()));
-    layoutData.putDouble("height", PixelUtil.toDIPFromPixel(style.layout.height()));
-    layoutData.putDouble("visibleX", PixelUtil.toDIPFromPixel(clippedLayout.left));
-    layoutData.putDouble("visibleY", PixelUtil.toDIPFromPixel(clippedLayout.top));
+    layoutData.putDouble("x", PixelUtil.toDIPFromPixel(layout.left - mParentOffset[0]));
+    layoutData.putDouble("y", PixelUtil.toDIPFromPixel(layout.top - mParentOffset[1]));
+    layoutData.putDouble("width", PixelUtil.toDIPFromPixel(layout.width()));
+    layoutData.putDouble("height", PixelUtil.toDIPFromPixel(layout.height()));
+    layoutData.putDouble("visibleX", PixelUtil.toDIPFromPixel(clippedLayout.left - mParentOffset[0]));
+    layoutData.putDouble("visibleY", PixelUtil.toDIPFromPixel(clippedLayout.top - mParentOffset[1]));
     layoutData.putDouble("visibleWidth", PixelUtil.toDIPFromPixel(clippedLayout.width()));
     layoutData.putDouble("visibleHeight", PixelUtil.toDIPFromPixel(clippedLayout.height()));
-    layoutData.putDouble("contentX", PixelUtil.toDIPFromPixel(style.layout.left)); // TODO
-    layoutData.putDouble("contentY", PixelUtil.toDIPFromPixel(style.layout.top)); // TODO
-    layoutData.putDouble("contentWidth", PixelUtil.toDIPFromPixel(style.layout.width())); // TODO
-    layoutData.putDouble("contentHeight", PixelUtil.toDIPFromPixel(style.layout.height())); // TODO
+    // TODO: intrinsic content (unclipped size & position of image)
+    layoutData.putDouble("contentX", PixelUtil.toDIPFromPixel(layout.left - mParentOffset[0])); // TODO
+    layoutData.putDouble("contentY", PixelUtil.toDIPFromPixel(layout.top - mParentOffset[1])); // TODO
+    layoutData.putDouble("contentWidth", PixelUtil.toDIPFromPixel(layout.width())); // TODO
+    layoutData.putDouble("contentHeight", PixelUtil.toDIPFromPixel(layout.height())); // TODO
 
     WritableMap styleData = Arguments.createMap();
     styleData.putDouble("borderTopLeftRadius", PixelUtil.toDIPFromPixel(style.borderTopLeftRadius));
