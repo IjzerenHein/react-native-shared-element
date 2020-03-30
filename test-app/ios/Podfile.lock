@@ -272,7 +272,7 @@ PODS:
     - React
   - RNScreens (2.0.0-alpha.12):
     - React
-  - RNSharedElement (1.0.0):
+  - RNSharedElement (0.6.0):
     - React
   - RNVectorIcons (6.6.0):
     - React
@@ -358,7 +358,7 @@ DEPENDENCIES:
   - UMImageLoaderInterface (from `../node_modules/unimodules-image-loader-interface/ios`)
   - UMPermissionsInterface (from `../node_modules/unimodules-permissions-interface/ios`)
   - "UMReactNativeAdapter (from `../node_modules/@unimodules/react-native-adapter/ios`)"
-  - UMSensorsInterface (from `../node_modules/react-native-shared-element/example3/node_modules/unimodules-sensors-interface/ios`)
+  - UMSensorsInterface (from `../node_modules/react-native-shared-element/test-app/node_modules/unimodules-sensors-interface/ios`)
   - UMTaskManagerInterface (from `../node_modules/unimodules-task-manager-interface/ios`)
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga`)
 
@@ -503,7 +503,7 @@ EXTERNAL SOURCES:
     path: "../node_modules/@unimodules/react-native-adapter/ios"
   UMSensorsInterface:
     :path: !ruby/object:Pathname
-    path: "../node_modules/react-native-shared-element/example3/node_modules/unimodules-sensors-interface/ios"
+    path: "../node_modules/react-native-shared-element/test-app/node_modules/unimodules-sensors-interface/ios"
   UMTaskManagerInterface:
     :path: !ruby/object:Pathname
     path: "../node_modules/unimodules-task-manager-interface/ios"
@@ -556,7 +556,7 @@ SPEC CHECKSUMS:
   RNGestureHandler: 911d3b110a7a233a34c4f800e7188a84b75319c6
   RNReanimated: b2ab0b693dddd2339bd2f300e770f6302d2e960c
   RNScreens: 254da4b84f25971cbb30ed3ddc84131f23cac812
-  RNSharedElement: c9898ac5fd12ab19b0825c455ae7c53ed164bce5
+  RNSharedElement: 7c98e474c8f72a67bbabb820b4b86460aa6502d8
   RNVectorIcons: 0bb4def82230be1333ddaeee9fcba45f0b288ed4
   SDWebImage: 21b19f56b4226cdfe3aefe4e6848dc43ed129a86
   SDWebImageWebPCoder: 947093edd1349d820c40afbd9f42acb6cdecd987
