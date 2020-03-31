@@ -7,72 +7,49 @@
 #import <React/RCTView.h>
 
 @implementation RNSharedElementStyle
-{
-  UIColor* _backgroundColor;
-  UIColor* _borderColor;
-  UIColor* _shadowColor;
-}
 
 - (instancetype)init
 {
+  if ((self = [super init])) {
+    _cornerRadii = [RNSharedElementCornerRadii new];
+  }
   return self;
 }
 
 - (instancetype)initWithView:(UIView*) view
 {
-  _view = view;
-  _size = view.bounds.size;
-  _transform = [RNSharedElementStyle getAbsoluteViewTransform:view];
-  
-  // Set base props from style
-  CALayer* layer = view.layer;
-  _opacity = layer.opacity;
-  _cornerRadius = layer.cornerRadius;
-  _borderWidth = layer.borderWidth;
-  _borderColor = layer.borderColor ? [UIColor colorWithCGColor:layer.borderColor] : [UIColor clearColor];
-  _backgroundColor = layer.backgroundColor ? [UIColor colorWithCGColor:layer.backgroundColor] : [UIColor clearColor];
-  _shadowColor = layer.shadowColor ? [UIColor colorWithCGColor:layer.shadowColor] : [UIColor clearColor];
-  _shadowOffset = layer.shadowOffset;
-  _shadowRadius = layer.shadowRadius;
-  _shadowOpacity = layer.shadowOpacity;
-  
-  // On RN60 and beyond, certain styles are not immediately applied to the view/layer
-  // when a borderWidth is set on the view. Therefore, as a fail-safe we also try to
-  // get the props from the RCTView directly, when possible.
-  if ([view isKindOfClass:[RCTView class]]) {
-    RCTView* rctView = (RCTView*) view;
-    _cornerRadius = rctView.borderRadius;
-    _borderColor = rctView.borderColor ? [UIColor colorWithCGColor:rctView.borderColor] : [UIColor clearColor];
-    _borderWidth = rctView.borderWidth >= 0.0f ? rctView.borderWidth : 0.0f;
-    _backgroundColor = rctView.backgroundColor ? rctView.backgroundColor : [UIColor clearColor];
+  if ((self = [super init])) {
+    _view = view;
+    _size = view.bounds.size;
+    _transform = [RNSharedElementStyle getAbsoluteViewTransform:view];
+    
+    // Set base props from style
+    CALayer* layer = view.layer;
+    _opacity = layer.opacity;
+    _borderWidth = layer.borderWidth;
+    _borderColor = layer.borderColor ? [UIColor colorWithCGColor:layer.borderColor] : [UIColor clearColor];
+    _backgroundColor = layer.backgroundColor ? [UIColor colorWithCGColor:layer.backgroundColor] : [UIColor clearColor];
+    _shadowColor = layer.shadowColor ? [UIColor colorWithCGColor:layer.shadowColor] : [UIColor clearColor];
+    _shadowOffset = layer.shadowOffset;
+    _shadowRadius = layer.shadowRadius;
+    _shadowOpacity = layer.shadowOpacity;
+    
+    // On RN60 and beyond, certain styles are not immediately applied to the view/layer
+    // when a borderWidth is set on the view. Therefore, as a fail-safe we also try to
+    // get the props from the RCTView directly, when possible.
+    if ([view isKindOfClass:[RCTView class]]) {
+      RCTView* rctView = (RCTView*) view;
+      _cornerRadii = [RNSharedElementStyle cornerRadiiFromRCTView: rctView];
+      _borderColor = rctView.borderColor ? [UIColor colorWithCGColor:rctView.borderColor] : [UIColor clearColor];
+      _borderWidth = rctView.borderWidth >= 0.0f ? rctView.borderWidth : 0.0f;
+      _backgroundColor = rctView.backgroundColor ? rctView.backgroundColor : [UIColor clearColor];
+    } else {
+      _cornerRadii = [RNSharedElementCornerRadii new];
+      [_cornerRadii setRadius:layer.cornerRadius corner:RNSharedElementCornerAll];
+    }
   }
   
   return self;
-}
-
-- (void) setBackgroundColor:(UIColor*)backgroundColor {
-  _backgroundColor = backgroundColor;
-}
-- (UIColor*) backgroundColor
-{
-  return _backgroundColor;
-}
-
-- (void) setBorderColor:(UIColor*)borderColor {
-  _borderColor = borderColor;
-}
-- (UIColor*) borderColor
-{
-  return _borderColor;
-}
-
-- (void) setShadowColor:(UIColor*)shadowColor {
-  _shadowColor = shadowColor;
-}
-
-- (UIColor*)shadowColor
-{
-  return _shadowColor;
 }
 
 + (NSString*) stringFromTransform:(CATransform3D) transform {
@@ -134,7 +111,15 @@
 {
   RNSharedElementStyle* style = [[RNSharedElementStyle alloc]init];
   style.opacity = style1.opacity + ((style2.opacity - style1.opacity) * position);
-  style.cornerRadius = style1.cornerRadius + ((style2.cornerRadius - style1.cornerRadius) * position);
+  
+  CGRect radiiRect = CGRectMake(0, 0, 1000000, 1000000);
+  RCTCornerRadii radii1 = [style1.cornerRadii radiiForBounds:radiiRect];
+  RCTCornerRadii radii2 = [style2.cornerRadii radiiForBounds:radiiRect];
+  [style.cornerRadii setRadius:radii1.topLeft + ((radii2.topLeft - radii1.topLeft) * position) corner:RNSharedElementCornerTopLeft];
+  [style.cornerRadii setRadius:radii1.topRight + ((radii2.topRight - radii1.topRight) * position) corner:RNSharedElementCornerTopRight];
+  [style.cornerRadii setRadius:radii1.bottomLeft + ((radii2.bottomLeft - radii1.bottomLeft) * position) corner:RNSharedElementCornerBottomLeft];
+  [style.cornerRadii setRadius:radii1.bottomRight + ((radii2.bottomRight - radii1.bottomRight) * position) corner:RNSharedElementCornerBottomRight];
+  
   style.borderWidth = style1.borderWidth + ((style2.borderWidth - style1.borderWidth) * position);
   style.borderColor = [RNSharedElementStyle getInterpolatedColor:style1.borderColor color2:style2.borderColor position:position];
   style.backgroundColor = [RNSharedElementStyle getInterpolatedColor:style1.backgroundColor color2:style2.backgroundColor position:position];
@@ -146,6 +131,22 @@
                                   );
   style.shadowColor = [RNSharedElementStyle getInterpolatedColor:style1.shadowColor color2:style2.shadowColor position:position];
   return style;
+}
+
++ (RNSharedElementCornerRadii *)cornerRadiiFromRCTView:(RCTView *)rctView
+{
+  RNSharedElementCornerRadii *cornerRadii = [RNSharedElementCornerRadii new];
+  [cornerRadii setRadius:[rctView borderRadius] corner:RNSharedElementCornerAll];
+  [cornerRadii setRadius:[rctView borderTopLeftRadius] corner:RNSharedElementCornerTopLeft];
+  [cornerRadii setRadius:[rctView borderTopRightRadius] corner:RNSharedElementCornerTopRight];
+  [cornerRadii setRadius:[rctView borderTopStartRadius] corner:RNSharedElementCornerTopStart];
+  [cornerRadii setRadius:[rctView borderTopEndRadius] corner:RNSharedElementCornerTopEnd];
+  [cornerRadii setRadius:[rctView borderBottomLeftRadius] corner:RNSharedElementCornerBottomLeft];
+  [cornerRadii setRadius:[rctView borderBottomRightRadius] corner:RNSharedElementCornerBottomRight];
+  [cornerRadii setRadius:[rctView borderBottomStartRadius] corner:RNSharedElementCornerBottomStart];
+  [cornerRadii setRadius:[rctView borderBottomEndRadius] corner:RNSharedElementCornerBottomEnd];
+  [cornerRadii setLayoutDirection:[rctView reactLayoutDirection]];
+  return cornerRadii;
 }
 
 @end

@@ -50,6 +50,23 @@ export const ViewTests: TestGroup = {
           end: <TestView end size="regular" />
         },
         {
+          name: "View Border-radii",
+          description:
+            "The border-radii should animate correct when only set for some corners.",
+          start: (
+            <TestView
+              size="regular"
+              style={{
+                borderTopLeftRadius: 20,
+                borderTopRightRadius: 40,
+                borderBottomRightRadius: 60,
+                borderBottomLeftRadius: 100
+              }}
+            />
+          ),
+          end: <TestView end size="regular" />
+        },
+        {
           name: "View Border  ➔  No-border",
           description:
             "The transition should use the start- and ending opacity of the image and create a smooth transition.",
@@ -91,6 +108,25 @@ export const ViewTests: TestGroup = {
               size="regular"
               round
               style={{ ...Shadows.elevation2, backgroundColor: "white" }}
+            />
+          ),
+          end: <TestView end size="regular" round />
+        },
+        {
+          name: "View Border-radii & Shadow",
+          description:
+            "The border-radii should animate correct when only set for some corners.",
+          start: (
+            <TestView
+              size="regular"
+              style={{
+                borderTopLeftRadius: 20,
+                borderTopRightRadius: 40,
+                borderBottomRightRadius: 60,
+                borderBottomLeftRadius: 100,
+                ...Shadows.elevation2,
+                backgroundColor: "white"
+              }}
             />
           ),
           end: <TestView end size="regular" round />

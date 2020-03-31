@@ -146,6 +146,19 @@ export function createImageTests(config: {
             end: <TestImage {...endProps} end size="regular" />
           },
           {
+            name: "Border-radius some corners",
+            description:
+              "The border-radius should animate correct when only set for some corners.",
+            start: (
+              <TestImage
+                {...startProps}
+                size="regular"
+                style={{ borderTopLeftRadius: 20, borderTopRightRadius: 20 }}
+              />
+            ),
+            end: <TestImage {...endProps} end size="regular" />
+          },
+          {
             name: "Border-radius & contain",
             description:
               "It's a common case that the border-radius of the start- and end image are not the same. The border-radius should correctly animate for the transition.",

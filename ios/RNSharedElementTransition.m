@@ -320,22 +320,26 @@
   return clipInsets;
 }
 
-- (void) applyStyle:(RNSharedElementStyle*)style layer:(CALayer*)layer
+- (void) applyStyle:(RNSharedElementStyle*)style view:(UIView*)view
 {
+  CALayer *layer = view.layer;
+  
   layer.opacity = style.opacity;
   layer.backgroundColor = style.backgroundColor.CGColor;
-  layer.cornerRadius = style.cornerRadius;
   layer.borderWidth = style.borderWidth;
   layer.borderColor = style.borderColor.CGColor;
   layer.shadowOpacity = style.shadowOpacity;
   layer.shadowRadius = style.shadowRadius;
   layer.shadowOffset = style.shadowOffset;
   layer.shadowColor = style.shadowColor.CGColor;
+  [style.cornerRadii updateShadowPathForLayer:layer bounds:view.bounds];
+  [style.cornerRadii updateClipMaskForLayer:layer bounds:view.bounds];
 }
 
 - (void) fireMeasureEvent:(RNSharedElementTransitionItem*) item layout:(CGRect)layout visibleLayout:(CGRect)visibleLayout contentLayout:(CGRect)contentLayout
 {
   if (!self.onMeasureNode) return;
+  RCTCornerRadii cornerRadii = [item.style.cornerRadii radiiForBounds:_outerStyleView.bounds];
   NSDictionary* eventData = @{
     @"node": item.name,
     @"layout": @{
@@ -354,7 +358,10 @@
     },
     @"contentType": item.content ? item.content.typeName : @"none",
     @"style": @{
-        @"borderRadius": @(item.style.cornerRadius)
+        @"borderTopLeftRadius": @(cornerRadii.topLeft),
+        @"borderTopRightRadius": @(cornerRadii.topRight),
+        @"borderBottomLeftRadius": @(cornerRadii.bottomLeft),
+        @"borderBotomRightRadius": @(cornerRadii.bottomRight)
     }
   };
   self.onMeasureNode(eventData);
@@ -431,15 +438,15 @@
   // background color, and shadow. Because of the shadow, the view itsself
   // does not mask its bounds, otherwise the shadow isn't visible.
   _outerStyleView.frame = interpolatedLayout;
-  [self applyStyle:interpolatedStyle layer:_outerStyleView.layer];
+  [self applyStyle:interpolatedStyle view:_outerStyleView];
   
   // Update inner clip view. This view holds the image/content views
   // inside and clips their content.
   CGRect innerClipFrame = interpolatedLayout;
   innerClipFrame.origin.x = 0;
   innerClipFrame.origin.y = 0;
-  _innerClipView.layer.cornerRadius = interpolatedStyle.cornerRadius;
   _innerClipView.frame = innerClipFrame;
+  [interpolatedStyle.cornerRadii updateClipMaskForLayer:_innerClipView.layer bounds:_innerClipView.bounds];
   _innerClipView.layer.masksToBounds = _resize != RNSharedElementResizeNone;
   
   // Update content
