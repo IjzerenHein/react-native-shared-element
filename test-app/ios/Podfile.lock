@@ -272,7 +272,7 @@ PODS:
     - React
   - RNScreens (2.0.0-alpha.12):
     - React
-  - RNSharedElement (0.6.0):
+  - RNSharedElement (0.6.1):
     - React
   - RNVectorIcons (6.6.0):
     - React
@@ -556,7 +556,7 @@ SPEC CHECKSUMS:
   RNGestureHandler: 911d3b110a7a233a34c4f800e7188a84b75319c6
   RNReanimated: b2ab0b693dddd2339bd2f300e770f6302d2e960c
   RNScreens: 254da4b84f25971cbb30ed3ddc84131f23cac812
-  RNSharedElement: 7c98e474c8f72a67bbabb820b4b86460aa6502d8
+  RNSharedElement: 7bc62aefd600b4c13d6e5b60e840ef20f7749a72
   RNVectorIcons: 0bb4def82230be1333ddaeee9fcba45f0b288ed4
   SDWebImage: 21b19f56b4226cdfe3aefe4e6848dc43ed129a86
   SDWebImageWebPCoder: 947093edd1349d820c40afbd9f42acb6cdecd987
