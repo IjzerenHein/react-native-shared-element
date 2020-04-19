@@ -12,9 +12,9 @@ module.exports = {
     getTransformOptions: async () => ({
       transform: {
         experimentalImportSupport: false,
-        inlineRequires: false
-      }
-    })
+        inlineRequires: false,
+      },
+    }),
   },
 
   // Add custom resolver and watch-folders because
@@ -22,8 +22,14 @@ module.exports = {
   resolver: {
     extraNodeModules: new Proxy(
       {},
-      { get: (_, name) => path.resolve("./node_modules", name) }
-    )
+      {
+        get: (_, name) =>
+          path.resolve(
+            name === "react-native-shared-element" ? ".." : "./node_modules",
+            name
+          ),
+      }
+    ),
   },
-  watchFolders: [path.resolve("./node_modules"), path.resolve("..")]
+  watchFolders: [path.resolve("./node_modules"), path.resolve("..")],
 };
