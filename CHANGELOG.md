@@ -1,3 +1,13 @@
+# [0.7.0](https://github.com/IjzerenHein/react-native-shared-element/compare/v0.6.1...v0.7.0) (2020-04-19)
+
+### Features
+
+* **ios** Add support different border-radii per corner
+
+### Bug Fixes
+
+* **ios** Fix transforms applied by parent-navigator (MaterialTopTabNavigator issue)
+
 ## [0.6.1](https://github.com/IjzerenHein/react-native-shared-element/compare/v0.6.0...v0.6.1) (2020-03-30)
 
 ### Bug Fixes
