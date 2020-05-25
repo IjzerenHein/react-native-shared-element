@@ -346,12 +346,10 @@ public class RNSharedElementTransition extends ViewGroup {
   }
 
   private void updateNodeVisibility() {
-    RNSharedElementTransitionItem startItem = mItems.get(Item.START.getValue());
-    RNSharedElementTransitionItem endItem = mItems.get(Item.END.getValue());
-    boolean hidden = mInitialLayoutPassCompleted
-            && (((startItem.getStyle() != null) && (startItem.getContent() != null))
-            || ((endItem.getStyle() != null) && (endItem.getContent() != null)));
     for (RNSharedElementTransitionItem item : mItems) {
+      boolean hidden = mInitialLayoutPassCompleted
+              && (item.getStyle() != null)
+              && (item.getContent() != null);
       if (hidden && (mAnimation == RNSharedElementAnimation.FADE_IN) && item.getName().equals("start"))
         hidden = false;
       if (hidden && (mAnimation == RNSharedElementAnimation.FADE_OUT) && item.getName().equals("end"))
