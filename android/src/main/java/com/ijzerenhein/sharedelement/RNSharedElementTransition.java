@@ -51,6 +51,7 @@ public class RNSharedElementTransition extends ViewGroup {
   private boolean mRequiresClipping = false;
   private RNSharedElementView mStartView;
   private RNSharedElementView mEndView;
+  private int mInitialVisibleAncestorIndex = -1;
 
   public RNSharedElementTransition(ThemedReactContext context, RNSharedElementNodeManager nodeManager) {
     super(context);
@@ -199,18 +200,44 @@ public class RNSharedElementTransition extends ViewGroup {
       startContent = endContent;
     }
 
+    // Determine starting scene that is currently visible to the user
+    if (mInitialVisibleAncestorIndex < 0) {
+      if ((startItem.getNode() != null) && (endItem.getNode() == null)) {
+        mInitialVisibleAncestorIndex = 0;
+      } else if ((startItem.getNode() == null) && (endItem.getNode() != null)) {
+        mInitialVisibleAncestorIndex = 1;
+      } else if ((startItem.getNode() != null) && (endItem.getNode() != null)) {
+        int[] screenLocation = new int[2];
+        ((View) getParent()).getLocationOnScreen(screenLocation);
+        Rect parentRect = new Rect(screenLocation[0], screenLocation[1], screenLocation[0] + ((View) getParent()).getWidth(), screenLocation[1] + ((View) getParent()).getHeight());
+        startItem.getNode().getAncestorView().getLocationOnScreen(screenLocation);
+        Rect startAncestorRect = new Rect(screenLocation[0], screenLocation[1], screenLocation[0] + startItem.getNode().getAncestorView().getWidth(), screenLocation[1] + startItem.getNode().getAncestorView().getHeight());
+        endItem.getNode().getAncestorView().getLocationOnScreen(screenLocation);
+        Rect endAncestorRect = new Rect(screenLocation[0], screenLocation[1], screenLocation[0] + endItem.getNode().getAncestorView().getWidth(), screenLocation[1] + endItem.getNode().getAncestorView().getHeight());
+        if (!endAncestorRect.intersect(parentRect)) {
+          mInitialVisibleAncestorIndex = 0;
+        } else if (!startAncestorRect.intersect(parentRect)) {
+          mInitialVisibleAncestorIndex = 1;
+        } else {
+          mInitialVisibleAncestorIndex = ((endAncestorRect.width() * endAncestorRect.height()) > (startAncestorRect.width() * startAncestorRect.height())) ? 1 : 0;
+        }
+      }
+    }
+
     // Get layout
-    Rect startLayout = RNSharedElementStyle.normalizeLayout(startStyle, endStyle);
+    boolean startCompensate = mInitialVisibleAncestorIndex == 1;
+    Rect startLayout = RNSharedElementStyle.normalizeLayout(startCompensate, startStyle, endStyle);
     Rect startFrame = (startStyle != null) ? startStyle.frame : RNSharedElementStyle.EMPTY_RECT;
-    Rect endLayout = RNSharedElementStyle.normalizeLayout(endStyle, startStyle);
+    boolean endCompensate = mInitialVisibleAncestorIndex == 0;
+    Rect endLayout = RNSharedElementStyle.normalizeLayout(endCompensate, endStyle, startStyle);
     Rect endFrame = (endStyle != null) ? endStyle.frame : RNSharedElementStyle.EMPTY_RECT;
     RectF parentLayout = new RectF(startLayout);
     parentLayout.union(new RectF(endLayout));
 
     // Get clipped areas
-    Rect startClippedLayout = RNSharedElementStyle.normalizeLayout((startStyle != null) ? startItem.getClippedLayout() : RNSharedElementStyle.EMPTY_RECT, startStyle, endStyle);
+    Rect startClippedLayout = RNSharedElementStyle.normalizeLayout(startCompensate, (startStyle != null) ? startItem.getClippedLayout() : RNSharedElementStyle.EMPTY_RECT, startStyle, endStyle);
     Rect startClipInsets = getClipInsets(startLayout, startClippedLayout);
-    Rect endClippedLayout = RNSharedElementStyle.normalizeLayout((endStyle != null) ? endItem.getClippedLayout() : RNSharedElementStyle.EMPTY_RECT, endStyle, startStyle);
+    Rect endClippedLayout = RNSharedElementStyle.normalizeLayout(endCompensate, (endStyle != null) ? endItem.getClippedLayout() : RNSharedElementStyle.EMPTY_RECT, endStyle, startStyle);
     Rect endClipInsets = getClipInsets(endLayout, endClippedLayout);
 
     // Get interpolated layout

@@ -150,36 +150,33 @@ public class RNSharedElementStyle {
     return (Color.alpha(backgroundColor) > 0) || (Color.alpha(borderColor) > 0);
   }
 
-  static Rect normalizeLayout(RNSharedElementStyle style, RNSharedElementStyle otherStyle) {
+  static Rect normalizeLayout(boolean compensateForTransforms, RNSharedElementStyle style, RNSharedElementStyle otherStyle) {
     if (style == null) return EMPTY_RECT;
-    return normalizeLayout(style.layout, style, otherStyle);
+    return normalizeLayout(compensateForTransforms, style.layout, style, otherStyle);
   }
 
-  static Rect normalizeLayout(Rect layout, RNSharedElementStyle style, RNSharedElementStyle otherStyle) {
-    if ((layout == null) || (style == null)) return EMPTY_RECT;
+  static Rect normalizeLayout(boolean compensateForTransforms, Rect layout, RNSharedElementStyle style, RNSharedElementStyle otherStyle) {
+    if (layout == null) return EMPTY_RECT;
 
-    // Get ancestor translation
-    float[] f = new float[9];
-    style.ancestorTransform.getValues(f);
-    int ancestorTranslateX = (int) f[Matrix.MTRANS_X];
-    int ancestorTranslateY = (int) f[Matrix.MTRANS_Y];
+    // Compensate for any transforms that have been applied to the scene by the
+    // navigator. For instance, a navigator may translate the scene to the right,
+    // outside of the screen, in order to show it using a slide animation.
+    // In such a case, remove that transform in order to obtain the "real"
+    // size and position on the screen.
+    if (compensateForTransforms && (style != null)) {
+      
+      // Get ancestor translation
+      float[] f = new float[9];
+      style.ancestorTransform.getValues(f);
+      int ancestorTranslateX = (int) f[Matrix.MTRANS_X];
+      int ancestorTranslateY = (int) f[Matrix.MTRANS_Y];
 
-    // Get other translation
-    int otherAncestorTranslateX = ancestorTranslateX;
-    int otherAncestorTranslateY = ancestorTranslateY;
-    if (otherStyle != null) {
-      otherStyle.ancestorTransform.getValues(f);
-      otherAncestorTranslateX = (int) f[Matrix.MTRANS_X];
-      otherAncestorTranslateY = (int) f[Matrix.MTRANS_Y];
-    }
-
-    // Calculate the optional translation that was performed on the ancestor.
-    // This corrects for any scene translation that was performed by the navigator.
-    // E.g. when the incoming scene starts to the right and moves to the left
-    // to enter the screen
-    int left = layout.left - ((ancestorTranslateX != otherAncestorTranslateX) ? ancestorTranslateX : 0);
-    int top = layout.top - ((ancestorTranslateY != otherAncestorTranslateY) ? ancestorTranslateY : 0);
-    return new Rect(left, top, left + layout.width(), top + layout.height());
+      // Compensate for transform applied to ancestor/scene
+      int left = layout.left - ancestorTranslateX;
+      int top = layout.top - ancestorTranslateY;
+      return new Rect(left, top, left + layout.width(), top + layout.height());
+    } 
+    return layout;
   }
 
   static boolean equalsScaleType(ScaleType scaleType1, ScaleType scaleType2) {
