@@ -12,19 +12,19 @@ export const MultipleTests: TestGroup = {
       name: "Move multiple",
       start: <TestCompoundView position="top" />,
       end: <TestCompoundView position="bottom" />,
-      multi: true
+      multi: true,
     },
     {
       name: "Move & scale multiple",
       start: <TestCompoundView position="top" />,
       end: <TestCompoundView position="bottom" size="large" />,
-      multi: true
+      multi: true,
     },
     {
       name: "Gradient overlay",
       start: <TestCompoundView size="regular" position="center" />,
-      end: <TestCompoundView size="max" />,
-      multi: true
-    }
-  ]
+      end: <TestCompoundView size="max" overlay="gradient" />,
+      multi: true,
+    },
+  ],
 };

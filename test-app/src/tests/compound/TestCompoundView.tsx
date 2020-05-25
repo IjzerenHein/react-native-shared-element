@@ -6,7 +6,7 @@ import {
   Colors,
   Shadows,
   SharedElement,
-  LinearGradient
+  LinearGradient,
 } from "../../components";
 import { Hero, Size, Position } from "../../types";
 
@@ -14,73 +14,74 @@ const SIZES = {
   max: Dimensions.get("window").width,
   small: 30,
   regular: 60,
-  large: 80
+  large: 80,
 };
 
 const styles = StyleSheet.create({
   container: {
     height: Dimensions.get("window").width,
     backgroundColor: Colors.back,
-    ...Shadows.elevation1
+    ...Shadows.elevation1,
   },
   left: {
     flexDirection: "row",
     justifyContent: "flex-start",
     alignItems: "center",
-    paddingLeft: 20
+    paddingLeft: 20,
   },
   top: {
     flexDirection: "column",
     justifyContent: "flex-start",
     alignItems: "center",
-    paddingTop: 20
+    paddingTop: 20,
   },
   right: {
     flexDirection: "row",
     justifyContent: "flex-end",
     alignItems: "center",
-    paddingRight: 20
+    paddingRight: 20,
   },
   bottom: {
     flexDirection: "column",
     justifyContent: "flex-end",
     alignItems: "center",
-    paddingBottom: 20
+    paddingBottom: 20,
   },
   center: {
     flexDirection: "column",
     justifyContent: "center",
-    alignItems: "center"
+    alignItems: "center",
   },
   logo: {
-    resizeMode: "cover"
+    resizeMode: "cover",
   },
   image: {
-    resizeMode: "cover"
+    resizeMode: "cover",
   },
   text: {
     fontWeight: "bold",
-    color: Colors.text
+    color: Colors.text,
   },
   content: {
     ...Shadows.elevation1,
     backgroundColor: Colors.back,
-    alignItems: "center"
+    alignItems: "center",
   },
   max: {
     flex: 1,
-    width: "100%"
-  }
+    width: "100%",
+  },
 });
 
 type PropsType = {
-  style?: any,
-  hero: Hero,
-  end?: boolean,
-  size: Size,
-  position: Position,
-  vertical: boolean,
-  navigation?: any
+  style?: any;
+  hero: Hero;
+  end?: boolean;
+  size: Size;
+  overlay: "none" | "gradient";
+  position: Position;
+  vertical: boolean;
+  navigation?: any;
 };
 
 export class TestCompoundView extends React.Component<PropsType> {
@@ -89,7 +90,8 @@ export class TestCompoundView extends React.Component<PropsType> {
     style: {},
     size: "default",
     position: "default",
-    vertical: false
+    vertical: false,
+    overlay: "none",
   };
 
   render() {
@@ -100,7 +102,8 @@ export class TestCompoundView extends React.Component<PropsType> {
       size,
       position,
       vertical,
-      navigation
+      navigation,
+      overlay,
     } = this.props;
     const isMax = size === "max";
     const resolvedPosition =
@@ -116,7 +119,7 @@ export class TestCompoundView extends React.Component<PropsType> {
       <View
         style={[
           styles.container,
-          !isMax ? styles[resolvedPosition] : undefined
+          !isMax ? styles[resolvedPosition] : undefined,
         ]}
       >
         <SharedElement id="testContent" navigation={navigation}>
@@ -127,9 +130,9 @@ export class TestCompoundView extends React.Component<PropsType> {
                 ? undefined
                 : {
                     flexDirection: vertical ? "column-reverse" : "row-reverse",
-                    borderRadius: (sizePx + sizePx / 2.5) / 2
+                    borderRadius: (sizePx + sizePx / 2.5) / 2,
                   },
-              style
+              style,
             ]}
           >
             <View>
@@ -140,41 +143,36 @@ export class TestCompoundView extends React.Component<PropsType> {
                     isMax
                       ? {
                           width: sizePx,
-                          height: sizePx
+                          height: sizePx,
                         }
                       : {
                           width: sizePx,
                           height: sizePx,
                           borderRadius: sizePx / 2,
-                          margin: sizePx / 8
-                        }
+                          margin: sizePx / 8,
+                        },
                   ]}
                   source={hero.photo}
                 />
               </SharedElement>
-              <SharedElement
-                id="testOverlay"
-                style={StyleSheet.absoluteFill}
-                navigation={navigation}
-              >
-                {isMax ? (
-                  <LinearGradient
-                    style={StyleSheet.absoluteFill}
-                    colors={["#000000FF", "#00000000", "#000000FF"]}
-                    start={{ x: 0, y: 0 }}
-                    end={{ x: 0, y: 1 }}
-                  />
-                ) : (
-                  <View
-                    style={{
-                      width: sizePx,
-                      height: sizePx,
-                      borderRadius: sizePx / 2,
-                      margin: sizePx / 8
-                    }}
-                  />
-                )}
-              </SharedElement>
+              {overlay !== "none" && (
+                <SharedElement
+                  id="testOverlay"
+                  style={StyleSheet.absoluteFill}
+                  navigation={navigation}
+                >
+                  {overlay === "gradient" ? (
+                    <LinearGradient
+                      style={StyleSheet.absoluteFill}
+                      colors={["#000000FF", "#00000000", "#000000FF"]}
+                      start={{ x: 0, y: 0 }}
+                      end={{ x: 0, y: 1 }}
+                    />
+                  ) : (
+                    undefined
+                  )}
+                </SharedElement>
+              )}
             </View>
             <SharedElement
               id="testTitle"
@@ -186,7 +184,7 @@ export class TestCompoundView extends React.Component<PropsType> {
                       right: 0,
                       bottom: 20,
                       flexDirection: "row",
-                      justifyContent: "center"
+                      justifyContent: "center",
                     }
                   : undefined
               }
@@ -198,12 +196,12 @@ export class TestCompoundView extends React.Component<PropsType> {
                   isMax
                     ? {
                         fontSize: sizePx / 8,
-                        color: Colors.back
+                        color: Colors.back,
                       }
                     : {
                         fontSize: sizePx / 2.3,
-                        margin: sizePx / 8
-                      }
+                        margin: sizePx / 8,
+                      },
                 ]}
               >
                 {hero.name}
@@ -223,14 +221,14 @@ export class TestCompoundView extends React.Component<PropsType> {
                         left: 20,
                         top: 20,
                         width: 30,
-                        height: 30
+                        height: 30,
                       }
                     : {
                         width: sizePx / 2,
                         height: sizePx / 2,
                         borderRadius: sizePx / 4,
-                        margin: sizePx / 5
-                      }
+                        margin: sizePx / 5,
+                      },
                 ]}
                 source={require("../../assets/fist.png")}
               />
