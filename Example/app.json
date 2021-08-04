@@ -1,8 +1,0 @@
-{
-  "name": "SharedElementExample",
-  "displayName": "SharedElementExample",
-  "expo": {
-    "name": "SharedElementExample",
-    "platforms": ["web"]
-  }
-}
