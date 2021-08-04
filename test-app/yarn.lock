@@ -6734,8 +6734,7 @@ react-native-screens@~3.4.0:
     warn-once "^0.1.0"
 
 "react-native-shared-element@link:..":
-  version "0.0.0"
-  uid ""
+  version "0.7.0"
 
 react-native-touchable-scale@^2.1.1:
   version "2.1.2"
