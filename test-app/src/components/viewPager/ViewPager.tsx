@@ -15,25 +15,20 @@ type StateType = {
 
 const VIEWABILITY_CONFIG = {
   minimumViewTime: 0,
-  viewAreaCoveragePercentThreshold: 51
+  viewAreaCoveragePercentThreshold: 51,
 };
 
 export class ViewPager extends React.PureComponent<PropsType, StateType> {
   constructor(props: PropsType) {
     super(props);
     this.state = {
-      selectedIndex: props.initialItemIndex || 0
+      selectedIndex: props.initialItemIndex || 0,
     };
   }
 
   render() {
-    const {
-      style,
-      data,
-      initialItemIndex,
-      renderItem,
-      getItemLayout
-    } = this.props;
+    const { style, data, initialItemIndex, renderItem, getItemLayout } =
+      this.props;
     return (
       <FlatList
         style={style}
@@ -61,7 +56,7 @@ export class ViewPager extends React.PureComponent<PropsType, StateType> {
     if (this.state.selectedIndex !== selectedIndex) {
       this.setState(
         {
-          selectedIndex
+          selectedIndex,
         },
         () => {
           if (onItemSelected) onItemSelected(selectedIndex);

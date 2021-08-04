@@ -6,8 +6,8 @@ import { Colors } from "../components";
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.yellow
-  }
+    backgroundColor: Colors.yellow,
+  },
 });
 
 export class DummyScreen extends React.Component {

@@ -22,7 +22,7 @@ const screens = {
   Pager: PagerScreen,
   Card: CardScreen,
   Tests: TestsScreen,
-  Test: TestScreen
+  Test: TestScreen,
 };
 
 function isTabBarVisible(navigation: any): boolean {
@@ -42,7 +42,7 @@ const stackNavigator = createSharedElementStackNavigator(
   createStackNavigator,
   {
     Stack: MainScreen,
-    ...screens
+    ...screens,
   },
   {
     initialRouteName: "Stack",
@@ -52,9 +52,9 @@ const stackNavigator = createSharedElementStackNavigator(
       tabBarIcon: ({ tintColor }) => (
         <Icon name="login" size={18} color={tintColor} />
       ),
-      tabBarVisible: isTabBarVisible(navigation)
+      tabBarVisible: isTabBarVisible(navigation),
     }),
-    transitionConfig: Platform.OS === "android" ? () => fromRight() : undefined
+    transitionConfig: Platform.OS === "android" ? () => fromRight() : undefined,
   }
 );
 
@@ -62,7 +62,7 @@ const modalNavigator = createSharedElementStackNavigator(
   createStackNavigator,
   {
     Modal: MainScreen,
-    ...screens
+    ...screens,
   },
   {
     initialRouteName: "Modal",
@@ -72,8 +72,8 @@ const modalNavigator = createSharedElementStackNavigator(
       tabBarIcon: ({ tintColor }) => (
         <Icon name="popup" size={18} color={tintColor} />
       ),
-      tabBarVisible: isTabBarVisible(navigation)
-    })
+      tabBarVisible: isTabBarVisible(navigation),
+    }),
   }
 );
 
@@ -81,7 +81,7 @@ const fadeNavigator = createSharedElementStackNavigator(
   createStackNavigator,
   {
     Fade: MainScreen,
-    ...screens
+    ...screens,
   },
   {
     initialRouteName: "Fade",
@@ -90,16 +90,16 @@ const fadeNavigator = createSharedElementStackNavigator(
       tabBarIcon: ({ tintColor }) => (
         <Icon name="moon" size={18} color={tintColor} />
       ),
-      tabBarVisible: isTabBarVisible(navigation)
+      tabBarVisible: isTabBarVisible(navigation),
     }),
-    transitionConfig: () => fadeIn(0, true)
+    transitionConfig: () => fadeIn(0, true),
   }
 );
 
 export const tabNavigator = createBottomTabNavigator({
   stack: stackNavigator,
   modal: modalNavigator,
-  fade: fadeNavigator
+  fade: fadeNavigator,
 });
 
 const AppContainer = createAppContainer(tabNavigator);

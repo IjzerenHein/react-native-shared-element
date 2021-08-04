@@ -5,7 +5,7 @@ import {
   Image,
   Dimensions,
   Animated,
-  StatusBar
+  StatusBar,
 } from "react-native";
 import { PanGestureHandler, State } from "react-native-gesture-handler";
 
@@ -15,31 +15,31 @@ import {
   SharedElement,
   Colors,
   Router,
-  ViewPager
+  ViewPager,
 } from "../components";
 import { fadeIn } from "../transitions";
 import { Hero, SharedElementsConfig } from "../types";
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1
+    flex: 1,
   },
   background: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: Colors.dark
+    backgroundColor: Colors.dark,
   },
   flex: {
-    flex: 1
+    flex: 1,
   },
   content: {
     flex: 1,
-    marginVertical: NavBar.HEIGHT
+    marginVertical: NavBar.HEIGHT,
   },
   image: {
     flex: 1,
     width: "100%",
-    resizeMode: "contain"
-  }
+    resizeMode: "contain",
+  },
 });
 
 type PropsType = {
@@ -53,7 +53,7 @@ type StateType = {
 
 export class PagerScreen extends React.Component<PropsType, StateType> {
   static navigationOptions = {
-    header: null
+    header: null,
   };
 
   static sharedElements = (
@@ -78,7 +78,7 @@ export class PagerScreen extends React.Component<PropsType, StateType> {
       : props.hero;
     this.state = {
       selectedHero: hero,
-      width: Dimensions.get("window").width
+      width: Dimensions.get("window").width,
     };
   }
 
@@ -110,9 +110,9 @@ export class PagerScreen extends React.Component<PropsType, StateType> {
             {
               opacity: dismissAnimValue.interpolate({
                 inputRange: [-400, -300, -50, 50, 300, 400],
-                outputRange: [0.6, 0.6, 1, 1, 0.6, 0.6]
-              })
-            }
+                outputRange: [0.6, 0.6, 1, 1, 0.6, 0.6],
+              }),
+            },
           ]}
         >
           <NavBar
@@ -131,9 +131,9 @@ export class PagerScreen extends React.Component<PropsType, StateType> {
               styles.content,
               {
                 transform: [
-                  { translateY: Animated.multiply(dismissAnimValue, 0.5) }
-                ]
-              }
+                  { translateY: Animated.multiply(dismissAnimValue, 0.5) },
+                ],
+              },
             ]}
           >
             {this.renderPager(Heroes, initialIndex)}
@@ -147,7 +147,7 @@ export class PagerScreen extends React.Component<PropsType, StateType> {
     const { width } = event.nativeEvent.layout;
     if (this.state.width !== width) {
       this.setState({
-        width
+        width,
       });
     }
   };
@@ -157,7 +157,7 @@ export class PagerScreen extends React.Component<PropsType, StateType> {
     return {
       length: width,
       offset: width * index,
-      index
+      index,
     };
   };
 
@@ -186,7 +186,7 @@ export class PagerScreen extends React.Component<PropsType, StateType> {
     const { navigation } = this.props;
     if (this.state.selectedHero === hero) return;
     this.setState({
-      selectedHero: hero
+      selectedHero: hero,
     });
     if (navigation) navigation.setParams({ hero });
   }
@@ -199,7 +199,7 @@ export class PagerScreen extends React.Component<PropsType, StateType> {
     } else {
       Router.pop({
         sharedElements: [`heroPhoto.${hero.id}`],
-        transitionConfig: fadeIn()
+        transitionConfig: fadeIn(),
       });
     }
   };
@@ -214,7 +214,7 @@ export class PagerScreen extends React.Component<PropsType, StateType> {
     } else {
       Animated.spring(this._dismissAnimValue, {
         toValue: 0,
-        useNativeDriver: true
+        useNativeDriver: true,
       }).start();
     }
   };

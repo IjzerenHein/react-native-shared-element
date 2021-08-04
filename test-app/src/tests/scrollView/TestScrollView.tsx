@@ -9,7 +9,7 @@ const SIZES = {
   max: Dimensions.get("window").width,
   small: 120,
   regular: 200,
-  large: 280
+  large: 280,
 };
 
 const styles = StyleSheet.create({
@@ -17,13 +17,13 @@ const styles = StyleSheet.create({
     height: Dimensions.get("window").width,
     backgroundColor: Colors.back,
     justifyContent: "center",
-    alignItems: "center"
+    alignItems: "center",
   },
   scrollView: {
     borderWidth: 1,
     borderColor: Colors.gray,
-    borderStyle: "dashed"
-  }
+    borderStyle: "dashed",
+  },
 });
 
 type PropsType = {
@@ -46,7 +46,7 @@ export class TestScrollView extends React.Component<PropsType> {
     inverted: false,
     size: "default",
     ImageComponent: Image,
-    heroes: heroes2
+    heroes: heroes2,
   };
 
   render() {
@@ -58,7 +58,7 @@ export class TestScrollView extends React.Component<PropsType> {
         <View
           style={{
             width: sizePx,
-            height: sizePx
+            height: sizePx,
           }}
         >
           <FlatList
@@ -83,7 +83,7 @@ export class TestScrollView extends React.Component<PropsType> {
     const isMax = size === "max";
     const sizeStyle = {
       width: horizontal ? sizePx / (isMax ? 3.5 : 1.5) : sizePx,
-      height: horizontal ? sizePx : sizePx / (isMax ? 3.5 : 1.5)
+      height: horizontal ? sizePx : sizePx / (isMax ? 3.5 : 1.5),
     };
 
     const content = (
@@ -92,9 +92,9 @@ export class TestScrollView extends React.Component<PropsType> {
           sizeStyle,
           round
             ? {
-                borderRadius: sizePx / 2
+                borderRadius: sizePx / 2,
               }
-            : undefined
+            : undefined,
         ]}
         source={hero.photo}
         resizeMode="cover"

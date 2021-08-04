@@ -5,7 +5,7 @@ import {
   View,
   StatusBar,
   Platform,
-  TouchableOpacity
+  TouchableOpacity,
 } from "react-native";
 
 import { Router, NavBar, ListItem, Colors, Heading3 } from "../components";
@@ -21,21 +21,21 @@ import { TilesScreen } from "./TilesScreen";
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1
+    flex: 1,
   },
   content: Platform.select({
     ios: {
       flex: 1,
-      backgroundColor: Colors.empty
+      backgroundColor: Colors.empty,
     },
     android: {
-      flex: 1
-    }
+      flex: 1,
+    },
   }),
   back: {
     color: Colors.blue,
-    marginLeft: 20
-  }
+    marginLeft: 20,
+  },
 });
 
 type PropsType = {
@@ -50,7 +50,7 @@ export class MainScreen extends React.Component<PropsType> {
       <TouchableOpacity onPress={() => Router.pop()}>
         <Heading3 style={styles.back}>Back</Heading3>
       </TouchableOpacity>
-    )
+    ),
   };
 
   render() {
@@ -60,9 +60,7 @@ export class MainScreen extends React.Component<PropsType> {
         <StatusBar barStyle="dark-content" animated />
         {!navigation ? (
           <NavBar title="Shared Element Demo" back="none" />
-        ) : (
-          undefined
-        )}
+        ) : undefined}
         <ScrollView style={styles.content} endFillColor={Colors.empty}>
           {Platform.OS === "web" ? (
             <ListItem
@@ -70,9 +68,7 @@ export class MainScreen extends React.Component<PropsType> {
               description="Immediately start the current development test"
               onPress={this.onPressQuickTest}
             />
-          ) : (
-            undefined
-          )}
+          ) : undefined}
           <ListItem
             label="Test Cases"
             description="Test cases for development and diagnosing problems"
@@ -111,16 +107,16 @@ export class MainScreen extends React.Component<PropsType> {
       description:
         "The most basic form of a shared-element transition. The image should move smoothly without flickering from the start- to the end state, and back",
       start: <TestImage />,
-      end: <TestImage end />
+      end: <TestImage end />,
     };
 
     if (navigation) {
       navigation.push("Test", {
-        test
+        test,
       });
     } else {
       Router.push(<TestScreen test={test} />, {
-        transitionConfig: fromRight(100)
+        transitionConfig: fromRight(100),
       });
     }
   };
@@ -129,7 +125,7 @@ export class MainScreen extends React.Component<PropsType> {
     const { navigation } = this.props;
     if (navigation) {
       navigation.push("Tests", {
-        tests: Tests
+        tests: Tests,
       });
     } else {
       Router.push(<TestsScreen tests={Tests} />);
@@ -155,7 +151,7 @@ export class MainScreen extends React.Component<PropsType> {
     const { navigation } = this.props;
     if (navigation) {
       navigation.push("Tiles", {
-        type: "card"
+        type: "card",
       });
     } else {
       Router.push(
@@ -172,7 +168,7 @@ export class MainScreen extends React.Component<PropsType> {
     const { navigation } = this.props;
     if (navigation) {
       navigation.push("Tiles", {
-        type: "card2"
+        type: "card2",
       });
     } else {
       Router.push(
@@ -190,7 +186,7 @@ export class MainScreen extends React.Component<PropsType> {
     const { navigation } = this.props;
     if (navigation) {
       navigation.push("Tiles", {
-        type: "avatar"
+        type: "avatar",
       });
     } else {
       Router.push(

@@ -10,50 +10,50 @@ const SIZES = {
   max: Dimensions.get("window").width,
   small: 120,
   regular: 200,
-  large: 280
+  large: 280,
 };
 
 const styles = StyleSheet.create({
   container: {
     height: Dimensions.get("window").width,
-    backgroundColor: Colors.back
+    backgroundColor: Colors.back,
   },
   left: {
     flexDirection: "row",
     justifyContent: "flex-start",
     alignItems: "center",
-    paddingLeft: 20
+    paddingLeft: 20,
   },
   top: {
     flexDirection: "column",
     justifyContent: "flex-start",
     alignItems: "center",
-    paddingTop: 20
+    paddingTop: 20,
   },
   right: {
     flexDirection: "row",
     justifyContent: "flex-end",
     alignItems: "center",
-    paddingRight: 20
+    paddingRight: 20,
   },
   bottom: {
     flexDirection: "column",
     justifyContent: "flex-end",
     alignItems: "center",
-    paddingBottom: 20
+    paddingBottom: 20,
   },
   center: {
     flexDirection: "column",
     justifyContent: "center",
-    alignItems: "center"
+    alignItems: "center",
   },
   image: {
     // TODO
   },
   max: {
     flex: 1,
-    width: "100%"
-  }
+    width: "100%",
+  },
 });
 
 type PropsType = {
@@ -78,7 +78,7 @@ export class TestImage extends React.Component<PropsType> {
     resizeMode: "cover",
     round: false,
     ImageComponent: Image,
-    panZoom: false
+    panZoom: false,
   };
 
   render() {
@@ -92,7 +92,7 @@ export class TestImage extends React.Component<PropsType> {
       round,
       ImageComponent,
       panZoom,
-      navigation
+      navigation,
     } = this.props;
     const sizePx = SIZES[size === "default" ? "regular" : size];
     const resolvedPosition =
@@ -109,9 +109,9 @@ export class TestImage extends React.Component<PropsType> {
             {
               width: sizePx,
               height: sizePx,
-              borderRadius: round ? sizePx / 2 : 0
+              borderRadius: round ? sizePx / 2 : 0,
             },
-            style
+            style,
           ]}
           resizeMode={resizeMode}
           source={hero.photo}
@@ -135,7 +135,7 @@ export class TestImage extends React.Component<PropsType> {
       <View
         style={[
           styles.container,
-          size !== "max" ? styles[resolvedPosition] : undefined
+          size !== "max" ? styles[resolvedPosition] : undefined,
         ]}
       >
         {content}

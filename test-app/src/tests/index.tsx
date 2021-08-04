@@ -16,5 +16,5 @@ export const Tests: (Test | TestGroup)[] = [
   MultipleTests,
   ScrollViewTests,
   ResizeAlignTests,
-  TransformTests
+  TransformTests,
 ];

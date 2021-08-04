@@ -1,7 +1,7 @@
 import {
   SharedElementAnimation,
   SharedElementResize,
-  SharedElementAlign
+  SharedElementAlign,
 } from "react-native-shared-element";
 
 export interface SharedElementStrictConfig {
@@ -35,7 +35,7 @@ export function normalizeSharedElementConfig(
     return {
       id: sharedElementConfig,
       otherId: sharedElementConfig,
-      animation: "move"
+      animation: "move",
     };
   } else {
     const { id, otherId, animation, ...other } = sharedElementConfig;
@@ -43,7 +43,7 @@ export function normalizeSharedElementConfig(
       id,
       otherId: otherId || id,
       animation: animation || "move",
-      ...other
+      ...other,
     };
   }
 }

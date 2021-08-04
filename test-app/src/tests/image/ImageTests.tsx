@@ -27,23 +27,23 @@ export function createImageTests(config: {
             description:
               "The most basic form of a shared-element transition. The image should move smoothly without flickering from the start- to the end state, and back",
             start: <TestImage {...startProps} />,
-            end: <TestImage {...endProps} end />
+            end: <TestImage {...endProps} end />,
           },
           {
             name: "Move & scale",
             description:
               "Another basic form of a shared-element transition. The image should move & scale correctly without flickering from the start- to the end state, and back",
             start: <TestImage {...startProps} size="small" />,
-            end: <TestImage {...endProps} end size="large" />
+            end: <TestImage {...endProps} end size="large" />,
           },
           {
             name: "Full size",
             description:
               "When images are small they are stored with a lower resolution to optimize memory usage. When transitioning to a larger image, the higher resolution image should be used and you should not see a low-res/blurred image.",
             start: <TestImage {...startProps} size="small" />,
-            end: <TestImage {...endProps} end size="max" />
-          }
-        ]
+            end: <TestImage {...endProps} end size="max" />,
+          },
+        ],
       },
       {
         name: `${name} Resize-modes`,
@@ -57,7 +57,7 @@ export function createImageTests(config: {
             ),
             end: (
               <TestImage {...endProps} end size="large" resizeMode="contain" />
-            )
+            ),
           },
           {
             name: "Cover  ➔  Stretch",
@@ -68,7 +68,7 @@ export function createImageTests(config: {
             ),
             end: (
               <TestImage {...endProps} end size="large" resizeMode="stretch" />
-            )
+            ),
           },
           {
             name: "Cover  ➔  Center",
@@ -79,7 +79,7 @@ export function createImageTests(config: {
             ),
             end: (
               <TestImage {...endProps} end size="large" resizeMode="center" />
-            )
+            ),
           },
           {
             name: "Contain  ➔  Stretch",
@@ -95,7 +95,7 @@ export function createImageTests(config: {
                 size="regular"
                 resizeMode="stretch"
               />
-            )
+            ),
           },
           {
             name: "Contain  ➔  Center",
@@ -106,7 +106,7 @@ export function createImageTests(config: {
             ),
             end: (
               <TestImage {...endProps} end size="large" resizeMode="center" />
-            )
+            ),
           },
           {
             name: "Stretch  ➔  Center",
@@ -117,9 +117,9 @@ export function createImageTests(config: {
             ),
             end: (
               <TestImage {...endProps} end size="large" resizeMode="center" />
-            )
-          }
-        ]
+            ),
+          },
+        ],
       },
       {
         name: `${name} Styles`,
@@ -136,14 +136,14 @@ export function createImageTests(config: {
                 style={{ opacity: 0.5 }}
               />
             ),
-            end: <TestImage {...endProps} end size="regular" round />
+            end: <TestImage {...endProps} end size="regular" round />,
           },
           {
             name: "Border-radius change",
             description:
               "It's a common case that the border-radius of the start- and end image are not the same. The border-radius should correctly animate for the transition.",
             start: <TestImage {...startProps} size="regular" round />,
-            end: <TestImage {...endProps} end size="regular" />
+            end: <TestImage {...endProps} end size="regular" />,
           },
           {
             name: "Border-radius some corners",
@@ -156,7 +156,7 @@ export function createImageTests(config: {
                 style={{ borderTopLeftRadius: 20, borderTopRightRadius: 20 }}
               />
             ),
-            end: <TestImage {...endProps} end size="regular" />
+            end: <TestImage {...endProps} end size="regular" />,
           },
           {
             name: "Border-radius & contain",
@@ -170,14 +170,14 @@ export function createImageTests(config: {
                 resizeMode="contain"
               />
             ),
-            end: <TestImage {...endProps} end size="regular" />
+            end: <TestImage {...endProps} end size="regular" />,
           },
           {
             name: "Border-radius & size",
             description:
               "It's a common case that the border-radius of the start- and end image are not the same. The border-radius should correctly animate for the transition.",
             start: <TestImage {...startProps} size="regular" round />,
-            end: <TestImage {...endProps} end size="max" />
+            end: <TestImage {...endProps} end size="max" />,
           },
           {
             name: "Border-radius & resizeMode",
@@ -198,7 +198,7 @@ export function createImageTests(config: {
                 size="regular"
                 resizeMode="contain"
               />
-            )
+            ),
           },
           {
             name: "Border  ➔  No-border",
@@ -212,7 +212,7 @@ export function createImageTests(config: {
                 style={{ borderWidth: 5, borderColor: Colors.blue }}
               />
             ),
-            end: <TestImage {...endProps} end size="regular" round />
+            end: <TestImage {...endProps} end size="regular" round />,
           },
           {
             name: "Border  ➔  Other border",
@@ -234,7 +234,7 @@ export function createImageTests(config: {
                 round
                 style={{ borderWidth: 2, borderColor: Colors.yellow }}
               />
-            )
+            ),
           },
           {
             name: "Shadow   ➔  No shadow",
@@ -248,7 +248,7 @@ export function createImageTests(config: {
                 style={{ ...Shadows.elevation2, backgroundColor: "white" }}
               />
             ),
-            end: <TestImage {...endProps} end size="regular" round />
+            end: <TestImage {...endProps} end size="regular" round />,
           },
           {
             name: "Resize-mode & Border & Radius",
@@ -261,7 +261,7 @@ export function createImageTests(config: {
                 round
                 style={{
                   borderWidth: 2,
-                  borderColor: "green"
+                  borderColor: "green",
                 }}
               />
             ),
@@ -274,12 +274,12 @@ export function createImageTests(config: {
                 round
                 style={{
                   borderWidth: 2,
-                  borderColor: "blue"
+                  borderColor: "blue",
                 }}
               />
-            )
-          }
-        ]
+            ),
+          },
+        ],
       },
       {
         name: `${name} Fade`,
@@ -292,7 +292,7 @@ export function createImageTests(config: {
               <TestImage {...startProps} size="regular" resizeMode="cover" />
             ),
             end: <TestImage {...endProps} end size="large" hero={Heroes[2]} />,
-            animation: "fade"
+            animation: "fade",
           },
           {
             name: "Fade != aspect-ratios",
@@ -308,26 +308,26 @@ export function createImageTests(config: {
                 resizeMode="cover"
               />
             ),
-            animation: "fade"
-          }
-        ]
-      }
-    ]
+            animation: "fade",
+          },
+        ],
+      },
+    ],
   };
 }
 
 export const ImageTests = createImageTests({
   title: "Images",
   name: "Image",
-  props: {}
+  props: {},
 });
 
 export const ImageBackgroundTests = createImageTests({
   title: "ImageBackground Component",
   name: "ImageBackground",
   props: {
-    ImageComponent: ImageBackground
-  }
+    ImageComponent: ImageBackground,
+  },
 });
 ImageTests.tests.push(ImageBackgroundTests);
 
@@ -335,8 +335,8 @@ export const AnimatedImageTests = createImageTests({
   title: "Animated.Image Component",
   name: "Animated.Image",
   props: {
-    ImageComponent: Animated.Image
-  }
+    ImageComponent: Animated.Image,
+  },
 });
 ImageTests.tests.push(AnimatedImageTests);
 
@@ -344,8 +344,8 @@ export const FastImageTests = createImageTests({
   title: "FastImage Component",
   name: "FastImage",
   props: {
-    ImageComponent: FastImage
-  }
+    ImageComponent: FastImage,
+  },
 });
 ImageTests.tests.push(FastImageTests);
 
@@ -377,8 +377,8 @@ const oldTests: TestGroup = {
       description:
         "react-native-image-pan-zoom offers zoom & panning abilities for Images. The underlying image should be correctly detected and you should not see any stretching",
       start: <TestImage size="small" resizeMode="cover" panZoom />,
-      end: <TestImage end size="max" resizeMode="contain" panZoom />
-    }
-  ]
+      end: <TestImage end size="max" resizeMode="contain" panZoom />,
+    },
+  ],
 };
 ImageTests.tests.push(oldTests);

@@ -1,9 +1,9 @@
+import * as React from "react";
 import {
   SharedElementAnimation,
   SharedElementResize,
-  SharedElementAlign
+  SharedElementAlign,
 } from "react-native-shared-element";
-import * as React from "react";
 
 export type Position =
   | "default"

@@ -1,8 +1,3 @@
-import {
-  SharedElement,
-  SharedElementTransition,
-  nodeFromRef
-} from "react-native-shared-element";
 import * as React from "react";
 import {
   View,
@@ -10,8 +5,13 @@ import {
   Animated,
   Dimensions,
   TouchableOpacity,
-  Image
+  Image,
 } from "react-native";
+import {
+  SharedElement,
+  SharedElementTransition,
+  nodeFromRef,
+} from "react-native-shared-element";
 
 export default class App extends React.Component {
   state = {
@@ -21,7 +21,7 @@ export default class App extends React.Component {
     scene1Ancestor: undefined,
     scene1Node: undefined,
     scene2Ancestor: undefined,
-    scene2Node: undefined
+    scene2Node: undefined,
   };
 
   onPressNavigate = () => {
@@ -29,7 +29,7 @@ export default class App extends React.Component {
     Animated.timing(this.state.progress, {
       toValue: 1,
       duration: 1000,
-      useNativeDriver: true
+      useNativeDriver: true,
     }).start(() => this.setState({ isInProgress: false }));
   };
 
@@ -38,17 +38,17 @@ export default class App extends React.Component {
     Animated.timing(this.state.progress, {
       toValue: 0,
       duration: 1000,
-      useNativeDriver: true
+      useNativeDriver: true,
     }).start(() =>
       this.setState({ isScene2Visible: false, isInProgress: false })
     );
   };
 
-  onSetScene1Ref = ref => {
+  onSetScene1Ref = (ref) => {
     this.setState({ scene1Ancestor: nodeFromRef(ref) });
   };
 
-  onSetScene2Ref = ref => {
+  onSetScene2Ref = (ref) => {
     this.setState({ scene2Ancestor: nodeFromRef(ref) });
   };
 
@@ -69,13 +69,13 @@ export default class App extends React.Component {
             style={{
               ...StyleSheet.absoluteFillObject,
               transform: [
-                { translateX: Animated.multiply(-200, state.progress) }
-              ]
+                { translateX: Animated.multiply(-200, state.progress) },
+              ],
             }}
           >
             <View style={styles.scene} ref={this.onSetScene1Ref}>
               <SharedElement
-                onNode={node => this.setState({ scene1Node: node })}
+                onNode={(node) => this.setState({ scene1Node: node })}
               >
                 <Image style={styles.image1} source={require("./logo.png")} />
               </SharedElement>
@@ -92,22 +92,20 @@ export default class App extends React.Component {
                     translateX: Animated.multiply(
                       -width,
                       Animated.add(state.progress, -1)
-                    )
-                  }
-                ]
+                    ),
+                  },
+                ],
               }}
             >
               <View style={styles.scene2} ref={this.onSetScene2Ref}>
                 <SharedElement
-                  onNode={node => this.setState({ scene2Node: node })}
+                  onNode={(node) => this.setState({ scene2Node: node })}
                 >
                   <Image style={styles.image2} source={require("./logo.png")} />
                 </SharedElement>
               </View>
             </Animated.View>
-          ) : (
-            undefined
-          )}
+          ) : undefined}
         </TouchableOpacity>
 
         {/* Transition overlay */}
@@ -116,11 +114,11 @@ export default class App extends React.Component {
             <SharedElementTransition
               start={{
                 node: state.scene1Node,
-                ancestor: state.scene1Ancestor
+                ancestor: state.scene1Ancestor,
               }}
               end={{
                 node: state.scene2Node,
-                ancestor: state.scene2Ancestor
+                ancestor: state.scene2Ancestor,
               }}
               position={state.progress}
               animation="move"
@@ -128,9 +126,7 @@ export default class App extends React.Component {
               align="auto"
             />
           </View>
-        ) : (
-          undefined
-        )}
+        ) : undefined}
       </>
     );
   }
@@ -139,24 +135,24 @@ export default class App extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#ecf0f1"
+    backgroundColor: "#ecf0f1",
   },
   scene: {
     ...StyleSheet.absoluteFillObject,
     backgroundColor: "white",
     justifyContent: "center",
-    alignItems: "center"
+    alignItems: "center",
   },
   scene2: {
     ...StyleSheet.absoluteFillObject,
     backgroundColor: "#00d8ff",
     justifyContent: "center",
-    alignItems: "center"
+    alignItems: "center",
   },
   image1: {
     resizeMode: "cover",
     width: 160,
-    height: 160
+    height: 160,
     // Images & border-radius have quirks in Expo SDK 35/36
     // Uncomment the next line when SDK 37 has been released
     //borderRadius: 80
@@ -165,9 +161,9 @@ const styles = StyleSheet.create({
     resizeMode: "cover",
     width: 300,
     height: 300,
-    borderRadius: 0
+    borderRadius: 0,
   },
   sharedElementOverlay: {
-    ...StyleSheet.absoluteFillObject
-  }
+    ...StyleSheet.absoluteFillObject,
+  },
 });

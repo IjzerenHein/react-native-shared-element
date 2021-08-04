@@ -15,20 +15,20 @@ const styles = StyleSheet.create({
     height: NavBarHeight,
     backgroundColor: Colors.navBar,
     paddingHorizontal: 32,
-    paddingBottom: 16
+    paddingBottom: 16,
     //...Shadows.elevation1
   },
   lightContainer: {
-    backgroundColor: "transparent"
+    backgroundColor: "transparent",
   },
   backContainer: {
     position: "absolute",
     left: 10,
-    bottom: 10
+    bottom: 10,
   },
   icon: {
-    ...Shadows.textElevation1
-  }
+    ...Shadows.textElevation1,
+  },
 });
 
 export interface NavBarProps {
@@ -43,12 +43,12 @@ const HIT_SLOP = {
   left: 16,
   top: 16,
   right: 16,
-  bottom: 16
+  bottom: 16,
 };
 
 export class NavBar extends React.Component<NavBarProps> {
   static defaultProps = {
-    back: "default"
+    back: "default",
   };
 
   static HEIGHT = NavBarHeight;
@@ -91,7 +91,7 @@ export class NavBar extends React.Component<NavBarProps> {
         style={[
           styles.container,
           light ? styles.lightContainer : undefined,
-          style
+          style,
         ]}
       >
         <Heading3 light={light}>{title}</Heading3>

@@ -7,22 +7,22 @@ import { Hero } from "../types";
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.back
+    backgroundColor: Colors.back,
   },
   navBar: {
     position: "absolute",
     left: 0,
     top: 0,
-    right: 0
+    right: 0,
   },
   content: {
-    flex: 1
+    flex: 1,
   },
   image: {
     flex: 1,
     width: "100%",
-    resizeMode: "cover"
-  }
+    resizeMode: "cover",
+  },
 });
 
 type PropsType = {
@@ -48,9 +48,7 @@ export class DetailScreen extends React.Component<PropsType> {
         </View>
         {!navigation ? (
           <NavBar back="close" light style={styles.navBar} />
-        ) : (
-          undefined
-        )}
+        ) : undefined}
       </View>
     );
   }

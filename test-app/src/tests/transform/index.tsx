@@ -10,13 +10,13 @@ export const TransformTests: TestGroup = {
       name: "Translate X",
       description: "X translation applied to start element",
       start: <TestImage style={{ transform: [{ translateX: 200 }] }} />,
-      end: <TestImage />
+      end: <TestImage />,
     },
     {
       name: "Translate Y",
       description: "Y translation applied to start element",
       start: <TestImage style={{ transform: [{ translateY: 50 }] }} />,
-      end: <TestImage />
-    }
-  ]
+      end: <TestImage />,
+    },
+  ],
 };

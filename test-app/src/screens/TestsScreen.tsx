@@ -7,17 +7,17 @@ import { TestScreen } from "./TestScreen";
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1
+    flex: 1,
   },
   content: Platform.select({
     ios: {
       flex: 1,
-      backgroundColor: Colors.empty
+      backgroundColor: Colors.empty,
     },
     android: {
-      flex: 1
-    }
-  })
+      flex: 1,
+    },
+  }),
 });
 
 type PropsType = {
@@ -35,9 +35,7 @@ export class TestsScreen extends React.Component<PropsType> {
       <View style={styles.container}>
         {!navigation ? (
           <NavBar title={title || "Tests"} zIndex={100} />
-        ) : (
-          undefined
-        )}
+        ) : undefined}
         <ScrollView style={styles.content} endFillColor={Colors.empty}>
           {tests.map((test, index) => (
             <ListItem
@@ -61,12 +59,12 @@ export class TestsScreen extends React.Component<PropsType> {
         navigation.push("Tests", {
           title: test.name,
           description: test.description,
-          tests: test.tests
+          tests: test.tests,
         });
       } else {
         navigation.push("Test", {
           test,
-          description: description || ""
+          description: description || "",
         });
       }
     } else {

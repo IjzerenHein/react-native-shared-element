@@ -7,31 +7,31 @@ const styles = StyleSheet.create({
   heading1: {
     fontSize: 40,
     fontWeight: "bold",
-    color: Colors.text
+    color: Colors.text,
   },
   heading2: {
     fontSize: 30,
     fontWeight: "bold",
-    color: Colors.text
+    color: Colors.text,
   },
   heading3: {
     fontSize: 17,
     fontWeight: "700",
-    color: Colors.text
+    color: Colors.text,
   },
   caption: {
     fontSize: 14,
     fontWeight: "400",
-    color: Colors.gray
+    color: Colors.gray,
   },
   body: {
     fontSize: 17,
     fontWeight: "500",
-    color: Colors.gray
+    color: Colors.gray,
   },
   light: {
-    color: Colors.back
-  }
+    color: Colors.back,
+  },
 });
 
 export const Heading1 = (props: any) => {

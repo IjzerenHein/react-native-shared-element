@@ -13,16 +13,16 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     borderColor: Colors.separator,
     borderBottomWidth: StyleSheet.hairlineWidth,
-    minHeight: 60
+    minHeight: 60,
   },
   content: {
     flex: 1,
     flexDirection: "column",
     justifyContent: "center",
-    alignItems: "flex-start"
+    alignItems: "flex-start",
   },
   description: {
-    marginTop: 1
+    marginTop: 1,
   },
   image: {
     width: 44,
@@ -36,10 +36,10 @@ const styles = StyleSheet.create({
       height: 11
     },*/
     shadowOpacity: 0.55,
-    shadowRadius: 14.78
+    shadowRadius: 14.78,
     //borderWidth: 4,
     //borderColor: "orange"
-  }
+  },
 });
 
 export interface ListItemProps {
@@ -79,9 +79,7 @@ export class ListItem extends React.Component<ListItemProps> {
             <Heading3>{label}</Heading3>
             {description ? (
               <Caption style={styles.description}>{description}</Caption>
-            ) : (
-              undefined
-            )}
+            ) : undefined}
           </View>
         </View>
       </TouchableOpacity>

@@ -19,7 +19,7 @@ type StateType = {
 
 const VIEWABILITY_CONFIG = {
   minimumViewTime: 0,
-  viewAreaCoveragePercentThreshold: 51
+  viewAreaCoveragePercentThreshold: 51,
 };
 
 export class ViewPager extends React.PureComponent<PropsType, StateType> {
@@ -33,7 +33,7 @@ export class ViewPager extends React.PureComponent<PropsType, StateType> {
     const contentOffset = { x: initialOffset, y: 0 };
     this.state = {
       selectedIndex: initialItemIndex,
-      contentOffset
+      contentOffset,
     };
   }
 
@@ -68,7 +68,7 @@ export class ViewPager extends React.PureComponent<PropsType, StateType> {
     if (this.state.selectedIndex !== selectedIndex) {
       this.setState(
         {
-          selectedIndex
+          selectedIndex,
         },
         () => {
           if (onItemSelected) onItemSelected(selectedIndex);

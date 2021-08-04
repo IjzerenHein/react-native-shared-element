@@ -1,5 +1,5 @@
-import { SharedElement as ReactNavigationCoreSharedElement } from "react-native-shared-element";
 import * as React from "react";
+import { SharedElement as ReactNavigationCoreSharedElement } from "react-native-shared-element";
 
 import { RouterScreenTransition } from "./RouterScreenTransition";
 

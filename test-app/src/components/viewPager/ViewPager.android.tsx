@@ -3,7 +3,7 @@ import * as React from "react";
 import { createNativeWrapper } from "react-native-gesture-handler";
 
 const RNGHViewPager = createNativeWrapper(NativeViewPager, {
-  disallowInterruption: true
+  disallowInterruption: true,
 });
 
 type PropsType = {
@@ -13,7 +13,7 @@ type PropsType = {
   initialItemIndex: number;
   onItemSelected: (index: number) => any;
 };
-type StateType = {};
+type StateType = object;
 
 export class ViewPager extends React.PureComponent<PropsType, StateType> {
   render() {
@@ -27,7 +27,7 @@ export class ViewPager extends React.PureComponent<PropsType, StateType> {
         {data.map((item, index) =>
           renderItem({
             item,
-            index
+            index,
           })
         )}
       </RNGHViewPager>

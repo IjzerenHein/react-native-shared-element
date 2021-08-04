@@ -4,7 +4,7 @@ import {
   ScrollView,
   View,
   TouchableOpacity,
-  Image
+  Image,
 } from "react-native";
 
 import { Heroes } from "../assets";
@@ -14,7 +14,7 @@ import {
   SharedElement,
   Colors,
   Heading2,
-  Caption
+  Caption,
 } from "../components";
 import { fadeIn } from "../transitions";
 import { Hero, SharedElementsConfig } from "../types";
@@ -22,36 +22,36 @@ import { Hero, SharedElementsConfig } from "../types";
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.back
+    backgroundColor: Colors.back,
   },
   flex: {
-    flex: 1
+    flex: 1,
   },
   item: {
     height: 100,
     flexDirection: "row",
     alignItems: "center",
-    paddingHorizontal: 20
+    paddingHorizontal: 20,
   },
   image: {
     width: 80,
     height: 80,
     borderRadius: 40,
-    overflow: "hidden"
+    overflow: "hidden",
   },
   overlay: {
-    borderRadius: 40
+    borderRadius: 40,
   },
   content: {
     flex: 1,
     marginLeft: 20,
     flexDirection: "column",
-    justifyContent: "center"
+    justifyContent: "center",
   },
   name: {
     marginBottom: 4,
-    flexDirection: "row"
-  }
+    flexDirection: "row",
+  },
 });
 
 type PropsType = {
@@ -64,7 +64,7 @@ type PropsType = {
 export class ListScreen extends React.Component<PropsType> {
   static defaultProps = {
     title: "Bullets",
-    transitionConfig: fadeIn()
+    transitionConfig: fadeIn(),
   };
 
   renderItem(hero: Hero) {
@@ -110,7 +110,7 @@ export class ListScreen extends React.Component<PropsType> {
       <View style={styles.container}>
         <NavBar title={title} />
         <ScrollView style={styles.flex}>
-          {Heroes.map(item => this.renderItem(item))}
+          {Heroes.map((item) => this.renderItem(item))}
         </ScrollView>
       </View>
     );
@@ -121,11 +121,11 @@ export class ListScreen extends React.Component<PropsType> {
     const sharedElements: SharedElementsConfig = [
       `heroPhoto.${hero.id}`,
       { id: `heroPhotoOverlay.${hero.id}`, animation: "fade" },
-      `heroName.${hero.id}`
+      `heroName.${hero.id}`,
     ];
     Router.push(<DetailComponent hero={hero} />, {
       sharedElements,
-      transitionConfig
+      transitionConfig,
     });
   };
 }

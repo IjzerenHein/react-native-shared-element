@@ -1,26 +1,26 @@
-import { SharedElementTransition } from "react-native-shared-element";
 import * as React from "react";
 import {
   StyleSheet,
   View,
   Animated,
   BackHandler,
-  Dimensions
+  Dimensions,
 } from "react-native";
 import { PanGestureHandler, State } from "react-native-gesture-handler";
 import {
   enableScreens,
   screensEnabled,
   ScreenContainer,
-  Screen
+  Screen,
 } from "react-native-screens";
+import { SharedElementTransition } from "react-native-shared-element";
 
 import { fromRight } from "../transitions";
 import { SharedElementsConfig, SharedElementsStrictConfig } from "../types";
 import { normalizeSharedElementsConfig } from "../types/SharedElement";
 import {
   ScreenTransitionContext,
-  ScreenTransitionContextOnSharedElementsUpdatedEvent
+  ScreenTransitionContextOnSharedElementsUpdatedEvent,
 } from "./RouterScreenTransitionContext";
 import { NavBarHeight } from "./navBar/constants";
 
@@ -28,10 +28,10 @@ enableScreens();
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1
+    flex: 1,
   },
   node: {
-    ...StyleSheet.absoluteFillObject
+    ...StyleSheet.absoluteFillObject,
     //backfaceVisibility: "hidden"
   },
   swipeBackOverlay: {
@@ -39,14 +39,14 @@ const styles = StyleSheet.create({
     left: 0,
     top: NavBarHeight,
     bottom: 0,
-    width: 30
+    width: 30,
     // backgroundColor: "green",
     // opacity: 0.2
   },
   sharedElements: {
     ...StyleSheet.absoluteFillObject,
-    zIndex: 1000
-  }
+    zIndex: 1000,
+  },
 });
 
 type RouterTransitionConfig = {
@@ -116,7 +116,7 @@ export class Router extends React.Component<RouterProps, RouterState> {
   _backHandler: any;
 
   static defaultProps = {
-    transitionConfig: fromRight()
+    transitionConfig: fromRight(),
   };
 
   constructor(props: RouterProps) {
@@ -132,14 +132,14 @@ export class Router extends React.Component<RouterProps, RouterState> {
         this._swipeBackAnimValue.interpolate({
           inputRange: [0, Dimensions.get("window").width],
           outputRange: [0, 1],
-          extrapolate: "clamp"
+          extrapolate: "clamp",
         })
       ),
       sharedElementScreens: [],
       sharedElementsConfig: undefined,
       transitionConfig: undefined,
       width: Dimensions.get("window").width,
-      height: Dimensions.get("window").height
+      height: Dimensions.get("window").height,
     };
   }
 
@@ -162,7 +162,7 @@ export class Router extends React.Component<RouterProps, RouterState> {
       sharedElementScreens,
       sharedElementsConfig,
       transitionConfig,
-      animValue
+      animValue,
     } = this.state;
     //if (!sharedElementConfig) return;
     if (prevIndex === nextIndex && nextIndex === stack.length - 1) {
@@ -177,20 +177,20 @@ export class Router extends React.Component<RouterProps, RouterState> {
     const { debug } = transitionConfig;
     const startScreen = sharedElementScreens[startIndex];
     const endScreen = sharedElementScreens[endIndex];
-    const nodes = sharedElementsConfig.map(sharedElementConfig => {
+    const nodes = sharedElementsConfig.map((sharedElementConfig) => {
       const { id, otherId, ...other } = sharedElementConfig;
       const node: any = {
         id,
         start: {
           node: startScreen ? startScreen.nodes[id] : undefined,
-          ancestor: startScreen ? startScreen.ancestor : undefined
+          ancestor: startScreen ? startScreen.ancestor : undefined,
         },
         end: {
           node: endScreen ? endScreen.nodes[id] : undefined,
-          ancestor: endScreen ? endScreen.ancestor : undefined
+          ancestor: endScreen ? endScreen.ancestor : undefined,
         },
         ...other,
-        debug: sharedElementConfig.debug || debug
+        debug: sharedElementConfig.debug || debug,
       };
       return node;
     });
@@ -232,13 +232,13 @@ export class Router extends React.Component<RouterProps, RouterState> {
       case State.ACTIVE:
         // console.log("SWIPE ACTIVE: ", nativeEvent);
         this.setState({
-          nextIndex: Math.max(nextIndex - 1, 0)
+          nextIndex: Math.max(nextIndex - 1, 0),
         });
         break;
       case State.CANCELLED:
         // console.log("SWIPE CANCEL: ", nativeEvent);
         this.setState({
-          nextIndex: prevIndex
+          nextIndex: prevIndex,
         });
         break;
       case State.END:
@@ -251,7 +251,7 @@ export class Router extends React.Component<RouterProps, RouterState> {
           Animated.timing(this._swipeBackAnimValue, {
             toValue: width,
             duration: 100,
-            useNativeDriver: true
+            useNativeDriver: true,
           }).start(({ finished }) => {
             if (finished) {
               this.pruneStack(this.state.nextIndex + 1);
@@ -263,11 +263,11 @@ export class Router extends React.Component<RouterProps, RouterState> {
           Animated.timing(this._swipeBackAnimValue, {
             toValue: 0,
             duration: 100,
-            useNativeDriver: true
+            useNativeDriver: true,
           }).start(({ finished }) => {
             if (finished) {
               this.setState({
-                nextIndex: this.state.prevIndex // eslint-disable-line react/no-access-state-in-setstate
+                nextIndex: this.state.prevIndex, // eslint-disable-line react/no-access-state-in-setstate
               });
             }
           });
@@ -283,14 +283,8 @@ export class Router extends React.Component<RouterProps, RouterState> {
   };
 
   render() {
-    const {
-      stack,
-      animValue,
-      nextIndex,
-      prevIndex,
-      width,
-      height
-    } = this.state;
+    const { stack, animValue, nextIndex, prevIndex, width, height } =
+      this.state;
     const transitionConfig =
       this.state.transitionConfig || this.props.transitionConfig;
     return (
@@ -309,7 +303,7 @@ export class Router extends React.Component<RouterProps, RouterState> {
                   transitionConfig.screenInterpolator({
                     layout: {
                       initHeight: height,
-                      initWidth: width
+                      initWidth: width,
                       //width:
                       //height:
                       //isMeasured
@@ -318,14 +312,14 @@ export class Router extends React.Component<RouterProps, RouterState> {
                     // progress,
                     index,
                     scene: {
-                      index
+                      index,
                       //isActive
                       //isStale
                       //key,
                       //route
                       //descriptor
-                    }
-                  })
+                    },
+                  }),
                 ]}
               >
                 <ScreenTransitionContext
@@ -355,9 +349,9 @@ export class Router extends React.Component<RouterProps, RouterState> {
           this._swipeBackAnimValue.interpolate({
             inputRange: [0, width],
             outputRange: [0, 1],
-            extrapolate: "clamp"
+            extrapolate: "clamp",
           })
-        )
+        ),
       });
     }
   };
@@ -373,7 +367,7 @@ export class Router extends React.Component<RouterProps, RouterState> {
     const newSharedElementScreens = [...sharedElementScreens];
     newSharedElementScreens[index] = event;
     this.setState({
-      sharedElementScreens: newSharedElementScreens
+      sharedElementScreens: newSharedElementScreens,
     });
   };
 
@@ -390,11 +384,11 @@ export class Router extends React.Component<RouterProps, RouterState> {
     const action: RouterAction = {
       action: "push",
       node,
-      config
+      config,
     };
     if (nextIndex !== prevIndex) {
       this.setState({
-        actionsQueue: [...actionsQueue, action]
+        actionsQueue: [...actionsQueue, action],
       });
     } else {
       this.handleAction(action);
@@ -405,11 +399,11 @@ export class Router extends React.Component<RouterProps, RouterState> {
     const { nextIndex, prevIndex, actionsQueue } = this.state;
     const action: RouterAction = {
       action: "pop",
-      config
+      config,
     };
     if (nextIndex !== prevIndex) {
       this.setState({
-        actionsQueue: [...actionsQueue, action]
+        actionsQueue: [...actionsQueue, action],
       });
     } else {
       this.handleAction(action);
@@ -432,13 +426,13 @@ export class Router extends React.Component<RouterProps, RouterState> {
         nextIndex: nextIndex + 1,
         sharedElementScreens: [...sharedElementScreens, undefined],
         sharedElementsConfig,
-        transitionConfig
+        transitionConfig,
       });
       const { transitionSpec } = transitionConfig;
       const { timing, ...spec } = transitionSpec;
       const anim = timing.call(Animated, this._animValue, {
         ...spec,
-        toValue: stack.length
+        toValue: stack.length,
       });
       anim.start(({ finished }) => {
         if (finished) {
@@ -452,13 +446,13 @@ export class Router extends React.Component<RouterProps, RouterState> {
       this.setState({
         nextIndex: nextIndex - 1,
         transitionConfig,
-        sharedElementsConfig
+        sharedElementsConfig,
       });
       const { transitionSpec } = transitionConfig;
       const { timing, ...spec } = transitionSpec;
       const anim = timing.call(Animated, this._animValue, {
         ...spec,
-        toValue: stack.length - 2
+        toValue: stack.length - 2,
       });
       anim.start(({ finished }) => {
         if (finished) {
@@ -484,7 +478,7 @@ export class Router extends React.Component<RouterProps, RouterState> {
           stack: stack.slice(0, count),
           sharedElementScreens: sharedElementScreens.slice(0, count),
           prevIndex: nextIndex,
-          actionsQueue
+          actionsQueue,
         },
         onComplete
       );
@@ -492,7 +486,7 @@ export class Router extends React.Component<RouterProps, RouterState> {
       this.setState(
         {
           prevIndex: nextIndex,
-          actionsQueue
+          actionsQueue,
         },
         onComplete
       );

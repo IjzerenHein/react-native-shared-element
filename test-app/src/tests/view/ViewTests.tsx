@@ -15,22 +15,22 @@ export const ViewTests: TestGroup = {
           description:
             "The most basic form of a shared-element transition. The view should move smoothly without flickering from the start- to the end state, and back",
           start: <TestView />,
-          end: <TestView end />
+          end: <TestView end />,
         },
         {
           name: "Move & scale",
           description:
             "Another basic form of a shared-element transition. The view should move & scale correctly without flickering from the start- to the end state, and back",
           start: <TestView size="small" />,
-          end: <TestView end size="large" />
+          end: <TestView end size="large" />,
         },
         {
           name: "Full size",
           description: "TODO",
           start: <TestView size="small" />,
-          end: <TestView end size="max" />
-        }
-      ]
+          end: <TestView end size="max" />,
+        },
+      ],
     },
     {
       name: "View Styles",
@@ -40,14 +40,14 @@ export const ViewTests: TestGroup = {
           description:
             "The transition should use the start- and ending opacity of the image and create a smooth transition.",
           start: <TestView size="regular" round style={{ opacity: 0.5 }} />,
-          end: <TestView end size="regular" round />
+          end: <TestView end size="regular" round />,
         },
         {
           name: "View Border-radius",
           description:
             "The border-radius should correctly animate for the transition.",
           start: <TestView size="regular" round />,
-          end: <TestView end size="regular" />
+          end: <TestView end size="regular" />,
         },
         {
           name: "View Border-radii",
@@ -60,11 +60,11 @@ export const ViewTests: TestGroup = {
                 borderTopLeftRadius: 20,
                 borderTopRightRadius: 40,
                 borderBottomRightRadius: 60,
-                borderBottomLeftRadius: 100
+                borderBottomLeftRadius: 100,
               }}
             />
           ),
-          end: <TestView end size="regular" />
+          end: <TestView end size="regular" />,
         },
         {
           name: "View Border  ➔  No-border",
@@ -77,7 +77,7 @@ export const ViewTests: TestGroup = {
               style={{ borderWidth: 5, borderColor: Colors.yellow }}
             />
           ),
-          end: <TestView end size="regular" round />
+          end: <TestView end size="regular" round />,
         },
         {
           name: "View Border  ➔  Other border",
@@ -97,7 +97,7 @@ export const ViewTests: TestGroup = {
               round
               style={{ borderWidth: 2, borderColor: Colors.black }}
             />
-          )
+          ),
         },
         {
           name: "View Shadow   ➔  No shadow",
@@ -110,7 +110,7 @@ export const ViewTests: TestGroup = {
               style={{ ...Shadows.elevation2, backgroundColor: "white" }}
             />
           ),
-          end: <TestView end size="regular" round />
+          end: <TestView end size="regular" round />,
         },
         {
           name: "View Border-radii & Shadow",
@@ -125,13 +125,13 @@ export const ViewTests: TestGroup = {
                 borderBottomRightRadius: 60,
                 borderBottomLeftRadius: 100,
                 ...Shadows.elevation2,
-                backgroundColor: "white"
+                backgroundColor: "white",
               }}
             />
           ),
-          end: <TestView end size="regular" round />
-        }
-      ]
+          end: <TestView end size="regular" round />,
+        },
+      ],
     },
     {
       name: "View Fade",
@@ -142,15 +142,15 @@ export const ViewTests: TestGroup = {
           name: "Fade",
           start: <TestView size="regular" />,
           end: <TestView end size="regular" color={Colors.yellow} />,
-          animation: "fade"
+          animation: "fade",
         },
         {
           name: "Fade & border-radius",
           start: <TestView size="regular" />,
           end: <TestView end size="large" round color={Colors.yellow} />,
-          animation: "fade"
-        }
-      ]
-    }
-  ]
+          animation: "fade",
+        },
+      ],
+    },
+  ],
 };

@@ -7,28 +7,28 @@ import { Test, SharedElementsConfig } from "../types";
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1
+    flex: 1,
   },
   bottomContainer: {
     flex: 1,
     borderTopLeftRadius: 16,
     borderTopRightRadius: 16,
     backgroundColor: Colors.empty,
-    padding: 20
+    padding: 20,
   },
   buttonContainer: {
-    flexDirection: "row"
+    flexDirection: "row",
   },
   button: {
     flex: 1,
-    marginRight: 10
+    marginRight: 10,
   },
   debugButton: {
-    flex: 1
+    flex: 1,
   },
   body: {
-    marginTop: 20
-  }
+    marginTop: 20,
+  },
 });
 
 interface PropsType {
@@ -42,14 +42,14 @@ function getSharedElements(test: Test): SharedElementsConfig {
   const props = {
     animation: test.animation,
     resize: test.resize,
-    align: test.align
+    align: test.align,
   };
   return test.multi
     ? [
         { id: "testImage", ...props },
         { id: "testOverlay", ...props, animation: test.animation || "fade" },
         { id: "testLogo", ...props },
-        { id: "testTitle", ...props, animation: test.animation || "fade" }
+        { id: "testTitle", ...props, animation: test.animation || "fade" },
       ]
     : [{ id: "testContent", ...props }];
 }
@@ -76,7 +76,7 @@ export class TestScreen extends React.Component<PropsType> {
       <View style={styles.container}>
         {!navigation ? <NavBar title={test.name} /> : undefined}
         {React.cloneElement(end ? test.end : test.start, {
-          navigation
+          navigation,
         })}
         <View style={styles.bottomContainer}>
           <View style={styles.buttonContainer}>
@@ -91,18 +91,14 @@ export class TestScreen extends React.Component<PropsType> {
                 label="Slow"
                 onPress={this.onPressSlowButton}
               />
-            ) : (
-              undefined
-            )}
+            ) : undefined}
             {!navigation ? (
               <Button
                 style={styles.debugButton}
                 label="Debug"
                 onPress={this.onPressDebugButton}
               />
-            ) : (
-              undefined
-            )}
+            ) : undefined}
           </View>
           <Body style={styles.body}>{test.description || description}</Body>
         </View>
@@ -121,7 +117,7 @@ export class TestScreen extends React.Component<PropsType> {
   onPressDebugButton = () => {
     this.transition({
       ...fromRight(8000),
-      debug: true
+      debug: true,
     });
   };
 
@@ -139,7 +135,7 @@ export class TestScreen extends React.Component<PropsType> {
       } else {
         Router.pop({
           transitionConfig,
-          sharedElements
+          sharedElements,
         });
       }
     } else {
@@ -147,7 +143,7 @@ export class TestScreen extends React.Component<PropsType> {
         navigation.push("Test", {
           test,
           description: description || "",
-          end: true
+          end: true,
         });
       } else {
         Router.push(

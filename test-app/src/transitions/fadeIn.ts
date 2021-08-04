@@ -5,13 +5,13 @@ export function fadeIn(duration: number = 400, spring: boolean = false) {
     ? {
         timing: Animated.spring,
         tension: 10,
-        useNativeDriver: true
+        useNativeDriver: true,
       }
     : {
         duration,
         easing: Easing.bezier(0.2833, 0.99, 0.31833, 0.99),
         timing: Animated.timing,
-        useNativeDriver: true
+        useNativeDriver: true,
       };
 
   return {
@@ -21,10 +21,10 @@ export function fadeIn(duration: number = 400, spring: boolean = false) {
 
       const opacity = position.interpolate({
         inputRange: [index - 1, index],
-        outputRange: [0, 1]
+        outputRange: [0, 1],
       });
 
       return { opacity };
-    }
+    },
   };
 }

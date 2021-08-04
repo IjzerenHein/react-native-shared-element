@@ -1,9 +1,9 @@
-import { SharedElement, SharedElementNode } from "react-native-shared-element";
 import * as React from "react";
+import { SharedElement, SharedElementNode } from "react-native-shared-element";
 
 import {
   ScreenTransitionContext,
-  withScreenTransitionContext
+  withScreenTransitionContext,
 } from "./RouterScreenTransitionContext";
 
 export interface ScreenTransitionProps {

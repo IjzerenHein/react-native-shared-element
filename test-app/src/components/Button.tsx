@@ -14,11 +14,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     justifyContent: "center",
     alignItems: "center",
-    ...Shadows.elevation1
+    ...Shadows.elevation1,
   },
   label: {
-    color: "white"
-  }
+    color: "white",
+  },
 });
 
 export interface ButtonProps {

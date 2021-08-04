@@ -12,12 +12,12 @@ export const CompoundTests: TestGroup = {
     {
       name: "Simple move",
       start: <TestCompoundView position="top" />,
-      end: <TestCompoundView position="bottom" />
+      end: <TestCompoundView position="bottom" />,
     },
     {
       name: "Move & scale",
       start: <TestCompoundView position="top" />,
-      end: <TestCompoundView position="bottom" size="large" />
+      end: <TestCompoundView position="bottom" size="large" />,
     },
     {
       name: "Fade",
@@ -30,7 +30,7 @@ export const CompoundTests: TestGroup = {
           hero={Heroes[2]}
         />
       ),
-      animation: "fade"
+      animation: "fade",
     },
     {
       name: "Fade (resize = clip)",
@@ -46,20 +46,20 @@ export const CompoundTests: TestGroup = {
         />
       ),
       animation: "fade",
-      resize: "clip"
+      resize: "clip",
     },
     {
       name: "Fade & change aspect-ratio",
       start: <TestCompoundView size="regular" position="top" />,
       end: <TestCompoundView end size="regular" position="bottom" vertical />,
-      animation: "fade"
+      animation: "fade",
     },
     {
       name: "Fade & change aspect-ratio (clip)",
       start: <TestCompoundView size="regular" position="top" vertical />,
       end: <TestCompoundView end size="regular" position="bottom" />,
       animation: "fade",
-      resize: "clip"
-    }
-  ]
+      resize: "clip",
+    },
+  ],
 };

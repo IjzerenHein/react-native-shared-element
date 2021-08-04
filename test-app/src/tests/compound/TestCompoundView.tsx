@@ -95,16 +95,8 @@ export class TestCompoundView extends React.Component<PropsType> {
   };
 
   render() {
-    const {
-      style,
-      hero,
-      end,
-      size,
-      position,
-      vertical,
-      navigation,
-      overlay,
-    } = this.props;
+    const { style, hero, end, size, position, vertical, navigation, overlay } =
+      this.props;
     const isMax = size === "max";
     const resolvedPosition =
       position === "default"
@@ -168,9 +160,7 @@ export class TestCompoundView extends React.Component<PropsType> {
                       start={{ x: 0, y: 0 }}
                       end={{ x: 0, y: 1 }}
                     />
-                  ) : (
-                    undefined
-                  )}
+                  ) : undefined}
                 </SharedElement>
               )}
             </View>

@@ -6,7 +6,7 @@ import {
   StatusBar,
   Dimensions,
   Animated,
-  Platform
+  Platform,
 } from "react-native";
 
 import {
@@ -15,43 +15,43 @@ import {
   Colors,
   Router,
   Heading1,
-  Body
+  Body,
 } from "../components";
 import { fadeIn } from "../transitions";
 import { Hero, SharedElementsConfig } from "../types";
 
 const styles = StyleSheet.create({
   flex: {
-    flex: 1
+    flex: 1,
   },
   background: {
     flex: 1,
-    backgroundColor: Colors.back
+    backgroundColor: Colors.back,
   },
   content: {
     padding: 20,
-    paddingTop: 10
+    paddingTop: 10,
   },
   navBar: {
     position: "absolute",
     left: 0,
     right: 0,
-    top: 0
+    top: 0,
   },
   image: {
     width: "100%",
-    resizeMode: "cover"
+    resizeMode: "cover",
   },
   name: {
-    alignSelf: "flex-start"
+    alignSelf: "flex-start",
   },
   description: {
-    marginTop: 4
+    marginTop: 4,
   },
   bottom: {
     height: 1,
-    backgroundColor: Colors.back
-  }
+    backgroundColor: Colors.back,
+  },
 });
 
 type Type = "tile" | "card" | "card2" | "avatar";
@@ -71,7 +71,7 @@ type StateType = {
 
 export class CardScreen extends React.Component<PropsType, StateType> {
   static navigationOptions = {
-    header: null
+    header: null,
   };
 
   static getSharedElements(
@@ -87,20 +87,20 @@ export class CardScreen extends React.Component<PropsType, StateType> {
           {
             id: `heroBackground.${hero.id}`,
             otherId: `heroPhoto.${hero.id}`,
-            animation: showing ? "fade-in" : "fade-out"
+            animation: showing ? "fade-in" : "fade-out",
           },
           `heroPhoto.${hero.id}`,
           {
             id: `heroName.${hero.id}`,
             otherId: `heroPhoto.${hero.id}`,
-            animation: showing ? "fade-in" : "fade-out"
+            animation: showing ? "fade-in" : "fade-out",
           },
           {
             id: `heroDescription.${hero.id}`,
             otherId: `heroPhoto.${hero.id}`,
-            animation: showing ? "fade-in" : "fade-out"
+            animation: showing ? "fade-in" : "fade-out",
           },
-          { id: `heroCloseButton.${hero.id}`, animation: "fade" }
+          { id: `heroCloseButton.${hero.id}`, animation: "fade" },
         ];
       case "card":
         return [
@@ -112,8 +112,8 @@ export class CardScreen extends React.Component<PropsType, StateType> {
             id: `heroDescription.${hero.id}`,
             animation: "fade",
             resize: "clip",
-            align: "left-top"
-          }
+            align: "left-top",
+          },
         ];
       case "card2":
         return [
@@ -126,8 +126,8 @@ export class CardScreen extends React.Component<PropsType, StateType> {
             id: `heroDescription.${hero.id}`,
             animation: "fade",
             resize: "clip",
-            align: "left-top"
-          }
+            align: "left-top",
+          },
         ];
     }
   }
@@ -150,23 +150,18 @@ export class CardScreen extends React.Component<PropsType, StateType> {
       scrollEvent: Animated.event(
         [{ nativeEvent: { contentOffset: { y: scrollOffset } } }],
         {
-          useNativeDriver: true
+          useNativeDriver: true,
         }
       ),
       contentHeight: 0,
       width: Dimensions.get("window").width,
-      height: Dimensions.get("window").height
+      height: Dimensions.get("window").height,
     };
   }
 
   render() {
-    const {
-      scrollOffset,
-      scrollEvent,
-      contentHeight,
-      height,
-      width
-    } = this.state;
+    const { scrollOffset, scrollEvent, contentHeight, height, width } =
+      this.state;
     const { navigation } = this.props;
     const hero = navigation ? navigation.getParam("hero") : this.props.hero;
     const type = navigation ? navigation.getParam("type") : this.props.type;
@@ -197,16 +192,16 @@ export class CardScreen extends React.Component<PropsType, StateType> {
                         {
                           translateY: scrollOffset.interpolate({
                             inputRange: [-1, 0, 1],
-                            outputRange: [-1, 0, 0]
-                          })
+                            outputRange: [-1, 0, 0],
+                          }),
                         },
                         {
                           scale: scrollOffset.interpolate({
                             inputRange: [imageHeight / -2, 0, 1],
-                            outputRange: [2, 1, 1]
-                          })
-                        }
-                      ]
+                            outputRange: [2, 1, 1],
+                          }),
+                        },
+                      ],
                     }
                   : undefined
               }
@@ -231,9 +226,7 @@ export class CardScreen extends React.Component<PropsType, StateType> {
                     end={{ x: 0, y: 1 }}
                   />*/}
                 </SharedElement>
-              ) : (
-                undefined
-              )}
+              ) : undefined}
             </Animated.View>
             <View style={styles.content} onLayout={this.onLayoutContent}>
               <SharedElement
@@ -251,9 +244,7 @@ export class CardScreen extends React.Component<PropsType, StateType> {
                 >
                   <Body>{description}</Body>
                 </SharedElement>
-              ) : (
-                undefined
-              )}
+              ) : undefined}
             </View>
           </View>
           {Platform.OS === "ios" ? (
@@ -267,28 +258,26 @@ export class CardScreen extends React.Component<PropsType, StateType> {
                         inputRange: [
                           0,
                           Math.max(imageHeight + contentHeight - height, 0),
-                          Math.max(imageHeight + contentHeight - height, 0) + 1
+                          Math.max(imageHeight + contentHeight - height, 0) + 1,
                         ],
-                        outputRange: [0, 0, 0.5]
-                      })
+                        outputRange: [0, 0, 0.5],
+                      }),
                     },
                     {
                       scaleY: scrollOffset.interpolate({
                         inputRange: [
                           0,
                           Math.max(imageHeight + contentHeight - height, 0),
-                          Math.max(imageHeight + contentHeight - height, 0) + 1
+                          Math.max(imageHeight + contentHeight - height, 0) + 1,
                         ],
-                        outputRange: [0, 1, 2]
-                      })
-                    }
-                  ]
-                }
+                        outputRange: [0, 1, 2],
+                      }),
+                    },
+                  ],
+                },
               ]}
             />
-          ) : (
-            undefined
-          )}
+          ) : undefined}
         </Animated.ScrollView>
         <SharedElement
           id={`heroCloseButton.${id}`}
@@ -306,7 +295,7 @@ export class CardScreen extends React.Component<PropsType, StateType> {
     if (this.state.width !== width || this.state.height !== height) {
       this.setState({
         width,
-        height
+        height,
       });
     }
   };
@@ -327,7 +316,7 @@ export class CardScreen extends React.Component<PropsType, StateType> {
     } else {
       Router.pop({
         sharedElements: CardScreen.getSharedElements(hero, type, false) || [],
-        transitionConfig: fadeIn()
+        transitionConfig: fadeIn(),
       });
     }
   };

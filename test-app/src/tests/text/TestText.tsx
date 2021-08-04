@@ -7,52 +7,52 @@ import { Position, Size } from "../../types";
 const styles = StyleSheet.create({
   container: {
     height: Dimensions.get("window").width,
-    backgroundColor: Colors.back
+    backgroundColor: Colors.back,
   },
   left: {
     flexDirection: "row",
     justifyContent: "flex-start",
     alignItems: "center",
     paddingLeft: 20,
-    paddingVertical: 20
+    paddingVertical: 20,
   },
   top: {
     flexDirection: "column",
     justifyContent: "flex-start",
     alignItems: "center",
     paddingTop: 20,
-    paddingHorizontal: 20
+    paddingHorizontal: 20,
   },
   right: {
     flexDirection: "row",
     justifyContent: "flex-end",
     alignItems: "center",
     paddingRight: 20,
-    paddingVertical: 20
+    paddingVertical: 20,
   },
   bottom: {
     flexDirection: "column",
     justifyContent: "flex-end",
     alignItems: "center",
     paddingBottom: 20,
-    paddingHorizontal: 20
+    paddingHorizontal: 20,
   },
   center: {
     flexDirection: "column",
     justifyContent: "center",
     alignItems: "center",
-    padding: 20
+    padding: 20,
   },
   text: {
-    fontWeight: "500"
-  }
+    fontWeight: "500",
+  },
 });
 
 const FontSizes = {
   max: 32,
   small: 13,
   regular: 17,
-  large: 30
+  large: 30,
 };
 
 type TextLength = "word" | "words" | "sentence" | "paragraph";
@@ -64,7 +64,7 @@ const TextLengths: { [key: string]: number } = {
   word: 5,
   words: 11,
   sentence: TextContent.indexOf(".") + 1,
-  paragraph: TextContent.length
+  paragraph: TextContent.length,
 };
 
 type PropsType = {
@@ -85,20 +85,12 @@ export class TestText extends React.Component<PropsType> {
     position: "default",
     size: "default",
     length: "words",
-    scale: 1
+    scale: 1,
   };
 
   render() {
-    const {
-      style,
-      color,
-      end,
-      size,
-      position,
-      length,
-      scale,
-      navigation
-    } = this.props;
+    const { style, color, end, size, position, length, scale, navigation } =
+      this.props;
     const fontSize = FontSizes[size === "default" ? "regular" : size];
     const resolvedPosition =
       position === "default" ? (end ? "bottom" : "top") : position;
@@ -112,14 +104,14 @@ export class TestText extends React.Component<PropsType> {
       <View
         style={[
           styles.container,
-          size !== "max" ? styles[resolvedPosition] : undefined
+          size !== "max" ? styles[resolvedPosition] : undefined,
         ]}
       >
         <SharedElement
           id="testContent"
           style={[
             size === "max" ? { flex: 1 } : undefined,
-            { transform: [{ scale }] }
+            { transform: [{ scale }] },
           ]}
           navigation={navigation}
         >
@@ -129,9 +121,9 @@ export class TestText extends React.Component<PropsType> {
               {
                 fontSize,
                 color,
-                width
+                width,
               },
-              style
+              style,
             ]}
           >
             {TextContent.substring(0, textLength)}

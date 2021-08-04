@@ -1,6 +1,6 @@
-import { nodeFromRef, SharedElementNode } from "react-native-shared-element";
 import * as React from "react";
 import { View } from "react-native";
+import { nodeFromRef, SharedElementNode } from "react-native-shared-element";
 
 export type ScreenTransitionContextOnSharedElementsUpdatedEvent = {
   children: any;
@@ -33,7 +33,7 @@ export class ScreenTransitionContext extends React.Component<
   _sharedElementNodes = {};
   _sharedElementAncestor?: SharedElementNode = undefined;
   state = {
-    sharedElementNodes: this._sharedElementNodes
+    sharedElementNodes: this._sharedElementNodes,
   };
 
   render() {
@@ -62,7 +62,7 @@ export class ScreenTransitionContext extends React.Component<
       onSharedElementsUpdated({
         children,
         ancestor: this._sharedElementAncestor,
-        nodes: sharedElementNodes
+        nodes: sharedElementNodes,
       });
     }
   }
@@ -73,7 +73,7 @@ export class ScreenTransitionContext extends React.Component<
     sharedElementNodes[sharedId] = node;
     this._sharedElementNodes = sharedElementNodes;
     this.setState({
-      sharedElementNodes
+      sharedElementNodes,
     });
   }
 
@@ -83,7 +83,7 @@ export class ScreenTransitionContext extends React.Component<
     delete sharedElementNodes[sharedId];
     this._sharedElementNodes = sharedElementNodes;
     this.setState({
-      sharedElementNodes
+      sharedElementNodes,
     });
   }
 }
@@ -92,7 +92,7 @@ export function withScreenTransitionContext(WrappedComponent: any) {
   const comp = (props: any) => {
     return (
       <Context.Consumer>
-        {value => (
+        {(value) => (
           <WrappedComponent {...props} screenTransitionContext={value} />
         )}
       </Context.Consumer>
@@ -100,7 +100,7 @@ export function withScreenTransitionContext(WrappedComponent: any) {
   };
   if (WrappedComponent.propTypes) {
     const propTypes = {
-      ...WrappedComponent.propTypes
+      ...WrappedComponent.propTypes,
     };
     delete propTypes.screenTransitionContext;
     comp.propTypes = propTypes;
