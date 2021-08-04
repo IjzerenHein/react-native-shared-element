@@ -5,6 +5,7 @@ import java.util.Map;
 import android.view.View;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.facebook.react.common.MapBuilder;
 import com.facebook.react.uimanager.annotations.ReactProp;
@@ -26,9 +27,10 @@ public class RNSharedElementTransitionManager extends SimpleViewManager<RNShared
     return REACT_CLASS;
   }
 
+  @Nullable
   @Override
-  public Map getExportedCustomBubblingEventTypeConstants() {
-    return MapBuilder.builder()
+  public Map<String, Object> getExportedCustomBubblingEventTypeConstants() {
+    return MapBuilder.<String, Object>builder()
             .put(
                     "onMeasureNode",
                     MapBuilder.of(
