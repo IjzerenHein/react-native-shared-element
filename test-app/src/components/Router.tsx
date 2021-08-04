@@ -95,7 +95,7 @@ const AnimatedRouterScreen = (props: any) => {
   if (screensEnabled()) {
     AnimatedScreen = AnimatedScreen || Animated.createAnimatedComponent(Screen);
 
-    return <AnimatedScreen active={active} {...otherProps} />;
+    return <AnimatedScreen activityState={active ? 2 : 0} {...otherProps} />;
   }
 
   return <Animated.View {...otherProps} />;
