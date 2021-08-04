@@ -1,13 +1,14 @@
 import * as React from "react";
-import "react-native-gesture-handler";
-import { StatusBar, View } from "react-native";
+import { StatusBar, View, Platform } from "react-native";
 
 import { Router, ListItem } from "./components";
 import { MainScreen } from "./screens";
 //import { ReactNavigationScreen } from "./screens/ReactNavigationScreen";
 
-StatusBar.setTranslucent(true);
-StatusBar.setBackgroundColor("transparent");
+if (Platform.OS === "android") {
+  StatusBar.setTranslucent(true);
+  StatusBar.setBackgroundColor("transparent");
+}
 
 export default class App extends React.Component {
   render() {

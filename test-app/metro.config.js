@@ -1,35 +1,22 @@
-/**
- * Metro configuration for React Native
- * https://github.com/facebook/react-native
- *
- * @format
- */
-
+// Learn more https://docs.expo.io/guides/customizing-metro
+const { getDefaultConfig } = require("expo/metro-config");
 const path = require("path");
 
-module.exports = {
-  transformer: {
-    getTransformOptions: async () => ({
-      transform: {
-        experimentalImportSupport: false,
-        inlineRequires: false,
-      },
-    }),
-  },
+const defaultConfig = getDefaultConfig(__dirname);
 
-  // Add custom resolver and watch-folders because
-  // Metro doesn't work well with the link to the library.
-  resolver: {
-    extraNodeModules: new Proxy(
-      {},
-      {
-        get: (_, name) =>
-          path.resolve(
-            name === "react-native-shared-element" ? ".." : "./node_modules",
-            name
-          ),
-      }
-    ),
-  },
-  watchFolders: [path.resolve("./node_modules"), path.resolve("..")],
+const resolvers = {
+  "react-native-shared-element": "..",
 };
+
+// Add custom resolver and watch-folders because
+// Metro doesn't work well with the link to the library.
+defaultConfig.resolver.extraNodeModules = new Proxy(
+  {},
+  {
+    get: (_, name) => path.resolve(resolvers[name] || "./node_modules", name),
+  }
+);
+defaultConfig.watchFolders.push(path.resolve("./node_modules"));
+defaultConfig.watchFolders.push(path.resolve(".."));
+
+module.exports = defaultConfig;

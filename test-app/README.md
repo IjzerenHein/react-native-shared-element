@@ -14,7 +14,7 @@ The test app includes a variety of tests and receipes. It features a simple stac
 yarn # in the root directory
 cd test-app
 yarn
-cd ios && pod install && cd ..
+cd ios && npx pod install && cd ..
 
 # Run for ios
 yarn ios
