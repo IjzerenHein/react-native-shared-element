@@ -18,7 +18,7 @@
     "expo-updates": "~0.8.2",
     "react": "16.13.1",
     "react-dom": "16.13.1",
-    "react-native": "0.63.4",
+    "react-native": "0.64.1",
     "react-native-fast-image": "^8.3.7",
     "react-native-gesture-handler": "~1.10.2",
     "react-native-image-pan-zoom": "^2.1.12",
