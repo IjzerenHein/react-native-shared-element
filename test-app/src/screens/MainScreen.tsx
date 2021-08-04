@@ -5,10 +5,9 @@ import {
   View,
   StatusBar,
   Platform,
-  TouchableOpacity,
 } from "react-native";
 
-import { Router, NavBar, ListItem, Colors, Heading3 } from "../components";
+import { Router, NavBar, ListItem, Colors } from "../components";
 import { Tests } from "../tests";
 import { TestImage } from "../tests/image";
 import { fadeIn, fromRight } from "../transitions";
@@ -44,15 +43,6 @@ type PropsType = {
 };
 
 export class MainScreen extends React.Component<PropsType> {
-  static navigationOptions = {
-    title: "React Navigation",
-    headerLeft: () => (
-      <TouchableOpacity onPress={() => Router.pop()}>
-        <Heading3 style={styles.back}>Back</Heading3>
-      </TouchableOpacity>
-    ),
-  };
-
   render() {
     const { footer, navigation } = this.props;
     return (

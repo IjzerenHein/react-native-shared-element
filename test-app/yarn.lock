@@ -1827,11 +1827,6 @@
   resolved "https://registry.yarnpkg.com/@react-native-community/masked-view/-/masked-view-0.1.11.tgz#2f4c6e10bee0786abff4604e39a37ded6f3980ce"
   integrity sha512-rQfMIGSR/1r/SyN87+VD8xHHzDYeHaJq6elOSCAD+0iLagXkSI2pfA0LmSXP21uw5i3em7GkkRjfJ8wpqWXZNw==
 
-"@react-native-community/viewpager@^5.0.11":
-  version "5.0.11"
-  resolved "https://registry.yarnpkg.com/@react-native-community/viewpager/-/viewpager-5.0.11.tgz#dbeb2d1b2452607926407c99e4de59c7db9e3019"
-  integrity sha512-eboJwbDQjP1qJP3LFzVspgh88IGNF07S2qpU296j+4kL0inVuL+HXs81SuczMGtJmDZ4u19RNEBVq79of/h+jQ==
-
 "@sinonjs/commons@^1.7.0":
   version "1.8.3"
   resolved "https://registry.yarnpkg.com/@sinonjs/commons/-/commons-1.8.3.tgz#3802ddd21a50a949b6721ddd72da36e67e7f1b2d"
@@ -6711,6 +6706,11 @@ react-native-linear-gradient@^2.5.6:
   resolved "https://registry.yarnpkg.com/react-native-linear-gradient/-/react-native-linear-gradient-2.5.6.tgz#96215cbc5ec7a01247a20890888aa75b834d44a0"
   integrity sha512-HDwEaXcQIuXXCV70O+bK1rizFong3wj+5Q/jSyifKFLg0VWF95xh8XQgfzXwtq0NggL9vNjPKXa016KuFu+VFg==
 
+react-native-pager-view@^5.4.0:
+  version "5.4.0"
+  resolved "https://registry.yarnpkg.com/react-native-pager-view/-/react-native-pager-view-5.4.0.tgz#8e30a391a68da26e59f4ae724341b9208924b2ee"
+  integrity sha512-pYy3I8p5s6cPaymT1GibuDRHmicY3JdHHZyTH+Fra1S0wupaJhoZy33f2prrMJqQfk9kaqwCsb3pVmj4GuJTjA==
+
 react-native-reanimated@~2.2.0:
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/react-native-reanimated/-/react-native-reanimated-2.2.0.tgz#a6412c56b4e591d1f00fac949f62d0c72c357c78"
@@ -6734,7 +6734,8 @@ react-native-screens@~3.4.0:
     warn-once "^0.1.0"
 
 "react-native-shared-element@link:..":
-  version "0.7.0"
+  version "0.0.0"
+  uid ""
 
 react-native-touchable-scale@^2.1.1:
   version "2.1.2"

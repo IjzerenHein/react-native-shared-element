@@ -52,10 +52,6 @@ type StateType = {
 };
 
 export class PagerScreen extends React.Component<PropsType, StateType> {
-  static navigationOptions = {
-    header: null,
-  };
-
   static sharedElements = (
     navigation: any,
     otherNavigation: any,

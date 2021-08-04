@@ -1,8 +1,9 @@
-import NativeViewPager from "@react-native-community/viewpager";
 import * as React from "react";
 import { createNativeWrapper } from "react-native-gesture-handler";
+import PagerView from "react-native-pager-view";
 
-const RNGHViewPager = createNativeWrapper(NativeViewPager, {
+// TODO: fix touch events are not routed to the viewpager
+const RNGHPagerView = createNativeWrapper(PagerView, {
   disallowInterruption: true,
 });
 
@@ -20,7 +21,7 @@ export class ViewPager extends React.PureComponent<PropsType, StateType> {
   render() {
     const { style, data, initialItemIndex, renderItem } = this.props;
     return (
-      <RNGHViewPager
+      <RNGHPagerView
         style={style}
         initialPage={initialItemIndex}
         onPageSelected={this.onPageSelected}
@@ -31,7 +32,7 @@ export class ViewPager extends React.PureComponent<PropsType, StateType> {
             index,
           })
         )}
-      </RNGHViewPager>
+      </RNGHPagerView>
     );
   }
 

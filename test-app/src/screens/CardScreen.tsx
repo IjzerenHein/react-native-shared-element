@@ -70,10 +70,6 @@ type StateType = {
 };
 
 export class CardScreen extends React.Component<PropsType, StateType> {
-  static navigationOptions = {
-    header: null,
-  };
-
   static getSharedElements(
     hero: Hero,
     type: Type,
