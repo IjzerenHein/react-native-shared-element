@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 import android.annotation.SuppressLint;
 import android.os.Build;
-import android.util.Log;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.graphics.RectF;
@@ -13,7 +12,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.facebook.react.bridge.Arguments;
-import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.uimanager.PixelUtil;
@@ -21,7 +19,7 @@ import com.facebook.react.uimanager.ThemedReactContext;
 import com.facebook.react.uimanager.events.RCTEventEmitter;
 
 public class RNSharedElementTransition extends ViewGroup {
-  static private String LOG_TAG = "RNSharedElementTransition";
+  // static private final String LOG_TAG = "RNSharedElementTransition";
 
   enum Item {
     START(0),
@@ -38,7 +36,7 @@ public class RNSharedElementTransition extends ViewGroup {
     }
   }
 
-  private RNSharedElementNodeManager mNodeManager = null;
+  private final RNSharedElementNodeManager mNodeManager;
   private RNSharedElementAnimation mAnimation = RNSharedElementAnimation.MOVE;
   private RNSharedElementResize mResize = RNSharedElementResize.STRETCH;
   private RNSharedElementAlign mAlign = RNSharedElementAlign.CENTER_CENTER;
@@ -46,11 +44,11 @@ public class RNSharedElementTransition extends ViewGroup {
   private boolean mReactLayoutSet = false;
   private boolean mInitialLayoutPassCompleted = false;
   private boolean mInitialNodePositionSet = false;
-  private ArrayList<RNSharedElementTransitionItem> mItems = new ArrayList<RNSharedElementTransitionItem>();
-  private int[] mParentOffset = new int[2];
+  private final ArrayList<RNSharedElementTransitionItem> mItems = new ArrayList<>();
+  private final int[] mParentOffset = new int[2];
   private boolean mRequiresClipping = false;
-  private RNSharedElementView mStartView;
-  private RNSharedElementView mEndView;
+  private final RNSharedElementView mStartView;
+  private final RNSharedElementView mEndView;
   private int mInitialVisibleAncestorIndex = -1;
 
   public RNSharedElementTransition(ThemedReactContext context, RNSharedElementNodeManager nodeManager) {
@@ -156,26 +154,20 @@ public class RNSharedElementTransition extends ViewGroup {
     for (final RNSharedElementTransitionItem item : mItems) {
       if (item.getNeedsStyle()) {
         item.setNeedsStyle(false);
-        item.getNode().requestStyle(new Callback() {
-          @Override
-          public void invoke(Object... args) {
-            RNSharedElementStyle style = (RNSharedElementStyle) args[0];
-            item.setStyle(style);
-            updateLayout();
-            updateNodeVisibility();
-          }
+        item.getNode().requestStyle(args -> {
+          RNSharedElementStyle style = (RNSharedElementStyle) args[0];
+          item.setStyle(style);
+          updateLayout();
+          updateNodeVisibility();
         });
       }
       if (item.getNeedsContent()) {
         item.setNeedsContent(false);
-        item.getNode().requestContent(new Callback() {
-          @Override
-          public void invoke(Object... args) {
-            RNSharedElementContent content = (RNSharedElementContent) args[0];
-            item.setContent(content);
-            updateLayout();
-            updateNodeVisibility();
-          }
+        item.getNode().requestContent(args -> {
+          RNSharedElementContent content = (RNSharedElementContent) args[0];
+          item.setContent(content);
+          updateLayout();
+          updateNodeVisibility();
         });
       }
     }

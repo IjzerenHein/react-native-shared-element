@@ -1,16 +1,16 @@
 package com.ijzerenhein.sharedelement;
 
-import android.util.Log;
+// import android.util.Log;
 import android.view.View;
 import android.view.ViewParent;
 import android.view.ViewGroup;
 import android.graphics.Rect;
 
 class RNSharedElementTransitionItem {
-  static private String LOG_TAG = "RNSharedElementTransitionItem";
+  // static private final String LOG_TAG = "RNSharedElementTransitionItem";
 
-  private RNSharedElementNodeManager mNodeManager;
-  private String mName;
+  private final RNSharedElementNodeManager mNodeManager;
+  private final String mName;
   private RNSharedElementNode mNode;
   private boolean mHidden;
   private boolean mNeedsStyle;
@@ -123,12 +123,11 @@ class RNSharedElementTransitionItem {
     if (mClippedLayoutCache != null) return mClippedLayoutCache;
     if (mStyle == null) return null;
 
-    View view = getView();
     View ancestorView = mNode.getAncestorView();
 
     // Get visible area (some parts may be clipped in a scrollview or something)
     Rect clippedLayout = new Rect(mStyle.layout);
-    ViewParent parentView = view.getParent();
+    ViewParent parentView = getView().getParent();
     int[] location = new int[2];
     Rect bounds = new Rect();
     while (parentView != null) {
@@ -165,7 +164,6 @@ class RNSharedElementTransitionItem {
       if (parentView == ancestorView) {
         break;
       }
-      view = (View) parentView;
       parentView = parentView.getParent();
     }
 

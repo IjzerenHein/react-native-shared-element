@@ -4,12 +4,13 @@ import java.util.Map;
 
 import android.view.View;
 
+import androidx.annotation.NonNull;
+
 import com.facebook.react.common.MapBuilder;
 import com.facebook.react.uimanager.annotations.ReactProp;
 import com.facebook.react.uimanager.ThemedReactContext;
 import com.facebook.react.uimanager.SimpleViewManager;
 import com.facebook.react.bridge.ReadableMap;
-import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactApplicationContext;
 
 public class RNSharedElementTransitionManager extends SimpleViewManager<RNSharedElementTransition> {
@@ -19,6 +20,7 @@ public class RNSharedElementTransitionManager extends SimpleViewManager<RNShared
     super();
   }
 
+  @NonNull
   @Override
   public String getName() {
     return REACT_CLASS;
@@ -35,14 +37,15 @@ public class RNSharedElementTransitionManager extends SimpleViewManager<RNShared
             .build();
   }
 
+  @NonNull
   @Override
   public RNSharedElementTransition createViewInstance(ThemedReactContext reactContext) {
-    RNSharedElementModule module = (RNSharedElementModule) reactContext.getNativeModule(RNSharedElementModule.class);
+    RNSharedElementModule module = reactContext.getNativeModule(RNSharedElementModule.class);
     return new RNSharedElementTransition(reactContext, module.getNodeManager());
   }
 
   @Override
-  public void onDropViewInstance(RNSharedElementTransition view) {
+  public void onDropViewInstance(@NonNull RNSharedElementTransition view) {
     super.onDropViewInstance(view);
     view.releaseData();
   }

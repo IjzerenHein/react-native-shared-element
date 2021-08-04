@@ -1,8 +1,5 @@
 package com.ijzerenhein.sharedelement;
 
-import java.util.Locale;
-
-import android.util.Log;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.Color;
@@ -19,7 +16,7 @@ import com.facebook.react.views.image.ImageResizeMode;
 import com.facebook.react.modules.i18nmanager.I18nUtil;
 
 public class RNSharedElementStyle {
-  static private String LOG_TAG = "RNSharedElementStyle";
+  // static private final String LOG_TAG = "RNSharedElementStyle";
 
   static Rect EMPTY_RECT = new Rect();
 
@@ -180,8 +177,7 @@ public class RNSharedElementStyle {
   }
 
   static boolean equalsScaleType(ScaleType scaleType1, ScaleType scaleType2) {
-    if (scaleType1 == scaleType2) return true;
-    return false;
+    return scaleType1 == scaleType2;
   }
 
   static ScaleType getInterpolatingScaleType(RNSharedElementStyle style1, RNSharedElementStyle style2, float position) {
@@ -250,7 +246,7 @@ public class RNSharedElementStyle {
     float[] vals2 = new float[9];
     ViewParent parentView = view.getParent();
 
-    while (parentView != null && parentView instanceof View) {
+    while (parentView instanceof View) {
       Matrix parentMatrix = ((View) parentView).getMatrix();
       parentMatrix.getValues(vals2);
 

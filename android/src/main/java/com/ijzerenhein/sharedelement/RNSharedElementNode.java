@@ -29,15 +29,15 @@ abstract class RetryRunnable implements Runnable {
 }
 
 class RNSharedElementNode {
-  static private String LOG_TAG = "RNSharedElementNode";
+  static private final String LOG_TAG = "RNSharedElementNode";
 
-  private Context mContext;
-  private int mReactTag;
+  private final Context mContext;
+  private final int mReactTag;
   private View mView;
   private View mAncestorView;
-  private boolean mIsParent;
+  private final boolean mIsParent;
   private ReadableMap mStyleConfig;
-  private RNSharedElementStyle mResolveStyle;
+  private final RNSharedElementStyle mResolveStyle;
   private View mResolvedView;
   private int mRefCount;
   private int mHideRefCount;
@@ -150,7 +150,7 @@ class RNSharedElementNode {
       if (childCount == 1) {
         view = ((ViewGroup) mView).getChildAt(0);
       } else if (childCount <= 0) {
-        Log.d(LOG_TAG, "Child for parent doesnt exist");
+        Log.d(LOG_TAG, "Child for parent doesn't exist");
         return null;
       }
     }
@@ -163,7 +163,7 @@ class RNSharedElementNode {
       callback.invoke(mStyleCache, this);
       return;
     }
-    if (mStyleCallbacks == null) mStyleCallbacks = new ArrayList<Callback>();
+    if (mStyleCallbacks == null) mStyleCallbacks = new ArrayList<>();
     mStyleCallbacks.add(callback);
     if (!fetchInitialStyle()) {
       startRetryLoop();
@@ -238,7 +238,7 @@ class RNSharedElementNode {
       callback.invoke(mContentCache, this);
       return;
     }
-    if (mContentCallbacks == null) mContentCallbacks = new ArrayList<Callback>();
+    if (mContentCallbacks == null) mContentCallbacks = new ArrayList<>();
     mContentCallbacks.add(callback);
     if (!fetchInitialContent()) {
       startRetryLoop();
@@ -288,7 +288,7 @@ class RNSharedElementNode {
     //Log.d(LOG_TAG, "Starting retry loop...");
 
     mRetryHandler = new Handler();
-    final long startTime = System.nanoTime();
+    // final long startTime = System.nanoTime();
     mRetryHandler.postDelayed(new RetryRunnable() {
 
       @Override

@@ -1,6 +1,6 @@
 package com.ijzerenhein.sharedelement;
 
-import android.util.Log;
+// import android.util.Log;
 import android.view.View;
 import android.graphics.Rect;
 import android.graphics.RectF;
@@ -8,9 +8,9 @@ import android.graphics.RectF;
 import com.facebook.react.uimanager.ThemedReactContext;
 
 class RNSharedElementView extends View {
-  static private String LOG_TAG = "RNSharedElementView";
+  // static private final String LOG_TAG = "RNSharedElementView";
 
-  private RNSharedElementDrawable mDrawable;
+  private final RNSharedElementDrawable mDrawable;
   private RNSharedElementDrawable.ViewType mViewType;
 
   RNSharedElementView(ThemedReactContext context) {
