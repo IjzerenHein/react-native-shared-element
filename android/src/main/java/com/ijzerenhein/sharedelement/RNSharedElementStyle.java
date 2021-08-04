@@ -147,12 +147,12 @@ public class RNSharedElementStyle {
     return (Color.alpha(backgroundColor) > 0) || (Color.alpha(borderColor) > 0);
   }
 
-  static Rect normalizeLayout(boolean compensateForTransforms, RNSharedElementStyle style, RNSharedElementStyle otherStyle) {
+  static Rect normalizeLayout(boolean compensateForTransforms, RNSharedElementStyle style) {
     if (style == null) return EMPTY_RECT;
-    return normalizeLayout(compensateForTransforms, style.layout, style, otherStyle);
+    return normalizeLayout(compensateForTransforms, style.layout, style);
   }
 
-  static Rect normalizeLayout(boolean compensateForTransforms, Rect layout, RNSharedElementStyle style, RNSharedElementStyle otherStyle) {
+  static Rect normalizeLayout(boolean compensateForTransforms, Rect layout, RNSharedElementStyle style) {
     if (layout == null) return EMPTY_RECT;
 
     // Compensate for any transforms that have been applied to the scene by the

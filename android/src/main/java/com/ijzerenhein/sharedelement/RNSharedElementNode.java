@@ -192,7 +192,7 @@ class RNSharedElementNode {
     left = location[0];
     top = location[1];
 
-    // In case the view has a scale transform applied, the calculate
+    // In case the view has a scale transform applied, then calculate
     // the correct visual width & height of the view
     float[] f = new float[9];
     transform.getValues(f);
