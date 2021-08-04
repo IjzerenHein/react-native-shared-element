@@ -1,4 +1,4 @@
-# Shared Element Transition Test App
+# Shared Element Transition Example and Test App
 
 The test app includes a variety of tests and receipes. It features a simple stack router which implements the shared element primitives.
 
@@ -11,7 +11,7 @@ The test app includes a variety of tests and receipes. It features a simple stac
 ```bash
 # Installation
 yarn # in the root directory
-cd test-app
+cd example
 yarn
 cd ios && npx pod install && cd ..
 

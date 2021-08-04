@@ -131,7 +131,7 @@ Whenever the `<SharedElementTransition>` component is rendered, it performs the 
 - Upon unmount, unhide the original elements
 
 You typically do not use this component directly, but instead use a Router or Transition-engine which provides a higher-level API.
-See [`./Example/src/components/Router.js`](./Example/src/components/Router.js) for an example implementation of a simple stack router using
+See [`./example/src/components/Router.tsx`](./example/src/components/Router.tsx) for an example implementation of a simple stack router using
 shared element transitions.
 
 ## API Documentation
@@ -206,7 +206,8 @@ When `auto` is selected, the default alignment strategy is used, which is `cente
 
 ## Example apps
 
-- The main example & test app is located in [`./Example`](./Example) and serves as an exploration and testing tool. It features a custom stack router which implements the shared element primitives. It also implements the react-navigation binding and serves as a testing tool for that.
+- The main example & test app is located in [`./example`](./example) and serves as an exploration and testing tool. It features a custom stack router which implements the shared element primitives. It also implements the react-navigation binding and serves as a testing tool for that.
+- [Demo app for react-navigation](https://github.com/IjzerenHein/react-navigation-shared-element/tree/main/example)
 - [Simple demo app using RN60 and the react-navigation binding](https://github.com/IjzerenHein/react-navigation-shared-element-rn60demo)
 
 ## License
