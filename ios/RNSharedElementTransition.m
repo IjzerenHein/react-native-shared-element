@@ -382,14 +382,14 @@
   
   // Determine starting scene that is currently visible to the user
   if (_initialVisibleAncestorIndex < 0) {
-    RNSharedElementStyle* startAncenstorLayout = startAncestor.style;
+    RNSharedElementStyle* startAncenstorStyle = startAncestor.style;
     RNSharedElementStyle* endAncestorStyle = endAncestor.style;
-    if (startAncenstorLayout && !endAncestorStyle) {
+    if (startAncenstorStyle && !endAncestorStyle) {
       _initialVisibleAncestorIndex = 0;
-    } else if (!startAncenstorLayout && endAncestorStyle) {
+    } else if (!startAncenstorStyle && endAncestorStyle) {
       _initialVisibleAncestorIndex = 1;
-    } else if (startAncenstorLayout && endAncestorStyle){
-      CGRect startAncestorVisible = CGRectIntersection(self.superview.bounds, [self.superview convertRect:startAncenstorLayout.layout fromView:nil]);
+    } else if (startAncenstorStyle && endAncestorStyle){
+      CGRect startAncestorVisible = CGRectIntersection(self.superview.bounds, [self.superview convertRect:startAncenstorStyle.layout fromView:nil]);
       CGRect endAncestorVisible = CGRectIntersection(self.superview.bounds, [self.superview convertRect:endAncestorStyle.layout fromView:nil]);
       _initialVisibleAncestorIndex = ((endAncestorVisible.size.width * endAncestorVisible.size.height) > (startAncestorVisible.size.width * startAncestorVisible.size.height)) ? 1 : 0;
     }
