@@ -4,7 +4,6 @@ The test app includes a variety of tests and receipes. It features a simple stac
 
 ## Todo
 
-[ ] Restore `react-navigation-shared-element` support
 [ ] Fix web-build
 
 ## Usage
