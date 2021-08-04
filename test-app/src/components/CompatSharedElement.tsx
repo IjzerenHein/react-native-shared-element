@@ -1,5 +1,4 @@
 import * as React from "react";
-import { SharedElement as ReactNavigationCoreSharedElement } from "react-native-shared-element";
 
 import { RouterScreenTransition } from "./RouterScreenTransition";
 
@@ -13,12 +12,7 @@ type PropsType = {
 export class CompatSharedElement extends React.Component<PropsType> {
   render() {
     const { navigation, id, ...otherProps } = this.props;
-
-    return navigation ? (
-      <ReactNavigationCoreSharedElement id={id} {...otherProps} />
-    ) : (
-      <RouterScreenTransition sharedId={id} {...otherProps} />
-    );
+    return <RouterScreenTransition sharedId={id} {...otherProps} />;
   }
 }
 

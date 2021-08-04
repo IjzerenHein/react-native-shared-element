@@ -28,7 +28,7 @@ const styles = StyleSheet.create({
       flex: 1,
       backgroundColor: Colors.empty,
     },
-    android: {
+    default: {
       flex: 1,
     },
   }),

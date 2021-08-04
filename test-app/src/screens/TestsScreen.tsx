@@ -2,7 +2,7 @@ import * as React from "react";
 import { StyleSheet, ScrollView, View, Platform } from "react-native";
 
 import { Router, NavBar, ListItem, Colors } from "../components";
-import { Test, TestGroup } from "../types";
+import { getTestGroup, Test, TestGroup } from "../types";
 import { TestScreen } from "./TestScreen";
 
 const styles = StyleSheet.create({
@@ -14,7 +14,7 @@ const styles = StyleSheet.create({
       flex: 1,
       backgroundColor: Colors.empty,
     },
-    android: {
+    default: {
       flex: 1,
     },
   }),
@@ -30,12 +30,12 @@ type PropsType = {
 export class TestsScreen extends React.Component<PropsType> {
   render() {
     const { title, navigation } = this.props;
-    const tests = navigation ? navigation.getParam("tests") : this.props.tests;
+    const tests: (Test | TestGroup)[] = navigation
+      ? navigation.getParam("tests")
+      : this.props.tests;
     return (
       <View style={styles.container}>
-        {!navigation ? (
-          <NavBar title={title || "Tests"} zIndex={100} />
-        ) : undefined}
+        {!navigation ? <NavBar title={title || "Tests"} /> : undefined}
         <ScrollView style={styles.content} endFillColor={Colors.empty}>
           {tests.map((test, index) => (
             <ListItem
@@ -54,12 +54,13 @@ export class TestsScreen extends React.Component<PropsType> {
     const description = navigation
       ? navigation.getParam("description")
       : this.props.description;
+    const testGroup = getTestGroup(test);
     if (navigation) {
-      if (test.tests) {
+      if (testGroup) {
         navigation.push("Tests", {
           title: test.name,
           description: test.description,
-          tests: test.tests,
+          tests: testGroup.tests,
         });
       } else {
         navigation.push("Test", {
@@ -69,14 +70,14 @@ export class TestsScreen extends React.Component<PropsType> {
       }
     } else {
       Router.push(
-        test.tests ? (
+        testGroup ? (
           <TestsScreen
-            tests={test.tests}
+            tests={testGroup.tests}
             title={test.name}
             description={test.description}
           />
         ) : (
-          <TestScreen test={test} description={description || ""} />
+          <TestScreen test={test as Test} description={description || ""} />
         )
       );
     }

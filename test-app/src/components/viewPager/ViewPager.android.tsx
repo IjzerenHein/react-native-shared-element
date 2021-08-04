@@ -7,6 +7,7 @@ const RNGHViewPager = createNativeWrapper(NativeViewPager, {
 });
 
 type PropsType = {
+  style?: any;
   data: any[];
   renderItem: (data: { item: any; index: number }) => any;
   getItemLayout: (item: any, index: number) => any;

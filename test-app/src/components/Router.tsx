@@ -16,6 +16,7 @@ import {
 import { SharedElementTransition } from "react-native-shared-element";
 
 import { fromRight } from "../transitions";
+import type { TransitionConfig } from "../transitions";
 import { SharedElementsConfig, SharedElementsStrictConfig } from "../types";
 import { normalizeSharedElementsConfig } from "../types/SharedElement";
 import {
@@ -49,15 +50,9 @@ const styles = StyleSheet.create({
   },
 });
 
-type RouterTransitionConfig = {
-  screenInterpolator: any;
-  transitionSpec: any;
-  debug?: boolean;
-};
-
 interface RouterProps {
   initialNode: React.ReactNode;
-  transitionConfig: any;
+  transitionConfig: TransitionConfig;
 }
 
 type RouterAction = {
@@ -70,8 +65,8 @@ interface RouterState {
   stack: React.ReactNode[];
   prevIndex: number;
   nextIndex: number;
-  animValue: Animated.Node;
-  transitionConfig: RouterTransitionConfig | void;
+  animValue: Animated.AnimatedInterpolation;
+  transitionConfig: TransitionConfig | void;
   sharedElementsConfig: SharedElementsStrictConfig | void;
   sharedElementScreens: (ScreenTransitionContextOnSharedElementsUpdatedEvent | void)[];
   actionsQueue: RouterAction[];
@@ -81,10 +76,10 @@ interface RouterState {
 
 type RouterConfig = {
   sharedElements?: SharedElementsConfig;
-  transitionConfig?: RouterTransitionConfig;
+  transitionConfig?: TransitionConfig;
 };
 
-let router;
+let router: Router;
 
 let AnimatedScreen: any;
 
@@ -174,7 +169,6 @@ export class Router extends React.Component<RouterProps, RouterState> {
     if (!sharedElementsConfig || !transitionConfig) {
       return;
     }
-    const { debug } = transitionConfig;
     const startScreen = sharedElementScreens[startIndex];
     const endScreen = sharedElementScreens[endIndex];
     const nodes = sharedElementsConfig.map((sharedElementConfig) => {
@@ -190,7 +184,7 @@ export class Router extends React.Component<RouterProps, RouterState> {
           ancestor: endScreen ? endScreen.ancestor : undefined,
         },
         ...other,
-        debug: sharedElementConfig.debug || debug,
+        debug: sharedElementConfig.debug,
       };
       return node;
     });
@@ -429,11 +423,16 @@ export class Router extends React.Component<RouterProps, RouterState> {
         transitionConfig,
       });
       const { transitionSpec } = transitionConfig;
-      const { timing, ...spec } = transitionSpec;
-      const anim = timing.call(Animated, this._animValue, {
-        ...spec,
-        toValue: stack.length,
-      });
+      const anim =
+        transitionSpec.animation === "timing"
+          ? Animated.timing(this._animValue, {
+              ...transitionSpec.config,
+              toValue: stack.length,
+            })
+          : Animated.spring(this._animValue, {
+              ...transitionSpec.config,
+              toValue: stack.length,
+            });
       anim.start(({ finished }) => {
         if (finished) {
           this.pruneStack(stack.length + 1);
@@ -449,11 +448,16 @@ export class Router extends React.Component<RouterProps, RouterState> {
         sharedElementsConfig,
       });
       const { transitionSpec } = transitionConfig;
-      const { timing, ...spec } = transitionSpec;
-      const anim = timing.call(Animated, this._animValue, {
-        ...spec,
-        toValue: stack.length - 2,
-      });
+      const anim =
+        transitionSpec.animation === "timing"
+          ? Animated.timing(this._animValue, {
+              ...transitionSpec.config,
+              toValue: stack.length - 2,
+            })
+          : Animated.spring(this._animValue, {
+              ...transitionSpec.config,
+              toValue: stack.length - 2,
+            });
       anim.start(({ finished }) => {
         if (finished) {
           this.pruneStack(stack.length - 1);

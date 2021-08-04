@@ -1,4 +1,6 @@
+// @ts-ignore Cannot find module 'react-native-vector-icons/Fonts/Entypo.ttf' or its corresponding type declarations.
 import iconFont from "react-native-vector-icons/Fonts/Entypo.ttf";
+// @ts-ignore Could not find a declaration file for module 'react-native-vector-icons/dist/Entypo'
 import Icon from "react-native-vector-icons/dist/Entypo";
 
 // Generate required css

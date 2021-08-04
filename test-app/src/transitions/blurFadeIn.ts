@@ -1,12 +1,16 @@
-import { Easing, Animated } from "react-native";
+import { Easing } from "react-native";
 
-export function blurFadeIn(duration: number = 300) {
+import { TransitionConfig } from "./types";
+
+export function blurFadeIn(duration: number = 300): TransitionConfig {
   return {
     transitionSpec: {
-      duration,
-      easing: Easing.out(Easing.poly(4)),
-      timing: Animated.timing,
-      useNativeDriver: true,
+      animation: "timing",
+      config: {
+        duration,
+        easing: Easing.out(Easing.poly(4)),
+        useNativeDriver: true,
+      },
     },
     screenInterpolator: ({ position, scene }) => {
       const { index } = scene;

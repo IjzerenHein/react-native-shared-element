@@ -1,5 +1,5 @@
 import * as React from "react";
-import { StyleSheet, View, TouchableOpacity } from "react-native";
+import { StyleSheet, View, TouchableOpacity, ViewStyle } from "react-native";
 
 import { Colors, Shadows } from "../Colors";
 import { Router } from "../Router";
@@ -32,7 +32,7 @@ const styles = StyleSheet.create({
 });
 
 export interface NavBarProps {
-  style?: any;
+  style?: ViewStyle;
   title?: string;
   back: "default" | "none" | "close";
   light?: boolean;

@@ -10,6 +10,7 @@ export type ScreenTransitionContextOnSharedElementsUpdatedEvent = {
   ancestor?: SharedElementNode;
 };
 
+// @ts-ignore Argument of type 'undefined' is not assignable to parameter of type 'ScreenTransitionContext'.
 const Context = React.createContext<ScreenTransitionContext>(undefined);
 
 export type ScreenTransitionContextProps = {
@@ -30,7 +31,9 @@ export class ScreenTransitionContext extends React.Component<
   ScreenTransitionContextProps,
   ScreenTransitionContextState
 > {
-  _sharedElementNodes = {};
+  _sharedElementNodes: {
+    [key: string]: SharedElementNode;
+  } = {};
   _sharedElementAncestor?: SharedElementNode = undefined;
   state = {
     sharedElementNodes: this._sharedElementNodes,
@@ -46,7 +49,7 @@ export class ScreenTransitionContext extends React.Component<
   }
 
   onSetRef = (ref: any) => {
-    this._sharedElementAncestor = nodeFromRef(ref);
+    this._sharedElementAncestor = nodeFromRef(ref) || undefined;
   };
 
   componentDidUpdate(

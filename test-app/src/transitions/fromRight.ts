@@ -1,14 +1,18 @@
-import { Easing, Animated } from "react-native";
+import { Easing } from "react-native";
 
-export function fromRight(duration: number = 500) {
+import { TransitionConfig } from "./types";
+
+export function fromRight(duration: number = 500): TransitionConfig {
   return {
     transitionSpec: {
-      duration,
-      easing: Easing.bezier(0.2833, 0.99, 0.31833, 0.99),
-      timing: Animated.timing,
-      useNativeDriver: true,
+      animation: "timing",
+      config: {
+        duration,
+        easing: Easing.bezier(0.2833, 0.99, 0.31833, 0.99),
+        useNativeDriver: true,
+      },
     },
-    screenInterpolator: ({ layout, position, scene }: any) => {
+    screenInterpolator: ({ layout, position, scene }) => {
       const { index } = scene;
       const { initWidth } = layout;
 

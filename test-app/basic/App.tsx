@@ -18,10 +18,10 @@ export default class App extends React.Component {
     progress: new Animated.Value(0),
     isScene2Visible: false,
     isInProgress: false,
-    scene1Ancestor: undefined,
-    scene1Node: undefined,
-    scene2Ancestor: undefined,
-    scene2Node: undefined,
+    scene1Ancestor: null,
+    scene1Node: null,
+    scene2Ancestor: null,
+    scene2Node: null,
   };
 
   onPressNavigate = () => {
@@ -44,11 +44,11 @@ export default class App extends React.Component {
     );
   };
 
-  onSetScene1Ref = (ref) => {
+  onSetScene1Ref = (ref: View | null) => {
     this.setState({ scene1Ancestor: nodeFromRef(ref) });
   };
 
-  onSetScene2Ref = (ref) => {
+  onSetScene2Ref = (ref: View | null) => {
     this.setState({ scene2Ancestor: nodeFromRef(ref) });
   };
 

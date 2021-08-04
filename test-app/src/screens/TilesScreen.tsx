@@ -183,6 +183,8 @@ export class TilesScreen extends React.Component<PropsType, StateType> {
         return this.renderCard(data);
       case "card2":
         return this.renderCard2(data);
+      default:
+        return null;
     }
   };
 

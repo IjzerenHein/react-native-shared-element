@@ -31,3 +31,13 @@ export interface TestGroup {
   tests: (Test | TestGroup)[];
   description?: string;
 }
+
+export function getTest(test: Test | TestGroup): Test | undefined {
+  // @ts-ignore
+  return test.tests ? undefined : test;
+}
+
+export function getTestGroup(test: Test | TestGroup): TestGroup | undefined {
+  // @ts-ignore
+  return test.tests ? test : undefined;
+}

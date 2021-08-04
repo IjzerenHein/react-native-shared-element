@@ -14,8 +14,8 @@ export interface ScreenTransitionProps {
 
 export const RouterScreenTransition = withScreenTransitionContext(
   class RouterScreenTransition extends React.Component<ScreenTransitionProps> {
-    _node?: SharedElementNode;
-    _sharedId = "";
+    _node?: SharedElementNode | null;
+    _sharedId? = "";
 
     constructor(props: ScreenTransitionProps) {
       super(props);
