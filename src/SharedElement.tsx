@@ -19,7 +19,7 @@ export function nodeFromRef(
         ref,
         nodeHandle,
         isParent: isParent || false,
-        parentInstance
+        parentInstance,
       }
     : null;
 }

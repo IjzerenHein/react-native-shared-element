@@ -97,7 +97,7 @@ export class RNSharedElementNode {
     if (this.styleCache) {
       return Promise.resolve(this.styleCache);
     }
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
       this.styleCallbacks = this.styleCallbacks || [];
       this.styleCallbacks.push(resolve);
       if (!this.fetchInitialStyle()) {
@@ -124,7 +124,7 @@ export class RNSharedElementNode {
       x: rect.x - translateX,
       y: rect.y - translateY,
       width: rect.width,
-      height: rect.height
+      height: rect.height,
     });
 
     // Create style
@@ -142,14 +142,14 @@ export class RNSharedElementNode {
     // Notify callbacks
     const callbacks = this.styleCallbacks;
     this.styleCallbacks = null;
-    callbacks.forEach(callback => callback(style));
+    callbacks.forEach((callback) => callback(style));
     return true;
   }
 
   async requestContent(): Promise<RNSharedElementContent> {
     if (this.contentCache) return this.contentCache;
 
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
       if (this.contentCallbacks) return;
       this.contentCallbacks = this.contentCallbacks || [];
       this.contentCallbacks.push(resolve);
@@ -180,7 +180,7 @@ export class RNSharedElementNode {
     // Notify callbacks
     const callbacks = this.contentCallbacks;
     this.contentCallbacks = null;
-    callbacks.forEach(callback => callback(content));
+    callbacks.forEach((callback) => callback(content));
     return true;
   }
 }

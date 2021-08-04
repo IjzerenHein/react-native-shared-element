@@ -10,7 +10,7 @@ import {
   RNSharedElementAnimation,
   RNSharedElementResize,
   RNSharedElementAlign,
-  IHTMLElement
+  IHTMLElement,
 } from "./types";
 
 export class RNSharedElementTransition {
@@ -22,7 +22,7 @@ export class RNSharedElementTransition {
     new RNSharedElementTransitionItem(
       RNSharedElementNodeManager.getInstance(),
       "end"
-    )
+    ),
   ];
   public animation: RNSharedElementAnimation = RNSharedElementAnimation.Move;
   public resize: RNSharedElementResize = RNSharedElementResize.Auto;
@@ -34,7 +34,7 @@ export class RNSharedElementTransition {
 
   public destroy() {
     this.element = null;
-    this.items.forEach(item => (item.node = null));
+    this.items.forEach((item) => (item.node = null));
   }
 
   public setNode(
@@ -59,17 +59,17 @@ export class RNSharedElementTransition {
   }
 
   private requestStylesAndContent() {
-    this.items.forEach(item => {
+    this.items.forEach((item) => {
       if (item.needsStyle) {
         item.needsStyle = false;
-        item.node!.requestStyle().then(style => {
+        item.node!.requestStyle().then((style) => {
           item.style = style;
           this.updateLayout();
         });
       }
       if (item.needsContent) {
         item.needsContent = false;
-        item.node!.requestContent().then(content => {
+        item.node!.requestContent().then((content) => {
           item.content = content;
           this.updateLayout();
         });
@@ -79,7 +79,7 @@ export class RNSharedElementTransition {
 
   private updateNodeVisibility() {
     const { items, animation } = this;
-    items.forEach(item => {
+    items.forEach((item) => {
       let hidden = !!(item.style && item.content);
       if (
         hidden &&
@@ -102,7 +102,7 @@ export class RNSharedElementTransition {
       element,
       items,
       nodePosition,
-      animation /*, animation, resize, align*/
+      animation /*, animation, resize, align*/,
     } = this;
     if (!element) return;
 

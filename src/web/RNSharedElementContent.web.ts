@@ -11,7 +11,7 @@ export class RNSharedElementContent {
   }
 
   static getSize(element: IHTMLElement): Promise<Rect | null> {
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
       if (element.style.backgroundImage) {
         const img = document.createElement("img");
         img.onload = () => {
@@ -20,7 +20,7 @@ export class RNSharedElementContent {
               x: 0,
               y: 0,
               width: img.width,
-              height: img.height
+              height: img.height,
             })
           );
         };
@@ -34,7 +34,7 @@ export class RNSharedElementContent {
           x: 0,
           y: 0,
           width: element.clientWidth || 0,
-          height: element.clientHeight || 0
+          height: element.clientHeight || 0,
         })
       );
     });
@@ -81,7 +81,7 @@ export class RNSharedElementContent {
       x: layout.x + (layout.width - width) / 2,
       y: layout.y + (layout.height - height) / 2,
       width,
-      height
+      height,
     });
   }
 }

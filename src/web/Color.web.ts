@@ -15,7 +15,7 @@ export function parseColor(color: string | Color): Color {
       p(cache[1], 16) * 17,
       p(cache[2], 16) * 17,
       p(cache[3], 16) * 17,
-      1
+      1,
     ];
   // Checks for rgba and converts string to
   // integer/float using unary + operator to save bytes

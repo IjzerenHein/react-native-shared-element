@@ -19,14 +19,14 @@ export enum RNSharedElementAnimation {
   Move = 0,
   Fade = 1,
   FadeIn = 2,
-  FadeOut = 3
+  FadeOut = 3,
 }
 
 export enum RNSharedElementResize {
   Auto = 0,
   Stretch = 1,
   Clip = 2,
-  None = 3
+  None = 3,
 }
 
 export enum RNSharedElementAlign {
@@ -39,5 +39,5 @@ export enum RNSharedElementAlign {
   RightBottom = 6,
   CenterTop = 7,
   CenterCenter = 8,
-  CenterBottom = 9
+  CenterBottom = 9,
 }

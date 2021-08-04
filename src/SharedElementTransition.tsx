@@ -6,7 +6,7 @@ import {
   Dimensions,
   StyleSheet,
   processColor,
-  Platform
+  Platform,
 } from "react-native";
 
 import { RNSharedElementTransitionView } from "./RNSharedElementTransitionView";
@@ -16,7 +16,7 @@ import {
   SharedElementResize,
   SharedElementAlign,
   SharedElementNodeType,
-  SharedElementContentType
+  SharedElementContentType,
 } from "./types";
 
 export type SharedElementMeasureData = {
@@ -68,14 +68,14 @@ const NativeAnimationType = new Map<SharedElementAnimation, number>([
   ["move", 0],
   ["fade", 1],
   ["fade-in", 2],
-  ["fade-out", 3]
+  ["fade-out", 3],
 ]);
 
 const NativeResizeType = new Map<SharedElementResize, number>([
   ["auto", 0],
   ["stretch", 1],
   ["clip", 2],
-  ["none", 3]
+  ["none", 3],
 ]);
 
 const NativeAlignType = new Map<SharedElementAlign, number>([
@@ -88,7 +88,7 @@ const NativeAlignType = new Map<SharedElementAlign, number>([
   ["right-bottom", 6],
   ["center-top", 7],
   ["center-center", 8],
-  ["center-bottom", 9]
+  ["center-bottom", 9],
 ]);
 
 const debugColors = {
@@ -96,25 +96,25 @@ const debugColors = {
   endNode: "#5EFF9B",
   pink: "#DC9CFF",
   startAncestor: "#E88F82",
-  endAncestor: "#FFDC8F"
+  endAncestor: "#FFDC8F",
 };
 
 const debugStyles = StyleSheet.create({
   overlay: {
     ...StyleSheet.absoluteFillObject,
     backgroundColor: "black",
-    opacity: 0.3
+    opacity: 0.3,
   },
   text: {
     marginLeft: 3,
     marginTop: 3,
-    fontSize: 10
+    fontSize: 10,
   },
   box: {
     position: "absolute",
     borderWidth: 1,
-    borderStyle: "dashed"
-  }
+    borderStyle: "dashed",
+  },
 });
 
 type StateType = {
@@ -124,9 +124,10 @@ type StateType = {
   endAncestor?: SharedElementMeasureData;
 };
 
-export const RNAnimatedSharedElementTransitionView = RNSharedElementTransitionView
-  ? Animated.createAnimatedComponent(RNSharedElementTransitionView)
-  : undefined;
+export const RNAnimatedSharedElementTransitionView =
+  RNSharedElementTransitionView
+    ? Animated.createAnimatedComponent(RNSharedElementTransitionView)
+    : undefined;
 
 export class SharedElementTransition extends React.Component<
   SharedElementTransitionProps,
@@ -151,7 +152,7 @@ export class SharedElementTransition extends React.Component<
       ? {
           nodeHandle: node.nodeHandle,
           isParent: node.isParent,
-          nodeStyle
+          nodeStyle,
         }
       : undefined;
   }
@@ -162,7 +163,7 @@ export class SharedElementTransition extends React.Component<
     SharedElementComponent: RNAnimatedSharedElementTransitionView,
     animation: "move",
     resize: "auto",
-    align: "auto"
+    align: "auto",
   };
 
   constructor(props: SharedElementTransitionProps) {
@@ -192,7 +193,7 @@ export class SharedElementTransition extends React.Component<
     const { nativeEvent } = event;
     const { onMeasure } = this.props;
     this.setState({
-      [`${nativeEvent.node}`]: nativeEvent
+      [`${nativeEvent.node}`]: nativeEvent,
     });
     // console.log("onMeasure: ", nativeEvent);
     if (onMeasure) {
@@ -235,15 +236,13 @@ export class SharedElementTransition extends React.Component<
                 width: layout.contentWidth,
                 height: layout.contentHeight,
                 borderColor: color,
-                opacity: 0.5
-              }
+                opacity: 0.5,
+              },
             ]}
           >
             <Text style={[debugStyles.text, { color }]}>Content</Text>
           </View>
-        ) : (
-          undefined
-        )}
+        ) : undefined}
         <View
           style={[
             debugStyles.box,
@@ -253,14 +252,14 @@ export class SharedElementTransition extends React.Component<
               width: layout.width,
               height: layout.height,
               borderColor: color,
-              borderRadius: style.borderRadius || 0
-            }
+              borderRadius: style.borderRadius || 0,
+            },
           ]}
         >
           <Text
             style={[
               debugStyles.text,
-              { color, marginTop: Math.max((style.borderRadius || 0) - 7, 3) }
+              { color, marginTop: Math.max((style.borderRadius || 0) - 7, 3) },
             ]}
           >
             {name}
@@ -273,7 +272,7 @@ export class SharedElementTransition extends React.Component<
             left: layout.visibleX,
             top: layout.visibleY,
             width: layout.visibleWidth,
-            height: layout.visibleHeight
+            height: layout.visibleHeight,
           }}
         >
           <View
@@ -285,8 +284,8 @@ export class SharedElementTransition extends React.Component<
                 width: layout.width,
                 height: layout.height,
                 borderRadius: style.borderRadius || 0,
-                backgroundColor: isFullScreen ? "transparent" : color + "80"
-              }
+                backgroundColor: isFullScreen ? "transparent" : color + "80",
+              },
             ]}
           />
         </View>
@@ -316,11 +315,11 @@ export class SharedElementTransition extends React.Component<
         <SharedElementComponent
           startNode={{
             node: SharedElementTransition.prepareNode(start.node),
-            ancestor: SharedElementTransition.prepareNode(start.ancestor)
+            ancestor: SharedElementTransition.prepareNode(start.ancestor),
           }}
           endNode={{
             node: SharedElementTransition.prepareNode(end.node),
-            ancestor: SharedElementTransition.prepareNode(end.ancestor)
+            ancestor: SharedElementTransition.prepareNode(end.ancestor),
           }}
           nodePosition={position}
           animation={NativeAnimationType.get(animation)}

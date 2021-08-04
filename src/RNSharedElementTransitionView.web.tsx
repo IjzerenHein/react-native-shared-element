@@ -6,7 +6,7 @@ import {
   RNSharedElementNodeConfig,
   RNSharedElementAnimation,
   RNSharedElementResize,
-  RNSharedElementAlign
+  RNSharedElementAlign,
 } from "./web/index.web";
 
 type PropsType = {
@@ -33,18 +33,12 @@ export class RNSharedElementTransitionView extends React.Component<
   StateType
 > {
   state = {
-    transition: new RNSharedElementTransition()
+    transition: new RNSharedElementTransition(),
   };
 
   static getDerivedStateFromProps(props: PropsType, state: StateType) {
-    const {
-      startNode,
-      endNode,
-      animation,
-      resize,
-      align,
-      nodePosition
-    } = props;
+    const { startNode, endNode, animation, resize, align, nodePosition } =
+      props;
     const { transition } = state;
     transition.setNode(false, startNode.node, startNode.ancestor);
     transition.setNode(true, endNode.node, endNode.ancestor);

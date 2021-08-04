@@ -3,7 +3,7 @@ import { Rect } from "./Rect.web";
 import {
   IHTMLElement,
   RNSharedElementAlign,
-  RNSharedElementResize
+  RNSharedElementResize,
 } from "./types";
 
 function initElement(element: IHTMLElement): IHTMLElement {
@@ -137,7 +137,7 @@ export class RNSharedElementView {
       contentLayout,
       originalLayout,
       align,
-      resize
+      resize,
     } = this;
     const { x, y, width, height } = layout;
 
@@ -159,7 +159,7 @@ export class RNSharedElementView {
       x: contentX,
       y: contentY,
       width: contentWidth,
-      height: contentHeight
+      height: contentHeight,
     } = contentLayout;
 
     // Get content size

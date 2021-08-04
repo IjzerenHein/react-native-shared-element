@@ -5,8 +5,8 @@ const isAvailable = !!NativeModules.RNSharedElementTransition;
 if (isAvailable) {
   NativeModules.RNSharedElementTransition.configure({
     imageResolvers: [
-      "RNPhotoView.MWTapDetectingImageView" // react-native-photo-view
-    ].map(path => path.split("."))
+      "RNPhotoView.MWTapDetectingImageView", // react-native-photo-view
+    ].map((path) => path.split(".")),
   });
 }
 
