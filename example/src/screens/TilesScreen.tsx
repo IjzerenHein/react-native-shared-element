@@ -17,9 +17,7 @@ import {
   SharedElement,
   Colors,
   Shadows,
-  Heading1,
-  Heading2,
-  Body,
+  Text,
   LinearGradient,
 } from "../components";
 import { fadeIn } from "../transitions";
@@ -273,7 +271,7 @@ export class TilesScreen extends React.Component<PropsType, StateType> {
             style={styles.cardName}
             navigation={navigation}
           >
-            <Heading2>{hero.name}</Heading2>
+            <Text xlarge>{hero.name}</Text>
           </SharedElement>
           {hero.description ? (
             <SharedElement
@@ -281,7 +279,7 @@ export class TilesScreen extends React.Component<PropsType, StateType> {
               style={styles.cardDescription}
               navigation={navigation}
             >
-              <Body numberOfLines={3}>{hero.description}</Body>
+              <Text numberOfLines={3}>{hero.description}</Text>
             </SharedElement>
           ) : undefined}
         </View>
@@ -330,7 +328,9 @@ export class TilesScreen extends React.Component<PropsType, StateType> {
             style={styles.cardName}
             navigation={navigation}
           >
-            <Heading1 light>{hero.name}</Heading1>
+            <Text xxlarge light>
+              {hero.name}
+            </Text>
           </SharedElement>
           <SharedElement
             id={`heroDescription.${hero.id}`}
@@ -338,9 +338,9 @@ export class TilesScreen extends React.Component<PropsType, StateType> {
             navigation={navigation}
           >
             {hero.quote ? (
-              <Body numberOfLines={1} light>
+              <Text numberOfLines={1} light>
                 {hero.quote}
-              </Body>
+              </Text>
             ) : (
               <View />
             )}

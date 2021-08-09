@@ -3,7 +3,7 @@ import { StyleSheet, View, TouchableOpacity, ViewStyle } from "react-native";
 
 import { Colors, Shadows } from "../Colors";
 import { Router } from "../Router";
-import { Heading3 } from "../Text";
+import { Text } from "../Text";
 import { Icon } from "../icon";
 import { NavBarHeight } from "./constants";
 
@@ -94,7 +94,9 @@ export class NavBar extends React.Component<NavBarProps> {
           style,
         ]}
       >
-        <Heading3 light={light}>{title}</Heading3>
+        <Text large light={light}>
+          {title ?? ""}
+        </Text>
         {this.renderBack()}
       </View>
     );

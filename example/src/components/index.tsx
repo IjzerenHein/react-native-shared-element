@@ -9,3 +9,4 @@ export * from "./Button";
 export * from "./CompatSharedElement";
 export * from "./viewPager";
 export * from "./linearGradient";
+export * from "./SegmentedControl";

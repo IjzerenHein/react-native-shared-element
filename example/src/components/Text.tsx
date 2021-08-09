@@ -1,30 +1,108 @@
 import * as React from "react";
-import { StyleSheet, Text } from "react-native";
+import { StyleSheet, Text as RawText } from "react-native";
 
 import { Colors } from "./Colors";
 
+export type Size = "regular" | "small" | "large" | "xlarge" | "xxlarge";
+
+export type SizeProps = {
+  size?: Size;
+  small?: boolean;
+  large?: boolean;
+  xlarge?: boolean;
+  xxlarge?: boolean;
+};
+
+export function resolveSize(props: SizeProps): Size {
+  return (
+    props.size ??
+    (props.small
+      ? "small"
+      : props.large
+      ? "large"
+      : props.xlarge
+      ? "xlarge"
+      : props.xxlarge
+      ? "xxlarge"
+      : "regular")
+  );
+}
+
+export function Text(
+  props: React.ComponentProps<typeof RawText> & {
+    children: string;
+    small?: boolean;
+    large?: boolean;
+    xlarge?: boolean;
+    xxlarge?: boolean;
+    color?: string;
+    center?: boolean;
+    flex?: boolean;
+    uppercase?: boolean;
+    light?: boolean;
+  }
+) {
+  const {
+    color,
+    children,
+    small,
+    large,
+    xlarge,
+    style,
+    center,
+    flex,
+    uppercase,
+    light,
+    ...otherProps
+  } = props;
+  const resolvedSize = resolveSize(props);
+  return (
+    <RawText
+      style={[
+        styles[resolvedSize],
+        color ? { color } : undefined,
+        center ? styles.center : undefined,
+        flex ? styles.flex : undefined,
+        light ? styles.light : undefined,
+        style,
+      ]}
+      {...otherProps}
+    >
+      {typeof children === "string" && uppercase
+        ? children.toUpperCase()
+        : children}
+    </RawText>
+  );
+}
+
 const styles = StyleSheet.create({
-  heading1: {
+  center: {
+    textAlign: "center",
+  },
+  flex: {
+    flex: 1,
+  },
+  xxlarge: {
     fontSize: 40,
     fontWeight: "bold",
     color: Colors.text,
   },
-  heading2: {
+  xlarge: {
     fontSize: 30,
     fontWeight: "bold",
     color: Colors.text,
   },
-  heading3: {
+  large: {
     fontSize: 17,
     fontWeight: "700",
     color: Colors.text,
   },
-  caption: {
+  small: {
     fontSize: 14,
     fontWeight: "400",
     color: Colors.gray,
   },
-  body: {
+  regular: {
     fontSize: 17,
     fontWeight: "500",
     color: Colors.gray,
@@ -33,49 +111,3 @@ const styles = StyleSheet.create({
     color: Colors.back,
   },
 });
-
-export const Heading1 = (props: any) => {
-  const { light, ...otherProps } = props;
-  return (
-    <Text
-      {...otherProps}
-      style={[styles.heading1, light ? styles.light : undefined, props.style]}
-    />
-  );
-};
-export const Heading2 = (props: any) => {
-  const { light, ...otherProps } = props;
-  return (
-    <Text
-      {...otherProps}
-      style={[styles.heading2, light ? styles.light : undefined, props.style]}
-    />
-  );
-};
-export const Heading3 = (props: any) => {
-  const { light, ...otherProps } = props;
-  return (
-    <Text
-      {...otherProps}
-      style={[styles.heading3, light ? styles.light : undefined, props.style]}
-    />
-  );
-};
-export const Caption = (props: any) => {
-  const { light, ...otherProps } = props;
-  return (
-    <Text
-      {...otherProps}
-      style={[styles.caption, light ? styles.light : undefined, props.style]}
-    />
-  );
-};
-export const Body = (props: any) => {
-  const { light, ...otherProps } = props;
-  return (
-    <Text
-      {...otherProps}
-      style={[styles.body, light ? styles.light : undefined, props.style]}
-    />
-  );
-};

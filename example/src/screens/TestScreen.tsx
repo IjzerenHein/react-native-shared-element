@@ -1,35 +1,21 @@
 import * as React from "react";
 import { StyleSheet, View } from "react-native";
 
-import { NavBar, Colors, Button, Body, Router } from "../components";
-import { fromRight } from "../transitions";
+import {
+  NavBar,
+  Colors,
+  Button,
+  Text,
+  Router,
+  SegmentedControl,
+} from "../components";
+import {
+  fadeIn,
+  fromRight,
+  scaleCenter,
+  TransitionConfig,
+} from "../transitions";
 import { Test, SharedElementsConfig } from "../types";
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  bottomContainer: {
-    flex: 1,
-    borderTopLeftRadius: 16,
-    borderTopRightRadius: 16,
-    backgroundColor: Colors.empty,
-    padding: 20,
-  },
-  buttonContainer: {
-    flexDirection: "row",
-  },
-  button: {
-    flex: 1,
-    marginRight: 10,
-  },
-  debugButton: {
-    flex: 1,
-  },
-  body: {
-    marginTop: 20,
-  },
-});
 
 interface PropsType {
   test: Test;
@@ -37,6 +23,14 @@ interface PropsType {
   description?: string;
   navigation?: any;
 }
+
+type TransitionValue = "slide" | "fade" | "scale";
+type DurationValue = "fast" | "slow" | "debug";
+
+let transitionValue: TransitionValue = "slide";
+let durationValue: DurationValue = "fast";
+const transitionValues: TransitionValue[] = ["slide", "fade", "scale"];
+const durationValues: DurationValue[] = ["fast", "slow", "debug"];
 
 function getSharedElements(test: Test): SharedElementsConfig {
   const props = {
@@ -80,48 +74,68 @@ export class TestScreen extends React.Component<PropsType> {
         })}
         <View style={styles.bottomContainer}>
           <View style={styles.buttonContainer}>
+            <View style={styles.segmentContainer}>
+              <SegmentedControl
+                style={styles.button}
+                values={transitionValues}
+                index={transitionValues.indexOf(transitionValue)}
+                onChangeValue={(index) => {
+                  transitionValue = transitionValues[index];
+                  this.forceUpdate();
+                }}
+              />
+              <View style={styles.segmentSpacer} />
+              <SegmentedControl
+                style={styles.button}
+                values={durationValues}
+                index={durationValues.indexOf(durationValue)}
+                onChangeValue={(index) => {
+                  durationValue = durationValues[index];
+                  this.forceUpdate();
+                }}
+              />
+            </View>
             <Button
               style={styles.button}
-              label={navigation ? "Animate" : "Fast"}
+              label="Animate"
               onPress={this.onPressButton}
             />
-            {!navigation ? (
-              <Button
-                style={styles.button}
-                label="Slow"
-                onPress={this.onPressSlowButton}
-              />
-            ) : undefined}
-            {!navigation ? (
-              <Button
-                style={styles.debugButton}
-                label="Debug"
-                onPress={this.onPressDebugButton}
-              />
-            ) : undefined}
           </View>
-          <Body style={styles.body}>{test.description || description}</Body>
+          <Text style={styles.body}>{test.description || description}</Text>
         </View>
       </View>
     );
   }
 
   onPressButton = () => {
-    this.transition(Router.defaultProps.transitionConfig);
-  };
+    let duration: number;
+    let debug = false;
+    let transitionConfig: TransitionConfig;
 
-  onPressSlowButton = () => {
-    this.transition(fromRight(4000));
-  };
+    switch (durationValue) {
+      case "fast":
+        duration = 500;
+        break;
+      case "slow":
+        duration = 4000;
+        break;
+      case "debug":
+        duration = 8000;
+        debug = true;
+        break;
+    }
+    switch (transitionValue) {
+      case "slide":
+        transitionConfig = fromRight(duration);
+        break;
+      case "fade":
+        transitionConfig = fadeIn(duration);
+        break;
+      case "scale":
+        transitionConfig = scaleCenter(duration);
+    }
+    transitionConfig.debug = debug;
 
-  onPressDebugButton = () => {
-    this.transition({
-      ...fromRight(8000),
-      debug: true,
-    });
-  };
-
-  transition(transitionConfig: any) {
     const { navigation } = this.props;
     const test = navigation ? navigation.getParam("test") : this.props.test;
     const description = navigation
@@ -152,5 +166,38 @@ export class TestScreen extends React.Component<PropsType> {
         );
       }
     }
-  }
+  };
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  bottomContainer: {
+    flex: 1,
+    borderTopLeftRadius: 16,
+    borderTopRightRadius: 16,
+    backgroundColor: Colors.empty,
+    padding: 20,
+  },
+  buttonContainer: {
+    flexDirection: "row",
+  },
+  segmentContainer: {
+    flex: 2,
+    flexDirection: "column",
+  },
+  segmentSpacer: {
+    height: 4,
+  },
+  button: {
+    flex: 1,
+    marginRight: 10,
+  },
+  debugButton: {
+    flex: 1,
+  },
+  body: {
+    marginTop: 16,
+  },
+});

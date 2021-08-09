@@ -2,9 +2,9 @@ import * as React from "react";
 import { StyleSheet, View, TouchableOpacity } from "react-native";
 
 import { Shadows, Colors } from "./Colors";
-import { Heading3 } from "./Text";
+import { Text } from "./Text";
 
-const HEIGHT = 40;
+const HEIGHT = 44;
 
 const styles = StyleSheet.create({
   container: {
@@ -15,9 +15,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     ...Shadows.elevation1,
-  },
-  label: {
-    color: "white",
   },
 });
 
@@ -38,7 +35,9 @@ export class Button extends React.Component<ButtonProps> {
         style={style}
       >
         <View style={[styles.container]}>
-          <Heading3 style={styles.label}>{label}</Heading3>
+          <Text large color="white">
+            {label}
+          </Text>
         </View>
       </TouchableOpacity>
     );

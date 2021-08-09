@@ -19,4 +19,5 @@ export type ScreenInterpolator = (
 export type TransitionConfig = {
   transitionSpec: TransitionSpec;
   screenInterpolator: ScreenInterpolator;
+  debug?: boolean;
 };

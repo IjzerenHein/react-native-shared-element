@@ -8,14 +8,7 @@ import {
 } from "react-native";
 
 import { Heroes } from "../assets";
-import {
-  Router,
-  NavBar,
-  SharedElement,
-  Colors,
-  Heading2,
-  Caption,
-} from "../components";
+import { Router, NavBar, SharedElement, Colors, Text } from "../components";
 import { fadeIn } from "../transitions";
 import { Hero, SharedElementsConfig } from "../types";
 
@@ -95,10 +88,10 @@ export class ListScreen extends React.Component<PropsType> {
         <View style={styles.content}>
           <View style={styles.name}>
             <SharedElement id={`heroName.${id}`} navigation={navigation}>
-              <Heading2>{name}</Heading2>
+              <Text xlarge>{name}</Text>
             </SharedElement>
           </View>
-          <Caption>{quote || ""}</Caption>
+          <Text small>{quote ?? ""}</Text>
         </View>
       </TouchableOpacity>
     );

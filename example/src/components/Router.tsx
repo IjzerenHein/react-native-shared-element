@@ -169,6 +169,7 @@ export class Router extends React.Component<RouterProps, RouterState> {
     if (!sharedElementsConfig || !transitionConfig) {
       return;
     }
+    const { debug } = transitionConfig;
     const startScreen = sharedElementScreens[startIndex];
     const endScreen = sharedElementScreens[endIndex];
     const nodes = sharedElementsConfig.map((sharedElementConfig) => {
@@ -184,7 +185,7 @@ export class Router extends React.Component<RouterProps, RouterState> {
           ancestor: endScreen ? endScreen.ancestor : undefined,
         },
         ...other,
-        debug: sharedElementConfig.debug,
+        debug: sharedElementConfig.debug || debug,
       };
       return node;
     });

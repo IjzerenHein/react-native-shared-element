@@ -9,14 +9,7 @@ import {
   Platform,
 } from "react-native";
 
-import {
-  NavBar,
-  SharedElement,
-  Colors,
-  Router,
-  Heading1,
-  Body,
-} from "../components";
+import { NavBar, SharedElement, Colors, Router, Text } from "../components";
 import { fadeIn } from "../transitions";
 import { Hero, SharedElementsConfig } from "../types";
 
@@ -230,7 +223,7 @@ export class CardScreen extends React.Component<PropsType, StateType> {
                 style={styles.name}
                 navigation={navigation}
               >
-                <Heading1>{name}</Heading1>
+                <Text xxlarge>{name}</Text>
               </SharedElement>
               {description ? (
                 <SharedElement
@@ -238,7 +231,7 @@ export class CardScreen extends React.Component<PropsType, StateType> {
                   style={styles.description}
                   navigation={navigation}
                 >
-                  <Body>{description}</Body>
+                  <Text>{description}</Text>
                 </SharedElement>
               ) : undefined}
             </View>
