@@ -246,9 +246,15 @@
     CATransform3D transform = otherStyle ? CATransform3DConcat(style.transform, CATransform3DInvert(otherStyle.transform)) : style.transform;
     if (CATransform3DIsAffine(transform)) {
       CGAffineTransform affineTransform = CATransform3DGetAffineTransform(CATransform3DInvert(transform));
+      CGPoint origin = CGPointMake(layout.size.width / -2.0, layout.size.height / -2.0);
+      CGPoint diff = CGPointMake(layout.origin.x - origin.x, layout.origin.y - origin.y);
+      layout.origin = origin;
+      // Apply the transform on the center
       layout = CGRectApplyAffineTransform(layout, affineTransform);
+      layout.origin.x += diff.x;
+      layout.origin.y += diff.y;
     } else {
-      // Fallback
+      // Fallback, supports only translation
       layout.origin.x -= transform.m41;
       layout.origin.y -= transform.m42;
     }
