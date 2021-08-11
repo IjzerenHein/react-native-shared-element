@@ -42,6 +42,7 @@ public class RNSharedElementStyle {
 
   Rect layout = new Rect(); // absolute layout on screen
   Rect frame = new Rect(); // frame rect relative to parent
+  Rect ancestorLayout = new Rect(); // absolute layout on screen
   Matrix transform = new Matrix();
   Matrix ancestorTransform = new Matrix();
   ScaleType scaleType = ScaleType.FIT_XY;
@@ -162,16 +163,24 @@ public class RNSharedElementStyle {
     // size and position on the screen.
     if (compensateForTransforms && (style != null)) {
       
-      // Get ancestor translation
-      float[] f = new float[9];
-      style.ancestorTransform.getValues(f);
-      int ancestorTranslateX = (int) f[Matrix.MTRANS_X];
-      int ancestorTranslateY = (int) f[Matrix.MTRANS_Y];
+      // Calculate size and position of ancestor as it would appear on the screen
+      // after the transition has completed (= undo the transform on the scne)
+      Rect ancestorLayout = style.ancestorLayout;
+      RectF normalizedAncestorLayout = new RectF(ancestorLayout);
+      Matrix invertedTransform = new Matrix();
+      style.ancestorTransform.invert(invertedTransform);
+      invertedTransform.mapRect(normalizedAncestorLayout);
 
-      // Compensate for transform applied to ancestor/scene
-      int left = layout.left - ancestorTranslateX;
-      int top = layout.top - ancestorTranslateY;
-      return new Rect(left, top, left + layout.width(), top + layout.height());
+      // Calculate size and position of element within the normalized ancestor
+      float scaleX = normalizedAncestorLayout.width() / (float) ancestorLayout.width();
+      float scaleY = normalizedAncestorLayout.height() / (float) ancestorLayout.height();
+      int left = (int) (((layout.left - ancestorLayout.left) * scaleX) + normalizedAncestorLayout.left);
+      int top = (int) (((layout.top - ancestorLayout.top) * scaleY) + normalizedAncestorLayout.top);
+      return new Rect(
+              left,
+              top,
+              left + (int) ((float)layout.width() * scaleX),
+              top + (int) ((float)layout.height() * scaleY));
     } 
     return layout;
   }
@@ -238,7 +247,7 @@ public class RNSharedElementStyle {
     return result;
   }
 
-  static Matrix getAbsoluteViewTransform(View view, boolean failIfNotMounted) {
+  static Matrix getAbsoluteViewTransform(View view, View ancestorView) {
     Matrix matrix = new Matrix(view.getMatrix());
     float[] vals = new float[9];
     matrix.getValues(vals);
@@ -246,7 +255,7 @@ public class RNSharedElementStyle {
     float[] vals2 = new float[9];
     ViewParent parentView = view.getParent();
 
-    while (parentView instanceof View) {
+    while (parentView instanceof View && parentView != ancestorView) {
       Matrix parentMatrix = ((View) parentView).getMatrix();
       parentMatrix.getValues(vals2);
 
@@ -262,10 +271,22 @@ public class RNSharedElementStyle {
 
       parentView = parentView.getParent();
     }
-    if (parentView == null && failIfNotMounted) {
+    if (parentView == null) {
       return null;
     }
     matrix.setValues(vals);
     return matrix;
+  }
+
+  static float getAncestorVisibility(View view, RNSharedElementStyle style) {
+    int[] location = new int[2];
+    view.getLocationOnScreen(location);
+    Rect rect = new Rect(location[0], location[1], location[0] + view.getWidth(), location[1] + view.getHeight());
+    Rect intersection = new Rect();
+    if (!intersection.setIntersect(rect, style.ancestorLayout)) return 0.0f;
+    float superVolume = rect.width() * rect.height();
+    float intersectionVolume = intersection.width() * intersection.height();
+    float ancestorVolume = style.ancestorLayout.width() * style.ancestorLayout.height();
+    return (intersectionVolume / superVolume) * (intersectionVolume / ancestorVolume);
   }
 }

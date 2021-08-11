@@ -179,6 +179,7 @@ public class RNSharedElementTransition extends ViewGroup {
     // Local data
     RNSharedElementTransitionItem startItem = mItems.get(Item.START.getValue());
     RNSharedElementTransitionItem endItem = mItems.get(Item.END.getValue());
+    View parent = (View) getParent();
 
     // Get styles
     RNSharedElementStyle startStyle = startItem.getStyle();
@@ -204,22 +205,9 @@ public class RNSharedElementTransition extends ViewGroup {
         } else if ((startStyle == null) && (endStyle != null)) {
           mInitialVisibleAncestorIndex = 1;
         } else {
-          Rect testRect = new Rect(0, 0, 100, 100);
-          Rect startIntersectRect = new Rect();
-          if (!startIntersectRect.setIntersect(testRect, RNSharedElementStyle.normalizeLayout(true, testRect, startStyle))) {
-            startIntersectRect = null;
-          }
-          Rect endIntersectRect = new Rect();
-          if (!endIntersectRect.setIntersect(testRect, RNSharedElementStyle.normalizeLayout(true, testRect, endStyle))) {
-            endIntersectRect = null;
-          }
-          if (startIntersectRect != null && endIntersectRect != null) {
-            mInitialVisibleAncestorIndex = ((endIntersectRect.width() * endIntersectRect.height()) > (startIntersectRect.width() * startIntersectRect.height())) ? 1 : 0;
-          } else if (endIntersectRect != null) {
-            mInitialVisibleAncestorIndex = 1;
-          } else {
-            mInitialVisibleAncestorIndex = 0;
-          }
+          float startAncestorVisibility = RNSharedElementStyle.getAncestorVisibility(parent, startStyle);
+          float endAncestorVisibility = RNSharedElementStyle.getAncestorVisibility(parent, endStyle);
+          mInitialVisibleAncestorIndex = endAncestorVisibility > startAncestorVisibility ? 1 : 0;
         }
       }
     }
@@ -279,7 +267,7 @@ public class RNSharedElementTransition extends ViewGroup {
     // Update outer viewgroup layout. The outer viewgroup hosts 2 inner views
     // which draw the content & elevation. The outer viewgroup performs additional
     // clipping on these views.
-    ((View) getParent()).getLocationOnScreen(mParentOffset);
+    parent.getLocationOnScreen(mParentOffset);
     super.layout(
             -mParentOffset[0],
             -mParentOffset[1],
