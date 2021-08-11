@@ -8,6 +8,7 @@ import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -179,7 +180,10 @@ public class RNSharedElementTransition extends ViewGroup {
     // Local data
     RNSharedElementTransitionItem startItem = mItems.get(Item.START.getValue());
     RNSharedElementTransitionItem endItem = mItems.get(Item.END.getValue());
+
+    // Get parent offset
     View parent = (View) getParent();
+    parent.getLocationInWindow(mParentOffset);
 
     // Get styles
     RNSharedElementStyle startStyle = startItem.getStyle();
@@ -214,19 +218,19 @@ public class RNSharedElementTransition extends ViewGroup {
 
     // Get layout
     boolean startCompensate = mInitialVisibleAncestorIndex == 1;
-    Rect startLayout = RNSharedElementStyle.normalizeLayout(startCompensate, startStyle);
+    RectF startLayout = RNSharedElementStyle.normalizeLayout(startCompensate, startStyle, mParentOffset);
     Rect startFrame = (startStyle != null) ? startStyle.frame : RNSharedElementStyle.EMPTY_RECT;
     boolean endCompensate = mInitialVisibleAncestorIndex == 0;
-    Rect endLayout = RNSharedElementStyle.normalizeLayout(endCompensate, endStyle);
+    RectF endLayout = RNSharedElementStyle.normalizeLayout(endCompensate, endStyle, mParentOffset);
     Rect endFrame = (endStyle != null) ? endStyle.frame : RNSharedElementStyle.EMPTY_RECT;
     RectF parentLayout = new RectF(startLayout);
-    parentLayout.union(new RectF(endLayout));
+    parentLayout.union(endLayout);
 
     // Get clipped areas
-    Rect startClippedLayout = RNSharedElementStyle.normalizeLayout(startCompensate, (startStyle != null) ? startItem.getClippedLayout() : RNSharedElementStyle.EMPTY_RECT, startStyle);
-    Rect startClipInsets = getClipInsets(startLayout, startClippedLayout);
-    Rect endClippedLayout = RNSharedElementStyle.normalizeLayout(endCompensate, (endStyle != null) ? endItem.getClippedLayout() : RNSharedElementStyle.EMPTY_RECT, endStyle);
-    Rect endClipInsets = getClipInsets(endLayout, endClippedLayout);
+    RectF startClippedLayout = RNSharedElementStyle.normalizeLayout(startCompensate, (startStyle != null) ? startItem.getClippedLayout() : RNSharedElementStyle.EMPTY_RECTF, startStyle, mParentOffset);
+    RectF startClipInsets = getClipInsets(startLayout, startClippedLayout);
+    RectF endClippedLayout = RNSharedElementStyle.normalizeLayout(endCompensate, (endStyle != null) ? endItem.getClippedLayout() : RNSharedElementStyle.EMPTY_RECTF, endStyle, mParentOffset);
+    RectF endClipInsets = getClipInsets(endLayout, endClippedLayout);
 
     // Get interpolated layout
     RectF interpolatedLayout;
@@ -237,17 +241,17 @@ public class RNSharedElementTransition extends ViewGroup {
       interpolatedClipInsets = getInterpolatedClipInsets(parentLayout, startClipInsets, startClippedLayout, endClipInsets, endClippedLayout, mNodePosition);
       interpolatedStyle = RNSharedElementStyle.getInterpolatedStyle(startStyle, endStyle, mNodePosition);
     } else if (startStyle != null) {
-      interpolatedLayout = new RectF(startLayout);
+      interpolatedLayout = startLayout;
       interpolatedStyle = startStyle;
-      interpolatedClipInsets = new RectF(startClipInsets);
+      interpolatedClipInsets = startClipInsets;
     } else {
       if (!mInitialNodePositionSet) {
         mNodePosition = 1.0f;
         mInitialNodePositionSet = true;
       }
-      interpolatedLayout = new RectF(endLayout);
+      interpolatedLayout = endLayout;
       interpolatedStyle = endStyle;
-      interpolatedClipInsets = new RectF(endClipInsets);
+      interpolatedClipInsets = endClipInsets;
     }
 
     // Apply clipping insets
@@ -267,7 +271,6 @@ public class RNSharedElementTransition extends ViewGroup {
     // Update outer viewgroup layout. The outer viewgroup hosts 2 inner views
     // which draw the content & elevation. The outer viewgroup performs additional
     // clipping on these views.
-    parent.getLocationOnScreen(mParentOffset);
     super.layout(
             -mParentOffset[0],
             -mParentOffset[1],
@@ -373,8 +376,8 @@ public class RNSharedElementTransition extends ViewGroup {
     }
   }
 
-  private Rect getClipInsets(Rect layout, Rect clippedLayout) {
-    return new Rect(
+  static private RectF getClipInsets(RectF layout, RectF clippedLayout) {
+    return new RectF(
             clippedLayout.left - layout.left,
             clippedLayout.top - layout.top,
             layout.right - clippedLayout.right,
@@ -382,12 +385,12 @@ public class RNSharedElementTransition extends ViewGroup {
     );
   }
 
-  private RectF getInterpolatedClipInsets(
+  static private RectF getInterpolatedClipInsets(
           RectF interpolatedLayout,
-          Rect startClipInsets,
-          Rect startClippedLayout,
-          Rect endClipInsets,
-          Rect endClippedLayout,
+          RectF startClipInsets,
+          RectF startClippedLayout,
+          RectF endClipInsets,
+          RectF endClippedLayout,
           float position) {
     RectF clipInsets = new RectF();
 
@@ -430,7 +433,7 @@ public class RNSharedElementTransition extends ViewGroup {
     return clipInsets;
   }
 
-  private void fireMeasureEvent(String name, RNSharedElementTransitionItem item, Rect layout, Rect clippedLayout) {
+  private void fireMeasureEvent(String name, RNSharedElementTransitionItem item, RectF layout, RectF clippedLayout) {
     ReactContext reactContext = (ReactContext) getContext();
     RNSharedElementStyle style = item.getStyle();
     RNSharedElementContent content = item.getContent();

@@ -32,7 +32,7 @@ class RNSharedElementView extends View {
   void updateViewAndDrawable(
           RectF layout,
           RectF parentLayout,
-          Rect originalLayout,
+          RectF originalLayout,
           Rect originalFrame,
           RNSharedElementContent content,
           RNSharedElementStyle style,
@@ -77,8 +77,8 @@ class RNSharedElementView extends View {
             break;
           case CLIP:
           case NONE:
-            scaleX = (float) originalWidth / (float) originalLayout.width();
-            scaleY = (float) originalHeight / (float) originalLayout.height();
+            scaleX = (float) originalWidth / originalLayout.width();
+            scaleY = (float) originalHeight / originalLayout.height();
             break;
         }
 

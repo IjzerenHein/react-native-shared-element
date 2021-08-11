@@ -4,7 +4,7 @@ package com.ijzerenhein.sharedelement;
 import android.view.View;
 import android.view.ViewParent;
 import android.view.ViewGroup;
-import android.graphics.Rect;
+import android.graphics.RectF;
 
 class RNSharedElementTransitionItem {
   // static private final String LOG_TAG = "RNSharedElementTransitionItem";
@@ -17,7 +17,7 @@ class RNSharedElementTransitionItem {
   private RNSharedElementStyle mStyle;
   private boolean mNeedsContent;
   private RNSharedElementContent mContent;
-  private Rect mClippedLayoutCache;
+  private RectF mClippedLayoutCache;
   private boolean mHasCalledOnMeasure;
 
   RNSharedElementTransitionItem(RNSharedElementNodeManager nodeManager, String name) {
@@ -119,21 +119,21 @@ class RNSharedElementTransitionItem {
     return (mNode != null) ? mNode.getResolvedView() : null;
   }
 
-  Rect getClippedLayout() {
+  RectF getClippedLayout() {
     if (mClippedLayoutCache != null) return mClippedLayoutCache;
     if (mStyle == null) return null;
 
     View ancestorView = mNode.getAncestorView();
 
     // Get visible area (some parts may be clipped in a scrollview or something)
-    Rect clippedLayout = new Rect(mStyle.layout);
+    RectF clippedLayout = new RectF(mStyle.layout);
     ViewParent parentView = getView().getParent();
     int[] location = new int[2];
-    Rect bounds = new Rect();
+    RectF bounds = new RectF();
     while (parentView != null) {
       if (!(parentView instanceof ViewGroup)) break;
       ViewGroup viewGroup = (ViewGroup) parentView;
-      viewGroup.getLocationOnScreen(location);
+      viewGroup.getLocationInWindow(location);
 
       bounds.left = location[0];
       bounds.top = location[1];

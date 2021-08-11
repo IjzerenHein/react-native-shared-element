@@ -170,27 +170,6 @@ class RNSharedElementNode {
     }
   }
 
-  private Rect calculateLayout(View view, Matrix transform) {
-
-    // Get absolute position on screen (left/top)
-    int[] location = new int[2];
-    view.getLocationOnScreen(location);
-    int left = location[0];
-    int top = location[1];
-
-    // In case the view has a scale transform applied, then calculate
-    // the correct visual width & height of the view
-    float[] f = new float[9];
-    transform.getValues(f);
-    float scaleX = f[Matrix.MSCALE_X];
-    float scaleY = f[Matrix.MSCALE_Y];
-    int width = (int) ((float) view.getWidth() * scaleX);
-    int height = (int) ((float) view.getHeight() * scaleY);
-
-    // Create absolute layout rect
-    return new Rect(left, top, left + width, top + height);
-  }
-
   private boolean fetchInitialStyle() {
     View view = getResolvedView();
     if (view == null) return false;
@@ -202,17 +181,16 @@ class RNSharedElementNode {
     int width = view.getWidth();
     int height = view.getHeight();
     if (width == 0 && height == 0) return false;
-    Matrix transform = RNSharedElementStyle.getAbsoluteViewTransform(view, null);
-    Matrix ancestorTransform = RNSharedElementStyle.getAbsoluteViewTransform(mAncestorView, null);
+    Matrix transform = RNSharedElementStyle.getAbsoluteViewTransform(view);
+    Matrix ancestorTransform = RNSharedElementStyle.getAbsoluteViewTransform(mAncestorView);
     if ((transform == null) || (ancestorTransform == null)) return false;
     Rect frame = new Rect(left, top, left + width, top + height);
 
     // Create style
     RNSharedElementStyle style = new RNSharedElementStyle(mStyleConfig, mContext);
-    style.layout = calculateLayout(view, transform);
+    RNSharedElementStyle.getLayoutOnScreen(view, style.layout);
     style.frame = frame;
-    style.transform = transform;
-    style.ancestorLayout = calculateLayout(mAncestorView, ancestorTransform);
+    RNSharedElementStyle.getLayoutOnScreen(mAncestorView, style.ancestorLayout);
     style.ancestorTransform = ancestorTransform;
 
     // Get opacity
