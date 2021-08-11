@@ -178,13 +178,13 @@ public class RNSharedElementStyle {
     return scaleType1 == scaleType2;
   }
 
-  static ScaleType getInterpolatingScaleType(RNSharedElementStyle style1, RNSharedElementStyle style2, float position) {
+  static ScaleType getInterpolatingScaleType(RNSharedElementStyle style1, RectF layout1, RNSharedElementStyle style2, RectF layout2, float position) {
     if (style1.scaleType == style2.scaleType) return style1.scaleType;
     InterpolatingScaleType scaleType = new InterpolatingScaleType(
             style1.scaleType,
             style2.scaleType,
-            new Rect(0, 0, (int)style1.layout.width(), (int)style1.layout.height()),
-            new Rect(0, 0, (int)style2.layout.width(), (int)style2.layout.height())
+            new Rect(0, 0, (int)layout1.width(), (int)layout1.height()),
+            new Rect(0, 0, (int)layout2.width(), (int)layout2.height())
     );
     scaleType.setValue(position);
     return scaleType;
@@ -218,11 +218,13 @@ public class RNSharedElementStyle {
 
   static RNSharedElementStyle getInterpolatedStyle(
           RNSharedElementStyle style1,
+          RectF layout1,
           RNSharedElementStyle style2,
+          RectF layout2,
           float position
   ) {
     RNSharedElementStyle result = new RNSharedElementStyle();
-    result.scaleType = RNSharedElementStyle.getInterpolatingScaleType(style1, style2, position);
+    result.scaleType = RNSharedElementStyle.getInterpolatingScaleType(style1, layout1, style2, layout2, position);
     result.opacity = style1.opacity + ((style2.opacity - style1.opacity) * position);
     result.backgroundColor = RNSharedElementStyle.getInterpolatedColor(style1.backgroundColor, style2.backgroundColor, position);
     result.borderTopLeftRadius = style1.borderTopLeftRadius + ((style2.borderTopLeftRadius - style1.borderTopLeftRadius) * position);

@@ -239,7 +239,7 @@ public class RNSharedElementTransition extends ViewGroup {
     if ((startStyle != null) && (endStyle != null)) {
       interpolatedLayout = RNSharedElementStyle.getInterpolatedLayout(startLayout, endLayout, mNodePosition);
       interpolatedClipInsets = getInterpolatedClipInsets(parentLayout, startClipInsets, startClippedLayout, endClipInsets, endClippedLayout, mNodePosition);
-      interpolatedStyle = RNSharedElementStyle.getInterpolatedStyle(startStyle, endStyle, mNodePosition);
+      interpolatedStyle = RNSharedElementStyle.getInterpolatedStyle(startStyle, startLayout, endStyle, endLayout, mNodePosition);
     } else if (startStyle != null) {
       interpolatedLayout = startLayout;
       interpolatedStyle = startStyle;
