@@ -250,13 +250,12 @@
     CGRect normalizedAncestorLayout = ancestorLayout;
     if (CATransform3DIsAffine(transform)) {
       CGAffineTransform affineTransform = CATransform3DGetAffineTransform(CATransform3DInvert(transform));
-      CGPoint origin = CGPointMake((normalizedAncestorLayout.size.width / -2.0), (normalizedAncestorLayout.size.height / -2.0));
-      CGPoint diff = CGPointMake(normalizedAncestorLayout.origin.x - origin.x, normalizedAncestorLayout.origin.y - origin.y);
-      normalizedAncestorLayout.origin = origin;
       // Apply the transform on the center
+      normalizedAncestorLayout.origin = CGPointMake((ancestorLayout.size.width / -2.0), (ancestorLayout.size.height / -2.0));
+      CGPoint diff = CGPointMake(ancestorLayout.origin.x - normalizedAncestorLayout.origin.x, ancestorLayout.origin.y - normalizedAncestorLayout.origin.y);
       normalizedAncestorLayout = CGRectApplyAffineTransform(normalizedAncestorLayout, affineTransform);
-      normalizedAncestorLayout.origin.x += diff.x;
-      normalizedAncestorLayout.origin.y += diff.y;
+      // Undo centering
+      normalizedAncestorLayout.origin = CGPointMake(normalizedAncestorLayout.origin.x + diff.x,normalizedAncestorLayout.origin.y + diff.y);
     } else {
       // Fallback, supports only translation
       normalizedAncestorLayout.origin.x -= transform.m41;
