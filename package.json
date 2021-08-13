@@ -13,7 +13,7 @@
     "prepare_disabled": "expo-module prepare",
     "prepublishOnly": "expo-module prepublishOnly",
     "expo-module": "expo-module",
-    "copy-flow-typings": "cp ./flow-typed/index.js.flow ./build/index.js.flow",
+    "copy-flow-typings": "mkdir -p ./build && cp ./flow-typed/index.js.flow ./build/index.js.flow",
     "prepare": "yarn copy-flow-typings",
     "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s"
   },
