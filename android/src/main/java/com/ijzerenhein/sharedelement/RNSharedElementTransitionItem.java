@@ -128,19 +128,14 @@ class RNSharedElementTransitionItem {
     // Get visible area (some parts may be clipped in a scrollview or something)
     RectF clippedLayout = new RectF(mStyle.layout);
     ViewParent parentView = getView().getParent();
-    int[] location = new int[2];
     RectF bounds = new RectF();
     while (parentView != null) {
       if (!(parentView instanceof ViewGroup)) break;
       ViewGroup viewGroup = (ViewGroup) parentView;
-      viewGroup.getLocationInWindow(location);
-
-      bounds.left = location[0];
-      bounds.top = location[1];
-      bounds.right = location[0] + (viewGroup.getWidth());
-      bounds.bottom = location[1] + (viewGroup.getHeight());
 
       if (viewGroup.getClipChildren()) {
+        RNSharedElementStyle.getLayoutOnScreen(viewGroup, bounds);
+
         if (!clippedLayout.intersect(bounds)) {
           if (clippedLayout.bottom < bounds.top) {
             clippedLayout.top = bounds.top;
