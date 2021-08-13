@@ -1,3 +1,22 @@
+# [0.8.0](https://github.com/IjzerenHein/react-native-shared-element/compare/v0.7.0...v0.8.0) (2021-08-13)
+
+### Bug Fixes
+
+* **ios** Fix exception when debugging and possible runtime instability
+* **ios** Fix transitions for views that have no window (new react-native-screens versions)
+* **ios** Fix layout issues for transitions that use scaling (e.g. ScaleFromCenter react-navigation)
+* **android** Fix layout position when non translucent status-bar is used
+* **android** Fix layout issues for transitions that use scaling (e.g. react-navigation on Android 10 or higher)
+* **android** Fix clipping of elements in transitions
+* **android** Fix fade-in of end-elements
+* **android** Fix fade-in of elements when other element doesn’t exist
+* **android** Fix deprecated API warning
+
+## Improvements
+
+* **android** Remove build warnings
+* **android** Update build.gradle to latest config
+
 # [0.7.0](https://github.com/IjzerenHein/react-native-shared-element/compare/v0.6.1...v0.7.0) (2020-04-19)
 
 ### Features
