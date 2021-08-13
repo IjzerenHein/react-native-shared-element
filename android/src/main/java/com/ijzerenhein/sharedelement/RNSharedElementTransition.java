@@ -223,8 +223,6 @@ public class RNSharedElementTransition extends ViewGroup {
     boolean endCompensate = mInitialVisibleAncestorIndex == 0;
     RectF endLayout = RNSharedElementStyle.normalizeLayout(endCompensate, endStyle, mParentOffset);
     Rect endFrame = (endStyle != null) ? endStyle.frame : RNSharedElementStyle.EMPTY_RECT;
-    RectF parentLayout = new RectF(startLayout);
-    parentLayout.union(endLayout);
 
     // Get clipped areas
     RectF startClippedLayout = RNSharedElementStyle.normalizeLayout(startCompensate, (startStyle != null) ? startItem.getClippedLayout() : RNSharedElementStyle.EMPTY_RECTF, startStyle, mParentOffset);
@@ -238,7 +236,7 @@ public class RNSharedElementTransition extends ViewGroup {
     RNSharedElementStyle interpolatedStyle;
     if ((startStyle != null) && (endStyle != null)) {
       interpolatedLayout = RNSharedElementStyle.getInterpolatedLayout(startLayout, endLayout, mNodePosition);
-      interpolatedClipInsets = getInterpolatedClipInsets(parentLayout, startClipInsets, startClippedLayout, endClipInsets, endClippedLayout, mNodePosition);
+      interpolatedClipInsets = getInterpolatedClipInsets(interpolatedLayout, startClipInsets, startClippedLayout, endClipInsets, endClippedLayout, mNodePosition);
       interpolatedStyle = RNSharedElementStyle.getInterpolatedStyle(startStyle, startLayout, endStyle, endLayout, mNodePosition);
     } else if (startStyle != null) {
       interpolatedLayout = startLayout;
@@ -254,17 +252,20 @@ public class RNSharedElementTransition extends ViewGroup {
       interpolatedClipInsets = endClipInsets;
     }
 
-    // Apply clipping insets
-    // TODO: Fix clipping when end-layout is larger than
-    // start-layout in all dimensions.
-    // TEST: ScrollViews & Clipping > Clip Bottom --> Full reveal
-    parentLayout.left += interpolatedClipInsets.left;
-    parentLayout.top += interpolatedClipInsets.top;
-    parentLayout.right -= interpolatedClipInsets.right;
-    parentLayout.bottom -= interpolatedClipInsets.bottom;
-
-    // Calculate clipped layout
-    mRequiresClipping = !parentLayout.contains(interpolatedLayout);
+    // Calculate outer frame rect. Apply clipping insets if needed
+    RectF parentLayout;
+    if (interpolatedClipInsets.left > 0.0f || interpolatedClipInsets.top > 0.0f || interpolatedClipInsets.right > 0.0f || interpolatedClipInsets.bottom > 0.0f) {
+      parentLayout = new RectF(interpolatedLayout);
+      parentLayout.left += interpolatedClipInsets.left;
+      parentLayout.top += interpolatedClipInsets.top;
+      parentLayout.right -= interpolatedClipInsets.right;
+      parentLayout.bottom -= interpolatedClipInsets.bottom;
+      mRequiresClipping = true;
+    } else {
+      parentLayout = new RectF(startLayout);
+      parentLayout.union(endLayout);
+      mRequiresClipping = false;
+    }
 
     //Log.d(LOG_TAG, "updateLayout: " + mNodePosition);
 
