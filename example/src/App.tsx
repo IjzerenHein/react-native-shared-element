@@ -9,6 +9,7 @@ import { MainScreen } from "./screens";
 // scenario to test and support.
 if (Platform.OS === "android") {
   StatusBar.setTranslucent(false);
+  // StatusBar.setBackgroundColor("transparent");
 }
 
 export default class App extends React.Component {
