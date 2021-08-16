@@ -1,26 +1,47 @@
 # Shared Element Transition Example and Test App
 
-The test app includes a variety of tests and receipes. It features a simple stack router which implements the shared element primitives.
+The example app features two implementations:
 
-## Todo
+- [A full test app demonstrating the capabilities and a variety of tests and receipes (./src)](./src)
+- [A basic bare bone implementation of a router supporting shared element transitions (./basic)](./basic)
 
-[ ] Fix web-build
+To use the basic implementation, uncomment the following line in `index.js`
+
+```ts
+// import App from "./src/App";
+import App from "./basic/App";
+```
 
 ## Usage
 
+**Open a terminal in the root folder and build the code**
+
 ```bash
-# Installation
-yarn # in the root directory
+# Install dependencies
+yarn
+
+# Build the js code
+yarn build
+```
+
+**Open the /example app in another terminal**
+
+```bash
+# Install dependencies
 cd example
 yarn
-cd ios && npx pod install && cd ..
+
+# Start packager
+yarn start
 
 # Run for ios
+cd ios && npx pod install && cd ..
 yarn ios
 
 # Run for android
 yarn android
-
-# Run for web (experimental)
-yarn web
 ```
+
+## Todo
+
+[ ] Fix web-build
