@@ -54,7 +54,7 @@ This library is under active development. The iOS and Android implementations ar
 yarn add react-native-shared-element
 ```
 
-And optionally link when needed
+And when using React Native 0.59 or lower, link the library. This is not needed when using React Native 0.60 or higher, where linking happens automatically.
 
 ```bash
 react-native link react-native-shared-element
