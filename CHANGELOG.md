@@ -1,3 +1,9 @@
+# [0.8.1](https://github.com/IjzerenHein/react-native-shared-element/compare/v0.8.0...v0.8.1) (2021-08-16)
+
+### Bug Fixes
+
+* **android** Fix layout of elements that exist on only one screen (fade in/out overlapping elements) (fixes #34)
+
 # [0.8.0](https://github.com/IjzerenHein/react-native-shared-element/compare/v0.7.0...v0.8.0) (2021-08-13)
 
 ### Bug Fixes

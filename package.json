@@ -1,6 +1,6 @@
 {
   "name": "react-native-shared-element",
-  "version": "0.8.0",
+  "version": "0.8.1",
   "description": "Native shared element transition primitives for react-native 💫",
   "main": "build/index.js",
   "types": "build/index.d.ts",
