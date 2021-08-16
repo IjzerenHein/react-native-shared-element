@@ -199,20 +199,16 @@ public class RNSharedElementTransition extends ViewGroup {
 
     // Determine starting scene that is currently visible to the user
     if (mInitialVisibleAncestorIndex < 0) {
-      if ((startItem.getNode() != null) && (endItem.getNode() == null)) {
-        mInitialVisibleAncestorIndex = 0;
-      } else if ((startItem.getNode() == null) && (endItem.getNode() != null)) {
-        mInitialVisibleAncestorIndex = 1;
-      } else if ((startItem.getNode() != null) && (endItem.getNode() != null)) {
-        if ((startStyle != null) && (endStyle == null)) {
-          mInitialVisibleAncestorIndex = 0;
-        } else if ((startStyle == null) && (endStyle != null)) {
-          mInitialVisibleAncestorIndex = 1;
-        } else {
-          float startAncestorVisibility = RNSharedElementStyle.getAncestorVisibility(parent, startStyle);
-          float endAncestorVisibility = RNSharedElementStyle.getAncestorVisibility(parent, endStyle);
-          mInitialVisibleAncestorIndex = endAncestorVisibility > startAncestorVisibility ? 1 : 0;
-        }
+      if ((startStyle != null) && (endStyle == null)) {
+        mInitialVisibleAncestorIndex = (endItem.getNode() == null) ? 1 : 0;
+      } else if ((endStyle != null) && (startStyle == null)) {
+        mInitialVisibleAncestorIndex = (startItem.getNode() == null) ? 0 : 1;
+      } else if ((startStyle != null) && (endStyle != null)) {
+        float startAncestorVisibility = RNSharedElementStyle.getAncestorVisibility(parent, startStyle);
+        float endAncestorVisibility = RNSharedElementStyle.getAncestorVisibility(parent, endStyle);
+        mInitialVisibleAncestorIndex = endAncestorVisibility > startAncestorVisibility ? 1 : 0;
+      } else {
+        // Wait for both styles before deciding which ancestor is currently visible to the user
       }
     }
 
