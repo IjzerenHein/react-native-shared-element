@@ -1,3 +1,9 @@
+# [0.8.2](https://github.com/IjzerenHein/react-native-shared-element/compare/v0.8.1...v0.8.2) (2021-08-18)
+
+### Bug Fixes
+
+* **ios** [fix] Fix build error on react-native 0.65 (implicit conversion of Objective-C pointer type 'UIColor *' to C pointer type 'CGColorRef _Nonnull' (aka 'struct CGColor *') requires a bridged cast)
+
 # [0.8.1](https://github.com/IjzerenHein/react-native-shared-element/compare/v0.8.0...v0.8.1) (2021-08-16)
 
 ### Bug Fixes
