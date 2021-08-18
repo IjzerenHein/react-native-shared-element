@@ -40,7 +40,7 @@
     if ([view isKindOfClass:[RCTView class]]) {
       RCTView* rctView = (RCTView*) view;
       _cornerRadii = [RNSharedElementStyle cornerRadiiFromRCTView: rctView];
-      _borderColor = rctView.borderColor ? [UIColor colorWithCGColor:rctView.borderColor] : [UIColor clearColor];
+      _borderColor = rctView.borderColor ? [UIColor colorWithCGColor:(__bridge CGColorRef _Nonnull)(rctView.borderColor)] : [UIColor clearColor];
       _borderWidth = rctView.borderWidth >= 0.0f ? rctView.borderWidth : 0.0f;
       _backgroundColor = rctView.backgroundColor ? rctView.backgroundColor : [UIColor clearColor];
     } else {
