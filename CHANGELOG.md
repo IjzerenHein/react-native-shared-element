@@ -1,3 +1,9 @@
+# [0.8.3](https://github.com/IjzerenHein/react-native-shared-element/compare/v0.8.2...v0.8.3) (2021-09-27)
+
+### Bug Fixes
+
+* **ios** [fix] Fix ios use_frameworks build issue (React i.s.o. React-Core pod dependency) [(#81)](https://github.com/IjzerenHein/react-native-shared-element/pull/81)
+
 # [0.8.2](https://github.com/IjzerenHein/react-native-shared-element/compare/v0.8.1...v0.8.2) (2021-08-18)
 
 ### Bug Fixes
