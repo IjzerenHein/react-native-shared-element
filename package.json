@@ -14,8 +14,7 @@
     "prepublishOnly": "expo-module prepublishOnly",
     "expo-module": "expo-module",
     "copy-flow-typings": "mkdir -p ./build && cp ./flow-typed/index.js.flow ./build/index.js.flow",
-    "prepare": "yarn copy-flow-typings",
-    "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s"
+    "prepare": "yarn copy-flow-typings"
   },
   "keywords": [
     "react-native-shared-element",
@@ -42,14 +41,11 @@
     "/web"
   ],
   "devDependencies": {
-    "@commitlint/config-conventional": "^13.1.0",
-    "@types/react": "^17.0.15",
-    "@types/react-native": "^0.64.12",
-    "commitlint": "^13.1.0",
-    "conventional-changelog-cli": "^2.1.1",
-    "eslint": "^7.32.0",
+    "@types/react": "^17.0.38",
+    "@types/react-native": "^0.66.11",
+    "eslint": "7",
     "expo-module-scripts": "^2.0.0",
-    "prettier": "^2.3.2"
+    "prettier": "^2.5.1"
   },
   "dependencies": {}
 }
