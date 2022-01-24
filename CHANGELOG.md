@@ -1,3 +1,9 @@
+# [0.8.4](https://github.com/IjzerenHein/react-native-shared-element/compare/v0.8.3...v0.8.4) (2022-01-24)
+
+### Bug Fixes
+
+* **android** [fix] Fix Android build error on react-native 0.67 and Gradle 7) [(#90)](https://github.com/IjzerenHein/react-native-shared-element/pull/90)
+
 # [0.8.3](https://github.com/IjzerenHein/react-native-shared-element/compare/v0.8.2...v0.8.3) (2021-09-27)
 
 ### Bug Fixes
