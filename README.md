@@ -1,10 +1,3 @@
-# LOOKING FOR A NEW HOME OR MAINTAINER
-
-Both [react-native-shared-element](https://github.com/IjzerenHein/react-native-shared-element) and [react-navigation-shared-element](https://github.com/IjzerenHein/react-navigation-shared-element) are looking for a new Home or Maintainer.
-It is no longer possible for me to maintain these repositories. Please reach out to [me personally](mailto:hrutjes@gmail.com) if you want to take over maintenance or have ideas or suggestions for a new home.
-
-> Read the [full statement here](https://github.com/IjzerenHein/react-navigation-shared-element/issues/14#issuecomment-1081601310).
-
 # react-native-shared-element <!-- omit in toc -->
 
 Native shared element transition _"primitives"_ for react-native 💫
@@ -226,3 +219,12 @@ Shared element transition library is licensed under [The MIT License](./LICENSE.
 This project is supported by amazing people from [Expo.io](https://expo.io)
 
 [![expo](https://avatars2.githubusercontent.com/u/12504344?v=3&s=100 "Expo.io")](https://expo.io)
+
+## Changes in maintenance
+
+Both [react-native-shared-element](https://github.com/IjzerenHein/react-native-shared-element) and [react-navigation-shared-element](https://github.com/IjzerenHein/react-navigation-shared-element) are always looking for new Maintainers.
+It is no longer possible for me (@author) to maintain these repositories. Please reach out to [me personally](mailto:hrutjes@gmail.com) if you have ideas or suggestions. You can also reach out to [Aleks](mailto:desmurs.linczewska@gmail.com) who is currently the main maintainer of this library.
+
+> Read the [full statement here](https://github.com/IjzerenHein/react-navigation-shared-element/issues/14#issuecomment-1081601310).
+
+
