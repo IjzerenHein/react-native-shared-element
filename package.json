@@ -41,11 +41,11 @@
     "/web"
   ],
   "devDependencies": {
-    "@types/react": "^17.0.38",
-    "@types/react-native": "^0.66.11",
-    "eslint": "7",
-    "expo-module-scripts": "^2.0.0",
-    "prettier": "^2.5.1"
+    "@types/react": "^18.0.26",
+    "@types/react-native": "^0.70.8",
+    "eslint": "^8.30.0",
+    "expo-module-scripts": "^3.0.4",
+    "prettier": "^2.8.1"
   },
   "dependencies": {}
 }
