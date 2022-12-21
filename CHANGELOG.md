@@ -1,3 +1,9 @@
+# [0.8.6](https://github.com/IjzerenHein/react-native-shared-element/compare/v0.8.4...v0.8.6) (2022-12-21)
+
+## Improvements
+
+* **android** [chore] Updates the default kotlin version on Android to `1.6.10` and the default SDK on Android to `31`.
+
 # [0.8.4](https://github.com/IjzerenHein/react-native-shared-element/compare/v0.8.3...v0.8.4) (2022-01-24)
 
 ### Bug Fixes
