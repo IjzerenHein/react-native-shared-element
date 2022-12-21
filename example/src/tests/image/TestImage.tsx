@@ -119,6 +119,7 @@ export class TestImage extends React.Component<PropsType> {
       </SharedElement>
     );
     const content = panZoom ? (
+      // @ts-ignore Property children does not exist on ImageZoom
       <ImageZoom
         cropWidth={SIZES.max}
         cropHeight={SIZES.max}

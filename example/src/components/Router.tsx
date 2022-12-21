@@ -65,7 +65,7 @@ interface RouterState {
   stack: React.ReactNode[];
   prevIndex: number;
   nextIndex: number;
-  animValue: Animated.AnimatedInterpolation;
+  animValue: Animated.AnimatedInterpolation<string | number>;
   transitionConfig: TransitionConfig | void;
   sharedElementsConfig: SharedElementsStrictConfig | void;
   sharedElementScreens: (ScreenTransitionContextOnSharedElementsUpdatedEvent | void)[];

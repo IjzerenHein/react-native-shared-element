@@ -2,6 +2,7 @@
 const { getDefaultConfig } = require("expo/metro-config");
 const path = require("path");
 
+// eslint-disable-next-line no-undef
 const defaultConfig = getDefaultConfig(__dirname);
 
 const resolvers = {
