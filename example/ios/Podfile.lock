@@ -13,6 +13,12 @@ PODS:
     - ExpoModulesCore
   - Expo (47.0.9):
     - ExpoModulesCore
+  - ExpoImage (1.0.0-alpha.3):
+    - ExpoModulesCore
+    - SDWebImage (~> 5.14.2)
+    - SDWebImageAVIFCoder (~> 0.9.3)
+    - SDWebImageSVGCoder (~> 1.6.1)
+    - SDWebImageWebPCoder (~> 0.9.1)
   - ExpoKeepAwake (11.0.1):
     - ExpoModulesCore
   - ExpoLinearGradient (12.0.1):
@@ -33,15 +39,24 @@ PODS:
     - ReactCommon/turbomodule/core (= 0.70.5)
   - fmt (6.2.1)
   - glog (0.3.5)
-  - libwebp (1.2.1):
-    - libwebp/demux (= 1.2.1)
-    - libwebp/mux (= 1.2.1)
-    - libwebp/webp (= 1.2.1)
-  - libwebp/demux (1.2.1):
+  - libaom (2.0.2):
+    - libvmaf
+  - libavif (0.10.1):
+    - libavif/libaom (= 0.10.1)
+  - libavif/core (0.10.1)
+  - libavif/libaom (0.10.1):
+    - libaom (>= 2.0.0)
+    - libavif/core
+  - libvmaf (2.2.0)
+  - libwebp (1.2.4):
+    - libwebp/demux (= 1.2.4)
+    - libwebp/mux (= 1.2.4)
+    - libwebp/webp (= 1.2.4)
+  - libwebp/demux (1.2.4):
     - libwebp/webp
-  - libwebp/mux (1.2.1):
+  - libwebp/mux (1.2.4):
     - libwebp/demux
-  - libwebp/webp (1.2.1)
+  - libwebp/webp (1.2.4)
   - RCT-Folly (2021.07.22.00):
     - boost
     - DoubleConversion
@@ -325,8 +340,8 @@ PODS:
     - React-Core
   - RNFastImage (8.6.3):
     - React-Core
-    - SDWebImage (~> 5.11.1)
-    - SDWebImageWebPCoder (~> 0.8.4)
+    - SDWebImage
+    - SDWebImageWebPCoder
   - RNGestureHandler (2.8.0):
     - React-Core
   - RNReanimated (2.13.0):
@@ -359,16 +374,21 @@ PODS:
   - RNScreens (3.18.2):
     - React-Core
     - React-RCTImage
-  - RNSharedElement (0.8.4):
+  - RNSharedElement (0.8.6):
     - React-Core
   - RNVectorIcons (9.2.0):
     - React-Core
-  - SDWebImage (5.11.1):
-    - SDWebImage/Core (= 5.11.1)
-  - SDWebImage/Core (5.11.1)
-  - SDWebImageWebPCoder (0.8.5):
+  - SDWebImage (5.14.2):
+    - SDWebImage/Core (= 5.14.2)
+  - SDWebImage/Core (5.14.2)
+  - SDWebImageAVIFCoder (0.9.4):
+    - libavif (>= 0.9.1)
+    - SDWebImage (~> 5.10)
+  - SDWebImageSVGCoder (1.6.1):
+    - SDWebImage/Core (~> 5.6)
+  - SDWebImageWebPCoder (0.9.1):
     - libwebp (~> 1.0)
-    - SDWebImage/Core (~> 5.10)
+    - SDWebImage/Core (~> 5.13)
   - Yoga (1.14.0)
 
 DEPENDENCIES:
@@ -380,6 +400,7 @@ DEPENDENCIES:
   - EXFileSystem (from `../node_modules/expo-file-system/ios`)
   - EXFont (from `../node_modules/expo-font/ios`)
   - Expo (from `../node_modules/expo`)
+  - ExpoImage (from `../node_modules/expo-image/ios`)
   - ExpoKeepAwake (from `../node_modules/expo-keep-awake/ios`)
   - ExpoLinearGradient (from `../node_modules/expo-linear-gradient/ios`)
   - ExpoModulesCore (from `../node_modules/expo-modules-core`)
@@ -428,8 +449,13 @@ DEPENDENCIES:
 SPEC REPOS:
   trunk:
     - fmt
+    - libaom
+    - libavif
+    - libvmaf
     - libwebp
     - SDWebImage
+    - SDWebImageAVIFCoder
+    - SDWebImageSVGCoder
     - SDWebImageWebPCoder
 
 EXTERNAL SOURCES:
@@ -449,6 +475,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/expo-font/ios"
   Expo:
     :path: "../node_modules/expo"
+  ExpoImage:
+    :path: "../node_modules/expo-image/ios"
   ExpoKeepAwake:
     :path: "../node_modules/expo-keep-awake/ios"
   ExpoLinearGradient:
@@ -545,6 +573,7 @@ SPEC CHECKSUMS:
   EXFileSystem: 60602b6eefa6873f97172c684b7537c9760b50d6
   EXFont: 319606bfe48c33b5b5063fb0994afdc496befe80
   Expo: 5523a4835730104a301caeac1e68dad095a9dfff
+  ExpoImage: 191ac66d00b42323adebd48d594001a4b70fa336
   ExpoKeepAwake: 69b59d0a8d2b24de9f82759c39b3821fec030318
   ExpoLinearGradient: b40c2133ad57ae105b1b12a319e314463c817f6b
   ExpoModulesCore: 8211c89bcc3ba86e2d02c54b1d31f1fa81acb6de
@@ -553,7 +582,10 @@ SPEC CHECKSUMS:
   FBReactNativeSpec: fe8b5f1429cfe83a8d72dc8ed61dc7704cac8745
   fmt: ff9d55029c625d3757ed641535fd4a75fedc7ce9
   glog: 04b94705f318337d7ead9e6d17c019bd9b1f6b1b
-  libwebp: 98a37e597e40bfdb4c911fc98f2c53d0b12d05fc
+  libaom: 9bb51e0f8f9192245e3ca2a1c9e4375d9cbccc52
+  libavif: e242998ccec1c83bcba0bbdc256f460ad5077348
+  libvmaf: 8d61aabc2f4ed3e6591cf7406fa00a223ec11289
+  libwebp: f62cb61d0a484ba548448a4bd52aabf150ff6eef
   RCT-Folly: 0080d0a6ebf2577475bda044aa59e2ca1f909cda
   RCTRequired: 21229f84411088e5d8538f21212de49e46cc83e2
   RCTTypeSafety: 62eed57a32924b09edaaf170a548d1fc96223086
@@ -583,14 +615,16 @@ SPEC CHECKSUMS:
   React-runtimeexecutor: 7401c4a40f8728fd89df4a56104541b760876117
   ReactCommon: c9246996e73bf75a2c6c3ff15f1e16707cdc2da9
   RNCMaskedView: bc0170f389056201c82a55e242e5d90070e18e5a
-  RNFastImage: 5c9c9fed9c076e521b3f509fe79e790418a544e8
+  RNFastImage: 245a26474e581bcb6ad90e02c4d57b185a6bcc8e
   RNGestureHandler: 62232ba8f562f7dea5ba1b3383494eb5bf97a4d3
   RNReanimated: ce445c233a6ff5600223484a88ad5704945d972a
   RNScreens: 34cc502acf1b916c582c60003dc3089fa01dc66d
-  RNSharedElement: eb7d506733952d58634f34c82ec17e82f557e377
+  RNSharedElement: 9fb4099e60923f8130c14c70daf85586dc704b66
   RNVectorIcons: fcc2f6cb32f5735b586e66d14103a74ce6ad61f8
-  SDWebImage: a7f831e1a65eb5e285e3fb046a23fcfbf08e696d
-  SDWebImageWebPCoder: 908b83b6adda48effe7667cd2b7f78c897e5111d
+  SDWebImage: b9a731e1d6307f44ca703b3976d18c24ca561e84
+  SDWebImageAVIFCoder: 5bf07409ab8a02f0a8e0ac976719b321d8fce209
+  SDWebImageSVGCoder: 6fc109f9c2a82ab44510fff410b88b1a6c271ee8
+  SDWebImageWebPCoder: 18503de6621dd2c420d680e33d46bf8e1d5169b0
   Yoga: eca980a5771bf114c41a754098cd85e6e0d90ed7
 
 PODFILE CHECKSUM: d43c4eda243f0446975ea878065aef124718a1d6

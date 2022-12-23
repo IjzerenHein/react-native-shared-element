@@ -1,10 +1,18 @@
-import * as React from "react";
-import { StyleSheet, View, Image, Dimensions } from "react-native";
+import type { Image as ExpoImage } from "expo-image";
+import {
+  StyleSheet,
+  View,
+  Dimensions,
+  Image,
+  ImageBackground,
+  Animated,
+} from "react-native";
 import ImageZoom from "react-native-image-pan-zoom";
 
 import { Heroes } from "../../assets";
 import { Colors, SharedElement } from "../../components";
 import { Hero, Size, Position, ResizeMode } from "../../types";
+import { FastImage } from "./FastImage";
 
 const SIZES = {
   max: Dimensions.get("window").width,
@@ -58,89 +66,82 @@ const styles = StyleSheet.create({
 
 type PropsType = {
   style?: any;
-  hero: Hero;
+  hero?: Hero;
   end?: boolean;
-  size: Size;
-  position: Position;
-  resizeMode: ResizeMode;
+  size?: Size;
+  position?: Position;
+  resizeMode?: ResizeMode;
   round?: boolean;
-  ImageComponent: any;
+  ImageComponent?:
+    | typeof Image
+    | typeof ImageBackground
+    | typeof Animated.Image
+    | typeof ExpoImage
+    | typeof FastImage;
   panZoom?: boolean;
   navigation?: any;
 };
 
-export class TestImage extends React.Component<PropsType> {
-  static defaultProps = {
-    hero: Heroes[0],
-    style: {},
-    size: "default",
-    position: "default",
-    resizeMode: "cover",
-    round: false,
-    ImageComponent: Image,
-    panZoom: false,
-  };
-
-  render() {
-    const {
-      style,
-      hero,
-      end,
-      size,
-      position,
-      resizeMode,
-      round,
-      ImageComponent,
-      panZoom,
-      navigation,
-    } = this.props;
-    const sizePx = SIZES[size === "default" ? "regular" : size];
-    const resolvedPosition =
-      position === "default" ? (end ? "right" : "left") : position;
-    const imageContent = (
-      <SharedElement
-        id="testContent"
-        style={size === "max" ? { flex: 1 } : undefined}
-        navigation={navigation}
-      >
-        <ImageComponent
-          style={[
-            styles.image,
-            {
-              width: sizePx,
-              height: sizePx,
-              borderRadius: round ? sizePx / 2 : 0,
-            },
-            style,
-          ]}
-          resizeMode={resizeMode}
-          source={hero.photo}
-        />
-      </SharedElement>
-    );
-    const content = panZoom ? (
-      // @ts-ignore Property children does not exist on ImageZoom
-      <ImageZoom
-        cropWidth={SIZES.max}
-        cropHeight={SIZES.max}
-        imageWidth={sizePx}
-        imageHeight={sizePx}
-      >
-        {imageContent}
-      </ImageZoom>
-    ) : (
-      imageContent
-    );
-
-    return (
-      <View
+export function TestImage(props: PropsType) {
+  const {
+    style = {},
+    hero = Heroes[0],
+    end,
+    size = "default",
+    position = "default",
+    resizeMode = "cover",
+    round = false,
+    ImageComponent = Image,
+    panZoom = false,
+    navigation,
+  } = props;
+  const sizePx = SIZES[size === "default" ? "regular" : size];
+  const resolvedPosition =
+    position === "default" ? (end ? "right" : "left") : position;
+  const imageContent = (
+    <SharedElement
+      id="testContent"
+      style={size === "max" ? { flex: 1 } : undefined}
+      navigation={navigation}
+    >
+      {/*@ts-ignore JSX element type 'ImageComponent' does not have any construct or call signatures.*/}
+      <ImageComponent
         style={[
-          styles.container,
-          size !== "max" ? styles[resolvedPosition] : undefined,
+          styles.image,
+          {
+            width: sizePx,
+            height: sizePx,
+            borderRadius: round ? sizePx / 2 : 0,
+          },
+          style,
         ]}
-      >
-        {content}
-      </View>
-    );
-  }
+        resizeMode={resizeMode}
+        source={hero.photo}
+      />
+    </SharedElement>
+  );
+  const content = panZoom ? (
+    // @ts-ignore Property children does not exist on ImageZoom
+    <ImageZoom
+      cropWidth={SIZES.max}
+      cropHeight={SIZES.max}
+      imageWidth={sizePx}
+      imageHeight={sizePx}
+    >
+      {imageContent}
+    </ImageZoom>
+  ) : (
+    imageContent
+  );
+
+  return (
+    <View
+      style={[
+        styles.container,
+        size !== "max" ? styles[resolvedPosition] : undefined,
+      ]}
+    >
+      {content}
+    </View>
+  );
 }
