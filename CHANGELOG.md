@@ -1,3 +1,9 @@
+# [0.8.7](https://github.com/IjzerenHein/react-native-shared-element/compare/v0.8.6...v0.8.7) (2022-12-23)
+
+### Features
+
+* [feat] Adds support for `expo-image`.
+
 # [0.8.6](https://github.com/IjzerenHein/react-native-shared-element/compare/v0.8.4...v0.8.6) (2022-12-21)
 
 ## Improvements
