@@ -1,3 +1,4 @@
+import { Image as ExpoImage } from "expo-image";
 import * as React from "react";
 import { ImageBackground, Animated } from "react-native";
 
@@ -5,13 +6,12 @@ import { Heroes } from "../../assets";
 import { Colors, Shadows } from "../../components";
 import { TestGroup } from "../../types";
 import { FastImage } from "./FastImage";
-//import { PhotoView } from "./PhotoView";
 import { TestImage } from "./TestImage";
 
 export function createImageTests(config: {
   title: string;
   name: string;
-  props: any;
+  props: Pick<React.ComponentProps<typeof TestImage>, "ImageComponent">;
 }): TestGroup {
   const { title, name, props } = config;
   const startProps = props;
@@ -339,6 +339,15 @@ export const AnimatedImageTests = createImageTests({
   },
 });
 ImageTests.tests.push(AnimatedImageTests);
+
+export const ExpoImageTests = createImageTests({
+  title: "ExpoImage Component",
+  name: "ExpoImage",
+  props: {
+    ImageComponent: ExpoImage,
+  },
+});
+ImageTests.tests.push(ExpoImageTests);
 
 export const FastImageTests = createImageTests({
   title: "FastImage Component",
