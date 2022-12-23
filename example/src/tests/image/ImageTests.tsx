@@ -5,7 +5,6 @@ import { Heroes } from "../../assets";
 import { Colors, Shadows } from "../../components";
 import { TestGroup } from "../../types";
 import { FastImage } from "./FastImage";
-//import { PhotoView } from "./PhotoView";
 import { TestImage } from "./TestImage";
 
 export function createImageTests(config: {
