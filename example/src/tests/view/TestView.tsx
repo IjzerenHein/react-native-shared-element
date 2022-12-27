@@ -54,7 +54,7 @@ const styles = StyleSheet.create({
   },
 });
 
-type PropsType = {
+type Props = {
   style?: any;
   color: string;
   end?: boolean;
@@ -64,45 +64,43 @@ type PropsType = {
   navigation?: any;
 };
 
-export class TestView extends React.Component<PropsType> {
-  static defaultProps = {
-    style: {},
-    color: Colors.blue,
-    size: "default",
-    position: "default",
-    round: false,
-  };
-
-  render() {
-    const { style, color, end, size, position, round, navigation } = this.props;
-    const sizePx = SIZES[size === "default" ? "regular" : size];
-    const resolvedPosition =
-      position === "default" ? (end ? "right" : "left") : position;
-    return (
-      <View
-        style={[
-          styles.container,
-          size !== "max" ? styles[resolvedPosition] : undefined,
-        ]}
+export function TestView(props: Props) {
+  const { style, color, end, size, position, round, navigation } = props;
+  const sizePx = SIZES[size === "default" ? "regular" : size];
+  const resolvedPosition =
+    position === "default" ? (end ? "right" : "left") : position;
+  return (
+    <View
+      style={[
+        styles.container,
+        size !== "max" ? styles[resolvedPosition] : undefined,
+      ]}
+    >
+      <SharedElement
+        id="testContent"
+        style={size === "max" ? { flex: 1 } : undefined}
+        navigation={navigation}
       >
-        <SharedElement
-          id="testContent"
-          style={size === "max" ? { flex: 1 } : undefined}
-          navigation={navigation}
-        >
-          <View
-            style={[
-              {
-                width: sizePx,
-                height: sizePx,
-                borderRadius: round ? sizePx / 2 : 0,
-                backgroundColor: color,
-              },
-              style,
-            ]}
-          />
-        </SharedElement>
-      </View>
-    );
-  }
+        <View
+          style={[
+            {
+              width: sizePx,
+              height: sizePx,
+              borderRadius: round ? sizePx / 2 : 0,
+              backgroundColor: color,
+            },
+            style,
+          ]}
+        />
+      </SharedElement>
+    </View>
+  );
 }
+
+TestView.defaultProps = {
+  style: {},
+  color: Colors.blue,
+  size: "default",
+  position: "default",
+  round: false,
+};

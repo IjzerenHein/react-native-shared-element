@@ -1,4 +1,4 @@
-import * as React from "react";
+import { useCallback, useMemo } from "react";
 import { StyleSheet, View, FlatList, Image, Dimensions } from "react-native";
 
 import { Heroes } from "../../assets";
@@ -26,7 +26,7 @@ const styles = StyleSheet.create({
   },
 });
 
-type PropsType = {
+type Props = {
   horizontal: boolean;
   inverted: boolean;
   size: Size;
@@ -40,79 +40,88 @@ const heroes2 = [...Heroes];
 heroes2[0] = Heroes[1];
 heroes2[1] = Heroes[0];
 
-export class TestScrollView extends React.Component<PropsType> {
-  static defaultProps = {
-    horizontal: false,
-    inverted: false,
-    size: "default",
-    ImageComponent: Image,
-    heroes: heroes2,
-  };
+export function TestScrollView(props: Props) {
+  const {
+    heroes,
+    size,
+    horizontal,
+    inverted,
+    ImageComponent,
+    round,
+    navigation,
+  } = props;
+  const sizePx = SIZES[size === "default" ? "regular" : size];
+  const isMax = size === "max";
 
-  render() {
-    const { heroes, size, horizontal, inverted } = this.props;
-    const sizePx = SIZES[size === "default" ? "regular" : size];
-    const isMax = size === "max";
-    return (
-      <View style={styles.container}>
-        <View
-          style={{
-            width: sizePx,
-            height: sizePx,
-          }}
-        >
-          <FlatList
-            style={!isMax ? styles.scrollView : undefined}
-            horizontal={horizontal}
-            inverted={inverted}
-            data={heroes}
-            renderItem={this.renderItem}
-            keyExtractor={this.keyExtractor}
-          />
-        </View>
-      </View>
-    );
-  }
+  const keyExtractor = useCallback((item: any) => item.id, []);
 
-  keyExtractor = (item: any) => item.id;
-
-  renderItem = ({ item, index }: any) => {
-    const hero = item;
-    const { size, ImageComponent, round, horizontal, navigation } = this.props;
-    const sizePx = SIZES[size === "default" ? "regular" : size];
-    const isMax = size === "max";
-    const sizeStyle = {
+  const sizeStyle = useMemo(
+    () => ({
       width: horizontal ? sizePx / (isMax ? 3.5 : 1.5) : sizePx,
       height: horizontal ? sizePx : sizePx / (isMax ? 3.5 : 1.5),
-    };
-
-    const content = (
-      <ImageComponent
-        style={[
-          sizeStyle,
-          round
-            ? {
-                borderRadius: sizePx / 2,
-              }
-            : undefined,
-        ]}
-        source={hero.photo}
-        resizeMode="cover"
-      />
-    );
-
-    if (index === 1) {
-      return (
-        <SharedElement
-          id="testContent"
-          style={sizeStyle}
-          navigation={navigation}
-        >
-          {content}
-        </SharedElement>
+    }),
+    []
+  );
+  const renderItem = useCallback(
+    ({ item, index }: any) => {
+      const hero = item;
+      const content = (
+        <ImageComponent
+          style={[
+            sizeStyle,
+            round
+              ? {
+                  borderRadius: sizePx / 2,
+                }
+              : undefined,
+          ]}
+          source={hero.photo}
+          resizeMode="cover"
+        />
       );
-    } else {
-      return content;
-    }
-  };
+
+      if (index === 1) {
+        return (
+          <SharedElement
+            id="testContent"
+            style={sizeStyle}
+            navigation={navigation}
+          >
+            {content}
+          </SharedElement>
+        );
+      } else {
+        return content;
+      }
+    },
+    [sizeStyle, round, sizePx, navigation]
+  );
+
+  return (
+    <View style={styles.container}>
+      <View
+        style={{
+          width: sizePx,
+          height: sizePx,
+        }}
+      >
+        <FlatList
+          style={!isMax ? styles.scrollView : undefined}
+          horizontal={horizontal}
+          inverted={inverted}
+          data={heroes}
+          renderItem={renderItem}
+          keyExtractor={keyExtractor}
+        />
+      </View>
+    </View>
+  );
 }
+
+TestScrollView.defaultProps = {
+  horizontal: false,
+  inverted: false,
+  size: "default",
+  ImageComponent: Image,
+  heroes: heroes2,
+};

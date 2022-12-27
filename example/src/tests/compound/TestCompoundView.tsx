@@ -73,7 +73,7 @@ const styles = StyleSheet.create({
   },
 });
 
-type PropsType = {
+type Props = {
   style?: any;
   hero: Hero;
   end?: boolean;
@@ -84,148 +84,143 @@ type PropsType = {
   navigation?: any;
 };
 
-export class TestCompoundView extends React.Component<PropsType> {
-  static defaultProps = {
-    hero: Heroes[0],
-    style: {},
-    size: "default",
-    position: "default",
-    vertical: false,
-    overlay: "none",
-  };
-
-  render() {
-    const { style, hero, end, size, position, vertical, navigation, overlay } =
-      this.props;
-    const isMax = size === "max";
-    const resolvedPosition =
-      position === "default"
-        ? isMax
-          ? "center"
-          : end
-          ? "right"
-          : "left"
-        : position;
-    const sizePx = SIZES[size === "default" ? "regular" : size];
-    return (
-      <View
-        style={[
-          styles.container,
-          !isMax ? styles[resolvedPosition] : undefined,
-        ]}
-      >
-        <SharedElement id="testContent" navigation={navigation}>
-          <View
-            style={[
-              styles.content,
-              isMax
-                ? undefined
-                : {
-                    flexDirection: vertical ? "column-reverse" : "row-reverse",
-                    borderRadius: (sizePx + sizePx / 2.5) / 2,
-                  },
-              style,
-            ]}
-          >
-            <View>
-              <SharedElement id="testImage" navigation={navigation}>
-                <Image
-                  style={[
-                    styles.image,
-                    isMax
-                      ? {
-                          width: sizePx,
-                          height: sizePx,
-                        }
-                      : {
-                          width: sizePx,
-                          height: sizePx,
-                          borderRadius: sizePx / 2,
-                          margin: sizePx / 8,
-                        },
-                  ]}
-                  source={hero.photo}
-                />
-              </SharedElement>
-              {overlay !== "none" && (
-                <SharedElement
-                  id="testOverlay"
-                  style={StyleSheet.absoluteFill}
-                  navigation={navigation}
-                >
-                  {overlay === "gradient" ? (
-                    <LinearGradient
-                      style={StyleSheet.absoluteFill}
-                      colors={["#000000FF", "#00000000", "#000000FF"]}
-                      start={{ x: 0, y: 0 }}
-                      end={{ x: 0, y: 1 }}
-                    />
-                  ) : undefined}
-                </SharedElement>
-              )}
-            </View>
-            <SharedElement
-              id="testTitle"
-              style={
-                isMax
-                  ? {
-                      position: "absolute",
-                      left: 0,
-                      right: 0,
-                      bottom: 20,
-                      flexDirection: "row",
-                      justifyContent: "center",
-                    }
-                  : undefined
-              }
-              navigation={navigation}
-            >
-              <Text
+export function TestCompoundView(props: Props) {
+  const { style, hero, end, size, position, vertical, navigation, overlay } =
+    props;
+  const isMax = size === "max";
+  const resolvedPosition =
+    position === "default"
+      ? isMax
+        ? "center"
+        : end
+        ? "right"
+        : "left"
+      : position;
+  const sizePx = SIZES[size === "default" ? "regular" : size];
+  return (
+    <View
+      style={[styles.container, !isMax ? styles[resolvedPosition] : undefined]}
+    >
+      <SharedElement id="testContent" navigation={navigation}>
+        <View
+          style={[
+            styles.content,
+            isMax
+              ? undefined
+              : {
+                  flexDirection: vertical ? "column-reverse" : "row-reverse",
+                  borderRadius: (sizePx + sizePx / 2.5) / 2,
+                },
+            style,
+          ]}
+        >
+          <View>
+            <SharedElement id="testImage" navigation={navigation}>
+              <Image
                 style={[
-                  styles.text,
+                  styles.image,
                   isMax
                     ? {
-                        fontSize: sizePx / 8,
-                        color: Colors.back,
+                        width: sizePx,
+                        height: sizePx,
                       }
                     : {
-                        fontSize: sizePx / 2.3,
+                        width: sizePx,
+                        height: sizePx,
+                        borderRadius: sizePx / 2,
                         margin: sizePx / 8,
                       },
                 ]}
-              >
-                {hero.name}
-              </Text>
-            </SharedElement>
-            <SharedElement
-              id="testLogo"
-              style={isMax ? StyleSheet.absoluteFill : undefined}
-              navigation={navigation}
-            >
-              <Image
-                style={[
-                  styles.logo,
-                  isMax
-                    ? {
-                        position: "absolute",
-                        left: 20,
-                        top: 20,
-                        width: 30,
-                        height: 30,
-                      }
-                    : {
-                        width: sizePx / 2,
-                        height: sizePx / 2,
-                        borderRadius: sizePx / 4,
-                        margin: sizePx / 5,
-                      },
-                ]}
-                source={require("../../assets/fist.png")}
+                source={hero.photo}
               />
             </SharedElement>
+            {overlay !== "none" && (
+              <SharedElement
+                id="testOverlay"
+                style={StyleSheet.absoluteFill}
+                navigation={navigation}
+              >
+                {overlay === "gradient" ? (
+                  <LinearGradient
+                    style={StyleSheet.absoluteFill}
+                    colors={["#000000FF", "#00000000", "#000000FF"]}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 0, y: 1 }}
+                  />
+                ) : undefined}
+              </SharedElement>
+            )}
           </View>
-        </SharedElement>
-      </View>
-    );
-  }
+          <SharedElement
+            id="testTitle"
+            style={
+              isMax
+                ? {
+                    position: "absolute",
+                    left: 0,
+                    right: 0,
+                    bottom: 20,
+                    flexDirection: "row",
+                    justifyContent: "center",
+                  }
+                : undefined
+            }
+            navigation={navigation}
+          >
+            <Text
+              style={[
+                styles.text,
+                isMax
+                  ? {
+                      fontSize: sizePx / 8,
+                      color: Colors.back,
+                    }
+                  : {
+                      fontSize: sizePx / 2.3,
+                      margin: sizePx / 8,
+                    },
+              ]}
+            >
+              {hero.name}
+            </Text>
+          </SharedElement>
+          <SharedElement
+            id="testLogo"
+            style={isMax ? StyleSheet.absoluteFill : undefined}
+            navigation={navigation}
+          >
+            <Image
+              style={[
+                styles.logo,
+                isMax
+                  ? {
+                      position: "absolute",
+                      left: 20,
+                      top: 20,
+                      width: 30,
+                      height: 30,
+                    }
+                  : {
+                      width: sizePx / 2,
+                      height: sizePx / 2,
+                      borderRadius: sizePx / 4,
+                      margin: sizePx / 5,
+                    },
+              ]}
+              source={require("../../assets/fist.png")}
+            />
+          </SharedElement>
+        </View>
+      </SharedElement>
+    </View>
+  );
 }
+
+TestCompoundView.defaultProps = {
+  hero: Heroes[0],
+  style: {},
+  size: "default",
+  position: "default",
+  vertical: false,
+  overlay: "none",
+};

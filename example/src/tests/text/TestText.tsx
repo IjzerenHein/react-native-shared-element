@@ -67,7 +67,7 @@ const TextLengths: { [key: string]: number } = {
   paragraph: TextContent.length,
 };
 
-type PropsType = {
+type Props = {
   style?: any;
   color: string;
   end?: boolean;
@@ -78,58 +78,55 @@ type PropsType = {
   navigation?: any;
 };
 
-export class TestText extends React.Component<PropsType> {
-  static defaultProps = {
-    style: {},
-    color: Colors.blue,
-    position: "default",
-    size: "default",
-    length: "words",
-    scale: 1,
-  };
-
-  render() {
-    const { style, color, end, size, position, length, scale, navigation } =
-      this.props;
-    const fontSize = FontSizes[size === "default" ? "regular" : size];
-    const resolvedPosition =
-      position === "default" ? (end ? "bottom" : "top") : position;
-    const textLength =
-      typeof length === "number" ? length : TextLengths[length];
-    const width =
-      textLength > 20 && (position === "left" || position === "right")
-        ? Dimensions.get("window").width / 2
-        : undefined;
-    return (
-      <View
+export function TestText(props: Props) {
+  const { style, color, end, size, position, length, scale, navigation } =
+    props;
+  const fontSize = FontSizes[size === "default" ? "regular" : size];
+  const resolvedPosition =
+    position === "default" ? (end ? "bottom" : "top") : position;
+  const textLength = typeof length === "number" ? length : TextLengths[length];
+  const width =
+    textLength > 20 && (position === "left" || position === "right")
+      ? Dimensions.get("window").width / 2
+      : undefined;
+  return (
+    <View
+      style={[
+        styles.container,
+        size !== "max" ? styles[resolvedPosition] : undefined,
+      ]}
+    >
+      <SharedElement
+        id="testContent"
         style={[
-          styles.container,
-          size !== "max" ? styles[resolvedPosition] : undefined,
+          size === "max" ? { flex: 1 } : undefined,
+          { transform: [{ scale }] },
         ]}
+        navigation={navigation}
       >
-        <SharedElement
-          id="testContent"
+        <Text
           style={[
-            size === "max" ? { flex: 1 } : undefined,
-            { transform: [{ scale }] },
+            styles.text,
+            {
+              fontSize,
+              color,
+              width,
+            },
+            style,
           ]}
-          navigation={navigation}
         >
-          <Text
-            style={[
-              styles.text,
-              {
-                fontSize,
-                color,
-                width,
-              },
-              style,
-            ]}
-          >
-            {TextContent.substring(0, textLength)}
-          </Text>
-        </SharedElement>
-      </View>
-    );
-  }
+          {TextContent.substring(0, textLength)}
+        </Text>
+      </SharedElement>
+    </View>
+  );
 }
+
+TestText.defaultProps = {
+  style: {},
+  color: Colors.blue,
+  position: "default",
+  size: "default",
+  length: "words",
+  scale: 1,
+};

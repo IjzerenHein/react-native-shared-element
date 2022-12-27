@@ -64,7 +64,7 @@ const styles = StyleSheet.create({
   },
 });
 
-type PropsType = {
+type Props = {
   style?: any;
   hero?: Hero;
   end?: boolean;
@@ -82,7 +82,7 @@ type PropsType = {
   navigation?: any;
 };
 
-export function TestImage(props: PropsType) {
+export function TestImage(props: Props) {
   const {
     style = {},
     hero = Heroes[0],
