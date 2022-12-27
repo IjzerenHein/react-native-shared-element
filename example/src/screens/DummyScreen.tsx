@@ -10,8 +10,6 @@ const styles = StyleSheet.create({
   },
 });
 
-export class DummyScreen extends React.Component {
-  render() {
-    return <View style={styles.container} />;
-  }
+export function DummyScreen() {
+  return <View style={styles.container} />;
 }

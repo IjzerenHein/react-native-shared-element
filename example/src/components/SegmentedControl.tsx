@@ -6,14 +6,14 @@ import { Text } from "./Text";
 
 const HEIGHT = 22;
 
-export type SegmentedControlProps = {
+type Props = {
   index: number;
   values: string[];
   onChangeValue: (index: number) => any;
   style?: any;
 };
 
-export const SegmentedControl = (props: SegmentedControlProps) => {
+export function SegmentedControl(props: Props) {
   const { index, values, onChangeValue, style } = props;
   const borderRadius = HEIGHT / 2;
   return (
@@ -43,7 +43,7 @@ export const SegmentedControl = (props: SegmentedControlProps) => {
       ))}
     </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
   container: {

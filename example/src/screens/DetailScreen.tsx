@@ -25,31 +25,29 @@ const styles = StyleSheet.create({
   },
 });
 
-type PropsType = {
+type Props = {
   hero: Hero;
   navigation?: any;
 };
 
-export class DetailScreen extends React.Component<PropsType> {
-  render() {
-    const { navigation } = this.props;
-    const hero = navigation ? navigation.getParam("hero") : this.props.hero;
-    const { photo, id } = hero;
-    return (
-      <View style={styles.container}>
-        <View style={styles.content}>
-          <SharedElement
-            navigation={navigation}
-            id={`heroPhoto.${id}`}
-            style={styles.content}
-          >
-            <Image style={styles.image} source={photo} />
-          </SharedElement>
-        </View>
-        {!navigation ? (
-          <NavBar back="close" light style={styles.navBar} />
-        ) : undefined}
+export function DetailScreen(props: Props) {
+  const { navigation } = props;
+  const hero = navigation?.getParam("hero") ?? props.hero;
+  const { photo, id } = hero;
+  return (
+    <View style={styles.container}>
+      <View style={styles.content}>
+        <SharedElement
+          navigation={navigation}
+          id={`heroPhoto.${id}`}
+          style={styles.content}
+        >
+          <Image style={styles.image} source={photo} />
+        </SharedElement>
       </View>
-    );
-  }
+      {!navigation ? (
+        <NavBar back="close" light style={styles.navBar} />
+      ) : undefined}
+    </View>
+  );
 }

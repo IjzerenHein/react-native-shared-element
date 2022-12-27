@@ -1,4 +1,4 @@
-import * as React from "react";
+import { useCallback } from "react";
 import { StyleSheet, ScrollView, View, Platform } from "react-native";
 
 import { Router, NavBar, ListItem, Colors } from "../components";
@@ -20,66 +20,69 @@ const styles = StyleSheet.create({
   }),
 });
 
-type PropsType = {
+type Props = {
   tests: (Test | TestGroup)[];
   title?: string;
   description?: string;
   navigation?: any;
 };
 
-export class TestsScreen extends React.Component<PropsType> {
-  render() {
-    const { title, navigation } = this.props;
-    const tests: (Test | TestGroup)[] = navigation
-      ? navigation.getParam("tests")
-      : this.props.tests;
-    return (
-      <View style={styles.container}>
-        {!navigation ? <NavBar title={title || "Tests"} /> : undefined}
-        <ScrollView style={styles.content} endFillColor={Colors.empty}>
-          {tests.map((test, index) => (
-            <ListItem
-              key={`item${index}`}
-              label={test.name}
-              onPress={() => this.onPressItem(test)}
-            />
-          ))}
-        </ScrollView>
-      </View>
-    );
-  }
+export function TestsScreen(props: Props) {
+  const { title, navigation, description } = props;
+  const tests: (Test | TestGroup)[] = navigation
+    ? navigation.getParam("tests")
+    : props.tests;
 
-  onPressItem = (test: Test | TestGroup) => {
-    const { navigation } = this.props;
-    const description = navigation
-      ? navigation.getParam("description")
-      : this.props.description;
-    const testGroup = getTestGroup(test);
-    if (navigation) {
-      if (testGroup) {
-        navigation.push("Tests", {
-          title: test.name,
-          description: test.description,
-          tests: testGroup.tests,
-        });
+  const onPressItem = useCallback(
+    (test: Test | TestGroup) => {
+      const resolvedDescription =
+        navigation?.getParam("description") ?? description;
+      const testGroup = getTestGroup(test);
+      if (navigation) {
+        if (testGroup) {
+          navigation.push("Tests", {
+            title: test.name,
+            description: test.description,
+            tests: testGroup.tests,
+          });
+        } else {
+          navigation.push("Test", {
+            test,
+            description: resolvedDescription || "",
+          });
+        }
       } else {
-        navigation.push("Test", {
-          test,
-          description: description || "",
-        });
+        Router.push(
+          testGroup ? (
+            <TestsScreen
+              tests={testGroup.tests}
+              title={test.name}
+              description={test.description}
+            />
+          ) : (
+            <TestScreen
+              test={test as Test}
+              description={resolvedDescription || ""}
+            />
+          )
+        );
       }
-    } else {
-      Router.push(
-        testGroup ? (
-          <TestsScreen
-            tests={testGroup.tests}
-            title={test.name}
-            description={test.description}
+    },
+    [navigation, description]
+  );
+
+  return (
+    <View style={styles.container}>
+      {!navigation ? <NavBar title={title || "Tests"} /> : undefined}
+      <ScrollView style={styles.content} endFillColor={Colors.empty}>
+        {tests.map((test, index) => (
+          <ListItem
+            key={`item${index}`}
+            label={test.name}
+            onPress={() => onPressItem(test)}
           />
-        ) : (
-          <TestScreen test={test as Test} description={description || ""} />
-        )
-      );
-    }
-  };
+        ))}
+      </ScrollView>
+    </View>
+  );
 }

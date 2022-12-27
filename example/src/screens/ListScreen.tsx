@@ -1,4 +1,3 @@
-import * as React from "react";
 import {
   StyleSheet,
   ScrollView,
@@ -9,8 +8,8 @@ import {
 
 import { Heroes } from "../assets";
 import { Router, NavBar, SharedElement, Colors, Text } from "../components";
-import { fadeIn } from "../transitions";
-import { Hero, SharedElementsConfig } from "../types";
+import { fadeIn, TransitionConfig } from "../transitions";
+import { SharedElementsConfig } from "../types";
 
 const styles = StyleSheet.create({
   container: {
@@ -47,78 +46,74 @@ const styles = StyleSheet.create({
   },
 });
 
-type PropsType = {
+type Props = {
   title: string;
   DetailComponent: any;
-  transitionConfig: any;
+  transitionConfig: TransitionConfig;
   navigation?: any;
 };
 
-export class ListScreen extends React.Component<PropsType> {
-  static defaultProps = {
-    title: "Bullets",
-    transitionConfig: fadeIn(),
-  };
-
-  renderItem(hero: Hero) {
-    const { navigation } = this.props;
-    const { id, name, photo, quote } = hero;
-    return (
-      <TouchableOpacity
-        key={`Hero${id}`}
-        style={styles.item}
-        activeOpacity={1}
-        onPress={() => this.onPressItem(hero)}
-      >
-        <View style={styles.image}>
-          <SharedElement id={`heroPhoto.${id}`} navigation={navigation}>
-            <Image style={styles.image} source={photo} resizeMode="cover" />
-          </SharedElement>
-          <SharedElement
-            id={`heroPhotoOverlay.${id}`}
-            style={StyleSheet.absoluteFill}
-            navigation={navigation}
-          >
-            <View
-              style={[StyleSheet.absoluteFill, styles.overlay]}
-              collapsable={false}
-            />
-          </SharedElement>
-        </View>
-        <View style={styles.content}>
-          <View style={styles.name}>
-            <SharedElement id={`heroName.${id}`} navigation={navigation}>
-              <Text xlarge>{name}</Text>
-            </SharedElement>
-          </View>
-          <Text small>{quote ?? ""}</Text>
-        </View>
-      </TouchableOpacity>
-    );
-  }
-
-  render() {
-    const { title } = this.props;
-    return (
-      <View style={styles.container}>
-        <NavBar title={title} />
-        <ScrollView style={styles.flex}>
-          {Heroes.map((item) => this.renderItem(item))}
-        </ScrollView>
-      </View>
-    );
-  }
-
-  onPressItem = (hero: Hero) => {
-    const { DetailComponent, transitionConfig } = this.props;
-    const sharedElements: SharedElementsConfig = [
-      `heroPhoto.${hero.id}`,
-      { id: `heroPhotoOverlay.${hero.id}`, animation: "fade" },
-      `heroName.${hero.id}`,
-    ];
-    Router.push(<DetailComponent hero={hero} />, {
-      sharedElements,
-      transitionConfig,
-    });
-  };
+export function ListScreen(props: Props) {
+  const { title, DetailComponent, transitionConfig, navigation } = props;
+  return (
+    <View style={styles.container}>
+      <NavBar title={title} />
+      <ScrollView style={styles.flex}>
+        {Heroes.map((hero) => {
+          const { id, name, photo, quote } = hero;
+          return (
+            <TouchableOpacity
+              key={`Hero${id}`}
+              style={styles.item}
+              activeOpacity={1}
+              onPress={() => {
+                const sharedElements: SharedElementsConfig = [
+                  `heroPhoto.${hero.id}`,
+                  { id: `heroPhotoOverlay.${hero.id}`, animation: "fade" },
+                  `heroName.${hero.id}`,
+                ];
+                Router.push(<DetailComponent hero={hero} />, {
+                  sharedElements,
+                  transitionConfig,
+                });
+              }}
+            >
+              <View style={styles.image}>
+                <SharedElement id={`heroPhoto.${id}`} navigation={navigation}>
+                  <Image
+                    style={styles.image}
+                    source={photo}
+                    resizeMode="cover"
+                  />
+                </SharedElement>
+                <SharedElement
+                  id={`heroPhotoOverlay.${id}`}
+                  style={StyleSheet.absoluteFill}
+                  navigation={navigation}
+                >
+                  <View
+                    style={[StyleSheet.absoluteFill, styles.overlay]}
+                    collapsable={false}
+                  />
+                </SharedElement>
+              </View>
+              <View style={styles.content}>
+                <View style={styles.name}>
+                  <SharedElement id={`heroName.${id}`} navigation={navigation}>
+                    <Text xlarge>{name}</Text>
+                  </SharedElement>
+                </View>
+                <Text small>{quote ?? ""}</Text>
+              </View>
+            </TouchableOpacity>
+          );
+        })}
+      </ScrollView>
+    </View>
+  );
 }
+
+ListScreen.defaultProps = {
+  title: "Bullets",
+  transitionConfig: fadeIn(),
+};

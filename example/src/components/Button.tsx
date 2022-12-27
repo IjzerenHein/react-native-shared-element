@@ -18,28 +18,26 @@ const styles = StyleSheet.create({
   },
 });
 
-export interface ButtonProps {
+type Props = {
   label: string;
   onPress?: () => void;
   style: any;
-}
+};
 
-export class Button extends React.Component<ButtonProps> {
-  render() {
-    const { label, onPress, style } = this.props;
-    return (
-      <TouchableOpacity
-        activeOpacity={0.5}
-        disabled={!onPress}
-        onPress={onPress}
-        style={style}
-      >
-        <View style={[styles.container]}>
-          <Text large color="white">
-            {label}
-          </Text>
-        </View>
-      </TouchableOpacity>
-    );
-  }
+export function Button(props: Props) {
+  const { label, onPress, style } = props;
+  return (
+    <TouchableOpacity
+      activeOpacity={0.5}
+      disabled={!onPress}
+      onPress={onPress}
+      style={style}
+    >
+      <View style={[styles.container]}>
+        <Text large color="white">
+          {label}
+        </Text>
+      </View>
+    </TouchableOpacity>
+  );
 }

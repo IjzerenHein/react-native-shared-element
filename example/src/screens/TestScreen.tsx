@@ -1,4 +1,4 @@
-import * as React from "react";
+import { useCallback, useState, cloneElement } from "react";
 import { StyleSheet, View } from "react-native";
 
 import {
@@ -17,20 +17,21 @@ import {
 } from "../transitions";
 import { Test, SharedElementsConfig } from "../types";
 
-interface PropsType {
+type Props = {
   test: Test;
   end?: boolean;
   description?: string;
   navigation?: any;
-}
+};
 
 type TransitionValue = "slide" | "fade" | "scale";
 type DurationValue = "fast" | "slow" | "debug";
 
-let transitionValue: TransitionValue = "slide";
-let durationValue: DurationValue = "fast";
 const transitionValues: TransitionValue[] = ["slide", "fade", "scale"];
 const durationValues: DurationValue[] = ["fast", "slow", "debug"];
+
+let GLOBAL_TRANSITION_VALUE: TransitionValue = "slide";
+let GLOBAL_DURATION_VALUE: DurationValue = "fast";
 
 function getSharedElements(test: Test): SharedElementsConfig {
   const props = {
@@ -48,66 +49,17 @@ function getSharedElements(test: Test): SharedElementsConfig {
     : [{ id: "testContent", ...props }];
 }
 
-export class TestScreen extends React.Component<PropsType> {
-  static sharedElements = (
-    navigation: any,
-    otherNavigation: any,
-    showing: boolean
-  ): SharedElementsConfig | void => {
-    if (otherNavigation.state.routeName !== "Test") return;
-    const test = navigation.getParam("test");
-    return getSharedElements(test);
-  };
+export function TestScreen(props: Props) {
+  const { navigation } = props;
+  const [transitionValue, setTransitionValue] = useState(
+    GLOBAL_TRANSITION_VALUE
+  );
+  const [durationValue, setDurationValue] = useState(GLOBAL_DURATION_VALUE);
+  const test = navigation?.getParam("test") ?? props.test;
+  const description = navigation?.getParam("description") ?? props.description;
+  const end = navigation?.getParam("end") ?? props.end;
 
-  render() {
-    const { navigation } = this.props;
-    const test = navigation ? navigation.getParam("test") : this.props.test;
-    const description = navigation
-      ? navigation.getParam("description")
-      : this.props.description;
-    const end = navigation ? navigation.getParam("end") : this.props.end;
-    return (
-      <View style={styles.container}>
-        {!navigation ? <NavBar title={test.name} /> : undefined}
-        {React.cloneElement(end ? test.end : test.start, {
-          navigation,
-        })}
-        <View style={styles.bottomContainer}>
-          <View style={styles.buttonContainer}>
-            <View style={styles.segmentContainer}>
-              <SegmentedControl
-                style={styles.button}
-                values={transitionValues}
-                index={transitionValues.indexOf(transitionValue)}
-                onChangeValue={(index) => {
-                  transitionValue = transitionValues[index];
-                  this.forceUpdate();
-                }}
-              />
-              <View style={styles.segmentSpacer} />
-              <SegmentedControl
-                style={styles.button}
-                values={durationValues}
-                index={durationValues.indexOf(durationValue)}
-                onChangeValue={(index) => {
-                  durationValue = durationValues[index];
-                  this.forceUpdate();
-                }}
-              />
-            </View>
-            <Button
-              style={styles.button}
-              label="Animate"
-              onPress={this.onPressButton}
-            />
-          </View>
-          <Text style={styles.body}>{test.description || description}</Text>
-        </View>
-      </View>
-    );
-  }
-
-  onPressButton = () => {
+  const onPressButton = useCallback(() => {
     let duration: number;
     let debug = false;
     let transitionConfig: TransitionConfig;
@@ -136,12 +88,6 @@ export class TestScreen extends React.Component<PropsType> {
     }
     transitionConfig.debug = debug;
 
-    const { navigation } = this.props;
-    const test = navigation ? navigation.getParam("test") : this.props.test;
-    const description = navigation
-      ? navigation.getParam("description")
-      : this.props.description;
-    const end = navigation ? navigation.getParam("end") : this.props.end;
     const sharedElements = getSharedElements(test);
     if (end) {
       if (navigation) {
@@ -166,8 +112,58 @@ export class TestScreen extends React.Component<PropsType> {
         );
       }
     }
-  };
+  }, [navigation, test, description, end]);
+
+  return (
+    <View style={styles.container}>
+      {!navigation ? <NavBar title={test.name} /> : undefined}
+      {cloneElement(end ? test.end : test.start, {
+        navigation,
+      })}
+      <View style={styles.bottomContainer}>
+        <View style={styles.buttonContainer}>
+          <View style={styles.segmentContainer}>
+            <SegmentedControl
+              style={styles.button}
+              values={transitionValues}
+              index={transitionValues.indexOf(transitionValue)}
+              onChangeValue={(index) => {
+                setTransitionValue(transitionValues[index]);
+                GLOBAL_TRANSITION_VALUE = transitionValues[index];
+              }}
+            />
+            <View style={styles.segmentSpacer} />
+            <SegmentedControl
+              style={styles.button}
+              values={durationValues}
+              index={durationValues.indexOf(durationValue)}
+              onChangeValue={(index) => {
+                setDurationValue(durationValues[index]);
+                GLOBAL_DURATION_VALUE = durationValues[index];
+              }}
+            />
+          </View>
+          <Button
+            style={styles.button}
+            label="Animate"
+            onPress={onPressButton}
+          />
+        </View>
+        <Text style={styles.body}>{test.description || description}</Text>
+      </View>
+    </View>
+  );
 }
+
+TestScreen.sharedElements = (
+  navigation: any,
+  otherNavigation: any,
+  showing: boolean
+): SharedElementsConfig | void => {
+  if (otherNavigation.state.routeName !== "Test") return;
+  const test = navigation.getParam("test");
+  return getSharedElements(test);
+};
 
 const styles = StyleSheet.create({
   container: {
