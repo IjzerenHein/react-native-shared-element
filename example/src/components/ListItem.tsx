@@ -1,4 +1,4 @@
-import * as React from "react";
+import { useCallback } from "react";
 import { StyleSheet, View, Image, TouchableOpacity } from "react-native";
 
 import { Colors } from "./Colors";
@@ -42,49 +42,34 @@ const styles = StyleSheet.create({
   },
 });
 
-export interface ListItemProps {
+type Props = {
   label: string;
   description?: string;
   image?: any;
   data?: any;
   onPress?: (data: any) => void;
-}
+};
 
-export class ListItem extends React.Component<ListItemProps> {
-  onPress = () => {
-    if (this.props.onPress) {
-      this.props.onPress(this.props.data);
-    }
-  };
-
-  renderImage() {
-    const { image } = this.props;
-    if (!image) {
-      return;
-    }
-    return <Image style={styles.image} source={image} />;
-  }
-
-  render() {
-    const { label, description, onPress } = this.props;
-    return (
-      <TouchableOpacity
-        activeOpacity={0.5}
-        disabled={!onPress}
-        onPress={this.onPress}
-      >
-        <View style={styles.container}>
-          {this.renderImage()}
-          <View style={styles.content}>
-            <Text large>{label}</Text>
-            {description ? (
-              <Text small style={styles.description}>
-                {description}
-              </Text>
-            ) : undefined}
-          </View>
+export function ListItem(props: Props) {
+  const { label, description, onPress, data, image } = props;
+  const onPressCallback = useCallback(() => onPress?.(data), [onPress, data]);
+  return (
+    <TouchableOpacity
+      activeOpacity={0.5}
+      disabled={!onPress}
+      onPress={onPressCallback}
+    >
+      <View style={styles.container}>
+        {image ? <Image style={styles.image} source={image} /> : undefined}
+        <View style={styles.content}>
+          <Text large>{label}</Text>
+          {description ? (
+            <Text small style={styles.description}>
+              {description}
+            </Text>
+          ) : undefined}
         </View>
-      </TouchableOpacity>
-    );
-  }
+      </View>
+    </TouchableOpacity>
+  );
 }

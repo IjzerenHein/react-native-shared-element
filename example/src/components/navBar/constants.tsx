@@ -1,9 +1,11 @@
-import { Platform } from "react-native";
-import { getStatusBarHeight } from "react-native-iphone-x-helper";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-export const NavBarHeight =
-  56 +
-  Platform.select({
-    android: 0,
-    default: getStatusBarHeight(),
-  });
+export function useStatusBarHeight() {
+  return Math.max(useSafeAreaInsets().top, 12);
+}
+
+export const NAVBAR_HEIGHT = 44;
+
+export function useNavBarHeight() {
+  return useStatusBarHeight() + NAVBAR_HEIGHT;
+}

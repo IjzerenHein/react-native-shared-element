@@ -6,7 +6,6 @@ import {
   BackHandler,
   Dimensions,
 } from "react-native";
-import { PanGestureHandler, State } from "react-native-gesture-handler";
 import {
   enableScreens,
   screensEnabled,
@@ -15,15 +14,15 @@ import {
 } from "react-native-screens";
 import { SharedElementTransition } from "react-native-shared-element";
 
-import { fromRight } from "../transitions";
-import type { TransitionConfig } from "../transitions";
-import { SharedElementsConfig, SharedElementsStrictConfig } from "../types";
-import { normalizeSharedElementsConfig } from "../types/SharedElement";
+import { fromRight } from "../../transitions";
+import type { TransitionConfig } from "../../transitions";
+import { SharedElementsConfig, SharedElementsStrictConfig } from "../../types";
+import { normalizeSharedElementsConfig } from "../../types/SharedElement";
+import { RouterBackSwiper } from "./RouterBackSwiper";
 import {
   ScreenTransitionContext,
   ScreenTransitionContextOnSharedElementsUpdatedEvent,
 } from "./RouterScreenTransitionContext";
-import { NavBarHeight } from "./navBar/constants";
 
 enableScreens();
 
@@ -34,15 +33,6 @@ const styles = StyleSheet.create({
   node: {
     ...StyleSheet.absoluteFillObject,
     //backfaceVisibility: "hidden"
-  },
-  swipeBackOverlay: {
-    position: "absolute",
-    left: 0,
-    top: NavBarHeight,
-    bottom: 0,
-    width: 30,
-    // backgroundColor: "green",
-    // opacity: 0.2
   },
   sharedElements: {
     ...StyleSheet.absoluteFillObject,
@@ -104,10 +94,6 @@ const AnimatedRouterScreen = (props: any) => {
 export class Router extends React.Component<RouterProps, RouterState> {
   _animValue = new Animated.Value(0);
   _swipeBackAnimValue = new Animated.Value(0);
-  _onSwipeBackGestureEvent = Animated.event(
-    [{ nativeEvent: { translationX: this._swipeBackAnimValue } }],
-    { useNativeDriver: true }
-  );
   _backHandler: any;
 
   static defaultProps = {
@@ -205,77 +191,20 @@ export class Router extends React.Component<RouterProps, RouterState> {
   }
 
   renderBackSwiper() {
-    const { nextIndex, prevIndex, stack } = this.state;
+    const { nextIndex, prevIndex, stack, width } = this.state;
     if (!nextIndex && !prevIndex && stack.length <= 1) {
       return;
     }
     return (
-      <PanGestureHandler
-        minDist={5}
-        onGestureEvent={this._onSwipeBackGestureEvent}
-        onHandlerStateChange={this._onSwipeBackStateChange}
-      >
-        <Animated.View style={styles.swipeBackOverlay} collapsable={false} />
-      </PanGestureHandler>
+      <RouterBackSwiper
+        width={width}
+        animValue={this._swipeBackAnimValue}
+        prevIndex={prevIndex}
+        nextIndex={nextIndex}
+        onBackSwipe={this.onBackSwipe}
+      />
     );
   }
-
-  _onSwipeBackStateChange = (event: any) => {
-    const { width, nextIndex, prevIndex } = this.state;
-    const { nativeEvent } = event;
-    switch (nativeEvent.state) {
-      case State.ACTIVE:
-        // console.log("SWIPE ACTIVE: ", nativeEvent);
-        this.setState({
-          nextIndex: Math.max(nextIndex - 1, 0),
-        });
-        break;
-      case State.CANCELLED:
-        // console.log("SWIPE CANCEL: ", nativeEvent);
-        this.setState({
-          nextIndex: prevIndex,
-        });
-        break;
-      case State.END:
-        // console.log("SWIPE END: ", nativeEvent);
-        if (
-          nativeEvent.velocityX >= 1000 ||
-          (nativeEvent.velocityX > -1000 &&
-            nativeEvent.translationX >= width / 2)
-        ) {
-          Animated.timing(this._swipeBackAnimValue, {
-            toValue: width,
-            duration: 100,
-            useNativeDriver: true,
-          }).start(({ finished }) => {
-            if (finished) {
-              this.pruneStack(this.state.nextIndex + 1);
-              this._swipeBackAnimValue.setValue(0);
-              this._animValue.setValue(this.state.nextIndex);
-            }
-          });
-        } else {
-          Animated.timing(this._swipeBackAnimValue, {
-            toValue: 0,
-            duration: 100,
-            useNativeDriver: true,
-          }).start(({ finished }) => {
-            if (finished) {
-              this.setState({
-                nextIndex: this.state.prevIndex, // eslint-disable-line react/no-access-state-in-setstate
-              });
-            }
-          });
-        }
-        break;
-      case State.BEGAN:
-        // console.log("SWIPE BEGAN: ", nativeEvent);
-        break;
-      default:
-        // console.log("SWIPE UNKNOWN STATE: ", nativeEvent);
-        break;
-    }
-  };
 
   render() {
     const { stack, animValue, nextIndex, prevIndex, width, height } =
@@ -372,6 +301,16 @@ export class Router extends React.Component<RouterProps, RouterState> {
       return true;
     }
     return false;
+  };
+
+  onBackSwipe = (nextIndex: number, finish?: boolean) => {
+    if (finish) {
+      this.pruneStack(nextIndex + 1);
+      this._swipeBackAnimValue.setValue(0);
+      this._animValue.setValue(this.state.nextIndex);
+    } else {
+      this.setState({ nextIndex });
+    }
   };
 
   push(node: React.ReactNode, config?: RouterConfig) {
