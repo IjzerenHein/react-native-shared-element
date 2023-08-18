@@ -24,10 +24,6 @@ This library solves that problem through an all native implementation which is v
 - [x] Cross-fade transitions
 - [x] Clipping reveal transitions
 
-## Under development
-
-This library is under active development. The iOS and Android implementations are mostly done, which exception of some edge cases. The library also aims to support the `web` platform with an optimized DOM implementation. That development is about 60% done.
-
 ## Index <!-- omit in toc -->
 
 - [Motivation](#motivation)
@@ -54,11 +50,7 @@ This library is under active development. The iOS and Android implementations ar
 yarn add react-native-shared-element
 ```
 
-And when using React Native 0.59 or lower, link the library. This is not needed when using React Native 0.60 or higher, where linking happens automatically.
-
-```bash
-react-native link react-native-shared-element
-```
+> As of Expo SDK 49, `react-native-shared-element` is no longer shipped with Expo Go. If you want to use this library with Expo managed projects, [create a development build](https://docs.expo.dev/develop/development-builds/create-a-build).
 
 ## Basic usage
 
@@ -223,7 +215,7 @@ This project is supported by amazing people from [Expo.io](https://expo.io)
 ## Changes in maintenance
 
 Both [react-native-shared-element](https://github.com/IjzerenHein/react-native-shared-element) and [react-navigation-shared-element](https://github.com/IjzerenHein/react-navigation-shared-element) are always looking for new Maintainers.
-It is no longer possible for me (@author) to maintain these repositories. Please reach out to [me personally](mailto:hrutjes@gmail.com) if you have ideas or suggestions. You can also reach out to [Aleks](mailto:desmurs.linczewska@gmail.com) who is currently the main maintainer of this library.
+It is no longer possible for me (@author) to maintain these repositories. Please reach out to [me personally](mailto:hrutjes@gmail.com) if you have ideas or suggestions.
 
 > Read the [full statement here](https://github.com/IjzerenHein/react-navigation-shared-element/issues/14#issuecomment-1081601310).
 
