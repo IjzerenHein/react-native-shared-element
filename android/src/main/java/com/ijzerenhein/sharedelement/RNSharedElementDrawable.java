@@ -224,6 +224,7 @@ class RNSharedElementDrawable extends Drawable {
   private void drawReactImageView(Canvas canvas) {
     // TODO FIX IMAGE STRETCH ISSUE WHEN IMAGE DOESN'T FILL
     // ENTIRE CANVAS
+
     ReactImageView imageView = (ReactImageView) mContent.view;
     RNSharedElementStyle style = mStyle;
     GenericDraweeHierarchy hierarchy = imageView.getHierarchy();
