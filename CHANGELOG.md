@@ -1,3 +1,9 @@
+# [0.8.9](https://github.com/IjzerenHein/react-native-shared-element/compare/v0.8.8...v0.8.9) (2023-11-17)
+
+### Bug Fixes
+
+- **android** [fix] Fix exception on Android when drawable is null. [(#121)](https://github.com/IjzerenHein/react-native-shared-element/pull/121) (thanks @akramloginext)
+
 # [0.8.8](https://github.com/IjzerenHein/react-native-shared-element/compare/v0.8.7...v0.8.8) (2023-01-02)
 
 ### Bug Fixes
