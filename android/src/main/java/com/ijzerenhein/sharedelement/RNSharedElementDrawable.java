@@ -229,6 +229,7 @@ class RNSharedElementDrawable extends Drawable {
     RNSharedElementStyle style = mStyle;
     GenericDraweeHierarchy hierarchy = imageView.getHierarchy();
     Drawable drawable = hierarchy.getTopLevelDrawable();
+    if (drawable == null) return;
 
     // Backup current props
     Rect oldBounds = new Rect(drawable.getBounds());
@@ -269,6 +270,7 @@ class RNSharedElementDrawable extends Drawable {
     ImageView imageView = (ImageView) mContent.view;
     RNSharedElementStyle style = mStyle;
     Drawable drawable = imageView.getDrawable();
+    if (drawable == null) return;
 
     // Backup current props
     Rect oldBounds = new Rect(drawable.getBounds());
