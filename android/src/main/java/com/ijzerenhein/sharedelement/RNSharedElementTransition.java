@@ -183,9 +183,7 @@ public class RNSharedElementTransition extends ViewGroup {
 
     // Get parent offset
     View parent = (View) getParent();
-    if(parent == null){
-      return;
-    }
+    if (parent == null) return;
     parent.getLocationInWindow(mParentOffset);
 
     // Get styles

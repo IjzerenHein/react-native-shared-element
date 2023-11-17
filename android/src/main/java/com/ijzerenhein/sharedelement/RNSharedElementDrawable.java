@@ -224,71 +224,71 @@ class RNSharedElementDrawable extends Drawable {
   private void drawReactImageView(Canvas canvas) {
     // TODO FIX IMAGE STRETCH ISSUE WHEN IMAGE DOESN'T FILL
     // ENTIRE CANVAS
-        ReactImageView imageView = (ReactImageView) mContent.view;
-        RNSharedElementStyle style = mStyle;
-        GenericDraweeHierarchy hierarchy = imageView.getHierarchy();
-        Drawable drawable = hierarchy.getTopLevelDrawable();
-    if (drawable != null) {
-      // Backup current props
-        Rect oldBounds = new Rect(drawable.getBounds());
-        ScaleType oldScaleType = hierarchy.getActualImageScaleType();
-        RoundingParams oldRoundingParams = hierarchy.getRoundingParams();
-        Drawable oldBackgroundImage = null; //hierarchy.getBackgroundImage();
-        int oldFadeDuration = hierarchy.getFadeDuration();
+    ReactImageView imageView = (ReactImageView) mContent.view;
+    RNSharedElementStyle style = mStyle;
+    GenericDraweeHierarchy hierarchy = imageView.getHierarchy();
+    Drawable drawable = hierarchy.getTopLevelDrawable();
+    if (drawable == null) return;
 
-        // Configure drawable
-        drawable.setBounds(getBounds());
-        hierarchy.setActualImageScaleType(style.scaleType);
-        RoundingParams roundingParams = new RoundingParams();
-        roundingParams.setBorderColor(style.borderColor);
-        roundingParams.setBorderWidth(style.borderWidth);
-        roundingParams.setRoundingMethod(RoundingParams.RoundingMethod.BITMAP_ONLY);
-        roundingParams.setCornersRadii(
-                style.borderTopLeftRadius,
-                style.borderTopRightRadius,
-                style.borderBottomRightRadius,
-                style.borderBottomLeftRadius
-        );
-        hierarchy.setRoundingParams(roundingParams);
-        hierarchy.setBackgroundImage(null);
-        hierarchy.setFadeDuration(0);
+    // Backup current props
+    Rect oldBounds = new Rect(drawable.getBounds());
+    ScaleType oldScaleType = hierarchy.getActualImageScaleType();
+    RoundingParams oldRoundingParams = hierarchy.getRoundingParams();
+    Drawable oldBackgroundImage = null; //hierarchy.getBackgroundImage();
+    int oldFadeDuration = hierarchy.getFadeDuration();
 
-        // Draw!
-        drawable.draw(canvas);
+    // Configure drawable
+    drawable.setBounds(getBounds());
+    hierarchy.setActualImageScaleType(style.scaleType);
+    RoundingParams roundingParams = new RoundingParams();
+    roundingParams.setBorderColor(style.borderColor);
+    roundingParams.setBorderWidth(style.borderWidth);
+    roundingParams.setRoundingMethod(RoundingParams.RoundingMethod.BITMAP_ONLY);
+    roundingParams.setCornersRadii(
+            style.borderTopLeftRadius,
+            style.borderTopRightRadius,
+            style.borderBottomRightRadius,
+            style.borderBottomLeftRadius
+    );
+    hierarchy.setRoundingParams(roundingParams);
+    hierarchy.setBackgroundImage(null);
+    hierarchy.setFadeDuration(0);
 
-        // Restore props
-        hierarchy.setFadeDuration(oldFadeDuration);
-        hierarchy.setBackgroundImage(oldBackgroundImage);
-        hierarchy.setRoundingParams(oldRoundingParams);
-        hierarchy.setActualImageScaleType(oldScaleType);
-        drawable.setBounds(oldBounds);
-    }
+    // Draw!
+    drawable.draw(canvas);
+
+    // Restore props
+    hierarchy.setFadeDuration(oldFadeDuration);
+    hierarchy.setBackgroundImage(oldBackgroundImage);
+    hierarchy.setRoundingParams(oldRoundingParams);
+    hierarchy.setActualImageScaleType(oldScaleType);
+    drawable.setBounds(oldBounds);
   }
 
   private void drawImageView(Canvas canvas) {
     ImageView imageView = (ImageView) mContent.view;
     RNSharedElementStyle style = mStyle;
     Drawable drawable = imageView.getDrawable();
-    if (drawable != null) {
-        // Backup current props
-        Rect oldBounds = new Rect(drawable.getBounds());
+    if (drawable == null) return;
 
-        // Configure drawable
-        int width = (int) mContent.size.right;
-        int height = (int) mContent.size.bottom;
-        drawable.setBounds(0, 0, width, height);
-        Matrix matrix = new Matrix();
-        style.scaleType.getTransform(matrix, getBounds(), width, height, 0.5f, 0.5f);
+    // Backup current props
+    Rect oldBounds = new Rect(drawable.getBounds());
 
-        // Draw!
-        int saveCount = canvas.save();
-        canvas.concat(matrix);
-        drawable.draw(canvas);
-        canvas.restoreToCount(saveCount);
+    // Configure drawable
+    int width = (int) mContent.size.right;
+    int height = (int) mContent.size.bottom;
+    drawable.setBounds(0, 0, width, height);
+    Matrix matrix = new Matrix();
+    style.scaleType.getTransform(matrix, getBounds(), width, height, 0.5f, 0.5f);
 
-        // Restore props
-        drawable.setBounds(oldBounds);
-    }
+    // Draw!
+    int saveCount = canvas.save();
+    canvas.concat(matrix);
+    drawable.draw(canvas);
+    canvas.restoreToCount(saveCount);
+
+    // Restore props
+    drawable.setBounds(oldBounds);
   }
 
   private void drawPlainView(Canvas canvas) {
