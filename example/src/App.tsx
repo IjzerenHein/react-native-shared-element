@@ -1,5 +1,6 @@
 import * as React from "react";
 import { StatusBar, View, Platform } from "react-native";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
 import { Router } from "./components";
@@ -17,10 +18,12 @@ if (Platform.OS === "android") {
 
 export default function App() {
   return (
-    <SafeAreaProvider>
-      <View style={{ flex: 1, marginTop: 0, transform: [{ translateY: 0 }] }}>
-        <Router initialNode={<MainScreen />} />
-      </View>
-    </SafeAreaProvider>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <SafeAreaProvider>
+        <View style={{ flex: 1, marginTop: 0, transform: [{ translateY: 0 }] }}>
+          <Router initialNode={<MainScreen />} />
+        </View>
+      </SafeAreaProvider>
+    </GestureHandlerRootView>
   );
 }

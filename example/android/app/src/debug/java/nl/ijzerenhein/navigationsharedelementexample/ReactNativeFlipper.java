@@ -61,7 +61,8 @@ public class ReactNativeFlipper {
                 reactContext.runOnNativeModulesQueueThread(
                     new Runnable() {
                       @Override
-                      public void run() {                        client.addPlugin(new FrescoFlipperPlugin());
+                      public void run() {
+                        client.addPlugin(new FrescoFlipperPlugin());
                       }
                     });
               }
