@@ -1,4 +1,4 @@
-import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useSafeAreaInsets } from "../../libs/react-native-safe-area-context";
 
 export function useStatusBarHeight() {
   return Math.max(useSafeAreaInsets().top, 12);

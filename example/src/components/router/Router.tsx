@@ -6,14 +6,14 @@ import {
   BackHandler,
   Dimensions,
 } from "react-native";
+import { SharedElementTransition } from "react-native-shared-element";
+
 import {
   enableScreens,
   screensEnabled,
   ScreenContainer,
   Screen,
-} from "react-native-screens";
-import { SharedElementTransition } from "react-native-shared-element";
-
+} from "../../libs/react-native-screens";
 import { fromRight } from "../../transitions";
 import type { TransitionConfig } from "../../transitions";
 import { SharedElementsConfig, SharedElementsStrictConfig } from "../../types";

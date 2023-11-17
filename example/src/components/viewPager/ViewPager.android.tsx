@@ -1,6 +1,7 @@
 import * as React from "react";
 import { createNativeWrapper } from "react-native-gesture-handler";
-import PagerView from "react-native-pager-view";
+
+import { PagerView } from "../../libs/react-native-pager-view";
 
 // TODO: fix touch events are not routed to the viewpager
 const RNGHPagerView = createNativeWrapper(PagerView, {

@@ -1,9 +1,9 @@
 import * as React from "react";
 import { StatusBar, View, Platform } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { SafeAreaProvider } from "react-native-safe-area-context";
 
 import { Router } from "./components";
+import { SafeAreaProvider } from "./libs/react-native-safe-area-context";
 import { MainScreen } from "./screens";
 
 // Set this variable to true to test the statusbar offset on
