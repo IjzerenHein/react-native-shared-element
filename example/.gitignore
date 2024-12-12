@@ -61,3 +61,7 @@ Pods/
 # Web-build
 web-build/
 .expo/
+
+# generated expo builds
+ios
+android

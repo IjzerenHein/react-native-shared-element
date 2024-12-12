@@ -4,6 +4,32 @@
     "slug": "SharedElementExample",
     "privacy": "unlisted",
     "version": "1.0.0",
-    "platforms": ["ios", "android", "web"]
+    "platforms": [
+      "ios",
+      "android",
+      "web"
+    ],
+    "icon": "./assets/icon.png",
+    "android": {
+      "package": "nl.ijzerenhein.SharedElementExample",
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#ffffff"
+      },
+    },
+    "ios": {
+      "bundleIdentifier": "nl.ijzerenhein.SharedElementExample"
+    },
+    "plugins": [
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/splash-icon.png",
+          "imageWidth": 200,
+          "resizeMode": "contain",
+          "backgroundColor": "#ffffff"
+        }
+      ]
+    ],
   }
 }
