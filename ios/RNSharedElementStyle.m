@@ -112,10 +112,11 @@
   CGRect radiiRect = CGRectMake(0, 0, 1000000, 1000000);
   RCTCornerRadii radii1 = [style1.cornerRadii radiiForBounds:radiiRect];
   RCTCornerRadii radii2 = [style2.cornerRadii radiiForBounds:radiiRect];
-  [style.cornerRadii setRadius:radii1.topLeft + ((radii2.topLeft - radii1.topLeft) * position) corner:RNSharedElementCornerTopLeft];
-  [style.cornerRadii setRadius:radii1.topRight + ((radii2.topRight - radii1.topRight) * position) corner:RNSharedElementCornerTopRight];
-  [style.cornerRadii setRadius:radii1.bottomLeft + ((radii2.bottomLeft - radii1.bottomLeft) * position) corner:RNSharedElementCornerBottomLeft];
-  [style.cornerRadii setRadius:radii1.bottomRight + ((radii2.bottomRight - radii1.bottomRight) * position) corner:RNSharedElementCornerBottomRight];
+  [style.cornerRadii setRadius:radii1.topLeftHorizontal + ((radii2.topLeftHorizontal - radii1.topLeftHorizontal) * position) corner:RNSharedElementCornerTopLeft];
+  [style.cornerRadii setRadius:radii1.topRightHorizontal + ((radii2.topRightHorizontal - radii1.topRightHorizontal) * position) corner:RNSharedElementCornerTopRight];
+  [style.cornerRadii setRadius:radii1.bottomLeftHorizontal + ((radii2.bottomLeftHorizontal - radii1.bottomLeftHorizontal) * position) corner:RNSharedElementCornerBottomLeft];
+  [style.cornerRadii setRadius:radii1.bottomRightHorizontal + ((radii2.bottomRightHorizontal - radii1.bottomRightHorizontal) * position) corner:RNSharedElementCornerBottomRight];
+
   
   style.borderWidth = style1.borderWidth + ((style2.borderWidth - style1.borderWidth) * position);
   style.borderColor = [RNSharedElementStyle getInterpolatedColor:style1.borderColor color2:style2.borderColor position:position];

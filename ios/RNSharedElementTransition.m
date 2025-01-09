@@ -388,10 +388,10 @@
     },
     @"contentType": item.content ? item.content.typeName : @"none",
     @"style": @{
-        @"borderTopLeftRadius": @(cornerRadii.topLeft),
-        @"borderTopRightRadius": @(cornerRadii.topRight),
-        @"borderBottomLeftRadius": @(cornerRadii.bottomLeft),
-        @"borderBotomRightRadius": @(cornerRadii.bottomRight)
+        @"borderTopLeftRadius": @(cornerRadii.topLeftHorizontal),
+        @"borderTopRightRadius": @(cornerRadii.topRightHorizontal),
+        @"borderBottomLeftRadius": @(cornerRadii.bottomLeftHorizontal),
+        @"borderBotomRightRadius": @(cornerRadii.bottomRightHorizontal)
     }
   };
   self.onMeasureNode(eventData);
