@@ -15,7 +15,13 @@ import android.widget.ImageView;
 
 import com.facebook.react.views.image.ReactImageView;
 import com.facebook.react.views.view.ReactViewGroup;
-import com.facebook.react.views.view.ReactViewBackgroundDrawable;
+import com.facebook.react.uimanager.BackgroundStyleApplicator;
+import com.facebook.react.uimanager.ThemedReactContext;
+import com.facebook.react.uimanager.LengthPercentage;
+import com.facebook.react.uimanager.LengthPercentageType;
+import com.facebook.react.uimanager.style.BorderRadiusProp;
+import com.facebook.react.uimanager.style.LogicalEdge;
+import com.facebook.react.uimanager.style.BorderStyle;
 
 import com.facebook.drawee.generic.GenericDraweeHierarchy;
 import com.facebook.drawee.drawable.ScalingUtils.ScaleType;
@@ -42,13 +48,19 @@ class RNSharedElementDrawable extends Drawable {
 
   // static final private String LOG_TAG = "RNSharedElementDrawable";
 
+  private ThemedReactContext mContext = null;
+  private View mView = null;
   private RNSharedElementContent mContent = null;
   private RNSharedElementStyle mStyle = null;
   private ViewType mViewType = ViewType.NONE;
   private float mPosition = 0;
   private int mAlpha = 255;
   private Path mPathForBorderRadiusOutline = null;
-  private ReactViewBackgroundDrawable mReactViewBackgroundDrawableCache = null;
+
+  public RNSharedElementDrawable(ThemedReactContext context) {
+    mContext = context;
+    mView = new View(context);
+  }
 
   RNSharedElementStyle getStyle() {
     return mStyle;
@@ -295,31 +307,21 @@ class RNSharedElementDrawable extends Drawable {
   private void drawPlainView(Canvas canvas) {
     RNSharedElementStyle style = mStyle;
 
-    // Create drawable
-    ReactViewBackgroundDrawable drawable = mReactViewBackgroundDrawableCache;
-    if (drawable == null) {
-      drawable = new ReactViewBackgroundDrawable(mContent.view.getContext());
-      mReactViewBackgroundDrawableCache = drawable;
-    }
-    drawable.setBounds(getBounds());
+    // Update background color
+    BackgroundStyleApplicator.setBackgroundColor(mView, style.backgroundColor);
 
-    // Set background color
-    drawable.setColor(style.backgroundColor);
-
-    // Set border
-    float borderColorRGB = (float) (style.borderColor & 0x00FFFFFF);
-    float borderColorAlpha = (float) (style.borderColor >>> 24);
-    drawable.setBorderStyle(style.borderStyle);
-    for (int i = 0; i < 4; i++) {
-      drawable.setBorderColor(i, borderColorRGB, borderColorAlpha);
-      drawable.setBorderWidth(i, style.borderWidth);
-    }
-    drawable.setRadius(style.borderTopLeftRadius, 0);
-    drawable.setRadius(style.borderTopRightRadius, 1);
-    drawable.setRadius(style.borderBottomRightRadius, 2);
-    drawable.setRadius(style.borderBottomLeftRadius, 3);
+    // Update border
+    BackgroundStyleApplicator.setBorderStyle(mView, BorderStyle.fromString(style.borderStyle));
+    BackgroundStyleApplicator.setBorderColor(mView, LogicalEdge.ALL, style.borderColor);
+    BackgroundStyleApplicator.setBorderWidth(mView, LogicalEdge.ALL, style.borderWidth / 2f);
+    BackgroundStyleApplicator.setBorderRadius(mView, BorderRadiusProp.BORDER_TOP_LEFT_RADIUS, new LengthPercentage(style.borderTopLeftRadius, LengthPercentageType.POINT));
+    BackgroundStyleApplicator.setBorderRadius(mView, BorderRadiusProp.BORDER_TOP_RIGHT_RADIUS, new LengthPercentage(style.borderTopRightRadius, LengthPercentageType.POINT));
+    BackgroundStyleApplicator.setBorderRadius(mView, BorderRadiusProp.BORDER_BOTTOM_RIGHT_RADIUS, new LengthPercentage(style.borderBottomRightRadius, LengthPercentageType.POINT));
+    BackgroundStyleApplicator.setBorderRadius(mView, BorderRadiusProp.BORDER_BOTTOM_LEFT_RADIUS, new LengthPercentage(style.borderBottomLeftRadius, LengthPercentageType.POINT));
 
     // Draw!
+    Drawable drawable = mView.getBackground();
+    drawable.setBounds(getBounds());
     drawable.draw(canvas);
   }
 
