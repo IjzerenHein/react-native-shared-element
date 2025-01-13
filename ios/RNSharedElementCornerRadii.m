@@ -69,8 +69,8 @@ static CGFloat RNSharedElementDefaultIfNegativeTo(CGFloat defaultValue, CGFloat 
   CALayer *mask = nil;
   CGFloat cornerRadius = 0;
   
-  if (RCTCornerRadiiAreEqual(radii)) {
-    cornerRadius = radii.topLeft;
+  if (RCTCornerRadiiAreEqualAndSymmetrical(radii)) {
+    cornerRadius = radii.topLeftHorizontal;
   } else {
     CAShapeLayer *shapeLayer = [CAShapeLayer layer];
     RCTCornerInsets cornerInsets = RCTGetCornerInsets(radii, UIEdgeInsetsZero);
@@ -121,36 +121,41 @@ static CGFloat RNSharedElementDefaultIfNegativeTo(CGFloat defaultValue, CGFloat 
     const CGFloat directionAwareBottomLeftRadius = isRTL ? bottomEndRadius : bottomStartRadius;
     const CGFloat directionAwareBottomRightRadius = isRTL ? bottomStartRadius : bottomEndRadius;
     
-    result.topLeft = RNSharedElementDefaultIfNegativeTo(radius, directionAwareTopLeftRadius);
-    result.topRight = RNSharedElementDefaultIfNegativeTo(radius, directionAwareTopRightRadius);
-    result.bottomLeft = RNSharedElementDefaultIfNegativeTo(radius, directionAwareBottomLeftRadius);
-    result.bottomRight = RNSharedElementDefaultIfNegativeTo(radius, directionAwareBottomRightRadius);
+    result.topLeftHorizontal = RNSharedElementDefaultIfNegativeTo(radius, directionAwareTopLeftRadius);
+    result.topRightHorizontal = RNSharedElementDefaultIfNegativeTo(radius, directionAwareTopRightRadius);
+    result.bottomLeftHorizontal = RNSharedElementDefaultIfNegativeTo(radius, directionAwareBottomLeftRadius);
+    result.bottomRightHorizontal = RNSharedElementDefaultIfNegativeTo(radius, directionAwareBottomRightRadius);
   } else {
     const CGFloat directionAwareTopLeftRadius = isRTL ? _radii[RNSharedElementCornerTopEnd] : _radii[RNSharedElementCornerTopStart];
     const CGFloat directionAwareTopRightRadius = isRTL ? _radii[RNSharedElementCornerTopStart] : _radii[RNSharedElementCornerTopEnd];
     const CGFloat directionAwareBottomLeftRadius = isRTL ? _radii[RNSharedElementCornerBottomEnd] : _radii[RNSharedElementCornerBottomStart];
     const CGFloat directionAwareBottomRightRadius = isRTL ? _radii[RNSharedElementCornerBottomStart] : _radii[RNSharedElementCornerBottomEnd];
     
-    result.topLeft =
+    result.topLeftHorizontal =
     RNSharedElementDefaultIfNegativeTo(radius, RNSharedElementDefaultIfNegativeTo(_radii[RNSharedElementCornerTopLeft], directionAwareTopLeftRadius));
-    result.topRight =
+    result.topRightHorizontal =
     RNSharedElementDefaultIfNegativeTo(radius, RNSharedElementDefaultIfNegativeTo(_radii[RNSharedElementCornerTopRight], directionAwareTopRightRadius));
-    result.bottomLeft =
+    result.bottomLeftHorizontal =
     RNSharedElementDefaultIfNegativeTo(radius, RNSharedElementDefaultIfNegativeTo(_radii[RNSharedElementCornerBottomLeft], directionAwareBottomLeftRadius));
-    result.bottomRight = RNSharedElementDefaultIfNegativeTo(
+    result.bottomRightHorizontal = RNSharedElementDefaultIfNegativeTo(
                                                             radius, RNSharedElementDefaultIfNegativeTo(_radii[RNSharedElementCornerBottomRight], directionAwareBottomRightRadius));
   }
   
   // Get scale factors required to prevent radii from overlapping
-  const CGFloat topScaleFactor = RCTZeroIfNaN(MIN(1, bounds.size.width / (result.topLeft + result.topRight)));
-  const CGFloat bottomScaleFactor = RCTZeroIfNaN(MIN(1, bounds.size.width / (result.bottomLeft + result.bottomRight)));
-  const CGFloat rightScaleFactor = RCTZeroIfNaN(MIN(1, bounds.size.height / (result.topRight + result.bottomRight)));
-  const CGFloat leftScaleFactor = RCTZeroIfNaN(MIN(1, bounds.size.height / (result.topLeft + result.bottomLeft)));
+  const CGFloat topScaleFactor = RCTZeroIfNaN(MIN(1, bounds.size.width / (result.topLeftHorizontal + result.topRightHorizontal)));
+  const CGFloat bottomScaleFactor = RCTZeroIfNaN(MIN(1, bounds.size.width / (result.bottomLeftHorizontal + result.bottomRightHorizontal)));
+  const CGFloat rightScaleFactor = RCTZeroIfNaN(MIN(1, bounds.size.height / (result.topRightHorizontal + result.bottomRightHorizontal)));
+  const CGFloat leftScaleFactor = RCTZeroIfNaN(MIN(1, bounds.size.height / (result.topLeftHorizontal + result.bottomLeftHorizontal)));
   
-  result.topLeft *= MIN(topScaleFactor, leftScaleFactor);
-  result.topRight *= MIN(topScaleFactor, rightScaleFactor);
-  result.bottomLeft *= MIN(bottomScaleFactor, leftScaleFactor);
-  result.bottomRight *= MIN(bottomScaleFactor, rightScaleFactor);
+  result.topLeftHorizontal *= MIN(topScaleFactor, leftScaleFactor);
+  result.topRightHorizontal *= MIN(topScaleFactor, rightScaleFactor);
+  result.bottomLeftHorizontal *= MIN(bottomScaleFactor, leftScaleFactor);
+  result.bottomRightHorizontal *= MIN(bottomScaleFactor, rightScaleFactor);
+  
+  result.topLeftVertical = result.topLeftHorizontal;
+  result.topRightVertical = result.topRightHorizontal;
+  result.bottomLeftVertical = result.bottomLeftHorizontal;
+  result.bottomRightVertical = result.bottomRightHorizontal;
   
   _cachedBounds = bounds;
   _cachedRadii = result;
