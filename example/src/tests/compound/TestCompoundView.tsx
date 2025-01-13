@@ -84,9 +84,16 @@ type Props = {
   navigation?: any;
 };
 
-export function TestCompoundView(props: Props) {
-  const { style, hero, end, size, position, vertical, navigation, overlay } =
-    props;
+export function TestCompoundView({
+  style,
+  hero = Heroes[0],
+  end = false,
+  size = "default",
+  position = "default",
+  vertical = false,
+  navigation,
+  overlay = "none",
+}: Props) {
   const isMax = size === "max";
   const resolvedPosition =
     position === "default"
@@ -215,12 +222,3 @@ export function TestCompoundView(props: Props) {
     </View>
   );
 }
-
-TestCompoundView.defaultProps = {
-  hero: Heroes[0],
-  style: {},
-  size: "default",
-  position: "default",
-  vertical: false,
-  overlay: "none",
-};

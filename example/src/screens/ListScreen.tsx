@@ -54,7 +54,12 @@ type Props = {
 };
 
 export function ListScreen(props: Props) {
-  const { title, DetailComponent, transitionConfig, navigation } = props;
+  const {
+    title = "Bullets",
+    DetailComponent,
+    transitionConfig = fadeIn(),
+    navigation,
+  } = props;
   return (
     <View style={styles.container}>
       <NavBar title={title} />
@@ -112,8 +117,3 @@ export function ListScreen(props: Props) {
     </View>
   );
 }
-
-ListScreen.defaultProps = {
-  title: "Bullets",
-  transitionConfig: fadeIn(),
-};

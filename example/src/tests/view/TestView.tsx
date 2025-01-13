@@ -64,8 +64,15 @@ type Props = {
   navigation?: any;
 };
 
-export function TestView(props: Props) {
-  const { style, color, end, size, position, round, navigation } = props;
+export function TestView({
+  style,
+  color = Colors.blue,
+  end = false,
+  size = "default",
+  position = "default",
+  round = false,
+  navigation,
+}: Props) {
   const sizePx = SIZES[size === "default" ? "regular" : size];
   const resolvedPosition =
     position === "default" ? (end ? "right" : "left") : position;
@@ -96,11 +103,3 @@ export function TestView(props: Props) {
     </View>
   );
 }
-
-TestView.defaultProps = {
-  style: {},
-  color: Colors.blue,
-  size: "default",
-  position: "default",
-  round: false,
-};

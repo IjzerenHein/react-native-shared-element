@@ -40,16 +40,15 @@ const heroes2 = [...Heroes];
 heroes2[0] = Heroes[1];
 heroes2[1] = Heroes[0];
 
-export function TestScrollView(props: Props) {
-  const {
-    heroes,
-    size,
-    horizontal,
-    inverted,
-    ImageComponent,
-    round,
-    navigation,
-  } = props;
+export function TestScrollView({
+  heroes = heroes2,
+  size = "default",
+  horizontal = false,
+  inverted = false,
+  ImageComponent = Image,
+  round,
+  navigation,
+}: Props) {
   const sizePx = SIZES[size === "default" ? "regular" : size];
   const isMax = size === "max";
 
@@ -117,11 +116,3 @@ export function TestScrollView(props: Props) {
     </View>
   );
 }
-
-TestScrollView.defaultProps = {
-  horizontal: false,
-  inverted: false,
-  size: "default",
-  ImageComponent: Image,
-  heroes: heroes2,
-};

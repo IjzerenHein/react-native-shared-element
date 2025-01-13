@@ -78,9 +78,16 @@ type Props = {
   navigation?: any;
 };
 
-export function TestText(props: Props) {
-  const { style, color, end, size, position, length, scale, navigation } =
-    props;
+export function TestText({
+  style,
+  color = Colors.blue,
+  end = false,
+  size = "default",
+  position = "default",
+  length = "words",
+  scale = 1,
+  navigation,
+}: Props) {
   const fontSize = FontSizes[size === "default" ? "regular" : size];
   const resolvedPosition =
     position === "default" ? (end ? "bottom" : "top") : position;
@@ -121,12 +128,3 @@ export function TestText(props: Props) {
     </View>
   );
 }
-
-TestText.defaultProps = {
-  style: {},
-  color: Colors.blue,
-  position: "default",
-  size: "default",
-  length: "words",
-  scale: 1,
-};
