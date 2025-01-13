@@ -5,7 +5,6 @@ import { ImageBackground, Animated } from "react-native";
 import { Heroes } from "../../assets";
 import { Colors, Shadows } from "../../components";
 import { TestGroup } from "../../types";
-import { FastImage } from "./FastImage";
 import { TestImage } from "./TestImage";
 
 export function createImageTests(config: {
@@ -348,15 +347,6 @@ export const ExpoImageTests = createImageTests({
   },
 });
 ImageTests.tests.push(ExpoImageTests);
-
-export const FastImageTests = createImageTests({
-  title: "FastImage Component",
-  name: "FastImage",
-  props: {
-    ImageComponent: FastImage,
-  },
-});
-ImageTests.tests.push(FastImageTests);
 
 const oldTests: TestGroup = {
   name: "Other Image Components",

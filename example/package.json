@@ -7,8 +7,7 @@
     "web": "expo start --web",
     "build": "tsc --noEmit",
     "prebuild": "expo prebuild --clean",
-    "lint": "eslint .",
-    "postinstall": "patch-package"
+    "lint": "eslint ."
   },
   "dependencies": {
     "@react-native-community/blur": "^4.3.2",
@@ -20,7 +19,6 @@
     "react": "18.3.1",
     "react-dom": "18.3.1",
     "react-native": "0.76.5",
-    "react-native-fast-image": "^8.6.3",
     "react-native-gesture-handler": "~2.20.2",
     "react-native-image-pan-zoom": "^2.1.12",
     "react-native-linear-gradient": "^2.8.3",
@@ -38,7 +36,6 @@
     "@types/react": "~18.3.12",
     "@types/react-native-vector-icons": "^6.4.12",
     "eslint": "^8.30.0",
-    "patch-package": "^6.5.0",
     "typescript": "^5.3.3"
   },
   "private": true,

@@ -12,7 +12,6 @@ import ImageZoom from "react-native-image-pan-zoom";
 import { Heroes } from "../../assets";
 import { Colors, SharedElement } from "../../components";
 import { Hero, Size, Position, ResizeMode } from "../../types";
-import { FastImage } from "./FastImage";
 
 const SIZES = {
   max: Dimensions.get("window").width,
@@ -76,8 +75,7 @@ type Props = {
     | typeof Image
     | typeof ImageBackground
     | typeof Animated.Image
-    | typeof ExpoImage
-    | typeof FastImage;
+    | typeof ExpoImage;
   panZoom?: boolean;
   navigation?: any;
 };
